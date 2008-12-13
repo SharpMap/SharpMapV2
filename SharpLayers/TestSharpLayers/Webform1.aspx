@@ -24,6 +24,12 @@
     TagPrefix="format" %>
 <%@ Register Assembly="SharpMap.Presentation.Web.SharpLayers" Namespace="SharpMap.Presentation.Web.SharpLayers.Styles"
     TagPrefix="style" %>
+<%@ Register Assembly="SharpMap.Presentation.Web.SharpLayers" Namespace="SharpMap.Presentation.Web.SharpLayers.Controls.Nav"
+    TagPrefix="nav" %>
+<%@ Register Assembly="SharpMap.Presentation.Web.SharpLayers" Namespace="SharpMap.Presentation.Web.SharpLayers.Controls"
+    TagPrefix="gen" %>
+<%@ Register Assembly="SharpMap.Presentation.Web.SharpLayers" Namespace="SharpMap.Presentation.Web.SharpLayers.Controls.Containers"
+    TagPrefix="pnl" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
@@ -35,12 +41,12 @@
     <div>
         <asp:ScriptManager ID="ScriptManager1" runat="server">
         </asp:ScriptManager>
-        <asp:Panel ID="Panel1" runat="server" Height="623px">
+        <asp:Panel ID="mapPanel1" runat="server" Height="700px">
         </asp:Panel>
         <div style="background-color: Green;">
             <asp:Panel ID="toolBar1" runat="server" Height="100px" BackColor="Black" CssClass="olControlEditingToolbar" />
         </div>
-        <cc1:MapHostExtender ID="Panel1_MapHostExtender" runat="server" Enabled="True" TargetControlID="Panel1">
+        <cc1:MapHostExtender ID="Panel1_MapHostExtender" runat="server" Enabled="True" TargetControlID="mapPanel1">
             <BuilderParams FallThrough="true">
                 <TileSize Height="256" Width="256" />
             </BuilderParams>
@@ -51,47 +57,39 @@
                 <switch:LayerSwitcherTool runat="server" ID="layerSwitcherTool1">
                     <BuilderParams />
                 </switch:LayerSwitcherTool>
+                <pnl:ToolPanel runat="server">
+                    <ChildTools>
+                        <gen:GenericOLControl ID="GenericOLControl1" runat="server">
+                            <BuilderParams OpenLayersClassName="OpenLayers.Control.Navigation" />
+                        </gen:GenericOLControl>
+                        <gen:GenericOLControl ID="GenericOLControl2" runat="server">
+                            <BuilderParams OpenLayersClassName="OpenLayers.Control.PanZoom" />
+                        </gen:GenericOLControl>
+                    </ChildTools>
+                </pnl:ToolPanel>
             </Tools>
             <LayerComponents>
-                <tms:TmsLayerComponent ID="TmsLayerComponent1" runat="server" Name="My Tms Layer">
-                    <BuilderParams Attribution="2008 &copy; John Diss" />
-                </tms:TmsLayerComponent>
                 <wms:WmsLayerComponent ID="WmsLayerComponent1" runat="server" Name="My Wms Layer">
-                    <BuilderParams Attribution="Newgrove &copy; 2008" Visibility="true" Units="m" DisplayInLayerSwitcher="true"
-                        IsBaseLayer="false">
+                    <BuilderParams Attribution="Newgrove &copy; 2008" Visibility="true" Units="degrees"
+                        DisplayInLayerSwitcher="true" IsBaseLayer="true" WrapDateLine="true">
                         <TileSize Height="256" Width="256" />
-                        <MaxExtent Bottom="0" Left="0" Right="2000000" Top="2000000" />
-                        <WmsParameters WmsVersion="1.3.0" Crs="EPSG:27700">
+                        <MaxExtent Bottom="-90" Left="-180" Right="180" Top="90" />
+                        <WmsParameters WmsVersion="1.3.0" Crs="EPSG:4326">
                             <WmsLayerNames>
-                                <cc1:StringValue Value="ARoads" />
-                                <cc1:StringValue Value="BRoads" />
-                                <cc1:StringValue Value="UnclassifiedRoads" />
-                                <cc1:StringValue Value="PrimaryRoads" />
-                                <cc1:StringValue Value="Streets" />
+                                <cc1:StringValue Value="Countries" />
+                                <cc1:StringValue Value="Rivers" />
+                                <cc1:StringValue Value="Cities" />
                             </WmsLayerNames>
                             <WmsServerUrls>
-                                <cc1:UriValue Value="http://a.sharplayers.newgrove.com/sharpmapv2demo/Maps/Wms.ashx" />
-                                <cc1:UriValue Value="http://b.sharplayers.newgrove.com/sharpmapv2demo/Maps/Wms.ashx" />
-                                <cc1:UriValue Value="http://c.sharplayers.newgrove.com/sharpmapv2demo/Maps/Wms.ashx" />
-                                <cc1:UriValue Value="http://d.sharplayers.newgrove.com/sharpmapv2demo/Maps/Wms.ashx" />
-                                <cc1:UriValue Value="http://e.sharplayers.newgrove.com/sharpmapv2demo/Maps/Wms.ashx" />
-                                <cc1:UriValue Value="http://f.sharplayers.newgrove.com/sharpmapv2demo/Maps/Wms.ashx" />
-                                <cc1:UriValue Value="http://g.sharplayers.newgrove.com/sharpmapv2demo/Maps/Wms.ashx" />
+                                <cc1:UriValue Value="http://localhost:50322/Maps/Map.ashx" />
                             </WmsServerUrls>
                         </WmsParameters>
                     </BuilderParams>
                 </wms:WmsLayerComponent>
                 <vector:VectorLayerComponent runat="server" ID="VectorLayerComponent1" Name="My Vector Layer">
                     <BuilderParams Attribution="Newgrove Vectors Inc" DisplayInLayerSwitcher="true" IsBaseLayer="false"
-                        Units="m" Visibility="true">
+                        Units="m" Visibility="true" WrapDateLine="true">
                         <MaxExtent Bottom="0" Left="0" Right="2000000" Top="2000000" />
-                    </BuilderParams>
-                </vector:VectorLayerComponent>
-                <vector:VectorLayerComponent runat="server" ID="vector2">
-                    <BuilderParams Attribution="aaa" Protocol="httpProtocol">
-                        <Strategies>
-                            <strategy:BBoxStrategy runat="server" />
-                        </Strategies>
                     </BuilderParams>
                 </vector:VectorLayerComponent>
             </LayerComponents>
@@ -99,13 +97,6 @@
         <style:SldComponent runat="server" ID="stylemap1">
             <BuilderParams SldDocumentUri="mysld.xml" />
         </style:SldComponent>
-        <protocol:HttpProtocolComponent FormatType="GeoJsonFormat" runat="server" ID="httpProtocol">
-            <BuilderParams Url="http://localhost">
-                <Formats>
-                    <format:GeoJsonFormat />
-                </Formats>
-            </BuilderParams>
-        </protocol:HttpProtocolComponent>
     </div>
     </form>
 </body>

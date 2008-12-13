@@ -23,6 +23,11 @@ SharpMap.Presentation.Web.SharpLayers.MapHostBehavior = function(element) {
 SharpMap.Presentation.Web.SharpLayers.MapHostBehavior.prototype = {
     initialize: function() {
         this._builderDelegate = Function.createDelegate(this, this._mapBuilderDelegate);
+
+        var _this = this;
+        var f = function() { _this.get_hostedItem().zoomToMaxExtent(); Sys.Application.remove_load(f); };
+        Sys.Application.add_load(f);
+
         SharpMap.Presentation.Web.SharpLayers.MapHostBehavior.callBaseMethod(this, 'initialize');
     },
 
@@ -37,6 +42,7 @@ SharpMap.Presentation.Web.SharpLayers.MapHostBehavior.prototype = {
         options.controls = [new OpenLayers.Control.Navigation(),
                             new OpenLayers.Control.ArgParser(),
                             new OpenLayers.Control.Attribution()];
+
         return new OpenLayers.Map(this.get_element(), options);
     }
 
