@@ -30,7 +30,7 @@ namespace SharpMap.Expressions
     [XmlInclude(typeof(FunctionType1))]
     [XmlInclude(typeof(PropertyNameExpression))]
     [XmlInclude(typeof(BinaryOperatorType))]
-    [XmlInclude(typeof(FunctionType))]
+    [XmlInclude(typeof(ExpressionType))]
     [XmlInclude(typeof(RecodeType))]
     [XmlInclude(typeof(InterpolateType))]
     [XmlInclude(typeof(CategorizeType))]

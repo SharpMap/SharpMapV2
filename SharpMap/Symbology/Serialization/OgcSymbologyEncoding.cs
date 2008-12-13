@@ -443,35 +443,6 @@ namespace SharpMap.Symbology.Serialization
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("xsd", "2.0.50727.1432")]
     [System.SerializableAttribute()]
-    [System.Xml.Serialization.XmlTypeAttribute(Namespace = "http://www.opengis.net/ogc", IncludeInSchema = false)]
-    public enum ItemChoiceType
-    {
-
-        /// <remarks/>
-        Add,
-
-        /// <remarks/>
-        Div,
-
-        /// <remarks/>
-        Function,
-
-        /// <remarks/>
-        Literal,
-
-        /// <remarks/>
-        Mul,
-
-        /// <remarks/>
-        PropertyName,
-
-        /// <remarks/>
-        Sub,
-    }
-
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("xsd", "2.0.50727.1432")]
-    [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     [System.Xml.Serialization.XmlTypeAttribute(Namespace = "http://www.opengis.net/ogc")]
