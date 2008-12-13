@@ -34,8 +34,8 @@ namespace SharpMap.Presentation.AspNet.Demo.Common
         /// </summary>
         public static void SetupMap(HttpContext context, Map m)
         {
-            //setupMsSqlSpatial2008(m);
-            setupShapefile(context, m);
+            setupMsSqlSpatial(m);
+            //setupShapefile(context, m);
         }
 
         private static void setupShapefile(HttpContext context, Map m)
@@ -61,231 +61,57 @@ namespace SharpMap.Presentation.AspNet.Demo.Common
             provider.Open();
         }
 
-        private static void setupMsSqlSpatial2008(Map m)
+        private static void setupMsSqlSpatial(Map m)
         {
             var layernames = new[]
                                  {
-                                     "Capital",
-                                     "Cemeteries",
-                                     "ConventionExhibition",
-                                     "Government",
-                                     "Historical",
-                                     "Hospitals",
-                                     "MajorTowns",
-                                     "MidTowns",
-                                     "NamedPlaces",
-                                     "Airports",
-                                     "ParkCity",
-                                     "ParkLeisure",
-                                     "Retail",
-                                     "Shops",
-                                     "SmallPlaces",
-                                     "SportsLandmark",
-                                     "Sports",
-                                     "TopTowns",
-                                     "Tourist",
-                                     "Universities",
-                                     "Villages",
-                                     "Woodland",
-                                     "Motorways",
-                                     "ARoads",
-                                     "UnclassifiedRoads",
-                                     "BRoads",
-                                     "Streets",
+                                     "Countries",
                                      "Rivers",
-                                     "ROIBoundary",
-                                     "PrimaryRoads",
-                                     "Transportation",
-                                     "Ferries",
-                                     "AircraftRoads",
-                                     "Canals",
-                                     "Cultural",
-                                     "Medical",
-                                     "Lakes",
-                                     "IndustrialAreas",
-                                     "Education",
-                                     "Districts",
-                                     "Counties",
-                                     "BusinessCommerce",
-                                     "CanalAreas",
-                                     "RiverAreas",
-                                     "TownSprawl",
-                                     "ParkMonument",
-                                     "Elevation1000To1500m",
-                                     "Elevation900m",
-                                     "Elevation800m",
-                                     "Elevation700m",
-                                     "Elevation600m",
-                                     "Elevation500m",
-                                     "Elevation400m",
-                                     "Elevation300m",
-                                     "Elevation200m",
-                                     "Elevation100m",
-                                     "Bays",
-                                     "Country",
-                                     "Golf",
-                                     "Islands",
-                                     "Oceans"
+                                     "Cities"
                                  };
 
-            //Array.Reverse(layernames);
-
-
-            string sridstr = SridMap.DefaultInstance.Process(27700, ""); 
-
-            var labelprovider = new AppStateMonitoringFeatureProvider(
-                new MsSqlServer2008Provider<long>(
-                    new GeometryServices()[sridstr],
-                    ConfigurationManager.ConnectionStrings["db"].ConnectionString,
-                    "dbo",
-                    "STREETS",
-                    "oid",
-                    "Geom")
-                    {
-                        DefaultProviderProperties
-                            = new ProviderPropertiesExpression(
-                            new ProviderPropertyExpression[]
-                                {
-                                    new WithNoLockExpression(true),
-                                    new ForceIndexExpression(true),
-                                    new IndexNamesExpression(new[] {"sidx_Streets_Geom"}),
-                                    new MsSqlServer2008ExtentsModeExpression(
-                                        SqlServer2008ExtentsMode.UseEnvelopeColumns)
-                                })
-                    });
-
-
-            var labellayer = new LabelLayer("streetslabel", labelprovider)
-                                 {
-                                     CollisionDetector = new LabelCollisionDetection2D(),
-                                 };
-            labellayer.Enabled = true;
-            labellayer.Features.IsSpatiallyIndexed = false;
-            labellayer.MultipartGeometryLabelingBehaviour = MultipartGeometryLabelingBehavior.Largest;
-
-            var lblstyle =
-                new LabelStyle(new StyleFont(new StyleFontFamily("Arial"), new Size2D(10, 10), StyleFontStyle.Bold),
-                               RandomStyle.RandomBrush());
-            lblstyle.Enabled = true;
-
-            lblstyle.LabelExpression = new PropertyNameExpression("NAME");
-            lblstyle.MaxVisible = 100000;
-
-            labellayer.Style = lblstyle;
-
-            m.AddLayer(labellayer);
+            string sridstr = SridMap.DefaultInstance.Process(4326, "");
 
             foreach (string lyrname in layernames)
             {
                 string tbl = lyrname;
-                string col = "Geom";
+
 
                 var provider = new AppStateMonitoringFeatureProvider(
-                    new MsSqlServer2008Provider<long>(
+                    new MsSqlSpatialProvider(
                         new GeometryServices()[sridstr],
                         ConfigurationManager.ConnectionStrings["db"].ConnectionString,
+                        "st",
                         "dbo",
                         tbl,
                         "oid",
-                        col)
+                        "Geometry")
                         {
                             DefaultProviderProperties
                                 = new ProviderPropertiesExpression(
                                 new ProviderPropertyExpression[]
                                     {
-                                        new WithNoLockExpression(true),
-                                        new ForceIndexExpression(true),
-                                        new IndexNamesExpression(new[] {"sidx_" + tbl + "_" + col}),
-                                        new MsSqlServer2008ExtentsModeExpression(
-                                            SqlServer2008ExtentsMode.UseEnvelopeColumns)
+                                        new WithNoLockExpression(true)
                                     })
                         });
 
-                //string col = "WKB_Geometry";
-                //var provider = new AppStateMonitoringFeatureProvider(
-                //    new MsSqlSpatialProvider(
-                //        new GeometryServices()[27700],
-                //        ConfigurationManager.ConnectionStrings["db"].ConnectionString,
-                //        "ST",
-                //        "dbo",
-                //        tbl,
-                //        "oid",
-                //        col,
-                //        true));
-
+                
                 var style = new GeoJsonGeometryStyle();
 
                 switch (tbl)
                 {
-                    case "ARoads":
-                        {
-                            StyleBrush brush = new SolidStyleBrush(new StyleColor(126, 120, 119, 255));
-                            var pen = new StylePen(brush, 9);
-                            style.EnableOutline = true;
-                            style.MaxVisible = 100000;
-                            style.Line = pen;
-                            style.Fill = brush;
-                            break;
-                        }
-
-
-                    case "BRoads":
-                        {
-                            StyleBrush brush = new SolidStyleBrush(new StyleColor(126, 120, 119, 255));
-                            var pen = new StylePen(brush, 7);
-                            style.EnableOutline = true;
-                            style.MaxVisible = 100000;
-                            style.Line = pen;
-                            style.Fill = brush;
-                            break;
-                        }
-
-                    case "PrimaryRoads":
-                        {
-                            StyleBrush brush = new SolidStyleBrush(new StyleColor(126, 120, 119, 255));
-                            var pen = new StylePen(brush, 9);
-                            style.EnableOutline = true;
-                            style.MaxVisible = 100000;
-                            style.Line = pen;
-                            style.Fill = brush;
-                            break;
-                        }
-
-                    case "Motorways":
-                        {
-                            StyleBrush brush = new SolidStyleBrush(new StyleColor(255, 0, 0, 255));
-                            var pen = new StylePen(brush, 12);
-                            style.EnableOutline = true;
-                            style.MaxVisible = 100000;
-                            style.Line = pen;
-                            style.Fill = brush;
-                            break;
-                        }
-
-                    case "UnclassifiedRoads":
-                        {
-                            StyleBrush brush = new SolidStyleBrush(new StyleColor(171, 173, 156, 255));
-                            var pen = new StylePen(brush, 5);
-                            style.EnableOutline = true;
-                            style.MaxVisible = 10000;
-                            style.Line = pen;
-                            style.Fill = brush;
-                            break;
-                        }
-
                     case "Rivers":
                         {
                             StyleBrush brush = new SolidStyleBrush(new StyleColor(255, 255, 0, 255));
-                            var pen = new StylePen(brush, 5);
+                            var pen = new StylePen(brush, 1);
                             style.Enabled = true;
                             style.EnableOutline = true;
                             style.Line = pen;
                             style.Fill = brush;
-                            style.MaxVisible = 100000;
                             break;
                         }
 
-                    case "Country":
+                    case "Countries":
                         {
                             StyleBrush brush = new SolidStyleBrush(new StyleColor(0, 0, 0, 255));
                             var pen = new StylePen(brush, 2);
@@ -294,170 +120,6 @@ namespace SharpMap.Presentation.AspNet.Demo.Common
                             style.EnableOutline = true;
                             style.Line = pen;
                             style.Fill = trans;
-
-                            style.MinVisible = 100000;
-                            break;
-                        }
-
-                    case "Elevation100m":
-                        {
-                            StyleBrush brush = new SolidStyleBrush(new StyleColor(179, 231, 254, 255));
-                            var pen = new StylePen(brush, 1);
-
-                            style.EnableOutline = false;
-                            style.Outline = pen;
-                            style.Fill = brush;
-                            style.MinVisible = 100000;
-                            break;
-                        }
-
-                    case "Elevation200m":
-                        {
-                            StyleBrush brush = new SolidStyleBrush(new StyleColor(165, 224, 253, 255));
-                            var pen = new StylePen(brush, 1);
-
-                            style.EnableOutline = false;
-                            style.Outline = pen;
-                            style.Fill = brush;
-                            style.MinVisible = 100000;
-                            break;
-                        }
-
-                    case "Elevation300m":
-                        {
-                            StyleBrush brush = new SolidStyleBrush(new StyleColor(115, 211, 252, 255));
-                            var pen = new StylePen(brush, 1);
-
-                            style.EnableOutline = false;
-                            style.Outline = pen;
-                            style.Fill = brush;
-                            style.MinVisible = 100000;
-                            break;
-                        }
-
-                    case "Elevation400m":
-                        {
-                            StyleBrush brush = new SolidStyleBrush(new StyleColor(45, 201, 241, 255));
-                            var pen = new StylePen(brush, 1);
-
-                            style.EnableOutline = false;
-                            style.Outline = pen;
-                            style.Fill = brush;
-                            style.MinVisible = 100000;
-                            break;
-                        }
-
-                    case "Elevation500m":
-                        {
-                            StyleBrush brush = new SolidStyleBrush(new StyleColor(46, 183, 241, 255));
-                            var pen = new StylePen(brush, 1);
-
-                            style.EnableOutline = false;
-                            style.Outline = pen;
-                            style.Fill = brush;
-                            style.MinVisible = 100000;
-                            break;
-                        }
-
-                    case "Elevation600m":
-                        {
-                            StyleBrush brush = new SolidStyleBrush(new StyleColor(45, 136, 239, 255));
-                            var pen = new StylePen(brush, 1);
-
-                            style.EnableOutline = false;
-                            style.Outline = pen;
-                            style.Fill = brush;
-                            style.MinVisible = 100000;
-                            break;
-                        }
-
-                    case "Elevation700m":
-                        {
-                            StyleBrush brush = new SolidStyleBrush(new StyleColor(45, 144, 237, 255));
-                            var pen = new StylePen(brush, 1);
-
-                            style.EnableOutline = false;
-                            style.Outline = pen;
-                            style.Fill = brush;
-                            style.MinVisible = 100000;
-                            break;
-                        }
-
-                    case "Elevation800m":
-                        {
-                            StyleBrush brush = new SolidStyleBrush(new StyleColor(45, 125, 236, 255));
-                            var pen = new StylePen(brush, 1);
-
-                            style.EnableOutline = false;
-                            style.Outline = pen;
-                            style.Fill = brush;
-                            style.MinVisible = 100000;
-                            break;
-                        }
-
-                    case "Elevation900m":
-                        {
-                            StyleBrush brush = new SolidStyleBrush(new StyleColor(44, 107, 236, 255));
-                            var pen = new StylePen(brush, 1);
-
-                            style.EnableOutline = false;
-                            style.Outline = pen;
-                            style.Fill = brush;
-                            style.MinVisible = 100000;
-                            break;
-                        }
-
-                    case "Elevation1000to1500m":
-                        {
-                            StyleBrush brush = new SolidStyleBrush(new StyleColor(44, 75, 235, 255));
-                            var pen = new StylePen(brush, 1);
-
-                            style.EnableOutline = false;
-                            style.Outline = pen;
-                            style.Fill = brush;
-                            style.MinVisible = 100000;
-                            break;
-                        }
-
-                    case "Counties":
-                        {
-                            StyleBrush brush = new SolidStyleBrush(new StyleColor(0, 0, 0, 255));
-                            var pen = new StylePen(brush, 2);
-                            StyleBrush trans = new SolidStyleBrush(new StyleColor(234, 255, 255, 255));
-
-                            style.Enabled = true;
-                            style.EnableOutline = true;
-                            style.Line = pen;
-                            style.Fill = trans;
-
-                            style.MaxVisible = 100000;
-                            break;
-                        }
-
-                    case "ROIBoundary":
-                        {
-                            StyleBrush brush = new SolidStyleBrush(new StyleColor(0, 0, 0, 255));
-                            var pen = new StylePen(brush, 2);
-                            StyleBrush trans = new SolidStyleBrush(new StyleColor(255, 255, 255, 0));
-
-                            style.Enabled = true;
-                            style.EnableOutline = true;
-                            style.Line = pen;
-                            style.Fill = trans;
-
-                            break;
-                        }
-
-                    case "Oceans":
-                        {
-                            StyleBrush brush = new SolidStyleBrush(new StyleColor(254, 251, 194, 255));
-                            var pen = new StylePen(brush, 2);
-
-                            style.Outline = pen;
-                            style.Enabled = true;
-                            style.EnableOutline = true;
-                            style.Line = pen;
-                            style.Fill = brush;
 
                             break;
                         }

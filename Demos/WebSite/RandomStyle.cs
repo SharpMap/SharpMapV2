@@ -165,7 +165,7 @@ namespace SharpMap.Presentation.AspNet.Demo
 
         private static Size2D RandomSymbolSize()
         {
-            int d = random.Next(50, 100);
+            int d = random.Next(5, 30);
             return new Size2D(d, d);
         }
 

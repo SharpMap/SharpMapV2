@@ -34,16 +34,6 @@ namespace SharpMap.Presentation.AspNet.Demo.Wms
         }
 
         /// <summary>
-        /// note: this is a temp hack!
-        /// </summary>
-        public override void InitMap()
-        {
-
-
-            Map = new Map(GeometryServices[SridMap.DefaultInstance.Process(27700, "")], GeometryServices.CoordinateTransformationFactory);
-        }
-
-        /// <summary>
         /// This should return an instance of WmsRequestConfigFactoryBase
         /// </summary>
         /// <returns></returns>
@@ -58,6 +48,11 @@ namespace SharpMap.Presentation.AspNet.Demo.Wms
                        {
                            BaseCacheDir = ConfigurationManager.AppSettings["CacheDirectory"]
                        };
+        }
+
+        public override string BaseSrid
+        {
+            get { return "EPSG:4326"; }
         }
     }
 }

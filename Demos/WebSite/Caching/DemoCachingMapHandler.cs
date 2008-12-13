@@ -45,5 +45,10 @@ namespace SharpMap.Presentation.AspNet.Demo.Caching
                            BaseCacheDir = ConfigurationManager.AppSettings["CacheDirectory"]
                        };
         }
+
+        public override string BaseSrid
+        {
+            get { return "EPSG:4326"; }
+        }
     }
 }
