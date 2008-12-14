@@ -9,7 +9,7 @@
     <ul>
         <li>All the handlers respond to the querystring parameter BBOX (e.g BBOX=-180,-90,180,90)</li>
         <li>Map and caching map respond to the param mimeType (e.g mimeType=image/jpeg)</li>
-        <li>Wms responds to all the same params as the WmsDemo in the DemoWebSite Project</li>
+        <li>Wms responds to all the same params as the WmsDemo in the DemoWebSite Project in the SharpMap 0.9 src tree</li>
     </ul>
     <asp:Repeater ID="repDemos" runat="server">
         <ItemTemplate>

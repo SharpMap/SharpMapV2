@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace TestSharpLayers {
+namespace SharpMap.Demo.SharpLayers {
     
     
     public partial class Webform1 {
@@ -32,13 +32,13 @@ namespace TestSharpLayers {
         protected global::System.Web.UI.ScriptManager ScriptManager1;
         
         /// <summary>
-        /// Panel1 control.
+        /// mapPanel1 control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Panel Panel1;
+        protected global::System.Web.UI.WebControls.Panel mapPanel1;
         
         /// <summary>
         /// toolBar1 control.
@@ -77,13 +77,22 @@ namespace TestSharpLayers {
         protected global::SharpMap.Presentation.Web.SharpLayers.Controls.LayerSwitcher.LayerSwitcherTool layerSwitcherTool1;
         
         /// <summary>
-        /// TmsLayerComponent1 control.
+        /// GenericOLControl1 control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::SharpMap.Presentation.Web.SharpLayers.Layers.Tms.TmsLayerComponent TmsLayerComponent1;
+        protected global::SharpMap.Presentation.Web.SharpLayers.Controls.GenericOLControl GenericOLControl1;
+        
+        /// <summary>
+        /// GenericOLControl2 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::SharpMap.Presentation.Web.SharpLayers.Controls.GenericOLControl GenericOLControl2;
         
         /// <summary>
         /// WmsLayerComponent1 control.
@@ -104,15 +113,6 @@ namespace TestSharpLayers {
         protected global::SharpMap.Presentation.Web.SharpLayers.Layers.Vector.VectorLayerComponent VectorLayerComponent1;
         
         /// <summary>
-        /// vector2 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::SharpMap.Presentation.Web.SharpLayers.Layers.Vector.VectorLayerComponent vector2;
-        
-        /// <summary>
         /// stylemap1 control.
         /// </summary>
         /// <remarks>
@@ -120,14 +120,5 @@ namespace TestSharpLayers {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::SharpMap.Presentation.Web.SharpLayers.Styles.SldComponent stylemap1;
-        
-        /// <summary>
-        /// httpProtocol control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::SharpMap.Presentation.Web.SharpLayers.Protocol.Http.HttpProtocolComponent httpProtocol;
     }
 }

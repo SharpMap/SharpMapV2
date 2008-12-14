@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="Webform1.aspx.cs" Inherits="TestSharpLayers.Webform1" %>
+﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="Webform1.aspx.cs" Inherits="SharpMap.Demo.SharpLayers.Webform1" %>
 
 <%@ Register Assembly="SharpMap.Presentation.Web.SharpLayers" Namespace="SharpMap.Presentation.Web.SharpLayers.Layers"
     TagPrefix="cc1" %>
@@ -81,7 +81,7 @@
                                 <cc1:StringValue Value="Cities" />
                             </WmsLayerNames>
                             <WmsServerUrls>
-                                <cc1:UriValue Value="http://localhost:50322/Maps/Map.ashx" />
+                                <cc1:UriValue Value="http://localhost:50322/Maps/Map.ashx" /><%--This should be updated to the port number assigned by vs dev web server or IIS --%>
                             </WmsServerUrls>
                         </WmsParameters>
                     </BuilderParams>
