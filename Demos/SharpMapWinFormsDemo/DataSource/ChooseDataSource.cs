@@ -23,6 +23,7 @@ namespace MapViewer.DataSource
         public ChooseDataSource()
         {
             InitializeComponent();
+            cbDataSource.SelectedIndex = 0;
         }
 
         private ICreateDataProvider Builder
@@ -67,7 +68,15 @@ namespace MapViewer.DataSource
                 case "postgis":
                     LoadPostGisBuilder();
                     return;
+                case "ibm db2 spatialextender":
+                    LoadDB2SpatialExtender();
+                    return;
             }
+        }
+
+        private void LoadDB2SpatialExtender()
+        {
+            LoadBuilder(new DB2SpatialExtender());
         }
 
         private void LoadPostGisBuilder()

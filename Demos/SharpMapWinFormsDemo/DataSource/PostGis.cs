@@ -209,25 +209,19 @@ namespace MapViewer.DataSource
                 string tableName = (string)drv["TableName"];;
                 string geomColumn = (string)drv["GeometryColumn"];
                 int coordDimension = (int) drv["Dimension"];
-                string srid = ((int)drv["SRID"]).ToString();
-                string spatialReference = drv["SpatialReference"] == DBNull.Value 
-                    ?
-                    "" 
-                    :
-                    (string)drv["SpatialReference"];
+                string srid = (string)drv["SRID"];//((int)).ToString();
+                
+                IGeometryFactory gf = new GeometryServices()[ srid ];//, coordDimension];
+                //if (!string.IsNullOrEmpty(spatialReference))
+                //    gf.SpatialReference = gs.CoordinateSystemFactory.CreateFromWkt(spatialReference);
 
-                GeometryServices gs = new GeometryServices();
-                IGeometryFactory gf = gs[srid ];//, coordDimension];
-                if (!string.IsNullOrEmpty(spatialReference))
-                    gf.SpatialReference = gs.CoordinateSystemFactory.CreateFromWkt(spatialReference);
-
-                string oidColumnName = (String)dgvColumns.Rows[oidcolumn].Cells[2].Value;
+                string oidColumnName = (String)dgvColumns.Rows[oidcolumn].Cells["ColumnName"].Value;
 
                 List<String> columns = new List<string>();
                 List<OrderByExpression> orderby = new List<OrderByExpression>();
                 foreach (DataGridViewRow dgvr in dgvColumns.Rows)
                 {
-                    if ((bool)dgvr.Cells["Include"].Value) columns.Add((String)dgvr.Cells[2].Value);
+                    if ((bool)dgvr.Cells["Include"].Value) columns.Add((String)dgvr.Cells["ColumnName"].Value);
                     if (dgvr.Cells["SortOrder"].Value != null)
                         orderby.Add(new OrderByExpression((String)dgvr.Cells[1].Value, (System.Data.SqlClient.SortOrder)dgvr.Cells["SortOrder"].Value));
                 }
@@ -250,7 +244,7 @@ namespace MapViewer.DataSource
 
                 IFeatureProvider prov = null;
 
-                switch ((String)dgvColumns.Rows[oidcolumn].Cells[3].Value)
+                switch ((String)dgvColumns.Rows[oidcolumn].Cells["DataType"].Value)
                 {
                     case "bigint":
                         prov = new PostGis_Provider<long>(gf, conn, schema, tableName, oidColumnName, geomColumn);
@@ -322,7 +316,7 @@ OPEN tbl FOR
 		    x.f_geometry_column AS ""GeometryColumn"",
 		    x.coord_dimension as ""Dimension"",
 	        x.f_table_name || $lit$.[$lit$ || x.f_geometry_column || $lit$] ($lit$ || x.type || $lit$)$lit$ AS ""Label"",
-		    x.srid AS ""SRID"",
+		    y.auth_name || $lit$:$lit$ || y.auth_srid AS ""SRID"",
 		    y.srtext as ""SpatialReference""
     FROM    geometry_columns AS x LEFT JOIN spatial_ref_sys as y on x.srid=y.srid;
 RETURN NEXT tbl;
@@ -404,17 +398,17 @@ $BODY$
                 dgvc.DataSource = Enum.GetNames(typeof(System.Data.SqlClient.SortOrder));//new List<String>(GeoAPI.DataStructures.Enumerable.ToArray<String> Enum.GetNames(SortOrder));
                 dgvColumns.Columns.Add(dgvc);
 
-                dgvColumns.Columns[0].Visible = false;
-                dgvColumns.Columns[1].ReadOnly = true;
-                dgvColumns.Columns[2].ReadOnly = true;
-                dgvColumns.Columns[3].ReadOnly = false;
-                dgvColumns.Columns[4].Visible = false;
-                dgvColumns.Columns[5].ReadOnly = false;
+                dgvColumns.Columns["TableName"].Visible = false; // TableName
+                dgvColumns.Columns["ColumnName"].ReadOnly = true; // ColumnName
+                dgvColumns.Columns["DataType"].ReadOnly = true; // DataType
+                dgvColumns.Columns["Include"].ReadOnly = false;// Include
+                dgvColumns.Columns["PK"].Visible = false; // PrimaryKey
+                dgvColumns.Columns["SortOrder"].ReadOnly = false;// SortOrder
             }
 
             setOidColumn(-1);
             foreach (DataGridViewRow dgvr in dgvColumns.Rows)
-                if ((bool)dgvr.Cells[4].Value)
+                if ((bool)dgvr.Cells["PK"].Value)
                 {
                     setOidColumn(dgvr.Index);
                     break;
@@ -457,17 +451,17 @@ $BODY$
 
             if (oidcolumn >= 0)
             {
-                dgvColumns.Rows[oidcolumn].Cells[2].Style.Font =
+                dgvColumns.Rows[oidcolumn].Cells["ColumnName"].Style.Font =
                 new System.Drawing.Font(fnt.FontFamily.Name, fnt.SizeInPoints, System.Drawing.FontStyle.Bold);
 
-                dgvColumns.Rows[oidcolumn].Cells[5].Value = false;
+                dgvColumns.Rows[oidcolumn].Cells["PK"].Value = false;
             }
 
             if (rowindex >= 0)
             {
-                dgvColumns.Rows[rowindex].Cells[2].Style.Font =
+                dgvColumns.Rows[rowindex].Cells["ColumnName"].Style.Font =
                     new System.Drawing.Font(fnt.FontFamily.Name, fnt.SizeInPoints, System.Drawing.FontStyle.Regular); ;
-                dgvColumns.Rows[rowindex].Cells[5].Value = true;
+                dgvColumns.Rows[rowindex].Cells["PK"].Value = true;
             }
             oidcolumn = rowindex;
         }

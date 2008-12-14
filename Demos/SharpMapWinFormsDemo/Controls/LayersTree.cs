@@ -74,7 +74,7 @@ namespace MapViewer.Controls
 
             if (e.ListChangedType == ListChangedType.ItemDeleted)
             {
-                if (e.OldIndex > -1)
+                if (e.OldIndex > -1 && e.OldIndex < Nodes.Count)
                 {
                     TreeNode tn = Nodes[e.OldIndex];
                     Nodes.Remove(tn);

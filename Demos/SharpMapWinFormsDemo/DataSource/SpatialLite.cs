@@ -60,9 +60,9 @@ namespace MapViewer.DataSource
                     (string)drv["SpatialReference"];
 
                 GeometryServices gs = new GeometryServices();
-                IGeometryFactory gf = gs[srid ];//, coordDimension];
-                if (!string.IsNullOrEmpty(spatialReference))
-                    gf.SpatialReference = gs.CoordinateSystemFactory.CreateFromWkt(spatialReference);
+                IGeometryFactory gf = gs[ srid ];//, coordDimension];
+                //if (!string.IsNullOrEmpty(spatialReference))
+                //    gf.SpatialReference = gs.CoordinateSystemFactory.CreateFromWkt(spatialReference);
 
                 string oidColumnName = (String)dgvColumns.Rows[oidcolumn].Cells[2].Value;
 

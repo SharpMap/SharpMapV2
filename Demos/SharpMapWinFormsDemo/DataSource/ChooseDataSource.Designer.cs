@@ -55,7 +55,8 @@
             "MsSqlSpatial",
             "MsSqlServer2008",
             "SpatialLite",
-            "PostGIS"});
+            "PostGIS",
+            "IBM DB2 SpatialExtender"});
             this.cbDataSource.Location = new System.Drawing.Point(16, 30);
             this.cbDataSource.Name = "cbDataSource";
             this.cbDataSource.Size = new System.Drawing.Size(508, 21);
@@ -106,6 +107,7 @@
             this.Controls.Add(this.cbDataSource);
             this.Controls.Add(this.label1);
             this.Name = "ChooseDataSource";
+            this.ShowInTaskbar = false;
             this.Text = "Choose Data Source";
             this.ResumeLayout(false);
             this.PerformLayout();

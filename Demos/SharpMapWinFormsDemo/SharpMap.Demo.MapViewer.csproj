@@ -114,6 +114,7 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Reference Include="IBM.Data.DB2, Version=9.0.0.2, Culture=neutral, PublicKeyToken=7c307b91aa13d208, processorArchitecture=MSIL" />
     <Reference Include="Npgsql, Version=2.0.0.0, Culture=neutral, PublicKeyToken=5d8b90d52f46fda7, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\SharpMap.Data.Providers\SharpMap.Data.Providers.PostGis\Externals\Npgsql.dll</HintPath>
@@ -169,6 +170,12 @@
     <Compile Include="DataSource\ChooseDataSource.Designer.cs">
       <DependentUpon>ChooseDataSource.cs</DependentUpon>
     </Compile>
+    <Compile Include="DataSource\DB2SpatialExtender.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="DataSource\DB2SpatialExtender.Designer.cs">
+      <DependentUpon>DB2SpatialExtender.cs</DependentUpon>
+    </Compile>
     <Compile Include="DataSource\ICreateDataProvider.cs" />
     <Compile Include="DataSource\MsSqlSpatial.cs">
       <SubType>UserControl</SubType>
@@ -221,11 +228,22 @@
     <EmbeddedResource Include="DataSource\ChooseDataSource.resx">
       <DependentUpon>ChooseDataSource.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="DataSource\DB2SpatialExtender.resx">
+      <DependentUpon>DB2SpatialExtender.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="DataSource\MsSqlSpatial.resx">
       <DependentUpon>MsSqlSpatial.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="DataSource\PostGis.resx">
+      <DependentUpon>PostGis.cs</DependentUpon>
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>PostGis1.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Include="DataSource\Shapefile.resx">
       <DependentUpon>Shapefile.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DataSource\SpatialLite.resx">
+      <DependentUpon>SpatialLite.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="MapViewerForm.resx">
       <DependentUpon>MapViewerForm.cs</DependentUpon>
@@ -296,6 +314,10 @@
     <ProjectReference Include="..\..\Proj.Net\ProjNet\ProjNet.csproj">
       <Project>{E028BDD2-55E1-4E5F-BE31-35FAEC8D6428}</Project>
       <Name>ProjNet</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\SharpMap.Data.Providers\SharpMap.Data.Providers.Db.DB2SpatialExtender\SharpMap.Data.Providers.DB2_SpatialExtender.csproj">
+      <Project>{01510274-B131-4F36-BBA8-98DACC58BDC5}</Project>
+      <Name>SharpMap.Data.Providers.DB2_SpatialExtender</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\SharpMap.Data.Providers\DbProviderBase\SharpMap.Data.Providers.Db.csproj">
       <Project>{FEE2753F-DCC2-4DC6-9651-FA2CED8A2974}</Project>
