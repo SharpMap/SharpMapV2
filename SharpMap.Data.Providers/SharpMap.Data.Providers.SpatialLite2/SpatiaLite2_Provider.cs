@@ -211,7 +211,7 @@ SELECT	'main' AS [Schema],
         x.f_geometry_column AS [GeometryColumn], 
         x.coord_dimension AS [Dimension], 
 	    x.f_table_name || '.' || x.f_geometry_column || ' (' || x.type || ')' AS [Label],
-        x.srid AS [SRID],
+        x.auth_name || ':' || x.auth_srid AS [SRID],
         y.srtext as [SpatialReference]
 FROM [main].[geometry_columns] AS x LEFT JOIN [main].[spatial_ref_sys] as y on x.srid=y.srid;
 TYPES [varchar], [varchar], [varchar], [bool];
@@ -318,30 +318,32 @@ WHERE type='table' AND NOT( name like 'cache_%' ) AND NOT( name like 'sqlite%' )
                 cn.Open();
                 try
                 {
-                    String selectClause = string.Format("SELECT type, srid, spatial_index_enabled FROM {0}.[geometry_columns] WHERE (f_table_name='{1}' AND f_geometry_column='{2}')",
+                    String selectClause = string.Format(
+@"SELECT x.type, y.auth_name || ':' || y.auth_srid, x.spatial_index_enabled 
+    FROM {0}.[geometry_columns] AS x
+    LEFT JOIN {0}.[spatial_ref_sys] on x.srid = y.srid 
+    WHERE (f_table_name='{1}' AND f_geometry_column='{2}')",
                       tableSchema, tableName, geometryColumn);
                     SQLiteDataReader dr = new SQLiteCommand(selectClause, cn).ExecuteReader();
                     if (dr.HasRows)
                     {
 
                         dr.Read();
+
                         //valid geometry type
                         _validGeometryType = parseGeometryType(dr.GetString(0));
 
                         //srid
-                        OriginalSrid = dr.GetInt64(1).ToString();
-                        if (geometryFactory.Srid == null)
-                            geometryFactory.Srid = Srid;
-                        else
-                        {
-                            //geometryFactory.SpatialReference
-                        }
+                        if (String.Compare(OriginalSrid , dr.GetString(1), true) != 0)
+                            throw new SpatiaLite2_Exception("Spatial Reference System does not match that of assigned geometry factory!");
 
                         //SpatiaLite Index
                         switch (dr.GetInt64(2))
                         {
                             case 0:
                                 throw new SpatiaLite2_Exception("Spatial index type must not be 'None'");
+                                //_spatialLiteIndexType = SpatiaLite2_IndexType.None;
+                                //break;
                             case 1:
                                 _spatialLiteIndexType = SpatiaLite2_IndexType.RTree;
                                 break;
@@ -560,7 +562,7 @@ WHERE type='table' AND NOT( name like 'cache_%' ) AND NOT( name like 'sqlite%' )
             SQLiteConnection conn = new SQLiteConnection(connectionString);
 
             conn.Open();
-
+            
             Object retVal = new SQLiteCommand("SELECT load_extension('libspatialite-2.dll');;", conn).ExecuteScalar();
             SQLiteTransaction tran = conn.BeginTransaction();
 
@@ -578,7 +580,7 @@ WHERE type='table' AND NOT( name like 'cache_%' ) AND NOT( name like 'sqlite%' )
             cmd.Parameters.Add(new SQLiteParameter("@P6", DbType.String));
 
             SQLiteParameterCollection pars = cmd.Parameters;
-            foreach (Proj4Reader.Proj4SpatialRefSys p4srs in Proj4Reader.GetSRIDs("PROJ4.tsv"))
+            foreach (Proj4Reader.Proj4SpatialRefSys p4srs in Proj4Reader.GetSRIDs())
             {
                 pars[0].Value = p4srs.Srid;
                 pars[1].Value = p4srs.AuthorityName;

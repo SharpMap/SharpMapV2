@@ -53,12 +53,17 @@ namespace SharpMap.Data.Providers.PostGis
                                                                   IGeometry geom)
         {
 
+            //int? srid = Provider.ParseSrid(geom.Srid);
+            //if (!srid.HasValue || srid < 0)
+            //    srid = Provider.ParseSrid(Provider.Srid);
+            //if (srid < 0) srid = Provider.ParseSrid(PostGis_ProviderStatic.DefaultSrid);
+
             if (op != SpatialOperation.None)
             {
                 builder.Append(string.Format(" ST_{0}( ST_GeomFromWKB({1}, {2}), {3} )",
                   Enum.GetName(typeof(SpatialOperation), op),
                   CreateParameter(geom).ParameterName,
-                  geom.Srid, Provider.QualifyColumnName(Provider.GeometryColumn)));
+                  SridForQuery(geom.Srid), Provider.QualifyColumnName(Provider.GeometryColumn)));
 
                 //builder.Append(" AND");
                 //WriteSpatialExtentsExpressionSql(builder, op, geom.Extents);
@@ -75,13 +80,27 @@ namespace SharpMap.Data.Providers.PostGis
 
             whereClause = string.Format(" {5} && ST_SetSRID('BOX3D({0} {1}, {2} {3})'::box3d, {4})",
                 String.Format(System.Globalization.CultureInfo.InvariantCulture, "{0}", CreateParameter(exts.XMin).Value),
+                //CreateParameter(exts.XMin).ParameterName,
                 String.Format(System.Globalization.CultureInfo.InvariantCulture, "{0}", CreateParameter(exts.YMin).Value),
+                //CreateParameter(exts.YMin).ParameterName,
                 String.Format(System.Globalization.CultureInfo.InvariantCulture, "{0}", CreateParameter(exts.XMax).Value),
+                //CreateParameter(exts.XMax).ParameterName,
                 String.Format(System.Globalization.CultureInfo.InvariantCulture, "{0}", CreateParameter(exts.YMax).Value),
-                Provider.Srid, Provider.QualifyColumnName(Provider.GeometryColumn));
+                //CreateParameter(exts.YMax).ParameterName,
+                SridForQuery(exts.SpatialReference.AuthorityCode), 
+                Provider.QualifyColumnName(Provider.GeometryColumn));
             builder.Append(whereClause);
         }
 
+        private int SridForQuery(string srid)
+        {
+            int? ret = Provider.ParseSrid(srid);
+            if (!ret.HasValue || ret < 0)
+                ret = Provider.ParseSrid(Provider.Srid);
+            if (ret < 0) ret = Provider.ParseSrid(PostGis_ProviderStatic.DefaultSrid);
+            
+            return ret.Value;
+        }
     }
 
 }

@@ -137,7 +137,11 @@ namespace SharpMap.Data.Providers
                 cn.Open();
                 try
                 {
-                    String selectClause = string.Format("SELECT type, srid FROM {0}.geometry_columns WHERE (f_table_name='{1}' AND f_geometry_column='{2}')",
+                    String selectClause = string.Format(
+@"SELECT x.type, y.auth_name || $l$:$l$ || y.auth_srid AS ""SRID"" 
+    FROM {0}.geometry_columns AS x
+    LEFT JOIN {0}.spatial_ref_sys AS y ON y.srid = x.srid
+    WHERE (f_table_name='{1}' AND f_geometry_column='{2}');",
                       tableSchema, tableName, geometryColumn);
                     NpgsqlDataReader dr = new NpgsqlCommand(selectClause, cn).ExecuteReader();
                     if (dr.HasRows)
@@ -148,13 +152,8 @@ namespace SharpMap.Data.Providers
                         _validGeometryType = parseGeometryType(dr.GetString(0));
 
                         //Srid
-                        OriginalSrid = dr.GetInt32(1).ToString();
-                        if (geometryFactory.Srid == null)
-                            geometryFactory.Srid = Srid;
-                        else
-                        {
-                            //geometryFactory.SpatialReference
-                        }
+                        if ( String.Compare( OriginalSrid, dr.GetString(1), true ) != 0 )
+                            throw new PostGis_Exception("Spatial Reference System does not match that of assigned geometry factory!");
 
                     }
                     else
@@ -278,7 +277,7 @@ namespace SharpMap.Data.Providers
             {
                 conn.Open();
 
-                using (NpgsqlCommand cmd = new NpgsqlCommand(string.Format("SELECT * FROM {0};", QualifiedTableName), conn))
+                using (NpgsqlCommand cmd = new NpgsqlCommand(string.Format("SELECT * FROM {0} LIMIT 1;", QualifiedTableName), conn))
                 {
                     NpgsqlDataAdapter da = new NpgsqlDataAdapter(cmd);
                     DataSet ds = new DataSet();

@@ -49,7 +49,7 @@ namespace SharpMap.Data.Providers
         /// <summary>
         /// Srid assumed when no Srid is mentioned
         /// </summary>
-        public static String DefaultSrid = "-1";
+        public static String DefaultSrid = "EPSG:4326";
         /// <summary>
         /// Name used when no geometry column is supplied with constructor of PostGisProvider(TOid)
         /// </summary>

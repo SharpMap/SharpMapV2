@@ -31,9 +31,9 @@ namespace SharpMap.Data.Providers.Db
 {
     public class SpatialDbFeatureDataReader : IFeatureDataReader
     {
-        private readonly int _geomColumnIndex = -1;
+        protected readonly int _geomColumnIndex = -1;
         private readonly string _geometryColumn;
-        private readonly IGeometryFactory _geomFactory;
+        protected readonly IGeometryFactory _geomFactory;
         protected readonly IDataReader _internalReader;
         private readonly string _oidColumn;
 
@@ -277,7 +277,7 @@ namespace SharpMap.Data.Providers.Db
             get { return _internalReader[recomputeIndex(i)]; }
         }
 
-        private IGeometry _currentGeometry;
+        protected IGeometry _currentGeometry;
 
         public virtual IGeometry Geometry
         {

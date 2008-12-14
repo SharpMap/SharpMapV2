@@ -5,7 +5,7 @@ using System.Data;
 using DBFile = System.IO.File;
 using System.Text;
 
-using NUnit.Framework;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 using SharpMap.Data;
 using SharpMap.Data.Providers;
@@ -30,13 +30,13 @@ using GeoAPI.CoordinateSystems;
  
 namespace SharpMap.Tests.Data.Providers.SpatiaLite2
 {
-    [TestFixture]
+    [TestClass]
     public class SpatiaLite2_ProviderTests
     {
         private static IGeometryFactory _geometryFactory;
         
-        //[TestFixtureSetUp]
-        static SpatiaLite2_ProviderTests()
+        [TestInitialize]
+        public void SpatiaLite2_ProviderTestsInitialize()
         {
             //Delete possibly existing database file
             if (DBFile.Exists(@"test.sqlite")) DBFile.Delete(@"test.sqlite");
@@ -44,7 +44,13 @@ namespace SharpMap.Tests.Data.Providers.SpatiaLite2
             BufferedCoordinateSequenceFactory sequenceFactory = new BufferedCoordinateSequenceFactory();
             _geometryFactory = new GeometryFactory<BufferedCoordinate>(sequenceFactory);
         }
-        
+
+        [TestCleanup]
+        public void SpatialLite2_ProviderTestCleanup()
+        { 
+            //if ( DBFile.Exists(@"Test.sqlite") ) DBFile.Delete(@"test.sqlite");
+            _geometryFactory = null;
+        }
         //private static readonly BufferedCoordinate2DFactory _coordinateFactory;
         //private static readonly BufferedCoordinate2DSequenceFactory _coordinateSequenceFactory;
         //private static readonly GeometryFactory<BufferedCoordinate2D> _geometryFactory;
@@ -52,6 +58,8 @@ namespace SharpMap.Tests.Data.Providers.SpatiaLite2
 
         public void RunTests()
         {
+            this.SpatiaLite2_ProviderTestsInitialize();
+
             T01_CreateTableFromFeatureDataTable();
             T02_CreateGeometryLayerFromSpatiaLite2();
             T03_MultipleSelects();
@@ -60,11 +68,14 @@ namespace SharpMap.Tests.Data.Providers.SpatiaLite2
             T06_UpdateDataSource();
 
             T11_JD_Test();
+
+            this.SpatialLite2_ProviderTestCleanup();
+
         }
-        [Test]
+        [TestMethod]
         private void T11_JD_Test()
         {
-            return;
+            //return;
             var search = new SpatiaLite2_Provider(_geometryFactory,
                                                   @"Data Source=C:\VENUS\CodePlex\sharpMap\SharpMap\TestData\VRS2386_V11.sqlite", "main",
                                                   "regions", "OID", "XGeometryX");
@@ -90,7 +101,7 @@ namespace SharpMap.Tests.Data.Providers.SpatiaLite2
             Int64 numRows = 0;
             while (sfdr.Read())
                 numRows++;
-            Assert.GreaterOrEqual(numRows, 1);
+            Assert.IsTrue(numRows > 1);
 
             providerProps =
                 new ProviderPropertiesExpression(
@@ -113,7 +124,7 @@ namespace SharpMap.Tests.Data.Providers.SpatiaLite2
             Assert.AreEqual(10, numRows);
         }
 
-        [Test]
+        [TestMethod]
         public void T01_CreateTableFromFeatureDataTable()
         {
             FeatureDataTable fdt = createFeatureDataTable();
@@ -136,7 +147,7 @@ namespace SharpMap.Tests.Data.Providers.SpatiaLite2
 
         }
 
-        [Test]
+        [TestMethod]
         public void T02_CreateGeometryLayerFromSpatiaLite2()
         {
             SpatiaLite2_Provider prov = new SpatiaLite2_Provider(
@@ -148,7 +159,7 @@ namespace SharpMap.Tests.Data.Providers.SpatiaLite2
             Assert.AreEqual(prov.Srid, gl.Srid);
         }
 
-        [Test]
+        [TestMethod]
         public void T03_MultipleSelects()
         {
             SpatiaLite2_Provider prov = new SpatiaLite2_Provider(
@@ -198,7 +209,7 @@ namespace SharpMap.Tests.Data.Providers.SpatiaLite2
 
         }
 
-        [Test]
+        [TestMethod]
         public void T06_UpdateDataSource()
         {
             //try
@@ -210,7 +221,7 @@ namespace SharpMap.Tests.Data.Providers.SpatiaLite2
             //alterFeatureDataTable(gl.Features);
         }
 
-        [Test]
+        [TestMethod]
         public void T05_DeleteFromDataSource()
         {
             SpatiaLite2_Provider prov = new SpatiaLite2_Provider(
@@ -235,7 +246,7 @@ namespace SharpMap.Tests.Data.Providers.SpatiaLite2
 
         }
 
-        [Test]
+        [TestMethod]
         
         public void T04_InsertInDataSource()
         {
