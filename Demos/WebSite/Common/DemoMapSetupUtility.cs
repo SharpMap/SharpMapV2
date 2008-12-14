@@ -137,7 +137,7 @@ namespace SharpMap.Presentation.AspNet.Demo.Common
                 style.IncludeAttributes = false;
                 style.IncludeBBox = true;
                 style.PreProcessGeometries = false;
-
+                style.CoordinateNumberFormatString = "{0:F}";
                 var layer = new GeometryLayer(tbl, style, provider);
                 layer.Features.IsSpatiallyIndexed = false;
                 layer.AddProperty(AppStateMonitoringFeatureLayerProperties.AppStateMonitor, provider.Monitor);

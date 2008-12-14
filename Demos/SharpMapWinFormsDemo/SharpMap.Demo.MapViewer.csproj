@@ -114,7 +114,10 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
-    <Reference Include="IBM.Data.DB2, Version=9.0.0.2, Culture=neutral, PublicKeyToken=7c307b91aa13d208, processorArchitecture=MSIL" />
+    <Reference Include="IBM.Data.DB2, Version=9.0.0.2, Culture=neutral, PublicKeyToken=7c307b91aa13d208, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\SharpMap.Data.Providers\SharpMap.Data.Providers.Db.DB2SpatialExtender\Lib\IBM.Data.DB2.dll</HintPath>
+    </Reference>
     <Reference Include="Npgsql, Version=2.0.0.0, Culture=neutral, PublicKeyToken=5d8b90d52f46fda7, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\SharpMap.Data.Providers\SharpMap.Data.Providers.PostGis\Externals\Npgsql.dll</HintPath>

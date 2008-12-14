@@ -70,7 +70,6 @@
     </Reference>
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
-    <Reference Include="IBM.Data.DB2, Version=9.0.0.2, Culture=neutral, PublicKeyToken=7c307b91aa13d208, processorArchitecture=MSIL" />
   </ItemGroup>
   <Choose>
     <When Condition="'$(GeoAPIProjectReference)' == 'false'">
@@ -79,6 +78,7 @@
           <SpecificVersion>False</SpecificVersion>
           <HintPath>..\ExternalReferences\$(Configuration)\GeoAPI.dll</HintPath>
         </Reference>
+
       </ItemGroup>
     </When>
     <Otherwise>
@@ -90,7 +90,12 @@
       </ItemGroup>
     </Otherwise>
   </Choose>
+
   <ItemGroup>
+    <Reference Include="IBM.Data.DB2, Version=9.0.0.2, Culture=neutral, PublicKeyToken=7c307b91aa13d208, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Lib\IBM.Data.DB2.dll</HintPath>
+    </Reference>
     <ProjectReference Include="..\..\NPack\NPack\NPack.csproj">
       <Project>{B139E1D5-091B-40D2-B7A2-7D7D82E13019}</Project>
       <Name>NPack</Name>
