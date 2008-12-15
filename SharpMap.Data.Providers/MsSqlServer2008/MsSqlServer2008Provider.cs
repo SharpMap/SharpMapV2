@@ -30,7 +30,7 @@ using Caster = System.Linq.Enumerable;
 #else
 using Processor = GeoAPI.DataStructures.Processor;
 using Caster = GeoAPI.DataStructures.Caster;
-using Enumerable = GeoAPI.DataStructures.Enumerable;   
+using Enumerable = GeoAPI.DataStructures.Enumerable;
 #endif
 
 namespace SharpMap.Data.Providers
@@ -185,7 +185,7 @@ namespace SharpMap.Data.Providers
             catch (Exception ex)
             {
                 throw new SchemaTableBuildException(ex);
-                    //jd: it took ages to work out this exception :(  hopefully it has saved you some time.
+                //jd: it took ages to work out this exception :(  hopefully it has saved you some time.
             }
         }
 
@@ -205,7 +205,7 @@ namespace SharpMap.Data.Providers
                                                                         CollectionExpression<OrderByExpression>>(
                                                                         properties,
                                                                         new CollectionExpression<OrderByExpression>(
-                                                                            new OrderByExpression[] {})),
+                                                                            new OrderByExpression[] { })),
                                                                     o =>
                                                                     "[" + o.PropertyNameExpression.PropertyName + "] " +
                                                                     (o.Direction == SortOrder.Ascending ? "ASC" : "DESC"))));
@@ -242,7 +242,7 @@ namespace SharpMap.Data.Providers
                                                                         CollectionExpression<OrderByExpression>>(
                                                                         properties,
                                                                         new CollectionExpression<OrderByExpression>(
-                                                                            new OrderByExpression[] {})),
+                                                                            new OrderByExpression[] { })),
                                                                     o =>
                                                                     "[" + o.PropertyNameExpression.PropertyName + "] " +
                                                                     (o.Direction == SortOrder.Ascending ? "ASC" : "DESC"))));
@@ -250,8 +250,8 @@ namespace SharpMap.Data.Providers
 
             orderByCols = string.IsNullOrEmpty(orderByCols) ? OidColumn : orderByCols;
 
-            int startRecord = (pageNumber*pageSize) + 1;
-            int endRecord = (pageNumber + 1)*pageSize;
+            int startRecord = (pageNumber * pageSize) + 1;
+            int endRecord = (pageNumber + 1) * pageSize;
 
             string mainQueryColumns = string.Join(",", Enumerable.ToArray(
                                                            FormatColumnNames(true, true,
@@ -297,7 +297,7 @@ WHERE rownumber BETWEEN {9} AND {10} ",
             bool withNoLock = GetProviderPropertyValue<WithNoLockExpression, bool>(properties, false);
 
             IEnumerable<string> indexNames = GetProviderPropertyValue<IndexNamesExpression, IEnumerable<string>>(
-                properties, new string[] {});
+                properties, new string[] { });
 
 
             bool forceIndex = Enumerable.Count(indexNames) > 0 &&
@@ -336,5 +336,19 @@ WHERE rownumber BETWEEN {9} AND {10} ",
         //    //the natural return type is the native sql Geometry we need to override this to avoid a schema merge exception
         //    return dt;
         //}
+
+
+        public static MsSqlServer2008Provider<TOid> Create(string connectionString, string schema, string tableName, FeatureDataTable model)
+        {
+            return CreateTableHelper.Create<TOid>(connectionString, schema, tableName, model);
+        }
+    }
+
+    internal static class CreateTableHelper
+    {
+        public static MsSqlServer2008Provider<TOid> Create<TOid>(string connectionString, string schema, string tableName, FeatureDataTable model)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

@@ -224,5 +224,12 @@ WHERE rownumber BETWEEN {9} AND {10} ",
                 compiler.CreateParameter(startRecord).ParameterName,
                 compiler.CreateParameter(endRecord).ParameterName);
         }
+
+
+        public static MsSqlSpatialProvider Create(string connectionString, string schema, string tableName, FeatureDataTable model)
+        {
+            throw new NotImplementedException();
+        }
     }
+
 }

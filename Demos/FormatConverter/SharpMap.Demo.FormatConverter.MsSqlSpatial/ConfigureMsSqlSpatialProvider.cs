@@ -13,6 +13,8 @@
  * 
  */
 using System;
+using GeoAPI.CoordinateSystems;
+using GeoAPI.Geometries;
 using SharpMap.Data;
 using SharpMap.Data.Providers;
 using SharpMap.Demo.FormatConverter.Common;
@@ -22,15 +24,16 @@ using SharpMap.Utilities;
 namespace SharpMap.Demo.FormatConverter.MsSqlSpatial
 {
     [ConfigureProvider(typeof(MsSqlSpatialProvider), "MsSqlSpatial")]
-    public class ConfigureMsSqlSpatialProvider : IConfigureFeatureSource
+    public class ConfigureMsSqlSpatialProvider : IConfigureFeatureSource, IConfigureFeatureTarget
     {
         private MsSqlSpatialProvider _sourceProvider;
+        private bool disposed;
 
         #region IConfigureFeatureSource Members
 
         public IFeatureProvider ConstructSourceProvider(IGeometryServices geometryServices)
         {
-            Console.WriteLine("Please enter the connection string for the server.");
+            Console.WriteLine("Please enter the connection string for the source server.");
             string connectionString = Console.ReadLine();
             Console.WriteLine("Please enter the spatial schema");
             string sschema = Console.ReadLine();
@@ -55,22 +58,35 @@ namespace SharpMap.Demo.FormatConverter.MsSqlSpatial
             return new FeatureQueryExpression(new AllAttributesExpression(), null);
         }
 
-        #endregion
-
-        #region IDisposable Members
-
         public void Dispose()
         {
             Dispose(true);
             GC.SuppressFinalize(this);
         }
 
+        public string OidColumnName
+        {
+            get { return _sourceProvider.OidColumn; }
+        }
+
+        #endregion
+
+        #region IConfigureFeatureTarget Members
+
+        public IWritableFeatureProvider ConstructTargetProvider(Type oidType, IGeometryFactory geometryFactory,
+                                                                ICoordinateSystemFactory csFactory,
+                                                                FeatureDataTable schemaTable)
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
+
         ~ConfigureMsSqlSpatialProvider()
         {
             Dispose(false);
         }
 
-        private bool disposed;
         private void Dispose(bool disposing)
         {
             if (!disposed)
@@ -81,17 +97,5 @@ namespace SharpMap.Demo.FormatConverter.MsSqlSpatial
                 disposed = true;
             }
         }
-
-        #endregion
-
-        #region IConfigureFeatureSource Members
-
-
-        public string OidColumnName
-        {
-            get { return _sourceProvider.OidColumn; }
-        }
-
-        #endregion
     }
 }

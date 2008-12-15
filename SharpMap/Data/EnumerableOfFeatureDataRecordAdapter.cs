@@ -13,6 +13,8 @@ namespace SharpMap.Data
         private bool _closed;
         private IFeatureDataRecord record;
 
+        private int read = 0;
+
         public EnumerableOfFeatureDataRecordAdapter(IEnumerable<IFeatureDataRecord> enumerable)
             : this(enumerable.GetEnumerator())
         {
@@ -56,6 +58,7 @@ namespace SharpMap.Data
             record = null;
             if (_enumerator.MoveNext())
             {
+                read++;
                 record = _enumerator.Current;
                 return true;
             }

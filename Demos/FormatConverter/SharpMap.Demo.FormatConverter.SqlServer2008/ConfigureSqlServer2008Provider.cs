@@ -14,6 +14,8 @@
  */
 using System;
 using System.Data;
+using GeoAPI.CoordinateSystems;
+using GeoAPI.Geometries;
 using SharpMap.Data;
 using SharpMap.Data.Providers;
 using SharpMap.Data.Providers.Db;
@@ -24,15 +26,17 @@ using SharpMap.Utilities;
 namespace SharpMap.Demo.FormatConverter.SqlServer2008
 {
     [ConfigureProvider(typeof(MsSqlServer2008Provider<>), "Sql Server 2008")]
-    public class ConfigureSqlServer2008Provider : IConfigureFeatureSource
+    public class ConfigureSqlServer2008Provider : IConfigureFeatureSource, IConfigureFeatureTarget
     {
-        private IFeatureProvider _provider;
         private string _oidColumn;
+        private IFeatureProvider _provider;
+        private bool disposed;
+
         #region IConfigureFeatureSource Members
 
         public IFeatureProvider ConstructSourceProvider(IGeometryServices geometryServices)
         {
-            Console.WriteLine("Please enter the connection string for the server.");
+            Console.WriteLine("Please enter the connection string for the source server.");
             string connectionString = Console.ReadLine();
             Console.WriteLine("Please enter the data tables' schema");
             string dtschema = Console.ReadLine();
@@ -46,12 +50,13 @@ namespace SharpMap.Demo.FormatConverter.SqlServer2008
             string srid = Console.ReadLine();
 
             Type type;
-            SqlServerDbUtility dbUtility = new SqlServerDbUtility();
+            var dbUtility = new SqlServerDbUtility();
             using (IDbConnection conn = dbUtility.CreateConnection(connectionString))
             {
                 using (IDbCommand cmd = conn.CreateCommand())
                 {
-                    cmd.CommandText = string.Format("SELECT TOP 1 {0} FROM [{1}].[{2}] ", _oidColumn, dtschema, tableName);
+                    cmd.CommandText = string.Format("SELECT TOP 1 [{0}] FROM [{1}].[{2}] ", _oidColumn, dtschema,
+                                                    tableName);
                     cmd.CommandType = CommandType.Text;
                     conn.Open();
                     type = cmd.ExecuteScalar().GetType();
@@ -61,7 +66,10 @@ namespace SharpMap.Demo.FormatConverter.SqlServer2008
             Type t = typeof(MsSqlServer2008Provider<>);
             Type specialized = t.MakeGenericType(type);
 
-            _provider = (IFeatureProvider)Activator.CreateInstance(specialized, geometryServices[srid], connectionString, dtschema, tableName, _oidColumn, geometryColumn);
+            _provider =
+                (IFeatureProvider)
+                Activator.CreateInstance(specialized, geometryServices[srid], connectionString, dtschema, tableName,
+                                         _oidColumn, geometryColumn);
             _provider.Open();
 
             return _provider;
@@ -78,7 +86,24 @@ namespace SharpMap.Demo.FormatConverter.SqlServer2008
             GC.SuppressFinalize(this);
         }
 
-        private bool disposed;
+        public string OidColumnName
+        {
+            get { return _oidColumn; }
+        }
+
+        #endregion
+
+        #region IConfigureFeatureTarget Members
+
+        public IWritableFeatureProvider ConstructTargetProvider(Type oidType, IGeometryFactory geometryFactory,
+                                                                ICoordinateSystemFactory csFactory,
+                                                                FeatureDataTable schemaTable)
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
+
         private void Dispose(bool disposing)
         {
             if (!disposed)
@@ -94,17 +119,5 @@ namespace SharpMap.Demo.FormatConverter.SqlServer2008
         {
             Dispose(false);
         }
-
-        #endregion
-
-        #region IConfigureFeatureSource Members
-
-
-        public string OidColumnName
-        {
-            get { return _oidColumn; }
-        }
-
-        #endregion
     }
 }

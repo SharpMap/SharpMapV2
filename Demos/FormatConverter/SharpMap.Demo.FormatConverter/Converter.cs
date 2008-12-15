@@ -16,6 +16,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using System.Text;
@@ -162,7 +163,7 @@ namespace SharpMap.Demo.FormatConverter
             using (IConfigureFeatureSource csource = (IConfigureFeatureSource)Activator.CreateInstance(input.Builder))
             {
                 IFeatureProvider psource = csource.ConstructSourceProvider(_geometryServices);
-
+                Type srcOidType = GetTypeParamsOfImplementedInterface(psource.GetType(), typeof(IFeatureProvider<>))[0];
                 var realProcessors = new List<IProcessFeatureDataRecords>();
 
                 foreach (ProcessorItem pi in processors)
@@ -186,25 +187,35 @@ namespace SharpMap.Demo.FormatConverter
 
                 FeatureQueryExpression exp = csource.ConstructSourceQueryExpression();
                 IEnumerable<IFeatureDataRecord> sourceRecords = processChain(psource.ExecuteFeatureQuery(exp));
-                IEnumerator<IFeatureDataRecord> enumerator = sourceRecords.GetEnumerator();
 
+                //jd NOTE: for the time being we are assuming that the processors didn't change the shape of the original table
 
-                if (enumerator.MoveNext())
+                //jd TODO: insert in batches so that we dont need to load the entire source dataset into memory
+
+                FeatureDataTable fdt = psource.CreateNewTable();
+                foreach (IFeatureDataRecord fdr in sourceRecords)
                 {
-                    IFeatureDataRecord record = enumerator.Current;
-                    FeatureDataTable fdt = GetTypedFeatureDataTable(record.OidType, csource.OidColumnName, record.Geometry.Factory);
-                    ///jd: note oidColumnName may be incorrect if the shape of the IFeatureDataRecord was modified by the processor chain
+                    FeatureDataRow dfrs = fdt.NewRow();
+                    dfrs.Geometry = fdr.Geometry;
+                    object[] vals = new object[fdr.FieldCount];
+                    fdr.GetValues(vals);
+                    dfrs.ItemArray = vals;
+                    fdt.AddRow(dfrs);
+                }
 
-                    fdt.Merge(new[] { record }, record.Geometry.Factory);
-                    fdt.Load(new EnumerableOfFeatureDataRecordAdapter(sourceRecords), LoadOption.OverwriteChanges, null);
-
-
+                if (fdt.Rows.Count > 0)
+                {
                     using (
                         IConfigureFeatureTarget ctarget =
                             (IConfigureFeatureTarget)Activator.CreateInstance(output.Builder))
                     {
+                        Type oidType =
+                            GetTypeParamsOfBaseClasses(fdt.GetType(), typeof(FeatureDataTable<>))[0];
 
-                        IWritableFeatureProvider ptarget = ctarget.ConstructTargetProvider(record.Geometry.Factory, _geometryServices.CoordinateSystemFactory, fdt);
+                        IWritableFeatureProvider ptarget =
+                            ctarget.ConstructTargetProvider(oidType, ((FeatureDataRow)fdt.Rows[0]).Geometry.Factory,
+                                                                      _geometryServices.CoordinateSystemFactory,
+                                                                      fdt);
                         if (!ptarget.IsOpen)
                             ptarget.Open();
 
@@ -212,9 +223,7 @@ namespace SharpMap.Demo.FormatConverter
                         ptarget.Insert(fdt);
                         ptarget.Close();
                     }
-
                     Console.WriteLine(string.Format("{0} records processed", fdt.Rows.Count));
-
                 }
                 else
                     Console.WriteLine("No records to process.");
@@ -240,6 +249,22 @@ namespace SharpMap.Demo.FormatConverter
                     continue;
 
                 if (t.GetGenericTypeDefinition() != interfaceToFind)
+                    continue;
+
+                return t.GetGenericArguments();
+            }
+            return null;
+        }
+
+        private Type[] GetTypeParamsOfBaseClasses(Type implementor, Type baseClassToFind)
+        {
+
+            for (Type t = implementor; t != null; t = t.BaseType)
+            {
+                if (!t.IsGenericType)
+                    continue;
+
+                if (t.GetGenericTypeDefinition() != baseClassToFind)
                     continue;
 
                 return t.GetGenericArguments();

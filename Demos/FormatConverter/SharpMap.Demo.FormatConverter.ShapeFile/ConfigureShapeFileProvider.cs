@@ -72,7 +72,7 @@ namespace SharpMap.Demo.FormatConverter.ShapeFile
 
         #region IConfigureFeatureTarget Members
 
-        public IWritableFeatureProvider ConstructTargetProvider(IGeometryFactory geometryFactory, ICoordinateSystemFactory csFactory, FeatureDataTable schemaTable)
+        public IWritableFeatureProvider ConstructTargetProvider(Type oidType, IGeometryFactory geometryFactory, ICoordinateSystemFactory csFactory, FeatureDataTable schemaTable)
         {
             string directoryPath = GetDirectoryPath();
 
@@ -218,7 +218,7 @@ namespace SharpMap.Demo.FormatConverter.ShapeFile
 
         public string OidColumnName
         {
-            get { return "oid"; }
+            get { return "OID"; }
         }
 
         #endregion
