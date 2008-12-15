@@ -522,7 +522,6 @@ namespace SharpMap.Data.Providers.ShapeFile
                 yield return this;
             }
 
-            //Dispose(true); // jd: added to prevent "another reader is already active" type exception
         }
 
         #endregion

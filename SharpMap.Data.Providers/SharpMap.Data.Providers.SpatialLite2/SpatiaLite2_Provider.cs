@@ -667,7 +667,7 @@ WHERE type='table' AND NOT( name like 'cache_%' ) AND NOT( name like 'sqlite%' )
 
         }
 
-        public override void Insert(IEnumerable<FeatureDataRow> features)
+        public override void Insert(IEnumerable<FeatureDataRow<Int64>> features)
         {
             OgcGeometryType geometryType = OgcGeometryType.Unknown;
 
@@ -702,7 +702,7 @@ WHERE type='table' AND NOT( name like 'cache_%' ) AND NOT( name like 'sqlite%' )
             }
         }
 
-        public override void Update(IEnumerable<FeatureDataRow> features)
+        public override void Update(IEnumerable<FeatureDataRow<Int64>> features)
         {
             //Update(features, "UPDATE OR IGNORE");
         }

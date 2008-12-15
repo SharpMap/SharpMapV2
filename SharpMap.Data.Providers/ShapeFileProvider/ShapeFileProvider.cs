@@ -24,13 +24,11 @@ using System.Data;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
-using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using GeoAPI.Coordinates;
 using GeoAPI.CoordinateSystems;
 using GeoAPI.CoordinateSystems.Transformations;
-using GeoAPI.DataStructures;
 using GeoAPI.Diagnostics;
 using GeoAPI.Geometries;
 using GeoAPI.Indexing;
@@ -38,12 +36,17 @@ using SharpMap.Expressions;
 using SharpMap.Indexing.RTree;
 using SharpMap.Utilities;
 using Trace = GeoAPI.Diagnostics.Trace;
-
+using ByteEncoder = GeoAPI.DataStructures.ByteEncoder; 
 #if DOTNET35
+using Processor = System.Linq.Enumerable;
 using Enumerable = System.Linq.Enumerable;
+using Caster = System.Linq.Enumerable;
 #else
+using Processor = GeoAPI.DataStructures.Processor;
+using Caster = GeoAPI.DataStructures.Caster;
 using Enumerable = GeoAPI.DataStructures.Enumerable;
 #endif
+
 
 namespace SharpMap.Data.Providers.ShapeFile
 {
@@ -1022,53 +1025,63 @@ namespace SharpMap.Data.Providers.ShapeFile
         /// </exception>
         public IEnumerable<UInt32> ExecuteOidQuery(SpatialBinaryExpression query)
         {
-            if (query == null) throw new ArgumentNullException("query");
+            // if (query == null) throw new ArgumentNullException("query");
 
-            SpatialOperation queryOp = query.Op;
+            //jd:modifying so that null query returns all OIDS
 
-            if (queryOp == SpatialOperation.None)
+            if (Equals(query, null))
+                foreach (UInt32 u in getAllOIDs())
+                    yield return u;
+            else
             {
-                yield break;
-            }
 
-            checkOpen();
 
-            Boolean isQueryLeft = query.IsSpatialExpressionLeft;
-            IEnumerable<IdBounds> keys = _isIndexed
-                                             ? queryIndex(query.SpatialExpression)
-                                             : queryData(query.SpatialExpression);
+                SpatialOperation queryOp = query.Op;
 
-            IDictionary<UInt32, Object> idsInBounds = null;
-
-            Boolean isDisjoint = queryOp == SpatialOperation.Disjoint;
-
-            if (isDisjoint)
-            {
-                idsInBounds = new Dictionary<UInt32, Object>();
-            }
-
-            foreach (IdBounds key in keys)
-            {
-                UInt32 id = key.Id;
-
-                if (isMatch(queryOp, isQueryLeft, key, query.SpatialExpression))
+                if (queryOp == SpatialOperation.None)
                 {
-                    yield return id;
+                    yield break;
+                }
+
+                checkOpen();
+
+                Boolean isQueryLeft = query.IsSpatialExpressionLeft;
+                IEnumerable<IdBounds> keys = _isIndexed
+                                                 ? queryIndex(query.SpatialExpression)
+                                                 : queryData(query.SpatialExpression);
+
+                IDictionary<UInt32, Object> idsInBounds = null;
+
+                Boolean isDisjoint = queryOp == SpatialOperation.Disjoint;
+
+                if (isDisjoint)
+                {
+                    idsInBounds = new Dictionary<UInt32, Object>();
+                }
+
+                foreach (IdBounds key in keys)
+                {
+                    UInt32 id = key.Id;
+
+                    if (isMatch(queryOp, isQueryLeft, key, query.SpatialExpression))
+                    {
+                        yield return id;
+                    }
+
+                    if (isDisjoint)
+                    {
+                        idsInBounds[id] = null;
+                    }
                 }
 
                 if (isDisjoint)
                 {
-                    idsInBounds[id] = null;
-                }
-            }
-
-            if (isDisjoint)
-            {
-                foreach (IdBounds key in getAllKeys())
-                {
-                    if (!idsInBounds.ContainsKey(key.Id))
+                    foreach (IdBounds key in getAllKeys())
                     {
-                        yield return key.Id;
+                        if (!idsInBounds.ContainsKey(key.Id))
+                        {
+                            yield return key.Id;
+                        }
                     }
                 }
             }
@@ -1549,6 +1562,12 @@ namespace SharpMap.Data.Providers.ShapeFile
             return _isIndexed
                        ? getKeysFromSpatialIndex(_spatialIndex.Bounds)
                        : getKeysFromShapefileIndex(GetExtents());
+        }
+
+        private IEnumerable<UInt32> getAllOIDs()
+        {
+            foreach (IdBounds bounds in getAllKeys())
+                yield return bounds.Id;
         }
 
         private IEnumerable<IdBounds> getKeysFromSpatialIndex(IExtents toIntersect)
@@ -2378,10 +2397,12 @@ namespace SharpMap.Data.Providers.ShapeFile
 
         private void writeGeometry(IGeometry g, UInt32 recordNumber, Int32 recordOffsetInWords, Int32 recordLengthInWords)
         {
+            Debug.Assert(recordNumber > 0);
+
             _shapeFileStream.Position = recordOffsetInWords * 2;
 
             // Record numbers are 1- based in shapefile
-            recordNumber += 1;
+            // recordNumber += 1;
 
             _shapeFileWriter.Write(ByteEncoder.GetBigEndian(recordNumber));
             _shapeFileWriter.Write(ByteEncoder.GetBigEndian(recordLengthInWords));
@@ -2528,5 +2549,41 @@ namespace SharpMap.Data.Providers.ShapeFile
         }
 
         #endregion
+
+        #region IWritableFeatureProvider Members
+
+        public void Insert(FeatureDataRow feature)
+        {
+            Insert((FeatureDataRow<UInt32>)feature);
+        }
+
+        public void Insert(IEnumerable<FeatureDataRow> features)
+        {
+            Insert(Caster.Downcast<FeatureDataRow<UInt32>, FeatureDataRow>(features));
+        }
+
+        public void Update(FeatureDataRow feature)
+        {
+            Update((FeatureDataRow<UInt32>)feature);
+        }
+
+        public void Update(IEnumerable<FeatureDataRow> features)
+        {
+            Update(Caster.Downcast<FeatureDataRow<UInt32>, FeatureDataRow>(features));
+        }
+
+        public void Delete(FeatureDataRow feature)
+        {
+            Delete((FeatureDataRow<UInt32>)feature);
+        }
+
+        public void Delete(IEnumerable<FeatureDataRow> features)
+        {
+            Delete(Caster.Downcast<FeatureDataRow<UInt32>, FeatureDataRow>(features));
+        }
+
+        #endregion
+
+
     }
 }

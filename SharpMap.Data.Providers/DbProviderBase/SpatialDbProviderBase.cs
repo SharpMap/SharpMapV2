@@ -29,7 +29,6 @@ using System.Globalization;
 using GeoAPI.Geometries;
 using SharpMap.Data.Providers.Db.Expressions;
 using SharpMap.Expressions;
-using SharpMap.Utilities;
 using SharpMap.Utilities.SridUtility;
 #if DOTNET35
 using Processor = System.Linq.Enumerable;
@@ -37,19 +36,21 @@ using Enumerable = System.Linq.Enumerable;
 using Caster = System.Linq.Enumerable;
 #else
 using Processor = GeoAPI.DataStructures.Processor;
-using Enumerable = GeoAPI.DataStructures.Enumerable;
 using Caster = GeoAPI.DataStructures.Caster;
+using Enumerable = GeoAPI.DataStructures.Enumerable;
 #endif
+
 namespace SharpMap.Data.Providers.Db
 {
     public abstract class SpatialDbProviderBase<TOid>
         : ProviderBase, IWritableFeatureProvider<TOid>, ISpatialDbProvider
     {
+        private static readonly Dictionary<TableCacheKey, DataTable> _cachedSchemas =
+            new Dictionary<TableCacheKey, DataTable>();
+
         private String _geometryColumn = "Wkb_Geometry";
         private String _oidColumn = "Oid";
         private String _tableSchema = "dbo";
-
-        private static readonly Dictionary<TableCacheKey, DataTable> _cachedSchemas = new Dictionary<TableCacheKey, DataTable>();
 
         static SpatialDbProviderBase()
         {
@@ -205,19 +206,7 @@ namespace SharpMap.Data.Providers.Db
 
         public virtual String QualifiedTableName
         {
-            get
-            {
-                return QualifyTableName(TableSchema, Table);
-            }
-        }
-
-
-        protected virtual string QualifyTableName(string schema, string table)
-        {
-            if (string.IsNullOrEmpty(schema))
-                return string.Format("[{0}]", table);
-
-            return string.Format("[{0}].[{1}]", schema, table);
+            get { return QualifyTableName(TableSchema, Table); }
         }
 
 
@@ -232,9 +221,39 @@ namespace SharpMap.Data.Providers.Db
             Insert((IEnumerable<FeatureDataRow<TOid>>)new[] { feature });
         }
 
-        public void Insert(IEnumerable<FeatureDataRow<TOid>> features)
+        public virtual void Insert(IEnumerable<FeatureDataRow<TOid>> features)
         {
-            Insert((IEnumerable<FeatureDataRow>)features);
+            OgcGeometryType geometryType = OgcGeometryType.Unknown;
+
+            using (IDbConnection conn = DbUtility.CreateConnection(ConnectionString))
+            {
+                if (conn.State == ConnectionState.Closed) conn.Open();
+                {
+                    using (IDbTransaction tran = conn.BeginTransaction())
+                    {
+                        IDbCommand cmd = DbUtility.CreateCommand();
+                        cmd.Connection = conn;
+                        cmd.Transaction = tran;
+
+                        cmd.CommandText = string.Format(
+                            "INSERT INTO {0} {1};", QualifiedTableName, InsertClause(cmd));
+
+                        foreach (FeatureDataRow row in features)
+                        {
+                            for (int i = 0; i < cmd.Parameters.Count - 1; i++)
+                                ((IDataParameter)cmd.Parameters[i]).Value = row[i];
+
+                            ((IDataParameter)cmd.Parameters["@PGeo"]).Value = row.Geometry.AsBinary();
+                            if (geometryType == OgcGeometryType.Unknown)
+                                geometryType = row.Geometry.GeometryType;
+
+                            if (row.Geometry.GeometryType == geometryType)
+                                cmd.ExecuteNonQuery();
+                        }
+                        tran.Commit();
+                    }
+                }
+            }
         }
 
         public void Update(FeatureDataRow<TOid> feature)
@@ -242,17 +261,58 @@ namespace SharpMap.Data.Providers.Db
             Update((IEnumerable<FeatureDataRow<TOid>>)new[] { feature });
         }
 
-        public void Update(IEnumerable<FeatureDataRow<TOid>> features)
+        public virtual void Update(IEnumerable<FeatureDataRow<TOid>> features)
         {
-            Update((IEnumerable<FeatureDataRow>)features);
+            using (IDbConnection conn = DbUtility.CreateConnection(ConnectionString))
+            {
+                if (conn.State == ConnectionState.Closed) conn.Open();
+                {
+                    Boolean success = true;
+
+                    using (IDbTransaction tran = conn.BeginTransaction())
+                    {
+                        IDbCommand cmd = DbUtility.CreateCommand();
+                        cmd.Connection = conn;
+                        cmd.Transaction = tran;
+
+                        cmd.CommandText = string.Format(
+                            "UPDATE {0} SET {1} WHERE ({2});", QualifiedTableName,
+                            UpdateClause(cmd),
+                            WhereClause(cmd));
+
+                        foreach (FeatureDataRow row in features)
+                        {
+                            for (int i = 0; i < cmd.Parameters.Count - 2; i++)
+                                ((IDataParameter)cmd.Parameters[i]).Value = row[i];
+
+                            ((IDataParameter)cmd.Parameters["@PGeo"]).Value = row.Geometry.AsBinary();
+                            ((IDataParameter)cmd.Parameters["@POldOid"]).Value =
+                                row[OidColumn, DataRowVersion.Original];
+
+                            try
+                            {
+                                cmd.ExecuteNonQuery();
+                            }
+                            catch (Exception ex)
+                            {
+                                Debug.WriteLine(ex.Message);
+                                success = false;
+                                break;
+                            }
+                        }
+
+                        if (success) tran.Commit();
+                    }
+                }
+            }
         }
 
         public void Delete(FeatureDataRow<TOid> feature)
         {
-            Delete(new[] { feature });
+            Delete((IEnumerable<FeatureDataRow<TOid>>)new[] { feature });
         }
 
-        public void Delete(IEnumerable<FeatureDataRow<TOid>> features)
+        public virtual void Delete(IEnumerable<FeatureDataRow<TOid>> features)
         {
             var featureIds = new List<TOid>();
             foreach (var fdr in features)
@@ -273,12 +333,12 @@ namespace SharpMap.Data.Providers.Db
                             OidColumn,
                             String.Join(",",
                                         Enumerable.ToArray(
-                                           Processor.Select(featureIds,
-                                                                delegate(TOid o)
-                                                                {
-                                                                    return
-                                                                        compiler.CreateParameter(o).ParameterName;
-                                                                })))
+                                            Processor.Select(featureIds,
+                                                             delegate(TOid o)
+                                                             {
+                                                                 return
+                                                                     compiler.CreateParameter(o).ParameterName;
+                                                             })))
                             );
                     conn.Open();
                     foreach (IDataParameter p in compiler.ParameterCache.Values)
@@ -308,7 +368,7 @@ namespace SharpMap.Data.Providers.Db
                     new AttributesProjectionExpression(
                         new[]
                             {
-                               GeometryColumn
+                                GeometryColumn
                             }), null, null, new OidCollectionExpression(new[] { oid }));
 
 
@@ -412,44 +472,6 @@ namespace SharpMap.Data.Providers.Db
             return GetSchemaTable(false);
         }
 
-        public DataTable GetSchemaTable(bool forceCreateNew)
-        {
-            if (forceCreateNew)
-                RemoveCachedSchema();
-
-            TableCacheKey key = new TableCacheKey(GetType(), ConnectionString, TableSchema, Table);
-            DataTable tbl;
-            if (!_cachedSchemas.TryGetValue(key, out tbl))
-            {
-                DataTable tb = BuildSchemaTable();///this may take some time
-                lock (_cachedSchemas)
-                    if (!_cachedSchemas.TryGetValue(key, out tbl))//check again in case a matching schema has been created
-                    {
-                        _cachedSchemas.Add(key, tb);
-                        tbl = tb;
-                    }
-            }
-
-            return tbl.Clone();
-        }
-
-        protected void RemoveCachedSchema()
-        {
-            TableCacheKey key = new TableCacheKey(GetType(), ConnectionString, TableSchema, Table);
-            lock (_cachedSchemas)
-            {
-                if (_cachedSchemas.ContainsKey(key))
-                {
-                    _cachedSchemas.Remove(key);
-                }
-            }
-        }
-
-        protected virtual DataTable BuildSchemaTable()
-        {
-            return BuildSchemaTable(false);
-        }
-
 
         public CultureInfo Locale
         {
@@ -471,7 +493,99 @@ namespace SharpMap.Data.Providers.Db
             return ExecuteFeatureDataReader(PrepareSelectCommand(query));
         }
 
+        public IExtents GetExtentsByOid(TOid oid)
+        {
+            var query =
+                new FeatureQueryExpression(new AttributesProjectionExpression(new[] { GeometryColumn }),
+                                           null, null, new OidCollectionExpression(new[] { oid }));
+            using (IFeatureDataReader fdr = ExecuteFeatureQuery(query))
+            {
+                while (fdr.Read())
+                {
+                    return (IExtents)fdr.Geometry.Extents.Clone();
+                }
+            }
+            return GeometryFactory.CreateExtents();
+        }
+
+        public void Insert(FeatureDataRow feature)
+        {
+            Insert((FeatureDataRow<TOid>)feature);
+        }
+
+        public void Insert(IEnumerable<FeatureDataRow> features)
+        {
+            Insert(Caster.Downcast<FeatureDataRow<TOid>, FeatureDataRow>(features));
+        }
+
+        public void Update(FeatureDataRow feature)
+        {
+            Update((FeatureDataRow<TOid>)feature);
+        }
+
+        public void Update(IEnumerable<FeatureDataRow> features)
+        {
+            Update(Caster.Downcast<FeatureDataRow<TOid>, FeatureDataRow>(features));
+        }
+
+        public void Delete(FeatureDataRow feature)
+        {
+            Delete((FeatureDataRow<TOid>)feature);
+        }
+
+        public void Delete(IEnumerable<FeatureDataRow> features)
+        {
+            Delete(Caster.Downcast<FeatureDataRow<TOid>, FeatureDataRow>(features));
+        }
+
         #endregion
+
+        protected virtual string QualifyTableName(string schema, string table)
+        {
+            if (string.IsNullOrEmpty(schema))
+                return string.Format("[{0}]", table);
+
+            return string.Format("[{0}].[{1}]", schema, table);
+        }
+
+        public DataTable GetSchemaTable(bool forceCreateNew)
+        {
+            if (forceCreateNew)
+                RemoveCachedSchema();
+
+            var key = new TableCacheKey(GetType(), ConnectionString, TableSchema, Table);
+            DataTable tbl;
+            if (!_cachedSchemas.TryGetValue(key, out tbl))
+            {
+                DataTable tb = BuildSchemaTable(); ///this may take some time
+                lock (_cachedSchemas)
+                    if (!_cachedSchemas.TryGetValue(key, out tbl))
+                    //check again in case a matching schema has been created
+                    {
+                        _cachedSchemas.Add(key, tb);
+                        tbl = tb;
+                    }
+            }
+
+            return tbl.Clone();
+        }
+
+        protected void RemoveCachedSchema()
+        {
+            var key = new TableCacheKey(GetType(), ConnectionString, TableSchema, Table);
+            lock (_cachedSchemas)
+            {
+                if (_cachedSchemas.ContainsKey(key))
+                {
+                    _cachedSchemas.Remove(key);
+                }
+            }
+        }
+
+        protected virtual DataTable BuildSchemaTable()
+        {
+            return BuildSchemaTable(false);
+        }
 
         public virtual string QualifyColumnName(string columnName)
         {
@@ -539,90 +653,10 @@ namespace SharpMap.Data.Providers.Db
             }
         }
 
-        public virtual void Insert(IEnumerable<FeatureDataRow> features)
-        {
-            OgcGeometryType geometryType = OgcGeometryType.Unknown;
-
-            using (IDbConnection conn = DbUtility.CreateConnection(ConnectionString))
-            {
-                if (conn.State == ConnectionState.Closed) conn.Open();
-                {
-                    using (IDbTransaction tran = conn.BeginTransaction())
-                    {
-                        IDbCommand cmd = DbUtility.CreateCommand();
-                        cmd.Connection = conn;
-                        cmd.Transaction = tran;
-
-                        cmd.CommandText = string.Format(
-                            "INSERT INTO {0} {1};", QualifiedTableName, InsertClause(cmd));
-
-                        foreach (FeatureDataRow row in features)
-                        {
-                            for (int i = 0; i < cmd.Parameters.Count - 1; i++)
-                                ((IDataParameter)cmd.Parameters[i]).Value = row[i];
-
-                            ((IDataParameter)cmd.Parameters["@PGeo"]).Value = row.Geometry.AsBinary();
-                            if (geometryType == OgcGeometryType.Unknown)
-                                geometryType = row.Geometry.GeometryType;
-
-                            if (row.Geometry.GeometryType == geometryType)
-                                cmd.ExecuteNonQuery();
-                        }
-                        tran.Commit();
-                    }
-                }
-            }
-        }
 
         public void Update(DataRowCollection features)
         {
             Update(IEnumerableOfDataRowCollection(features));
-        }
-
-        public virtual void Update(IEnumerable<FeatureDataRow> features)
-        {
-            using (IDbConnection conn = DbUtility.CreateConnection(ConnectionString))
-            {
-                if (conn.State == ConnectionState.Closed) conn.Open();
-                {
-                    Boolean success = true;
-
-                    using (IDbTransaction tran = conn.BeginTransaction())
-                    {
-                        IDbCommand cmd = DbUtility.CreateCommand();
-                        cmd.Connection = conn;
-                        cmd.Transaction = tran;
-
-                        cmd.CommandText = string.Format(
-                            "UPDATE {0} SET {1} WHERE ({2});", QualifiedTableName,
-                            UpdateClause(cmd),
-                            WhereClause(cmd));
-
-                        foreach (FeatureDataRow row in features)
-                        {
-                            for (int i = 0; i < cmd.Parameters.Count - 2; i++)
-                                ((IDataParameter)cmd.Parameters[i]).Value = row[i];
-
-                            ((IDataParameter)cmd.Parameters["@PGeo"]).Value = row.Geometry.AsBinary();
-                            ((IDataParameter)cmd.Parameters["@POldOid"]).Value =
-                                row[OidColumn, DataRowVersion.Original];
-
-                            try
-                            {
-                                cmd.ExecuteNonQuery();
-                            }
-                            catch (Exception ex)
-                            {
-                                Debug.WriteLine(ex.Message);
-                                success = false;
-                                break;
-                            }
-                        }
-
-                        if (success) tran.Commit();
-                    }
-                }
-            }
         }
 
         protected override void Dispose(Boolean disposing)
@@ -668,7 +702,6 @@ namespace SharpMap.Data.Providers.Db
             return new SpatialDbFeatureDataReader(GeometryFactory, cmd.ExecuteReader(CommandBehavior.CloseConnection),
                                                   GeometryColumn, OidColumn) { CoordinateTransformation = CoordinateTransformation };
         }
-
 
 
         protected virtual IDbCommand PrepareSelectCommand(Expression query)
@@ -780,7 +813,6 @@ namespace SharpMap.Data.Providers.Db
             }
         }
 
-
         #region Private helpers for Insert and Update
 
         protected virtual string InsertClause(IDbCommand cmd)
@@ -850,18 +882,29 @@ namespace SharpMap.Data.Providers.Db
 
         #endregion
 
+        #region Nested type: TableCacheKey
 
         private struct TableCacheKey
         {
-            private Type _providerType;
+            private readonly string _connectionString;
+            private readonly Type _providerType;
+            private readonly string _schema;
 
-            private string _tableName;
+            private readonly string _tableName;
+
+            public TableCacheKey(Type providerType, string connectionString, string schema, string tblName)
+            {
+                _providerType = providerType;
+                _tableName = tblName;
+                _schema = schema;
+                _connectionString = connectionString;
+            }
+
             public string TableName
             {
                 get { return _tableName; }
             }
 
-            private string _connectionString;
             public string ConnectionString
             {
                 get { return _connectionString; }
@@ -877,44 +920,14 @@ namespace SharpMap.Data.Providers.Db
                 get { return _providerType; }
             }
 
-            private string _schema;
-
-            public TableCacheKey(Type providerType, string connectionString, string schema, string tblName)
-            {
-                _providerType = providerType;
-                _tableName = tblName;
-                _schema = schema;
-                _connectionString = connectionString;
-            }
-
             public override int GetHashCode()
             {
-                return _providerType.GetHashCode() ^ _connectionString.ToLower().GetHashCode() ^ _schema.ToLower().GetHashCode() ^
+                return _providerType.GetHashCode() ^ _connectionString.ToLower().GetHashCode() ^
+                       _schema.ToLower().GetHashCode() ^
                        _tableName.ToLower().GetHashCode();
             }
         }
 
-        #region IFeatureProvider<TOid> Members
-
-
-        public IExtents GetExtentsByOid(TOid oid)
-        {
-            FeatureQueryExpression query =
-                new FeatureQueryExpression(new AttributesProjectionExpression(new[] { GeometryColumn }),
-                                           null, null, new OidCollectionExpression(new[] { oid }));
-            using (IFeatureDataReader fdr = ExecuteFeatureQuery(query))
-            {
-                while (fdr.Read())
-                {
-                    return (IExtents)fdr.Geometry.Extents.Clone();
-                }
-            }
-            return GeometryFactory.CreateExtents();
-
-        }
-
         #endregion
-
-
     }
 }

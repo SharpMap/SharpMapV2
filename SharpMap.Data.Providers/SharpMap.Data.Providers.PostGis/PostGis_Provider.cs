@@ -242,7 +242,7 @@ namespace SharpMap.Data.Providers
             }
         }
 
-        public override void Insert(IEnumerable<FeatureDataRow> features)
+        public override void Insert(IEnumerable<FeatureDataRow<TOid>> features)
         {
             base.Insert(features);
             using (NpgsqlConnection cn = new NpgsqlConnection(ConnectionString))
