@@ -24,5 +24,7 @@ namespace SharpMap.Demo.FormatConverter.Common
         IFeatureProvider ConstructSourceProvider(IGeometryServices geometryServices);
 
         FeatureQueryExpression ConstructSourceQueryExpression();
+
+        string OidColumnName { get; }
     }
 }

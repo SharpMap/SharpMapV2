@@ -12,12 +12,18 @@
  *  Author: John Diss 2008
  * 
  */
+using SharpMap.Utilities;
+using SharpMap.Utilities.SridUtility;
+
 namespace SharpMap.Demo.FormatConverter
 {
     internal class Program
     {
         private static void Main(string[] args)
         {
+            SridMap.DefaultInstance =
+                new SridMap(new[] { new SridProj4Strategy(0, new GeometryServices().CoordinateSystemFactory) });
+
             var c = new Converter();
             while (c.Run())
             {

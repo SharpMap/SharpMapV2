@@ -1,20 +1,30 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
-using System.Text;
+using System.Data;
+using GeoAPI.CoordinateSystems.Transformations;
+using GeoAPI.Geometries;
 
 namespace SharpMap.Data
 {
     public class EnumerableOfFeatureDataRecordAdapter : IFeatureDataReader
     {
-        private IEnumerator<IFeatureDataRecord> _enumerator;
-        private IFeatureDataRecord record = null;
-        private bool _closed = false;
+        private readonly IEnumerator<IFeatureDataRecord> _enumerator;
+        private bool _closed;
+        private IFeatureDataRecord record;
+
         public EnumerableOfFeatureDataRecordAdapter(IEnumerable<IFeatureDataRecord> enumerable)
+            : this(enumerable.GetEnumerator())
         {
-            _enumerator = enumerable.GetEnumerator();
+
         }
 
-        #region IDataReader Members
+        public EnumerableOfFeatureDataRecordAdapter(IEnumerator<IFeatureDataRecord> enumerator)
+        {
+            _enumerator = enumerator;
+        }
+
+        #region IFeatureDataReader Members
 
         public void Close()
         {
@@ -26,7 +36,7 @@ namespace SharpMap.Data
             get { return 0; }
         }
 
-        public System.Data.DataTable GetSchemaTable()
+        public DataTable GetSchemaTable()
         {
             throw new NotImplementedException();
         }
@@ -43,6 +53,7 @@ namespace SharpMap.Data
 
         public bool Read()
         {
+            record = null;
             if (_enumerator.MoveNext())
             {
                 record = _enumerator.Current;
@@ -56,18 +67,10 @@ namespace SharpMap.Data
             get { throw new NotImplementedException(); }
         }
 
-        #endregion
-
-        #region IDisposable Members
-
         public void Dispose()
         {
             Close();
         }
-
-        #endregion
-
-        #region IDataRecord Members
 
         public int FieldCount
         {
@@ -99,7 +102,7 @@ namespace SharpMap.Data
             return record.GetChars(i, fieldoffset, buffer, bufferoffset, length);
         }
 
-        public System.Data.IDataReader GetData(int i)
+        public IDataReader GetData(int i)
         {
             return record.GetData(i);
         }
@@ -194,16 +197,12 @@ namespace SharpMap.Data
             get { return record[i]; }
         }
 
-        #endregion
-
-        #region IFeatureDataRecord Members
-
-        public GeoAPI.Geometries.IGeometry Geometry
+        public IGeometry Geometry
         {
             get { return record.Geometry; }
         }
 
-        public GeoAPI.Geometries.IExtents Extents
+        public IExtents Extents
         {
             get { return record.Extents; }
         }
@@ -228,33 +227,20 @@ namespace SharpMap.Data
             get { return record.OidType; }
         }
 
-        public GeoAPI.CoordinateSystems.Transformations.ICoordinateTransformation CoordinateTransformation
+        public ICoordinateTransformation CoordinateTransformation
         {
-            get
-            {
-                return record.CoordinateTransformation;
-            }
-            set
-            {
-                record.CoordinateTransformation = value;
-            }
+            get { return record.CoordinateTransformation; }
+            set { record.CoordinateTransformation = value; }
         }
-
-        #endregion
-
-        #region IEnumerable<IFeatureDataRecord> Members
 
         public IEnumerator<IFeatureDataRecord> GetEnumerator()
         {
             while (Read())
                 yield return this;
+            yield break;
         }
 
-        #endregion
-
-        #region IEnumerable Members
-
-        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        IEnumerator IEnumerable.GetEnumerator()
         {
             return GetEnumerator();
         }

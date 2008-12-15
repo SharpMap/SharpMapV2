@@ -38,6 +38,7 @@ namespace SharpMap.Data.Providers.Db
         private readonly string _oidColumn;
 
         private readonly int _oidColumnIndex = -1;
+        private readonly Type _oidType;
 
         protected internal SpatialDbFeatureDataReader(IGeometryFactory geomFactory, IDataReader internalReader,
                                                       string geometryColumn, string oidColumn)
@@ -61,6 +62,8 @@ namespace SharpMap.Data.Providers.Db
                 if (_geomColumnIndex > -1 && _oidColumnIndex > -1)
                     break;
             }
+            if (_geomColumnIndex > -1)
+                _oidType = _internalReader.GetFieldType(_geomColumnIndex);
         }
 
         #region private helper
@@ -80,7 +83,7 @@ namespace SharpMap.Data.Providers.Db
             get
             {
                 return _geomColumnIndex > -1
-                    && _internalReader[_geomColumnIndex] != DBNull.Value;
+                    && !_internalReader.IsDBNull(_geomColumnIndex);
             }
         }
 
@@ -311,7 +314,7 @@ namespace SharpMap.Data.Providers.Db
 
         public Type OidType
         {
-            get { return typeof(long); }
+            get { return _oidType; }
         }
 
         public IEnumerator<IFeatureDataRecord> GetEnumerator()
@@ -320,6 +323,7 @@ namespace SharpMap.Data.Providers.Db
             {
                 yield return this;
             }
+            yield break;
         }
 
         IEnumerator IEnumerable.GetEnumerator()

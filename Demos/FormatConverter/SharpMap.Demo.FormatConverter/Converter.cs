@@ -162,9 +162,6 @@ namespace SharpMap.Demo.FormatConverter
             using (IConfigureFeatureSource csource = (IConfigureFeatureSource)Activator.CreateInstance(input.Builder))
             {
                 IFeatureProvider psource = csource.ConstructSourceProvider(_geometryServices);
-                Type oidType = null;
-
-                oidType = GetTypeParamsOfImplementedInterface(psource.GetType(), typeof(IFeatureProvider<>))[0];
 
                 var realProcessors = new List<IProcessFeatureDataRecords>();
 
@@ -191,10 +188,12 @@ namespace SharpMap.Demo.FormatConverter
                 IEnumerable<IFeatureDataRecord> sourceRecords = processChain(psource.ExecuteFeatureQuery(exp));
                 IEnumerator<IFeatureDataRecord> enumerator = sourceRecords.GetEnumerator();
 
+
                 if (enumerator.MoveNext())
                 {
                     IFeatureDataRecord record = enumerator.Current;
-                    FeatureDataTable fdt = GetTypedFeatureDataTable(record.OidType, "OID", record.Geometry.Factory);
+                    FeatureDataTable fdt = GetTypedFeatureDataTable(record.OidType, csource.OidColumnName, record.Geometry.Factory);
+                    ///jd: note oidColumnName may be incorrect if the shape of the IFeatureDataRecord was modified by the processor chain
 
                     fdt.Merge(new[] { record }, record.Geometry.Factory);
                     fdt.Load(new EnumerableOfFeatureDataRecordAdapter(sourceRecords), LoadOption.OverwriteChanges, null);
@@ -208,20 +207,27 @@ namespace SharpMap.Demo.FormatConverter
                         IWritableFeatureProvider ptarget = ctarget.ConstructTargetProvider(record.Geometry.Factory, _geometryServices.CoordinateSystemFactory, fdt);
                         if (!ptarget.IsOpen)
                             ptarget.Open();
+
+
                         ptarget.Insert(fdt);
                         ptarget.Close();
                     }
 
+                    Console.WriteLine(string.Format("{0} records processed", fdt.Rows.Count));
+
                 }
+                else
+                    Console.WriteLine("No records to process.");
             }
 
-
+            Console.WriteLine("Finished");
         }
 
-        private FeatureDataTable GetTypedFeatureDataTable(Type type, string oidColumnName, IGeometryFactory geometryFactory)
+        private FeatureDataTable GetTypedFeatureDataTable(Type oidType, string oidColumnName, IGeometryFactory geometryFactory)
         {
-            //temp
-            return new FeatureDataTable<uint>(oidColumnName, geometryFactory);
+            Type baseType = typeof(FeatureDataTable<>);
+            Type realType = baseType.MakeGenericType(new[] { oidType });
+            return (FeatureDataTable)Activator.CreateInstance(realType, oidColumnName, geometryFactory);
         }
 
 

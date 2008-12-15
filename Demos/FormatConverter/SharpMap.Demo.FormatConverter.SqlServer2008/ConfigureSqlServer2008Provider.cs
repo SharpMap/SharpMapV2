@@ -13,22 +13,58 @@
  * 
  */
 using System;
+using System.Data;
 using SharpMap.Data;
 using SharpMap.Data.Providers;
+using SharpMap.Data.Providers.Db;
 using SharpMap.Demo.FormatConverter.Common;
 using SharpMap.Expressions;
 using SharpMap.Utilities;
 
 namespace SharpMap.Demo.FormatConverter.SqlServer2008
 {
-    [ConfigureProvider(typeof (MsSqlServer2008Provider<>), "Sql Server 2008")]
+    [ConfigureProvider(typeof(MsSqlServer2008Provider<>), "Sql Server 2008")]
     public class ConfigureSqlServer2008Provider : IConfigureFeatureSource
     {
+        private IFeatureProvider _provider;
+        private string _oidColumn;
         #region IConfigureFeatureSource Members
 
         public IFeatureProvider ConstructSourceProvider(IGeometryServices geometryServices)
         {
-            throw new NotImplementedException();
+            Console.WriteLine("Please enter the connection string for the server.");
+            string connectionString = Console.ReadLine();
+            Console.WriteLine("Please enter the data tables' schema");
+            string dtschema = Console.ReadLine();
+            Console.WriteLine("Please enter the table name.");
+            string tableName = Console.ReadLine();
+            Console.WriteLine("Please enter the id column name.");
+            _oidColumn = Console.ReadLine();
+            Console.WriteLine("Please enter the geometry column name.");
+            string geometryColumn = Console.ReadLine();
+            Console.WriteLine("Please enter the SRID (e.g EPSG:4326)");
+            string srid = Console.ReadLine();
+
+            Type type;
+            SqlServerDbUtility dbUtility = new SqlServerDbUtility();
+            using (IDbConnection conn = dbUtility.CreateConnection(connectionString))
+            {
+                using (IDbCommand cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = string.Format("SELECT TOP 1 {0} FROM [{1}].[{2}] ", _oidColumn, dtschema, tableName);
+                    cmd.CommandType = CommandType.Text;
+                    conn.Open();
+                    type = cmd.ExecuteScalar().GetType();
+                }
+            }
+
+            Type t = typeof(MsSqlServer2008Provider<>);
+            Type specialized = t.MakeGenericType(type);
+
+            _provider = (IFeatureProvider)Activator.CreateInstance(specialized, geometryServices[srid], connectionString, dtschema, tableName, _oidColumn, geometryColumn);
+            _provider.Open();
+
+            return _provider;
         }
 
         public FeatureQueryExpression ConstructSourceQueryExpression()
@@ -38,7 +74,35 @@ namespace SharpMap.Demo.FormatConverter.SqlServer2008
 
         public void Dispose()
         {
-            throw new NotImplementedException();
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        private bool disposed;
+        private void Dispose(bool disposing)
+        {
+            if (!disposed)
+            {
+                if (_provider != null)
+                    _provider.Close();
+
+                disposed = true;
+            }
+        }
+
+        ~ConfigureSqlServer2008Provider()
+        {
+            Dispose(false);
+        }
+
+        #endregion
+
+        #region IConfigureFeatureSource Members
+
+
+        public string OidColumnName
+        {
+            get { return _oidColumn; }
         }
 
         #endregion

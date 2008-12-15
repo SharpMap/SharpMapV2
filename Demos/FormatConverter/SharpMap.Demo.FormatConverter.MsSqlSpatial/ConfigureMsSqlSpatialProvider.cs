@@ -21,14 +21,33 @@ using SharpMap.Utilities;
 
 namespace SharpMap.Demo.FormatConverter.MsSqlSpatial
 {
-    [ConfigureProvider(typeof (MsSqlSpatialProvider), "MsSqlSpatial")]
+    [ConfigureProvider(typeof(MsSqlSpatialProvider), "MsSqlSpatial")]
     public class ConfigureMsSqlSpatialProvider : IConfigureFeatureSource
     {
+        private MsSqlSpatialProvider _sourceProvider;
+
         #region IConfigureFeatureSource Members
 
         public IFeatureProvider ConstructSourceProvider(IGeometryServices geometryServices)
         {
-            throw new NotImplementedException();
+            Console.WriteLine("Please enter the connection string for the server.");
+            string connectionString = Console.ReadLine();
+            Console.WriteLine("Please enter the spatial schema");
+            string sschema = Console.ReadLine();
+            Console.WriteLine("Please enter the data tables' schema");
+            string dtschema = Console.ReadLine();
+            Console.WriteLine("Please enter the table name.");
+            string tableName = Console.ReadLine();
+            Console.WriteLine("Please enter the id column name.");
+            string oidColumn = Console.ReadLine();
+            Console.WriteLine("Please enter the geometry column name.");
+            string geometryColumn = Console.ReadLine();
+            Console.WriteLine("Please enter the SRID (e.g EPSG:4326)");
+            string srid = Console.ReadLine();
+
+            _sourceProvider = new MsSqlSpatialProvider(geometryServices[srid], connectionString, sschema, dtschema,
+                                                       tableName, oidColumn, geometryColumn);
+            return _sourceProvider;
         }
 
         public FeatureQueryExpression ConstructSourceQueryExpression()
@@ -42,7 +61,35 @@ namespace SharpMap.Demo.FormatConverter.MsSqlSpatial
 
         public void Dispose()
         {
-            throw new NotImplementedException();
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        ~ConfigureMsSqlSpatialProvider()
+        {
+            Dispose(false);
+        }
+
+        private bool disposed;
+        private void Dispose(bool disposing)
+        {
+            if (!disposed)
+            {
+                if (_sourceProvider != null)
+                    _sourceProvider.Close();
+
+                disposed = true;
+            }
+        }
+
+        #endregion
+
+        #region IConfigureFeatureSource Members
+
+
+        public string OidColumnName
+        {
+            get { return _sourceProvider.OidColumn; }
         }
 
         #endregion
