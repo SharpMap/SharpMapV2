@@ -22,7 +22,15 @@ using System.Data;
 using System.Globalization;
 using GeoAPI.Geometries;
 using SharpMap.Expressions;
-
+#if DOTNET35
+using Processor = System.Linq.Enumerable;
+using Enumerable = System.Linq.Enumerable;
+using Caster = System.Linq.Enumerable;
+#else
+using Processor = GeoAPI.DataStructures.Processor;
+using Caster = GeoAPI.DataStructures.Caster;
+using Enumerable = GeoAPI.DataStructures.Enumerable;
+#endif
 namespace SharpMap.Data.Providers
 {
     /// <summary>
@@ -324,6 +332,44 @@ namespace SharpMap.Data.Providers
 
             return base.GetObjectProperty(propertyName);
         }
+
+
+        #region IWritableFeatureProvider Members
+
+        public void Insert(FeatureDataRow feature)
+        {
+            Insert((FeatureDataRow<Guid>)feature);
+        }
+
+        public void Insert(IEnumerable<FeatureDataRow> features)
+        {
+            Insert(Caster.Downcast<FeatureDataRow<Guid>, FeatureDataRow>(features));
+        }
+
+
+
+        public void Update(FeatureDataRow feature)
+        {
+            Update((FeatureDataRow<Guid>)feature);
+        }
+
+        public void Update(IEnumerable<FeatureDataRow> features)
+        {
+            Update(Caster.Downcast<FeatureDataRow<Guid>, FeatureDataRow>(features));
+        }
+
+        public void Delete(FeatureDataRow feature)
+        {
+            Delete((FeatureDataRow<Guid>)feature);
+        }
+
+        public void Delete(IEnumerable<FeatureDataRow> features)
+        {
+            Delete(Caster.Downcast<FeatureDataRow<Guid>, FeatureDataRow>(features));
+        }
+
+        #endregion
+
 
     }
 }

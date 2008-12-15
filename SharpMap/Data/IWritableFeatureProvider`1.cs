@@ -60,7 +60,7 @@ namespace SharpMap.Data
     /// and predictable state based on the success or failure of the operation.
     /// </para>
     /// </remarks>
-    public interface IWritableFeatureProvider<TOid> : IFeatureProvider<TOid>
+    public interface IWritableFeatureProvider<TOid> : IWritableFeatureProvider, IFeatureProvider<TOid>
     {
         /// <summary>
         /// Inserts a feature into the data source.
@@ -97,5 +97,45 @@ namespace SharpMap.Data
         /// </summary>
         /// <param name="features">The features to delete.</param>
         void Delete(IEnumerable<FeatureDataRow<TOid>> features);
+    }
+
+
+    public interface IWritableFeatureProvider : IFeatureProvider
+    {
+        /// <summary>
+        /// Inserts a feature into the data source.
+        /// </summary>
+        /// <param name="feature">The feature to insert.</param>
+        void Insert(FeatureDataRow feature);
+
+        /// <summary>
+        /// Inserts a set of features into the data source.
+        /// </summary>
+        /// <param name="features">The features to insert.</param>
+        void Insert(IEnumerable<FeatureDataRow> features);
+
+        /// <summary>
+        /// Updates an existing feature in the data source.
+        /// </summary>
+        /// <param name="feature">The feature to update.</param>
+        void Update(FeatureDataRow feature);
+
+        /// <summary>
+        /// Updates a set of existing features in the data source.
+        /// </summary>
+        /// <param name="features">The features to update.</param>
+        void Update(IEnumerable<FeatureDataRow> features);
+
+        /// <summary>
+        /// Deletes a feature from the data source.
+        /// </summary>
+        /// <param name="feature">The feature to delete.</param>
+        void Delete(FeatureDataRow feature);
+
+        /// <summary>
+        /// Deletes a set of features from the data source.
+        /// </summary>
+        /// <param name="features">The features to delete.</param>
+        void Delete(IEnumerable<FeatureDataRow> features);
     }
 }
