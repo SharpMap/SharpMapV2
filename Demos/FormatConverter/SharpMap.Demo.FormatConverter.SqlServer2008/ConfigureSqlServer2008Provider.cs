@@ -16,6 +16,7 @@ using System;
 using SharpMap.Data;
 using SharpMap.Data.Providers;
 using SharpMap.Demo.FormatConverter.Common;
+using SharpMap.Expressions;
 using SharpMap.Utilities;
 
 namespace SharpMap.Demo.FormatConverter.SqlServer2008
@@ -26,6 +27,16 @@ namespace SharpMap.Demo.FormatConverter.SqlServer2008
         #region IConfigureFeatureSource Members
 
         public IFeatureProvider ConstructSourceProvider(IGeometryServices geometryServices)
+        {
+            throw new NotImplementedException();
+        }
+
+        public FeatureQueryExpression ConstructSourceQueryExpression()
+        {
+            return new FeatureQueryExpression(new AllAttributesExpression(), null);
+        }
+
+        public void Dispose()
         {
             throw new NotImplementedException();
         }

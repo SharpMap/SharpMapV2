@@ -12,13 +12,17 @@
  *  Author: John Diss 2008
  * 
  */
+using System;
 using SharpMap.Data;
+using SharpMap.Expressions;
 using SharpMap.Utilities;
 
 namespace SharpMap.Demo.FormatConverter.Common
 {
-    public interface IConfigureFeatureSource
+    public interface IConfigureFeatureSource : IDisposable
     {
         IFeatureProvider ConstructSourceProvider(IGeometryServices geometryServices);
+
+        FeatureQueryExpression ConstructSourceQueryExpression();
     }
 }

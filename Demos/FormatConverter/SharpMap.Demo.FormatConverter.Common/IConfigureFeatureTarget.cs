@@ -12,13 +12,17 @@
  *  Author: John Diss 2008
  * 
  */
+using System;
+using System.Data;
+using GeoAPI.CoordinateSystems;
+using GeoAPI.Geometries;
 using SharpMap.Data;
 using SharpMap.Utilities;
 
 namespace SharpMap.Demo.FormatConverter.Common
 {
-    public interface IConfigureFeatureTarget
+    public interface IConfigureFeatureTarget : IDisposable
     {
-        IWritableFeatureProvider<TOid> ConstructTargetProvider<TOid>(IGeometryServices geometryServices);
+        IWritableFeatureProvider ConstructTargetProvider(IGeometryFactory geometryFactory, ICoordinateSystemFactory csFactory, FeatureDataTable schemaTable);
     }
 }

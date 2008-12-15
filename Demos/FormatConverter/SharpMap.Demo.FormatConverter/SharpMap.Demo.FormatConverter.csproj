@@ -41,6 +41,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\GeoAPI\src\GeoAPI\GeoAPI.Net.csproj">
+      <Project>{FFB69466-79DE-466A-ADA7-5C47C5C5CA3A}</Project>
+      <Name>GeoAPI.Net</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\..\SharpMap.Utilities\SharpMap.Utilities.csproj">
       <Project>{011439C1-A53D-4DA1-AF8E-18D9D61121F4}</Project>
       <Name>SharpMap.Utilities</Name>
@@ -63,10 +67,16 @@
     <mssqlspatial Include="..\SharpMap.Demo.FormatConverter.MsSqlSpatial\bin\$(Configuration)\*.dll" />
     <shapefile Include="..\SharpMap.Demo.FormatConverter.Shapefile\bin\$(Configuration)\*.dll" />
     <sqlserver Include="..\SharpMap.Demo.FormatConverter.SqlServer2008\bin\$(Configuration)\*.dll" />
+    <mssqlspatialdbg Include="..\SharpMap.Demo.FormatConverter.MsSqlSpatial\bin\$(Configuration)\*.pdb" />
+    <shapefiledbg Include="..\SharpMap.Demo.FormatConverter.Shapefile\bin\$(Configuration)\*.pdb" />
+    <sqlserverdbg Include="..\SharpMap.Demo.FormatConverter.SqlServer2008\bin\$(Configuration)\*.pdb" />
   </ItemGroup>
   <Target Name="AfterBuild">
     <Copy SourceFiles="@(mssqlspatial)" DestinationFolder="$(TargetDir)" />
     <Copy SourceFiles="@(shapefile)" DestinationFolder="$(TargetDir)" />
     <Copy SourceFiles="@(sqlserver)" DestinationFolder="$(TargetDir)" />
+    <Copy SourceFiles="@(mssqlspatialdbg)" DestinationFolder="$(TargetDir)" />
+    <Copy SourceFiles="@(shapefiledbg)" DestinationFolder="$(TargetDir)" />
+    <Copy SourceFiles="@(sqlserverdbg)" DestinationFolder="$(TargetDir)" />
   </Target>
 </Project>

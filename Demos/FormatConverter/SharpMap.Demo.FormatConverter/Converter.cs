@@ -15,12 +15,14 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
+using System.Data;
 using System.IO;
 using System.Reflection;
 using System.Text;
+using GeoAPI.Geometries;
 using SharpMap.Data;
 using SharpMap.Demo.FormatConverter.Common;
+using SharpMap.Expressions;
 using SharpMap.Utilities;
 
 namespace SharpMap.Demo.FormatConverter
@@ -56,23 +58,23 @@ namespace SharpMap.Demo.FormatConverter
                 ///search for 'plugins' these are types decorated with certain attributes
                 foreach (Type t in asm.GetTypes())
                 {
-                    object[] attrs = t.GetCustomAttributes(typeof (ConfigureProviderAttribute), true);
+                    object[] attrs = t.GetCustomAttributes(typeof(ConfigureProviderAttribute), true);
                     if (attrs.Length == 1)
                     {
-                        var attr = (ConfigureProviderAttribute) attrs[0];
-                        var pi = new ProviderItem {Builder = t, Name = attr.Name, ProviderType = attr.ProviderType};
+                        var attr = (ConfigureProviderAttribute)attrs[0];
+                        var pi = new ProviderItem { Builder = t, Name = attr.Name, ProviderType = attr.ProviderType };
 
-                        if (typeof (IConfigureFeatureSource).IsAssignableFrom(t))
+                        if (typeof(IConfigureFeatureSource).IsAssignableFrom(t))
                             _configureSourceProviders.Add(pi);
 
-                        if (typeof (IConfigureFeatureTarget).IsAssignableFrom(t))
+                        if (typeof(IConfigureFeatureTarget).IsAssignableFrom(t))
                             _configureTargetProviders.Add(pi);
                     }
 
-                    attrs = t.GetCustomAttributes(typeof (FeatureDataRecordProcessorAttribute), true);
+                    attrs = t.GetCustomAttributes(typeof(FeatureDataRecordProcessorAttribute), true);
                     if (attrs.Length > 0)
                     {
-                        var attr = (FeatureDataRecordProcessorAttribute) attrs[0];
+                        var attr = (FeatureDataRecordProcessorAttribute)attrs[0];
                         _featureDataRecordProcessors.Add(new ProcessorItem
                                                              {
                                                                  Description = attr.Description,
@@ -157,29 +159,73 @@ namespace SharpMap.Demo.FormatConverter
 
         private void DoConversion(ProviderItem input, IEnumerable<ProcessorItem> processors, ProviderItem output)
         {
-            var csource = (IConfigureFeatureSource) Activator.CreateInstance(input.Builder);
+            using (IConfigureFeatureSource csource = (IConfigureFeatureSource)Activator.CreateInstance(input.Builder))
+            {
+                IFeatureProvider psource = csource.ConstructSourceProvider(_geometryServices);
+                Type oidType = null;
 
-            IFeatureProvider psource = csource.ConstructSourceProvider(_geometryServices);
-            Type oidType = null;
+                oidType = GetTypeParamsOfImplementedInterface(psource.GetType(), typeof(IFeatureProvider<>))[0];
 
-            oidType = GetFirstTypeParamOfImplementedInterface(psource.GetType(), typeof (IFeatureProvider<>));
+                var realProcessors = new List<IProcessFeatureDataRecords>();
+
+                foreach (ProcessorItem pi in processors)
+                    realProcessors.Add((IProcessFeatureDataRecords)Activator.CreateInstance(pi.ProcessorType));
+
+                Func<IEnumerable<IFeatureDataRecord>, IEnumerable<IFeatureDataRecord>> processChain = null;
+
+                foreach (IProcessFeatureDataRecords processor in realProcessors)
+                {
+                    processChain = Equals(processChain, null)
+                                       ? processor.Process
+                                       : new Func<IEnumerable<IFeatureDataRecord>, IEnumerable<IFeatureDataRecord>>(
+                                             o => processor.Process(processChain(o)));
+                }
+
+                processChain = processChain ??
+                               new Func<IEnumerable<IFeatureDataRecord>, IEnumerable<IFeatureDataRecord>>(o => o);
+
+                if (!psource.IsOpen)
+                    psource.Open();
+
+                FeatureQueryExpression exp = csource.ConstructSourceQueryExpression();
+                IEnumerable<IFeatureDataRecord> sourceRecords = processChain(psource.ExecuteFeatureQuery(exp));
+                IEnumerator<IFeatureDataRecord> enumerator = sourceRecords.GetEnumerator();
+
+                if (enumerator.MoveNext())
+                {
+                    IFeatureDataRecord record = enumerator.Current;
+                    FeatureDataTable fdt = GetTypedFeatureDataTable(record.OidType, "OID", record.Geometry.Factory);
+
+                    fdt.Merge(new[] { record }, record.Geometry.Factory);
+                    fdt.Load(new EnumerableOfFeatureDataRecordAdapter(sourceRecords), LoadOption.OverwriteChanges, null);
 
 
-            Debug.Assert(oidType != null);
+                    using (
+                        IConfigureFeatureTarget ctarget =
+                            (IConfigureFeatureTarget)Activator.CreateInstance(output.Builder))
+                    {
+
+                        IWritableFeatureProvider ptarget = ctarget.ConstructTargetProvider(record.Geometry.Factory, _geometryServices.CoordinateSystemFactory, fdt);
+                        if (!ptarget.IsOpen)
+                            ptarget.Open();
+                        ptarget.Insert(fdt);
+                        ptarget.Close();
+                    }
+
+                }
+            }
 
 
-            var realProcessors = new List<IProcessFeatureDataRecords>();
+        }
 
-            foreach (ProcessorItem pi in processors)
-                realProcessors.Add((IProcessFeatureDataRecords) Activator.CreateInstance(pi.ProcessorType));
-
-            //TODO: Finish off....
-
-            throw new NotImplementedException();
+        private FeatureDataTable GetTypedFeatureDataTable(Type type, string oidColumnName, IGeometryFactory geometryFactory)
+        {
+            //temp
+            return new FeatureDataTable<uint>(oidColumnName, geometryFactory);
         }
 
 
-        private Type GetFirstTypeParamOfImplementedInterface(Type implementor, Type interfaceToFind)
+        private Type[] GetTypeParamsOfImplementedInterface(Type implementor, Type interfaceToFind)
         {
             Type[] implementations = implementor.GetInterfaces();
             foreach (Type t in implementations)
@@ -190,9 +236,7 @@ namespace SharpMap.Demo.FormatConverter
                 if (t.GetGenericTypeDefinition() != interfaceToFind)
                     continue;
 
-                Type[] genArgs = t.GetGenericArguments();
-                if (interfaceToFind.MakeGenericType(genArgs[0]) == t)
-                    return genArgs[0];
+                return t.GetGenericArguments();
             }
             return null;
         }
@@ -234,7 +278,7 @@ namespace SharpMap.Demo.FormatConverter
             Console.WriteLine(
                 "\nPlease enter a comma seperated list of processor ids you wish to use,\nin the order you wish to use them.");
 
-            string[] idstring = Console.ReadLine().Split(new[] {',', ';', '|'});
+            string[] idstring = Console.ReadLine().Split(new[] { ',', ';', '|' });
 
             foreach (string s in idstring)
             {
