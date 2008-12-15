@@ -3,75 +3,59 @@ using System.Xml.Serialization;
 
 namespace SharpMap.Expressions
 {
-
     [Serializable()]
     [XmlType(Namespace = "http://www.opengis.net/ogc", IncludeInSchema = false)]
     public enum ExpressionType
     {
-
-        /// <remarks/>
         Add,
-
-        /// <remarks/>
         Div,
-
-        /// <remarks/>
         Function,
-
-        /// <remarks/>
         Literal,
-
-        /// <remarks/>
         Mul,
-
-        /// <remarks/>
         PropertyName,
-
-        /// <remarks/>
         Sub,
     }
 
     [Serializable]
     [XmlType(TypeName = "FunctionType", Namespace = "http://www.opengis.net/ogc")]
     [XmlRoot("Function", Namespace = "http://www.opengis.net/ogc", IsNullable = false)]
-    public class FunctionType1 : Expression
+    public abstract class FunctionExpression : Expression
     {
-
         private String _functionName;
-        private Expression[] _expressions;
-        private ExpressionType[] _expressionTypes;
+        private Expression[] _parameters;
+        private ExpressionType[] _parameterTypes;
 
-        [XmlElement("Add", typeof(BinaryOperatorType), Order = 0)]
-        [XmlElement("Div", typeof(BinaryOperatorType), Order = 0)]
-        [XmlElement("Function", typeof(FunctionType1), Order = 0)]
-        [XmlElement("Literal", typeof(LiteralType), Order = 0)]
-        [XmlElement("Mul", typeof(BinaryOperatorType), Order = 0)]
-        [XmlElement("PropertyName", typeof(PropertyNameType), Order = 0)]
-        [XmlElement("Sub", typeof(BinaryOperatorType), Order = 0)]
-        [XmlChoiceIdentifier("ExpressionElementTypes")]
-        public Expression[] Items
+        [XmlElement("Add", typeof(BinaryExpression), Order = 0)]
+        [XmlElement("Div", typeof(BinaryExpression), Order = 0)]
+        [XmlElement("Function", typeof(FunctionExpression), Order = 0)]
+        [XmlElement("Literal", typeof(LiteralExpression), Order = 0)]
+        [XmlElement("Mul", typeof(BinaryExpression), Order = 0)]
+        [XmlElement("PropertyName", typeof(PropertyNameExpression), Order = 0)]
+        [XmlElement("Sub", typeof(BinaryExpression), Order = 0)]
+        [XmlChoiceIdentifier("ParameterTypes")]
+        public Expression[] Parameters
         {
             get
             {
-                return this._expressions;
+                return this._parameters;
             }
             set
             {
-                this._expressions = value;
+                this._parameters = value;
             }
         }
 
-        [XmlElement("ExpressionElementTypes", Order = 1)]
+        [XmlElement("ParameterTypes", Order = 1)]
         [XmlIgnore]
-        public ExpressionType[] ExpressionElementTypes
+        public ExpressionType[] ParameterTypes
         {
             get
             {
-                return this._expressionTypes;
+                return this._parameterTypes;
             }
             set
             {
-                this._expressionTypes = value;
+                this._parameterTypes = value;
             }
         }
 

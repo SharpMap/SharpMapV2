@@ -42,7 +42,7 @@ namespace SharpMap.Expressions
             {
                 if (_propertyName != null)
                 {
-                    throw new InvalidOperationException("PropertyNameExpression is read-only after setting.");
+                    throw new ObjectReadonlyException();
                 }
 
                 _propertyName = value;

@@ -27,7 +27,7 @@ namespace SharpMap.Expressions
     [XmlInclude(typeof(MapItemType))]
     [XmlInclude(typeof(InterpolationPointType))]
     [XmlInclude(typeof(LiteralType))]
-    [XmlInclude(typeof(FunctionType1))]
+    [XmlInclude(typeof(FunctionExpression))]
     [XmlInclude(typeof(PropertyNameExpression))]
     [XmlInclude(typeof(BinaryOperatorType))]
     [XmlInclude(typeof(ExpressionType))]
