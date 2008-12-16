@@ -2,6 +2,7 @@
 
 using System;
 using System.Xml.Serialization;
+using SharpMap.Expressions;
 
 #endregion
 
@@ -12,7 +13,7 @@ namespace SharpMap.Styles.Symbology.Capabilities
     public class ScalarCapabilities
     {
         private object[] arithmeticOperatorsField;
-        private ComparisonOperatorsType comparisonOperatorsField;
+        private ComparisonOperator comparisonOperatorsField;
         private LogicalOperators logicalOperatorsField;
 
         /// <remarks/>
@@ -22,8 +23,7 @@ namespace SharpMap.Styles.Symbology.Capabilities
             set { logicalOperatorsField = value; }
         }
 
-        /// <remarks/>
-        public ComparisonOperatorsType ComparisonOperators
+        public ComparisonOperator ComparisonOperators
         {
             get { return comparisonOperatorsField; }
             set { comparisonOperatorsField = value; }
