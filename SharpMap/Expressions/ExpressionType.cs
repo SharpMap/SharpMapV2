@@ -15,19 +15,21 @@
 // along with SharpMap; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
+using System;
+using System.Xml.Serialization;
 
 namespace SharpMap.Expressions
 {
-    public enum BinaryOperator
+    [Serializable]
+    [XmlType(Namespace = "http://www.opengis.net/ogc", IncludeInSchema = false)]
+    public enum ExpressionType
     {
-        And,
-        Or,
-        Like,
-        Equals,
-        NotEquals,
-        GreaterThan,
-        GreaterThanOrEqualTo,
-        LessThan,
-        LessThanOrEqualTo,
+        Add,
+        Div,
+        Function,
+        Literal,
+        Mul,
+        PropertyName,
+        Sub,
     }
 }

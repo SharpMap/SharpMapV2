@@ -17,16 +17,16 @@
 
 namespace SharpMap.Expressions
 {
-    public class BinaryExpression : BinaryExpressionBase<BinaryLogicOperator>
+    class BinaryLogicExpression: BinaryExpressionBase<BinaryLogicOperator>
     {
-        public BinaryExpression(Expression left, BinaryLogicOperator op, Expression right) 
+        public BinaryLogicExpression(Expression left, BinaryLogicOperator op, Expression right) 
             : base(left, op, right) {}
 
         protected override BinaryExpressionBase<BinaryLogicOperator> Create(Expression left, 
                                                                             BinaryLogicOperator op, 
                                                                             Expression right)
         {
-            return new BinaryExpression(left, op, right);
+            return new BinaryLogicExpression(left, op, right);
         }
 
         public new Expression Left

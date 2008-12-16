@@ -15,28 +15,29 @@
 // along with SharpMap; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
+using System;
+using System.Xml.Serialization;
+
 namespace SharpMap.Expressions
 {
-    public class BinaryExpression : BinaryExpressionBase<BinaryLogicOperator>
+    [XmlInclude(typeof(PropertyIsBetweenExpression))]
+    [XmlInclude(typeof(PropertyIsNullExpression))]
+    [XmlInclude(typeof(PropertyIsLikeExpression))]
+    [XmlInclude(typeof(BinaryComparisonExpression))]
+    [Serializable]
+    [XmlType(Namespace = "http://www.opengis.net/ogc", TypeName = "ComparisonOpsType")]
+    public class ComparisonExpression : BinaryExpressionBase<ComparisonOperator>
     {
-        public BinaryExpression(Expression left, BinaryLogicOperator op, Expression right) 
-            : base(left, op, right) {}
+        public ComparisonExpression(Expression left, ComparisonOperator op, Expression right)
+            : base(left, op, right) { }
 
-        protected override BinaryExpressionBase<BinaryLogicOperator> Create(Expression left, 
-                                                                            BinaryLogicOperator op, 
-                                                                            Expression right)
+        #region Overrides of BinaryExpressionBase<ComparisonOperator>
+
+        protected override BinaryExpressionBase<ComparisonOperator> Create(Expression left, ComparisonOperator op, Expression right)
         {
-            return new BinaryExpression(left, op, right);
+            throw new System.NotImplementedException();
         }
 
-        public new Expression Left
-        {
-            get { return base.Left; }
-        }
-
-        public new Expression Right
-        {
-            get { return base.Right; }
-        }
+        #endregion
     }
 }

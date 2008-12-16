@@ -4,7 +4,7 @@ using System.Text;
 using System.Xml.Serialization;
 using SharpMap.Expressions;
 
-namespace SharpMap.Styles.Expressions
+namespace SharpMap.Styles.Symbology
 {
     [XmlInclude(typeof(RecodeType))]
     [XmlInclude(typeof(InterpolateType))]

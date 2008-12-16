@@ -23,7 +23,7 @@ namespace SharpMap.Expressions
     {
         #region Overrides of Expression
 
-        public AttributesPredicateExpression(AttributeBinaryExpression left, BinaryOperator op, AttributeBinaryExpression right)
+        public AttributesPredicateExpression(AttributeBinaryExpression left, BinaryLogicOperator op, AttributeBinaryExpression right)
             : base(left, op, right) { }
   
         public override Boolean Contains(Expression other)
@@ -38,7 +38,7 @@ namespace SharpMap.Expressions
                                                     Right.Clone() as AttributeBinaryExpression);
         }
 
-        protected override BinaryExpressionBase<BinaryOperator> Create(Expression left, BinaryOperator op, Expression right)
+        protected override BinaryExpressionBase<BinaryLogicOperator> Create(Expression left, BinaryLogicOperator op, Expression right)
         {
             if (!(left is AttributeBinaryExpression && right is AttributeBinaryExpression))
             {

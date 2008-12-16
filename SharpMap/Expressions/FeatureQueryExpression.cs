@@ -104,27 +104,27 @@ namespace SharpMap.Expressions
         public FeatureQueryExpression(AttributeBinaryExpression attributeFilter,
                                       SpatialBinaryExpression spatialFilter)
             : base(new AllAttributesExpression(), new BinaryExpression(attributeFilter,
-                                                                       BinaryOperator.And,
+                                                                       BinaryLogicOperator.And,
                                                                        spatialFilter)) { }
 
         public FeatureQueryExpression(AttributesPredicateExpression attributeFilter,
                                       SpatialBinaryExpression spatialFilter)
             : base(new AllAttributesExpression(), new BinaryExpression(attributeFilter,
-                                                                       BinaryOperator.And,
+                                                                       BinaryLogicOperator.And,
                                                                        spatialFilter)) { }
 
         public FeatureQueryExpression(AttributesProjectionExpression attributes,
                                       AttributeBinaryExpression attributeFilter,
                                       SpatialBinaryExpression spatialFilter)
             : base(attributes, new BinaryExpression(attributeFilter,
-                                                    BinaryOperator.And,
+                                                    BinaryLogicOperator.And,
                                                     spatialFilter)) { }
 
         public FeatureQueryExpression(AttributesProjectionExpression attributes,
                                       AttributesPredicateExpression attributeFilter,
                                       SpatialBinaryExpression spatialFilter)
             : base(attributes, new BinaryExpression(attributeFilter,
-                                                    BinaryOperator.And,
+                                                    BinaryLogicOperator.And,
                                                     spatialFilter)) { }
 
         public FeatureQueryExpression(AttributeBinaryExpression attributeFilter,
@@ -148,17 +148,17 @@ namespace SharpMap.Expressions
                                 ? oidFilter
                                 : oidFilter == null
                                     ? (PredicateExpression)spatialFilter
-                                    : new BinaryExpression(spatialFilter, BinaryOperator.And, oidFilter)
+                                    : new BinaryExpression(spatialFilter, BinaryLogicOperator.And, oidFilter)
                         : spatialFilter == null
                                 ? oidFilter == null
                                     ? attributeFilter
-                                    : new BinaryExpression(attributeFilter, BinaryOperator.And, oidFilter)
+                                    : new BinaryExpression(attributeFilter, BinaryLogicOperator.And, oidFilter)
                                 : oidFilter == null
-                                    ? new BinaryExpression(attributeFilter, BinaryOperator.And, spatialFilter)
+                                    ? new BinaryExpression(attributeFilter, BinaryLogicOperator.And, spatialFilter)
                                     : new BinaryExpression(attributeFilter,
-                                                           BinaryOperator.And,
+                                                           BinaryLogicOperator.And,
                                                            new BinaryExpression(oidFilter,
-                                                                                BinaryOperator.And,
+                                                                                BinaryLogicOperator.And,
                                                                                 spatialFilter))) { }
 
         public FeatureQueryExpression(FeatureQueryExpression expressionToCopy,

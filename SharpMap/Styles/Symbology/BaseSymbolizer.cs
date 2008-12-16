@@ -15,28 +15,22 @@
 // along with SharpMap; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
-namespace SharpMap.Expressions
+using System;
+using System.Xml.Serialization;
+
+namespace SharpMap.Styles.Symbology
 {
-    public class BinaryExpression : BinaryExpressionBase<BinaryLogicOperator>
+    [Serializable]
+    [XmlType(Namespace = "http://www.opengis.net/se", TypeName = "BaseSymbolizerType")]
+    [XmlRoot("BaseSymbolizer", Namespace = "http://www.opengis.net/se", IsNullable = false)]
+    public class BaseSymbolizer
     {
-        public BinaryExpression(Expression left, BinaryLogicOperator op, Expression right) 
-            : base(left, op, right) {}
+        private OnlineResource _onlineResource;
 
-        protected override BinaryExpressionBase<BinaryLogicOperator> Create(Expression left, 
-                                                                            BinaryLogicOperator op, 
-                                                                            Expression right)
+        public OnlineResource OnlineResource
         {
-            return new BinaryExpression(left, op, right);
-        }
-
-        public new Expression Left
-        {
-            get { return base.Left; }
-        }
-
-        public new Expression Right
-        {
-            get { return base.Right; }
+            get { return _onlineResource; }
+            set { _onlineResource = value; }
         }
     }
 }

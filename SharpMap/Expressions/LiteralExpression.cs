@@ -16,15 +16,36 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System;
+using System.Xml.Serialization;
 
 namespace SharpMap.Expressions
 {
+    [Serializable]
+    [XmlType(Namespace = "http://www.opengis.net/ogc", TypeName = "LiteralType")]
+    [XmlRoot("Literal", Namespace = "http://www.opengis.net/ogc", IsNullable = false)]
     public abstract class LiteralExpression : Expression
     {
+        [XmlText]
+        [XmlAnyElement(Order = 0)]
         public Object Value
         {
             get { return GetValue(); }
+            set { SetValue(value); }
         }
+
+        //[XmlText]
+        //[XmlAnyElement(Order = 0)]
+        //public XmlNode[] Value
+        //{
+        //    get
+        //    {
+        //        return Value as XmlNode[];
+        //    }
+        //    set
+        //    {
+        //        SetValue(value);
+        //    }
+        //}
 
         public override string ToString()
         {
@@ -34,5 +55,6 @@ namespace SharpMap.Expressions
         }
 
         protected abstract Object GetValue();
+        protected abstract void SetValue(Object value);
     }
 }

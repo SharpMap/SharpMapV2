@@ -15,28 +15,23 @@
 // along with SharpMap; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
+using System;
+using System.Xml.Serialization;
+
 namespace SharpMap.Expressions
 {
-    public class BinaryExpression : BinaryExpressionBase<BinaryLogicOperator>
+    [Serializable]
+    [XmlType(Namespace = "http://www.opengis.net/ogc", TypeName = "FeatureIdType")]
+    [XmlRoot("FeatureId", Namespace = "http://www.opengis.net/ogc", IsNullable = false)]
+    public class FeatureIdExpression : AbstractIdExpression
     {
-        public BinaryExpression(Expression left, BinaryLogicOperator op, Expression right) 
-            : base(left, op, right) {}
+        private String _fid;
 
-        protected override BinaryExpressionBase<BinaryLogicOperator> Create(Expression left, 
-                                                                            BinaryLogicOperator op, 
-                                                                            Expression right)
+        [XmlAttribute(DataType = "ID", AttributeName = "fid")]
+        public String Id
         {
-            return new BinaryExpression(left, op, right);
-        }
-
-        public new Expression Left
-        {
-            get { return base.Left; }
-        }
-
-        public new Expression Right
-        {
-            get { return base.Right; }
+            get { return _fid; }
+            set { _fid = value; }
         }
     }
 }
