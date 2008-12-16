@@ -1,14 +1,24 @@
-﻿
+﻿#region Namespace imports
+
+using System;
+using System.Xml.Serialization;
+
+#endregion
+
 namespace SharpMap.Expressions
 {
+    [Serializable]
+    [XmlType(Namespace = "http://www.opengis.net/ogc")]
     public enum ComparisonOperator
     {
         Like,
-        Equals,
-        NotEquals,
+        EqualTo,
+        NotEqualTo,
         GreaterThan,
-        GreaterThanOrEqualTo,
+        GreaterThanEqualTo,
         LessThan,
-        LessThanOrEqualTo,
+        LessThanEqualTo,
+        Between,
+        NullCheck,
     }
 }
