@@ -26,49 +26,44 @@
  *    
  */
 using System;
-using System.Collections.Generic;
-using System.Data;
+using System.Globalization;
 using System.Text;
 using GeoAPI.Geometries;
 using SharpMap.Data.Providers.Db;
 using SharpMap.Expressions;
 
-namespace SharpMap.Data.Providers.DB2_SpatialExtender
+namespace SharpMap.Data.Providers
 {
-    public class DB2_SpatialExtender_ExpressionTreeToSqlCompiler<TOid>
+    internal class DB2SpatialExtenderExpressionTreeToSqlCompiler<TOid>
         : ExpressionTreeToSqlCompilerBase<TOid>
     {
-
-        public DB2_SpatialExtender_ExpressionTreeToSqlCompiler(DB2_SpatialExtender_Provider<TOid> provider,
-                                                       Expression query
-                                                       )
-
+        public DB2SpatialExtenderExpressionTreeToSqlCompiler(DB2SpatialExtenderProvider<TOid> provider,
+                                                             Expression query
+            )
             : base(provider, query)
         {
-
         }
 
         protected override void WriteSpatialGeometryExpressionSql(StringBuilder builder, SpatialOperation op,
                                                                   IGeometry geom)
         {
-
             if (op != SpatialOperation.None)
             {
                 IGeometry geoms =
-                    (Provider.SpatialReference == null || Provider.SpatialReference.EqualParams(Provider.OriginalSpatialReference))
-                    ?
-                    geom
-                    :
-                    Provider.CoordinateTransformation.Inverse.Transform(geom, Provider.GeometryFactory);
-                    
-                builder.Append(string.Format(" {0}.ST_{1}( {0}.ST_GEOMFROMWKB(CAST({2} AS BLOB(2G)), {3}), {4} ) = 1",
-                    DB2_SpatialExtender_ProviderStatic.DefaultSpatialSchema,
-                    Enum.GetName(typeof(SpatialOperation), op).ToUpper(),
-                    CreateParameter(geom).ParameterName,
-                    ((DB2_SpatialExtender_Provider<TOid>)Provider).DB2SrsId,
-                    Provider.QualifyColumnName(Provider.GeometryColumn)));
-            }
+                    (Provider.SpatialReference == null ||
+                     Provider.SpatialReference.EqualParams(Provider.OriginalSpatialReference))
+                        ?
+                            geom
+                        :
+                            Provider.CoordinateTransformation.Inverse.Transform(geom, Provider.GeometryFactory);
 
+                builder.Append(string.Format(" {0}.ST_{1}( {0}.ST_GEOMFROMWKB(CAST({2} AS BLOB(2G)), {3}), {4} ) = 1",
+                                             DB2SpatialExtenderProviderStatic.DefaultSpatialSchema,
+                                             Enum.GetName(typeof (SpatialOperation), op).ToUpper(),
+                                             CreateParameter(geom).ParameterName,
+                                             ((DB2SpatialExtenderProvider<TOid>) Provider).DB2SrsId,
+                                             Provider.QualifyColumnName(Provider.GeometryColumn)));
+            }
         }
 
         protected override void WriteSpatialExtentsExpressionSql(StringBuilder builder,
@@ -78,21 +73,24 @@ namespace SharpMap.Data.Providers.DB2_SpatialExtender
             //ST_SetSRID('BOX3D(0 0,1 1)'::box3d,4326)
             String whereClause = "";
 
-            IExtents2D exts = 
-                (Provider.SpatialReference == null || Provider.SpatialReference.EqualParams(Provider.OriginalSpatialReference))
-                ?
-                (IExtents2D)ext
-                :
-                (IExtents2D)Provider.CoordinateTransformation.Inverse.Transform(ext, Provider.GeometryFactory);
+            IExtents2D exts =
+                (Provider.SpatialReference == null ||
+                 Provider.SpatialReference.EqualParams(Provider.OriginalSpatialReference))
+                    ?
+                        (IExtents2D) ext
+                    :
+                        (IExtents2D) Provider.CoordinateTransformation.Inverse.Transform(ext, Provider.GeometryFactory);
 
-            whereClause = string.Format(" {0}.ENVELOPESINTERSECT({1}, CAST({2} AS DOUBLE), CAST({3} AS DOUBLE), CAST({4} AS DOUBLE), CAST({5} AS DOUBLE), {6}) = 1",
-                DB2_SpatialExtender_ProviderStatic.DefaultSpatialSchema,
-                Provider.QualifyColumnName(Provider.GeometryColumn),
-                exts.XMin.ToString("g", System.Globalization.CultureInfo.InvariantCulture), //CreateParameter(exts.XMin).ParameterName,
-                exts.YMin.ToString("g", System.Globalization.CultureInfo.InvariantCulture), //CreateParameter(exts.YMin).ParameterName,
-                exts.XMax.ToString("g", System.Globalization.CultureInfo.InvariantCulture), //CreateParameter(exts.XMax).ParameterName,
-                exts.YMax.ToString("g", System.Globalization.CultureInfo.InvariantCulture), //CreateParameter(exts.YMax).ParameterName,
-                ((DB2_SpatialExtender_Provider<TOid>)Provider).DB2SrsId);
+            whereClause =
+                string.Format(
+                    " {0}.ENVELOPESINTERSECT({1}, CAST({2} AS DOUBLE), CAST({3} AS DOUBLE), CAST({4} AS DOUBLE), CAST({5} AS DOUBLE), {6}) = 1",
+                    DB2SpatialExtenderProviderStatic.DefaultSpatialSchema,
+                    Provider.QualifyColumnName(Provider.GeometryColumn),
+                    exts.XMin.ToString("g", CultureInfo.InvariantCulture), //CreateParameter(exts.XMin).ParameterName,
+                    exts.YMin.ToString("g", CultureInfo.InvariantCulture), //CreateParameter(exts.YMin).ParameterName,
+                    exts.XMax.ToString("g", CultureInfo.InvariantCulture), //CreateParameter(exts.XMax).ParameterName,
+                    exts.YMax.ToString("g", CultureInfo.InvariantCulture), //CreateParameter(exts.YMax).ParameterName,
+                    ((DB2SpatialExtenderProvider<TOid>) Provider).DB2SrsId);
             builder.Append(whereClause);
         }
 
@@ -125,7 +123,5 @@ namespace SharpMap.Data.Providers.DB2_SpatialExtender
 
         //    return p;
         //}
-
     }
-
 }

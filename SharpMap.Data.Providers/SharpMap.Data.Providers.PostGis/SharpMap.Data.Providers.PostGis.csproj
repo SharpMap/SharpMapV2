@@ -100,12 +100,12 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="PostGis_ExpressionTreeToSqlCompiler.cs" />
-    <Compile Include="PostGis_Provider.cs" />
-    <Compile Include="PostGis_ProviderStatic.cs" />
+    <Compile Include="PostGisExpressionTreeToSqlCompiler.cs" />
+    <Compile Include="PostGisProvider.cs" />
+    <Compile Include="PostGisProviderStatic.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="PostGis_SpatialUtility.cs" />
-    <Compile Include="PostGis_Exception.cs" />
+    <Compile Include="PostGisDbUtility.cs" />
+    <Compile Include="PostGisException.cs" />
   </ItemGroup>
   <Choose>
     <When Condition="'$(GeoAPIProjectReference)' == 'false'">

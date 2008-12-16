@@ -318,9 +318,9 @@
       <Project>{E028BDD2-55E1-4E5F-BE31-35FAEC8D6428}</Project>
       <Name>ProjNet</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\SharpMap.Data.Providers\SharpMap.Data.Providers.Db.DB2SpatialExtender\SharpMap.Data.Providers.DB2_SpatialExtender.csproj">
+    <ProjectReference Include="..\..\SharpMap.Data.Providers\SharpMap.Data.Providers.Db.DB2SpatialExtender\SharpMap.Data.Providers.DB2SpatialExtender.csproj">
       <Project>{01510274-B131-4F36-BBA8-98DACC58BDC5}</Project>
-      <Name>SharpMap.Data.Providers.DB2_SpatialExtender</Name>
+      <Name>SharpMap.Data.Providers.DB2SpatialExtender</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\SharpMap.Data.Providers\DbProviderBase\SharpMap.Data.Providers.Db.csproj">
       <Project>{FEE2753F-DCC2-4DC6-9651-FA2CED8A2974}</Project>

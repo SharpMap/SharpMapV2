@@ -14,6 +14,7 @@
  */
 using System;
 using System.Data;
+using System.Reflection;
 using GeoAPI.CoordinateSystems;
 using GeoAPI.Geometries;
 using SharpMap.Data;
@@ -29,7 +30,8 @@ namespace SharpMap.Demo.FormatConverter.SqlServer2008
     public class ConfigureSqlServer2008Provider : IConfigureFeatureSource, IConfigureFeatureTarget
     {
         private string _oidColumn;
-        private IFeatureProvider _provider;
+        private IFeatureProvider _sourceProvider;
+        private IWritableFeatureProvider _targetProvider;
         private bool disposed;
 
         #region IConfigureFeatureSource Members
@@ -66,13 +68,13 @@ namespace SharpMap.Demo.FormatConverter.SqlServer2008
             Type t = typeof(MsSqlServer2008Provider<>);
             Type specialized = t.MakeGenericType(type);
 
-            _provider =
+            _sourceProvider =
                 (IFeatureProvider)
                 Activator.CreateInstance(specialized, geometryServices[srid], connectionString, dtschema, tableName,
                                          _oidColumn, geometryColumn);
-            _provider.Open();
+            _sourceProvider.Open();
 
-            return _provider;
+            return _sourceProvider;
         }
 
         public FeatureQueryExpression ConstructSourceQueryExpression()
@@ -99,17 +101,43 @@ namespace SharpMap.Demo.FormatConverter.SqlServer2008
                                                                 ICoordinateSystemFactory csFactory,
                                                                 FeatureDataTable schemaTable)
         {
-            throw new NotImplementedException();
+            Type typ = typeof(MsSqlServer2008Provider<>);
+            Type specialized = typ.MakeGenericType(oidType);
+
+            Console.WriteLine("Please enter the connection string for the target database server.");
+            string connectionString = Console.ReadLine();
+
+            Console.WriteLine("Please enter the schema for the table.");
+            string schemaName = Console.ReadLine();
+
+            Console.WriteLine("Please enter the table name.");
+            string tableName = Console.ReadLine();
+
+            _targetProvider = (IWritableFeatureProvider)specialized.GetMethod(
+                "Create",
+                BindingFlags.Public | BindingFlags.Static,
+                null,
+                CallingConventions.Standard,
+                new[] { typeof(string), typeof(IGeometryFactory), typeof(string), typeof(string), typeof(FeatureDataTable) }, null)
+                .Invoke(null, new object[] { connectionString, geometryFactory, schemaName, tableName, schemaTable });
+
+            _targetProvider.Open();
+            return _targetProvider;
         }
 
         #endregion
+
+
 
         private void Dispose(bool disposing)
         {
             if (!disposed)
             {
-                if (_provider != null)
-                    _provider.Close();
+                if (_sourceProvider != null)
+                    _sourceProvider.Close();
+
+                if (_targetProvider != null)
+                    _targetProvider.Close();
 
                 disposed = true;
             }

@@ -22,7 +22,7 @@ using SharpMap.Expressions;
 
 namespace SharpMap.Data.Providers.MsSqlSpatial
 {
-    public class MsSqlSpatialExpressionTreeToSqlCompiler
+    internal class MsSqlSpatialExpressionTreeToSqlCompiler
         : ExpressionTreeToSqlCompilerBase<long>
     {
         public MsSqlSpatialExpressionTreeToSqlCompiler(MsSqlSpatialProvider provider, Expression query)
@@ -32,7 +32,7 @@ namespace SharpMap.Data.Providers.MsSqlSpatial
 
         protected new MsSqlSpatialProvider Provider
         {
-            get { return (MsSqlSpatialProvider) base.Provider; }
+            get { return (MsSqlSpatialProvider)base.Provider; }
         }
 
         public bool WithNoLock
@@ -74,7 +74,7 @@ namespace SharpMap.Data.Providers.MsSqlSpatial
                                         CreateParameter(Provider.Table).ParameterName,
                                         CreateParameter(Provider.GeometryColumn).ParameterName,
                                         CreateParameter(geom).ParameterName,
-                                        CreateParameter(Enum.GetName(typeof (SpatialOperation), op)).ParameterName,
+                                        CreateParameter(Enum.GetName(typeof(SpatialOperation), op)).ParameterName,
                                         TableJoinStrings.Count,
                                         Provider.QualifyColumnName(Provider.OidColumn),
                                         Provider.OidColumn,
@@ -86,7 +86,7 @@ namespace SharpMap.Data.Providers.MsSqlSpatial
         protected override void WriteSpatialExtentsExpressionSql(StringBuilder builder,
                                                                  SpatialOperation spatialOperation, IExtents ext)
         {
-            var exts = (IExtents2D) ext;
+            var exts = (IExtents2D)ext;
             switch (spatialOperation)
             {
                 case SpatialOperation.Intersects:

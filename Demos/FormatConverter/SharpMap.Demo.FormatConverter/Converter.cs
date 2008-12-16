@@ -212,16 +212,18 @@ namespace SharpMap.Demo.FormatConverter
                         Type oidType =
                             GetTypeParamsOfBaseClasses(fdt.GetType(), typeof(FeatureDataTable<>))[0];
 
-                        IWritableFeatureProvider ptarget =
-                            ctarget.ConstructTargetProvider(oidType, ((FeatureDataRow)fdt.Rows[0]).Geometry.Factory,
-                                                                      _geometryServices.CoordinateSystemFactory,
-                                                                      fdt);
-                        if (!ptarget.IsOpen)
-                            ptarget.Open();
+                        using (IWritableFeatureProvider ptarget =
+                             ctarget.ConstructTargetProvider(oidType, ((FeatureDataRow)fdt.Rows[0]).Geometry.Factory,
+                                                                       _geometryServices.CoordinateSystemFactory,
+                                                                       fdt))
+                        {
+                            if (!ptarget.IsOpen)
+                                ptarget.Open();
 
 
-                        ptarget.Insert(fdt);
-                        ptarget.Close();
+                            ptarget.Insert(fdt);
+                            ptarget.Close();
+                        }
                     }
                     Console.WriteLine(string.Format("{0} records processed", fdt.Rows.Count));
                 }

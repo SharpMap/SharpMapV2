@@ -1,6 +1,6 @@
 ﻿/*
- *  The attached / following is part of SharpMap.Data.Providers.DB2_SpatialExtender
- *  SharpMap.Data.Providers.PostGis is free software © 2008 Ingenieurgruppe IVV GmbH & Co. KG, 
+ *  The attached / following is part of SharpMap.Data.Providers.SpatiaLite2
+ *  SharpMap.Data.Providers.SpatiaLite2 is free software © 2008 Ingenieurgruppe IVV GmbH & Co. KG, 
  *  www.ivv-aachen.de; you can redistribute it and/or modify it under the terms 
  *  of the current GNU Lesser General Public License (LGPL) as published by and 
  *  available from the Free Software Foundation, Inc., 
@@ -21,24 +21,32 @@
  *  - GeoAPI.Net by Rory Plaire, Morten Nielsen and others released under LGPL
  *    http://www.codeplex.com/GeoApi
  *    
- *  - DB2 .NET Data Provider from IBM
- *    http://www-01.ibm.com/software/data/db2/windows/dotnet.html
+ *  - SqLite, dedicated to public domain
+ *    http://www.sqlite.org
+ *  - SpatiaLite-2.2 by Alessandro Furieri released under a disjunctive tri-license:
+ *    - 'Mozilla Public License, version 1.1 or later' OR
+ *    - 'GNU General Public License, version 2.0 or later' 
+ *    - 'GNU Lesser General Public License, version 2.1 or later' <--- this is the one
+ *    http://www.gaia-gis.it/spatialite-2.2/index.html
+ *    
+ *  - SQLite ADO.NET 2.0 Provider by Robert Simpson, dedicated to public domain
+ *    http://sourceforge.net/projects/sqlite-dotnet2
  *    
  */
 using System;
 using System.Runtime.Serialization;
 
-namespace SharpMap.Data.Providers.DB2_SpatialExtender
+namespace SharpMap.Data.Providers.SpatiaLite2
 {
     /// <summary>
     /// Exception thrown during SpatiaLite2 operations
     /// </summary>
-    public class DB2_SpatialExtender_Exception : SharpMapDataException
+    public class SpatiaLite2Exception : SharpMapDataException
     {
-        public DB2_SpatialExtender_Exception() : base() { }
-        public DB2_SpatialExtender_Exception(String message) : base(message) { }
-        public DB2_SpatialExtender_Exception(String message, Exception inner) : base(message, inner) { }
-        public DB2_SpatialExtender_Exception(SerializationInfo info, StreamingContext context)
+        public SpatiaLite2Exception() : base() { }
+        public SpatiaLite2Exception(String message) : base(message) { }
+        public SpatiaLite2Exception(String message, Exception inner) : base(message, inner) { }
+        public SpatiaLite2Exception(SerializationInfo info, StreamingContext context)
             : base(info, context) { }
     }
 }

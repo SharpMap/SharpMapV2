@@ -31,29 +31,27 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Data;
+using System.Diagnostics;
 using System.Globalization;
-using System.Text;
-
-using Npgsql;
-using NpgsqlTypes;
 using GeoAPI.Geometries;
-using SharpMap.Data.Providers;
+using Npgsql;
 using SharpMap.Data.Providers.PostGis;
 
 namespace SharpMap.Data.Providers
 {
-    public static class PostGis_ProviderStatic
+    internal static class PostGisProviderStatic
     {
         //private static readonly System.Globalization.CultureInfo
+
+        /// <summary>
+        /// Name used when no geometry column is supplied with constructor of PostGisProvider(TOid)
+        /// </summary>
+        public static String DefaultGeometryColumnName = "XGeometryX";
 
         /// <summary>
         /// Srid assumed when no Srid is mentioned
         /// </summary>
         public static String DefaultSrid = "EPSG:4326";
-        /// <summary>
-        /// Name used when no geometry column is supplied with constructor of PostGisProvider(TOid)
-        /// </summary>
-        public static String DefaultGeometryColumnName = "XGeometryX";
 
         /// <summary>
         /// Creates a spatially enabled database on the via connectionString specified Database;
@@ -61,19 +59,22 @@ namespace SharpMap.Data.Providers
         /// <typeparam name="TOid"></typeparam>
         /// <param name="featureDataTable"></param>
         /// <param name="connectionString"></param>
-        public static void CreateDataTable<TOid>(SharpMap.Data.FeatureDataTable featureDataTable, String connectionString)
+        public static void CreateDataTable<TOid>(FeatureDataTable featureDataTable, String connectionString)
         {
             CreateDataTable<TOid>(featureDataTable, featureDataTable.TableName, connectionString);
         }
 
-        public static void CreateDataTable<TOid>(SharpMap.Data.FeatureDataTable featureDataTable, String tableName, String connectionString)
+        public static void CreateDataTable<TOid>(FeatureDataTable featureDataTable, String tableName,
+                                                 String connectionString)
         {
             CreateDataTable<TOid>(featureDataTable, "public", tableName, connectionString, DefaultGeometryColumnName);
         }
 
-        public static void CreateDataTable<TOid>(FeatureDataTable featureDataTable, String schemaName, String tableName, String connectionString, String geometryColumnName)
+        public static void CreateDataTable<TOid>(FeatureDataTable featureDataTable, String schemaName, String tableName,
+                                                 String connectionString, String geometryColumnName)
         {
-            CreateDataTable<TOid>(featureDataTable, schemaName, tableName, connectionString, geometryColumnName, OgcGeometryType.Geometry);
+            CreateDataTable<TOid>(featureDataTable, schemaName, tableName, connectionString, geometryColumnName,
+                                  OgcGeometryType.Geometry);
         }
 
         public static void CreateDataTable<TOid>(
@@ -84,71 +85,70 @@ namespace SharpMap.Data.Providers
             String geometryColumnName,
             OgcGeometryType geometryType)
         {
-
-            NpgsqlConnection conn = new NpgsqlConnection(connectionString);
+            var conn = new NpgsqlConnection(connectionString);
             if (conn.State == ConnectionState.Closed) conn.Open();
 
-            string srid = featureDataTable.GeometryFactory.Srid == null ? DefaultSrid : featureDataTable.GeometryFactory.Srid;
+            string srid = featureDataTable.GeometryFactory.Srid == null
+                              ? DefaultSrid
+                              : featureDataTable.GeometryFactory.Srid;
             if (conn != null)
             {
-
                 try
                 {
                     string createTableClause = string.Format("CREATE TABLE {0}.\"{1}\" ({2}) WITH(OIDS=TRUE);",
-                        schemaName,
-                        tableName,
-                        ColumnsClause(featureDataTable.Columns, featureDataTable.Constraints));
+                                                             schemaName,
+                                                             tableName,
+                                                             ColumnsClause(featureDataTable.Columns,
+                                                                           featureDataTable.Constraints));
 
                     new NpgsqlCommand(createTableClause, conn).ExecuteNonQuery();
 
                     String addGeometryColumnClause = String.Format("('{0}', '{1}', {2}, '{3}', {4})",
-                        tableName,
-                        geometryColumnName,
-                        srid,
-                        geometryType.ToString().ToUpper(),
-                        2);
+                                                                   tableName,
+                                                                   geometryColumnName,
+                                                                   srid,
+                                                                   geometryType.ToString().ToUpper(),
+                                                                   2);
 
                     //adding spatial column
                     new NpgsqlCommand(String.Format("SELECT AddGeometryColumn {0};",
-                        addGeometryColumnClause),
-                        conn).ExecuteNonQuery();
+                                                    addGeometryColumnClause),
+                                      conn).ExecuteNonQuery();
 
                     //adding GIST index
                     new NpgsqlCommand(String.Format("CREATE INDEX index_{0}_{1} ON {2}.\"{3}\" USING gist(\"{4}\");",
-                        tableName,
-                        geometryColumnName,
-                        schemaName,
-                        tableName,
-                        geometryColumnName),
-                        conn).ExecuteNonQuery();
-
+                                                    tableName,
+                                                    geometryColumnName,
+                                                    schemaName,
+                                                    tableName,
+                                                    geometryColumnName),
+                                      conn).ExecuteNonQuery();
                 }
                 catch (NpgsqlException ex)
                 {
-                    System.Diagnostics.Trace.Write(ex.Message);
-                    throw new PostGis_Exception(string.Format("Cannot create geometry column with type of '{0}'", geometryType.ToString()));
-
+                    Trace.Write(ex.Message);
+                    throw new PostGisException(string.Format("Cannot create geometry column with type of '{0}'",
+                                                             geometryType));
                 }
                 catch
-                { }
-
+                {
+                }
             }
             conn.Close();
             conn = null;
 
-            PostGis_Provider<TOid> prov = new PostGis_Provider<TOid>(
+            var prov = new PostGisProvider<TOid>(
                 featureDataTable.GeometryFactory, connectionString, schemaName, tableName,
                 featureDataTable.Columns[0].ColumnName, geometryColumnName);
 
             prov.Insert(featureDataTable);
 
             return;
-
         }
 
         private static String ColumnsClause(DataColumnCollection dcc, ConstraintCollection ccc)
         {
-            String[] columns = new String[dcc.Count];
+            var columns = new String[dcc.Count];
 
             Int32 index = 0;
             foreach (DataColumn dc in dcc)
@@ -157,59 +157,61 @@ namespace SharpMap.Data.Providers
                 if (columnName == "oid") columnName = "poid";
 
                 columns[index++] = string.Format(" \"{0}\" {1}{2}",
-                    columnName, PostGis_Utility.GetTypeString(dc.DataType),
-                    dc.DefaultValue == DBNull.Value ?
-                        ""
-                        :
-                        String.Format(" DEFAULT {0}", String.Format(CultureInfo.InvariantCulture, "{0}", dc.DefaultValue)));
+                                                 columnName, PostGisDbUtility.GetTypeString(dc.DataType),
+                                                 dc.DefaultValue == DBNull.Value
+                                                     ?
+                                                         ""
+                                                     :
+                                                         String.Format(" DEFAULT {0}",
+                                                                       String.Format(CultureInfo.InvariantCulture, "{0}",
+                                                                                     dc.DefaultValue)));
                 ;
-
             }
             index = 0;
 
-            String[] constraints = new String[ccc.Count];
+            var constraints = new String[ccc.Count];
             foreach (Constraint c in ccc)
             {
-                UniqueConstraint uc = c as UniqueConstraint;
+                var uc = c as UniqueConstraint;
                 if (uc != null)
                 {
                     if (uc.IsPrimaryKey)
                     {
                         constraints[index++] = String.Format(", CONSTRAINT \"{0}\" PRIMARY KEY ({1})",
-                            uc.ConstraintName,
-                            ColumnNamesToCommaSeparatedString(uc.Columns));
+                                                             uc.ConstraintName,
+                                                             ColumnNamesToCommaSeparatedString(uc.Columns));
                     }
                     else
                     {
                         constraints[index++] = String.Format(", CONSTRAINT \"{0}\" UNIQUE ({1})",
-                            uc.ConstraintName,
-                            ColumnNamesToCommaSeparatedString(uc.Columns));
+                                                             uc.ConstraintName,
+                                                             ColumnNamesToCommaSeparatedString(uc.Columns));
                     }
                 }
                 //Other Constraints are not supported by SqLite
-                ForeignKeyConstraint fc = c as ForeignKeyConstraint;
+                var fc = c as ForeignKeyConstraint;
                 if (fc != null)
                 {
-                    constraints[index++] = String.Format(" CONSTRAINT \"{0}\" FOREIGN KEY ({1}) REFERENCES {2} ({3}) MATCH FULL ON UPDATE {4} ON DELETE {5}",
-                        fc.ConstraintName,
-                        ColumnNamesToCommaSeparatedString(fc.Columns),
-                        fc.RelatedTable.TableName,
-                        ColumnNamesToCommaSeparatedString(fc.RelatedColumns),
-                        ruleToAction(fc.UpdateRule),
-                        ruleToAction(fc.DeleteRule)
-                    );
-
+                    constraints[index++] =
+                        String.Format(
+                            " CONSTRAINT \"{0}\" FOREIGN KEY ({1}) REFERENCES {2} ({3}) MATCH FULL ON UPDATE {4} ON DELETE {5}",
+                            fc.ConstraintName,
+                            ColumnNamesToCommaSeparatedString(fc.Columns),
+                            fc.RelatedTable.TableName,
+                            ColumnNamesToCommaSeparatedString(fc.RelatedColumns),
+                            ruleToAction(fc.UpdateRule),
+                            ruleToAction(fc.DeleteRule)
+                            );
                 }
             }
 
             String constraintsClause = "";
             if (index > 0)
             {
-                Array.Resize<String>(ref constraints, index);
+                Array.Resize(ref constraints, index);
                 constraintsClause = String.Join(String.Empty, constraints);
             }
             return String.Join(",", columns) + constraintsClause;
-
         }
 
         private static String ruleToAction(Rule rule)
@@ -228,12 +230,12 @@ namespace SharpMap.Data.Providers
             }
         }
 
-        static String OrdinalsToCommaSeparatedString(IEnumerable<DataColumn> dcc)
+        private static String OrdinalsToCommaSeparatedString(IEnumerable<DataColumn> dcc)
         {
             return OrdinalsToCommaSeparatedString(String.Empty, dcc);
         }
 
-        static String OrdinalsToCommaSeparatedString(String prefix, IEnumerable dcc)
+        private static String OrdinalsToCommaSeparatedString(String prefix, IEnumerable dcc)
         {
             String ret = "";
             foreach (DataColumn t in dcc)
@@ -245,12 +247,12 @@ namespace SharpMap.Data.Providers
             return ret;
         }
 
-        static String ColumnNamesToCommaSeparatedString(IEnumerable<DataColumn> dcc)
+        private static String ColumnNamesToCommaSeparatedString(IEnumerable<DataColumn> dcc)
         {
             return ColumnNamesToCommaSeparatedString(String.Empty, dcc);
         }
 
-        static String ColumnNamesToCommaSeparatedString(String prefix, IEnumerable<DataColumn> dcc)
+        private static String ColumnNamesToCommaSeparatedString(String prefix, IEnumerable<DataColumn> dcc)
         {
             String ret = "";
             foreach (DataColumn t in dcc)
@@ -264,6 +266,5 @@ namespace SharpMap.Data.Providers
 
             return ret;
         }
-
     }
 }

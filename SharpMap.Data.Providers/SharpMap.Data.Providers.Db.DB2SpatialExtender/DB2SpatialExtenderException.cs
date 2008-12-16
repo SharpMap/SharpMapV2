@@ -1,5 +1,5 @@
 ﻿/*
- *  The attached / following is part of SharpMap.Data.Providers.PostGis
+ *  The attached / following is part of SharpMap.Data.Providers.DB2_SpatialExtender
  *  SharpMap.Data.Providers.PostGis is free software © 2008 Ingenieurgruppe IVV GmbH & Co. KG, 
  *  www.ivv-aachen.de; you can redistribute it and/or modify it under the terms 
  *  of the current GNU Lesser General Public License (LGPL) as published by and 
@@ -21,26 +21,35 @@
  *  - GeoAPI.Net by Rory Plaire, Morten Nielsen and others released under LGPL
  *    http://www.codeplex.com/GeoApi
  *    
- *  - Npgsql - .Net Data Provider for Postgresql Provider by 
- *    Josh Cooley,Francisco Figueiredo jr. and others, 
- *    released under this license http://npgsql.projects.postgresql.org/license.html
- *    http://npgsql.projects.postgresql.org/
+ *  - DB2 .NET Data Provider from IBM
+ *    http://www-01.ibm.com/software/data/db2/windows/dotnet.html
  *    
  */
 using System;
 using System.Runtime.Serialization;
 
-namespace SharpMap.Data.Providers.PostGis
+namespace SharpMap.Data.Providers
 {
     /// <summary>
     /// Exception thrown during SpatiaLite2 operations
     /// </summary>
-    public class PostGis_Exception : SharpMapDataException
+    public class DB2SpatialExtenderException : SharpMapDataException
     {
-        public PostGis_Exception() : base() { }
-        public PostGis_Exception(String message) : base(message) { }
-        public PostGis_Exception(String message, Exception inner) : base(message, inner) { }
-        public PostGis_Exception(SerializationInfo info, StreamingContext context)
-            : base(info, context) { }
+        public DB2SpatialExtenderException()
+        {
+        }
+
+        public DB2SpatialExtenderException(String message) : base(message)
+        {
+        }
+
+        public DB2SpatialExtenderException(String message, Exception inner) : base(message, inner)
+        {
+        }
+
+        public DB2SpatialExtenderException(SerializationInfo info, StreamingContext context)
+            : base(info, context)
+        {
+        }
     }
 }

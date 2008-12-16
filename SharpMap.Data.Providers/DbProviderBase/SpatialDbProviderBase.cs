@@ -45,6 +45,15 @@ namespace SharpMap.Data.Providers.Db
     public abstract class SpatialDbProviderBase<TOid>
         : ProviderBase, IWritableFeatureProvider<TOid>, ISpatialDbProvider
     {
+        private readonly int? _geometryFactorySridInt;
+        protected int? SridInt
+        {
+            get
+            {
+                return _geometryFactorySridInt;
+            }
+        }
+
         private static readonly Dictionary<TableCacheKey, DataTable> _cachedSchemas =
             new Dictionary<TableCacheKey, DataTable>();
 
@@ -69,6 +78,9 @@ namespace SharpMap.Data.Providers.Db
             GeometryFactory = geometryFactory;
             OriginalSpatialReference = GeometryFactory.SpatialReference;
             OriginalSrid = GeometryFactory.Srid;
+
+            if (geometryFactory.SpatialReference != null)
+                _geometryFactorySridInt = SridMap.DefaultInstance.Process(geometryFactory.SpatialReference, (int?)null);
 
             if (!String.IsNullOrEmpty(connectionString))
             {
@@ -227,32 +239,45 @@ namespace SharpMap.Data.Providers.Db
 
             using (IDbConnection conn = DbUtility.CreateConnection(ConnectionString))
             {
-                if (conn.State == ConnectionState.Closed) conn.Open();
+                if (conn.State == ConnectionState.Closed)
+                    conn.Open();
+
+                using (IDbTransaction tran = conn.BeginTransaction())
                 {
-                    using (IDbTransaction tran = conn.BeginTransaction())
+                    IDbCommand cmd = DbUtility.CreateCommand();
+                    cmd.Connection = conn;
+                    cmd.Transaction = tran;
+
+                    cmd.CommandText = string.Format(
+                        "INSERT INTO {0} {1};", QualifiedTableName, InsertClause(cmd));
+
+                    foreach (FeatureDataRow<TOid> row in features)
                     {
-                        IDbCommand cmd = DbUtility.CreateCommand();
-                        cmd.Connection = conn;
-                        cmd.Transaction = tran;
+                        cmd.Parameters.Clear();
 
-                        cmd.CommandText = string.Format(
-                            "INSERT INTO {0} {1};", QualifiedTableName, InsertClause(cmd));
-
-                        foreach (FeatureDataRow row in features)
+                        for (int i = 0; i < row.FieldCount; i++)
                         {
-                            for (int i = 0; i < cmd.Parameters.Count - 1; i++)
-                                ((IDataParameter)cmd.Parameters[i]).Value = row[i];
-
-                            ((IDataParameter)cmd.Parameters["@PGeo"]).Value = row.Geometry.AsBinary();
-                            if (geometryType == OgcGeometryType.Unknown)
-                                geometryType = row.Geometry.GeometryType;
-
-                            if (row.Geometry.GeometryType == geometryType)
-                                cmd.ExecuteNonQuery();
+                            cmd.Parameters.Add(DbUtility.CreateParameter(string.Format("P{0}", i), row[i],
+                                                                         ParameterDirection.Input));
                         }
-                        tran.Commit();
+
+                        cmd.Parameters.Add(DbUtility.CreateParameter("PGeo", row.Geometry.AsBinary(),
+                                                                     ParameterDirection.Input));
+
+                        //for (int i = 0; i < cmd.Parameters.Count - 1; i++)
+                        //    ((IDataParameter)cmd.Parameters[i]).Value = row[i];
+                        //byte[] geomBinary = row.Geometry.AsBinary();
+                        //((IDataParameter)cmd.Parameters["@PGeo"]).Value = geomBinary;
+
+                        if (geometryType == OgcGeometryType.Unknown)
+                            geometryType = row.Geometry.GeometryType;
+
+                        if (row.Geometry.GeometryType == geometryType)
+                            cmd.ExecuteNonQuery();
                     }
+                    tran.Commit();
                 }
+
             }
         }
 

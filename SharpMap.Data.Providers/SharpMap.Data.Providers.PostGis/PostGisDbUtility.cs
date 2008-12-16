@@ -34,7 +34,7 @@ using SharpMap.Data.Providers.Db;
 
 namespace SharpMap.Data.Providers.PostGis
 {
-    public class PostGis_Utility : IDbUtility<DbType>
+    public class PostGisDbUtility : IDbUtility<DbType>
     {
         #region IDbUtility<DbType> Members
 
@@ -68,7 +68,7 @@ namespace SharpMap.Data.Providers.PostGis
 
         public IDbDataAdapter CreateAdapter(IDbCommand cmd)
         {
-            return new NpgsqlDataAdapter((NpgsqlCommand)cmd);
+            return new NpgsqlDataAdapter((NpgsqlCommand) cmd);
         }
 
         public IDataParameter CreateParameter<TValue>(string parameterName, ParameterDirection parameterDirection)
@@ -84,10 +84,68 @@ namespace SharpMap.Data.Providers.PostGis
 
         public IDataParameter CreateParameter(string parameterName, DbType dbType, ParameterDirection parameterDirection)
         {
-            IDataParameter p= new NpgsqlParameter(parameterName, dbType, GetDbSize(dbType))
-                                  {Direction = parameterDirection};
+            IDataParameter p = new NpgsqlParameter(parameterName, dbType, GetDbSize(dbType))
+                                   {Direction = parameterDirection};
             return p;
         }
+
+        string IDbUtility<DbType>.GetTypeString(DbType dbType)
+        {
+            return GetTypeString(dbType);
+        }
+
+        string IDbUtility<DbType>.GetTypeString(Type netType)
+        {
+            return GetTypeString(netType);
+        }
+
+        DbType IDbUtility<DbType>.GetDbType<TValue>()
+        {
+            return GetDbType<TValue>();
+        }
+
+        DbType IDbUtility<DbType>.GetDbType(Type netType)
+        {
+            return GetDbType(netType);
+        }
+
+        int IDbUtility<DbType>.GetDbSize(DbType dbType)
+        {
+            return GetDbSize(dbType);
+        }
+
+        string IDbUtility<DbType>.GetFullTypeString(DbType dbType, int size)
+        {
+            return GetFullTypeString(dbType, size);
+        }
+
+        string IDbUtility<DbType>.GetFullTypeString(Type netType, int size)
+        {
+            return GetFullTypeString(netType, size);
+        }
+
+        string IDbUtility<DbType>.GetFullTypeString(DbType dbType)
+        {
+            return GetFullTypeString(dbType);
+        }
+
+        string IDbUtility<DbType>.GetFullTypeString(Type netType)
+        {
+            return GetFullTypeString(netType);
+        }
+
+        int IDbUtility<DbType>.GetDbSize(Type dbType)
+        {
+            return GetDbSize(dbType);
+        }
+
+        public IDataParameter CreateParameter(string parameterName, object value, ParameterDirection paramDirection)
+        {
+            return new NpgsqlParameter(parameterName.StartsWith(":") ? parameterName : ":" + parameterName, value)
+                       {Direction = paramDirection};
+        }
+
+        #endregion
 
         public static string GetTypeString(DbType dbType)
         {
@@ -98,33 +156,44 @@ namespace SharpMap.Data.Providers.PostGis
         {
             switch (netType.FullName)
             {
-                case "System.Byte": return "int2";
-                case "System.Boolean": return "bool";
-                case "System.Single": return "float4";
-                case "System.Double": return "float8";
-                case "System.Decimal": return "numeric";
-                case "System.Int16": return "int2";
-                case "System.Int32": return "int4";
-                case "System.Int64": return "int8";
-                case "System.DateTime": return "time";
-                case "System.TimeSpan": return "interval";
-                case "System.Guid": return "uuid";
-                case "System.Byte[]": return "bytea";
-                case "System.String": return "text";
-                case "System.Array": return "array";
-                case "GeoAPI.Geometries.IGeometry": return "geometry";
+                case "System.Byte":
+                    return "int2";
+                case "System.Boolean":
+                    return "bool";
+                case "System.Single":
+                    return "float4";
+                case "System.Double":
+                    return "float8";
+                case "System.Decimal":
+                    return "numeric";
+                case "System.Int16":
+                    return "int2";
+                case "System.Int32":
+                    return "int4";
+                case "System.Int64":
+                    return "int8";
+                case "System.DateTime":
+                    return "time";
+                case "System.TimeSpan":
+                    return "interval";
+                case "System.Guid":
+                    return "uuid";
+                case "System.Byte[]":
+                    return "bytea";
+                case "System.String":
+                    return "text";
+                case "System.Array":
+                    return "array";
+                case "GeoAPI.Geometries.IGeometry":
+                    return "geometry";
                 default:
                     throw (new NotSupportedException("Unsupported datatype '" + netType.Name + "' found in datasource"));
             }
         }
 
-
-
-        #endregion
-
         public static DbType GetDbType<TValue>()
         {
-            return GetDbType(typeof(TValue));
+            return GetDbType(typeof (TValue));
         }
 
         public static DbType GetDbType(Type netType)
@@ -170,35 +239,29 @@ namespace SharpMap.Data.Providers.PostGis
                 return String.Format(":{0}", parameterName);
         }
 
-        #region IDbUtility<DbType> Members
-
-        string IDbUtility<DbType>.GetTypeString(DbType dbType)
+        public static string GetFullTypeString(DbType dbType, int size)
         {
-            return GetTypeString(dbType);
+            throw new NotImplementedException();
         }
 
-        string IDbUtility<DbType>.GetTypeString(Type netType)
+        public static string GetFullTypeString(Type netType, int size)
         {
-            return GetTypeString(netType);
+            throw new NotImplementedException();
         }
 
-        DbType IDbUtility<DbType>.GetDbType<TValue>()
+        public static string GetFullTypeString(DbType dbType)
         {
-            return GetDbType<TValue>();
+            return GetFullTypeString(dbType, GetDbSize(dbType));
         }
 
-        DbType IDbUtility<DbType>.GetDbType(Type netType)
+        public static string GetFullTypeString(Type netType)
         {
-            return GetDbType(netType);
+            return GetFullTypeString(GetDbType(netType), GetDbSize(netType));
         }
 
-        int IDbUtility<DbType>.GetDbSize(DbType dbType)
+        public static int GetDbSize(Type dbType)
         {
-            return GetDbSize(dbType);
+            return GetDbSize(GetDbType(dbType));
         }
-
-        #endregion
-
-
     }
 }

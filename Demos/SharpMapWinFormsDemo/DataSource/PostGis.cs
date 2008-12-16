@@ -247,17 +247,17 @@ namespace MapViewer.DataSource
                 switch ((String)dgvColumns.Rows[oidcolumn].Cells["DataType"].Value)
                 {
                     case "bigint":
-                        prov = new PostGis_Provider<long>(gf, conn, schema, tableName, oidColumnName, geomColumn);
+                        prov = new PostGisProvider<long>(gf, conn, schema, tableName, oidColumnName, geomColumn);
                         break;
                     case "integer":
-                        prov = new PostGis_Provider<int>(gf, conn, schema, tableName, oidColumnName, geomColumn);
+                        prov = new PostGisProvider<int>(gf, conn, schema, tableName, oidColumnName, geomColumn);
                         break;
                     case "character varying":
                     case "text":
-                        prov = new PostGis_Provider<string>(gf, conn, schema, tableName, oidColumnName, geomColumn);
+                        prov = new PostGisProvider<string>(gf, conn, schema, tableName, oidColumnName, geomColumn);
                         break;
                     case "uuid":
-                        prov = new PostGis_Provider<Guid>(gf, conn, schema, tableName, oidColumnName, geomColumn);
+                        prov = new PostGisProvider<Guid>(gf, conn, schema, tableName, oidColumnName, geomColumn);
                         break;
                     default:
                         return null;

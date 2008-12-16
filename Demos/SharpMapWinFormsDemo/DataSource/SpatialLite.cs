@@ -92,7 +92,7 @@ namespace MapViewer.DataSource
                 AttributesProjectionExpression ape = new AttributesProjectionExpression(columns);
 
                 IFeatureProvider prov =
-                    new SpatiaLite2_Provider(gf, conn, schema, tableName, oidColumnName, geomColumn); 
+                    new SpatiaLite2Provider(gf, conn, schema, tableName, oidColumnName, geomColumn); 
 
                 //jd commented temporarily to get a build
                 //((ISpatialDbProvider)prov).DefinitionQuery =
@@ -140,9 +140,9 @@ namespace MapViewer.DataSource
 
             try
             {
-                ok = SpatiaLite2_Provider.IsSpatiallyEnabled(ServerConnectionString);
+                ok = SpatiaLite2Provider.IsSpatiallyEnabled(ServerConnectionString);
             }
-            catch(SpatiaLite2_Exception ex)
+            catch(SpatiaLite2Exception ex)
             {
                 ok = false;
                 message.AppendFormat("Error connection to server {0}", ex.Message);
@@ -169,7 +169,7 @@ namespace MapViewer.DataSource
                 return false;
 
             datasetTableAndColumns = 
-                SpatiaLite2_Provider.GetSpatiallyEnabledTables(ServerConnectionString);
+                SpatiaLite2Provider.GetSpatiallyEnabledTables(ServerConnectionString);
 
             if (datasetTableAndColumns == null) return false;
 

@@ -42,13 +42,13 @@ using SharpMap.Expressions;
 
 namespace SharpMap.Data.Providers.SpatiaLite2
 {
-    public class SpatiaLite2_ExpressionTreeToSqlCompiler
+    internal class SpatiaLite2ExpressionTreeToSqlCompiler
         : ExpressionTreeToSqlCompilerBase<long>
     {
 
         private SpatiaLite2_IndexType _spatialIndexType;
 
-        public SpatiaLite2_ExpressionTreeToSqlCompiler(SpatialDbProviderBase<long> provider,
+        public SpatiaLite2ExpressionTreeToSqlCompiler(SpatialDbProviderBase<long> provider,
                                                        Expression query,
                                                        SpatiaLite2_IndexType indexType)
 
@@ -58,7 +58,7 @@ namespace SharpMap.Data.Providers.SpatiaLite2
             switch (indexType)
             {
                 case SpatiaLite2_IndexType.None:
-                    throw new SpatiaLite2_Exception("indexType must not be 'None'");
+                    throw new SpatiaLite2Exception("indexType must not be 'None'");
                 default:
                     break;
             }
@@ -147,7 +147,7 @@ namespace SharpMap.Data.Providers.SpatiaLite2
                     break;
 
                 default:
-                    throw new SpatiaLite2_Exception("Invalid spatial index type");
+                    throw new SpatiaLite2Exception("Invalid spatial index type");
             }
 
             if (!String.IsNullOrEmpty(whereClause))

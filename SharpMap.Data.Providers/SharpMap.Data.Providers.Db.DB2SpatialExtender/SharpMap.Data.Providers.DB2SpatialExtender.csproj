@@ -78,7 +78,6 @@
           <SpecificVersion>False</SpecificVersion>
           <HintPath>..\ExternalReferences\$(Configuration)\GeoAPI.dll</HintPath>
         </Reference>
-
       </ItemGroup>
     </When>
     <Otherwise>
@@ -90,7 +89,6 @@
       </ItemGroup>
     </Otherwise>
   </Choose>
-
   <ItemGroup>
     <Reference Include="IBM.Data.DB2, Version=9.0.0.2, Culture=neutral, PublicKeyToken=7c307b91aa13d208, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -147,12 +145,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="DB2_SpatialExtender_Exception.cs" />
-    <Compile Include="DB2_SpatialExtender_ExpressionTreeToSqlCompiler.cs" />
-    <Compile Include="DB2_SpatialExtender_FeatureDataReader.cs" />
-    <Compile Include="DB2_SpatialExtender_Provider.cs" />
-    <Compile Include="DB2_SpatialExtender_ProviderStatic.cs" />
-    <Compile Include="DB2_SpatialExtender_SpatialUtility.cs" />
+    <Compile Include="DB2SpatialExtenderException.cs" />
+    <Compile Include="DB2SpatialExtenderExpressionTreeToSqlCompiler.cs" />
+    <Compile Include="DB2SpatialExtenderFeatureDataReader.cs" />
+    <Compile Include="DB2SpatialExtenderProvider.cs" />
+    <Compile Include="DB2SpatialExtenderProviderStatic.cs" />
+    <Compile Include="DB2SpatialExtenderDbUtility.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

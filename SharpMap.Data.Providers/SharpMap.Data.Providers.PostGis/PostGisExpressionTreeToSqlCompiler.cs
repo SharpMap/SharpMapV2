@@ -28,7 +28,7 @@
  *    
  */
 using System;
-using System.Collections.Generic;
+using System.Globalization;
 using System.Text;
 using GeoAPI.Geometries;
 using SharpMap.Data.Providers.Db;
@@ -36,59 +36,59 @@ using SharpMap.Expressions;
 
 namespace SharpMap.Data.Providers.PostGis
 {
-    public class PostGis_ExpressionTreeToSqlCompiler<TOid>
+    internal class PostGisExpressionTreeToSqlCompiler<TOid>
         : ExpressionTreeToSqlCompilerBase<TOid>
     {
-
-        public PostGis_ExpressionTreeToSqlCompiler(PostGis_Provider<TOid> provider,
-                                                       Expression query
-                                                       )
-
+        public PostGisExpressionTreeToSqlCompiler(PostGisProvider<TOid> provider,
+                                                  Expression query
+            )
             : base(provider, query)
         {
-
         }
 
         protected override void WriteSpatialGeometryExpressionSql(StringBuilder builder, SpatialOperation op,
                                                                   IGeometry geom)
         {
-
             //int? srid = Provider.ParseSrid(geom.Srid);
             //if (!srid.HasValue || srid < 0)
             //    srid = Provider.ParseSrid(Provider.Srid);
-            //if (srid < 0) srid = Provider.ParseSrid(PostGis_ProviderStatic.DefaultSrid);
+            //if (srid < 0) srid = Provider.ParseSrid(PostGisProviderStatic.DefaultSrid);
 
             if (op != SpatialOperation.None)
             {
                 builder.Append(string.Format(" ST_{0}( ST_GeomFromWKB({1}, {2}), {3} )",
-                  Enum.GetName(typeof(SpatialOperation), op),
-                  CreateParameter(geom).ParameterName,
-                  SridForQuery(geom.Srid), Provider.QualifyColumnName(Provider.GeometryColumn)));
+                                             Enum.GetName(typeof (SpatialOperation), op),
+                                             CreateParameter(geom).ParameterName,
+                                             SridForQuery(geom.Srid),
+                                             Provider.QualifyColumnName(Provider.GeometryColumn)));
 
                 //builder.Append(" AND");
                 //WriteSpatialExtentsExpressionSql(builder, op, geom.Extents);
             }
-
         }
 
         protected override void WriteSpatialExtentsExpressionSql(StringBuilder builder,
                                                                  SpatialOperation spatialOperation, IExtents ext)
         {
-            IExtents2D exts = (IExtents2D)ext;
+            var exts = (IExtents2D) ext;
             //ST_SetSRID('BOX3D(0 0,1 1)'::box3d,4326)
             String whereClause = "";
 
             whereClause = string.Format(" {5} && ST_SetSRID('BOX3D({0} {1}, {2} {3})'::box3d, {4})",
-                String.Format(System.Globalization.CultureInfo.InvariantCulture, "{0}", CreateParameter(exts.XMin).Value),
-                //CreateParameter(exts.XMin).ParameterName,
-                String.Format(System.Globalization.CultureInfo.InvariantCulture, "{0}", CreateParameter(exts.YMin).Value),
-                //CreateParameter(exts.YMin).ParameterName,
-                String.Format(System.Globalization.CultureInfo.InvariantCulture, "{0}", CreateParameter(exts.XMax).Value),
-                //CreateParameter(exts.XMax).ParameterName,
-                String.Format(System.Globalization.CultureInfo.InvariantCulture, "{0}", CreateParameter(exts.YMax).Value),
-                //CreateParameter(exts.YMax).ParameterName,
-                SridForQuery(exts.SpatialReference.AuthorityCode), 
-                Provider.QualifyColumnName(Provider.GeometryColumn));
+                                        String.Format(CultureInfo.InvariantCulture, "{0}",
+                                                      CreateParameter(exts.XMin).Value),
+                                        //CreateParameter(exts.XMin).ParameterName,
+                                        String.Format(CultureInfo.InvariantCulture, "{0}",
+                                                      CreateParameter(exts.YMin).Value),
+                                        //CreateParameter(exts.YMin).ParameterName,
+                                        String.Format(CultureInfo.InvariantCulture, "{0}",
+                                                      CreateParameter(exts.XMax).Value),
+                                        //CreateParameter(exts.XMax).ParameterName,
+                                        String.Format(CultureInfo.InvariantCulture, "{0}",
+                                                      CreateParameter(exts.YMax).Value),
+                                        //CreateParameter(exts.YMax).ParameterName,
+                                        SridForQuery(exts.SpatialReference.AuthorityCode),
+                                        Provider.QualifyColumnName(Provider.GeometryColumn));
             builder.Append(whereClause);
         }
 
@@ -97,10 +97,9 @@ namespace SharpMap.Data.Providers.PostGis
             int? ret = Provider.ParseSrid(srid);
             if (!ret.HasValue || ret < 0)
                 ret = Provider.ParseSrid(Provider.Srid);
-            if (ret < 0) ret = Provider.ParseSrid(PostGis_ProviderStatic.DefaultSrid);
-            
+            if (ret < 0) ret = Provider.ParseSrid(PostGisProviderStatic.DefaultSrid);
+
             return ret.Value;
         }
     }
-
 }

@@ -84,16 +84,16 @@ namespace SharpMap.Data.Providers
         MBRCache = 2
     }
 
-    public class SpatiaLite2_Provider
-        : SpatialDbProviderBase<Int64>, ISpatialDbProvider<SpatiaLite2_Utility>
+    public class SpatiaLite2Provider
+        : SpatialDbProviderBase<Int64>, ISpatialDbProvider<SpatiaLite2DbUtility>
     {
 
         #region Static Properties
 
-        static SpatiaLite2_Provider()
+        static SpatiaLite2Provider()
         {
             //AddDerivedProperties(typeof(SpatialDbProviderBase<Int64>));
-            AddDerivedProperties(typeof(SpatiaLite2_Provider));
+            AddDerivedProperties(typeof(SpatiaLite2Provider));
         }
         /// <summary>
         /// Gets a <see cref="PropertyDescriptor"/> for 
@@ -302,15 +302,15 @@ WHERE type='table' AND NOT( name like 'cache_%' ) AND NOT( name like 'sqlite%' )
             }
         }
 
-        public SpatiaLite2_Provider(IGeometryFactory geometryFactory, string connectionString, string tableName)
+        public SpatiaLite2Provider(IGeometryFactory geometryFactory, string connectionString, string tableName)
             : this(geometryFactory, connectionString, "main", tableName, DefaultOidColumnName, DefaultGeometryColumnName)
         {
         }
 
-        public SpatiaLite2_Provider(IGeometryFactory geometryFactory, string connectionString,
+        public SpatiaLite2Provider(IGeometryFactory geometryFactory, string connectionString,
                                   string tableSchema, string tableName, string oidColumn, string geometryColumn)
             : base(
-                    new SpatiaLite2_Utility(), geometryFactory, connectionString, tableSchema, tableName, oidColumn,
+                    new SpatiaLite2DbUtility(), geometryFactory, connectionString, tableSchema, tableName, oidColumn,
                     geometryColumn)
         {
             using (SQLiteConnection cn = new SQLiteConnection(connectionString))
@@ -335,13 +335,13 @@ WHERE type='table' AND NOT( name like 'cache_%' ) AND NOT( name like 'sqlite%' )
 
                         //srid
                         if (String.Compare(OriginalSrid , dr.GetString(1), true) != 0)
-                            throw new SpatiaLite2_Exception("Spatial Reference System does not match that of assigned geometry factory!");
+                            throw new SpatiaLite2Exception("Spatial Reference System does not match that of assigned geometry factory!");
 
                         //SpatiaLite Index
                         switch (dr.GetInt64(2))
                         {
                             case 0:
-                                throw new SpatiaLite2_Exception("Spatial index type must not be 'None'");
+                                throw new SpatiaLite2Exception("Spatial index type must not be 'None'");
                                 //_spatialLiteIndexType = SpatiaLite2_IndexType.None;
                                 //break;
                             case 1:
@@ -351,7 +351,7 @@ WHERE type='table' AND NOT( name like 'cache_%' ) AND NOT( name like 'sqlite%' )
                                 _spatialLiteIndexType = SpatiaLite2_IndexType.MBRCache;
                                 break;
                             default:
-                                throw new SpatiaLite2_Exception("Unknown SpatiaLite index type.");
+                                throw new SpatiaLite2Exception("Unknown SpatiaLite index type.");
                         }
                     }
                 }
@@ -365,7 +365,7 @@ WHERE type='table' AND NOT( name like 'cache_%' ) AND NOT( name like 'sqlite%' )
         private OgcGeometryType parseGeometryType(String geometryString)
         {
             if (String.IsNullOrEmpty(geometryString))
-                throw new SpatiaLite2_Exception("Geometry type not specified!");
+                throw new SpatiaLite2Exception("Geometry type not specified!");
 
             switch (geometryString.ToUpper())
             {
@@ -377,7 +377,7 @@ WHERE type='table' AND NOT( name like 'cache_%' ) AND NOT( name like 'sqlite%' )
                 case "MULTIPOLYGON": return OgcGeometryType.MultiPolygon;
                 case "GEOMETRYCOLLECTION": return OgcGeometryType.GeometryCollection;
                 default:
-                    throw new SpatiaLite2_Exception(string.Format("Invalid geometry type '{0}'", geometryString));
+                    throw new SpatiaLite2Exception(string.Format("Invalid geometry type '{0}'", geometryString));
             }
         }
 
@@ -455,7 +455,7 @@ WHERE type='table' AND NOT( name like 'cache_%' ) AND NOT( name like 'sqlite%' )
                 //    case 1: return SpatiaLite2_IndexType.RTree;
                 //    case 2: return SpatiaLite2_IndexType.MBRCache;
                 //    default:
-                //        throw new SpatiaLite2_Exception("Unknown spatial index type");
+                //        throw new SpatiaLite2Exception("Unknown spatial index type");
                 //}
             }
             set
@@ -524,7 +524,7 @@ WHERE type='table' AND NOT( name like 'cache_%' ) AND NOT( name like 'sqlite%' )
 
         protected override ExpressionTreeToSqlCompilerBase<Int64> CreateSqlCompiler(Expression expression)
         {
-            return new SpatiaLite2_ExpressionTreeToSqlCompiler(this,
+            return new SpatiaLite2ExpressionTreeToSqlCompiler(this,
                                                                expression,
                                                                _spatialLiteIndexType);
         }
@@ -640,25 +640,25 @@ WHERE type='table' AND NOT( name like 'cache_%' ) AND NOT( name like 'sqlite%' )
 
                 if ((Int64)new SQLiteCommand(String.Format("SELECT RecoverGeometryColumn {0}", addGeometryColumnClause), conn).ExecuteScalar() == (Int64)0)
                     if ((Int64)new SQLiteCommand(String.Format("SELECT AddGeometryColumn {0};", addGeometryColumnClause), conn).ExecuteScalar() == (Int64)0)
-                        throw new SpatiaLite2_Exception(string.Format("Cannot create geometry column with type of '{0}'", geometryType.ToString()));
+                        throw new SpatiaLite2Exception(string.Format("Cannot create geometry column with type of '{0}'", geometryType.ToString()));
 
                 switch (spatialIndexType)
                 {
                     case SpatiaLite2_IndexType.RTree:
                         if (new SQLiteCommand(String.Format("SELECT CreateSpatialIndex('{0}','{1}');",
-                            tableName, geometryColumnName), conn).ExecuteScalar() == (object)0) throw new SpatiaLite2_Exception("Could not create RTree index");
+                            tableName, geometryColumnName), conn).ExecuteScalar() == (object)0) throw new SpatiaLite2Exception("Could not create RTree index");
                         break;
 
                     case SpatiaLite2_IndexType.MBRCache:
                         if (new SQLiteCommand(String.Format("SELECT CreateMbrCache('{0}','{1}');",
-                            tableName, geometryColumnName), conn).ExecuteScalar() == (object)0) throw new SpatiaLite2_Exception("Could not create MbrCache");
+                            tableName, geometryColumnName), conn).ExecuteScalar() == (object)0) throw new SpatiaLite2Exception("Could not create MbrCache");
                         break;
                 }
             }
             conn.Close();
             conn = null;
 
-            SpatiaLite2_Provider prov = new SpatiaLite2_Provider(
+            SpatiaLite2Provider prov = new SpatiaLite2Provider(
               featureDataTable.GeometryFactory, connectionString, "main", tableName,
               featureDataTable.Columns[0].ColumnName, geometryColumnName);
             prov.Insert(featureDataTable);
@@ -714,7 +714,7 @@ WHERE type='table' AND NOT( name like 'cache_%' ) AND NOT( name like 'sqlite%' )
             Int32 index = 0;
             foreach (DataColumn dc in dcc)
             {
-                columns[index++] = string.Format(" [{0}] {1}", dc.ColumnName, SpatiaLite2_Utility.GetTypeString(dc.DataType));
+                columns[index++] = string.Format(" [{0}] {1}", dc.ColumnName, SpatiaLite2DbUtility.GetTypeString(dc.DataType));
             }
             index = 0;
 
@@ -877,11 +877,11 @@ WHERE type='table' AND NOT( name like 'cache_%' ) AND NOT( name like 'sqlite%' )
             return sql;
         }
 
-        #region ISpatialDbProvider<SpatiaLite2_Utility> Members
+        #region ISpatialDbProvider<SpatiaLite2DbUtility> Members
 
-        public new SpatiaLite2_Utility DbUtility
+        public new SpatiaLite2DbUtility DbUtility
         {
-            get { return (SpatiaLite2_Utility)base.DbUtility; }
+            get { return (SpatiaLite2DbUtility)base.DbUtility; }
         }
 
         #endregion

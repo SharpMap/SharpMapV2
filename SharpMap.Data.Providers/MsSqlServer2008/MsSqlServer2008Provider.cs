@@ -17,6 +17,8 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
+using System.Text;
+using GeoAPI.DataStructures;
 using GeoAPI.Geometries;
 using SharpMap.Data.Providers.Db;
 using SharpMap.Data.Providers.Db.Expressions;
@@ -28,6 +30,7 @@ using Processor = System.Linq.Enumerable;
 using Enumerable = System.Linq.Enumerable;
 using Caster = System.Linq.Enumerable;
 #else
+using SharpMap.Utilities.SridUtility;
 using Processor = GeoAPI.DataStructures.Processor;
 using Caster = GeoAPI.DataStructures.Caster;
 using Enumerable = GeoAPI.DataStructures.Enumerable;
@@ -56,6 +59,7 @@ namespace SharpMap.Data.Providers
     public class MsSqlServer2008Provider<TOid>
         : SpatialDbProviderBase<TOid>
     {
+
         public MsSqlServer2008Provider(IGeometryFactory geometryFactory,
                                        String connectionString,
                                        String tableName)
@@ -77,6 +81,7 @@ namespace SharpMap.Data.Providers
                    oidColumn,
                    geometryColumn)
         {
+
         }
 
         public override String GeometryColumnConversionFormatString
@@ -89,7 +94,7 @@ namespace SharpMap.Data.Providers
             get
             {
                 return String.Format("geometry::STGeomFromWKB({0}, {1})", "{0}",
-                                     ParseSrid(Srid).HasValue ? ParseSrid(Srid).Value : 0);
+                                     SridInt.HasValue ? SridInt : 0);
             }
         }
 
@@ -315,6 +320,61 @@ WHERE rownumber BETWEEN {9} AND {10} ",
             return string.Format(" WITH(NOLOCK,INDEX({0})) ", string.Join(",", Enumerable.ToArray(indexNames)));
         }
 
+        //protected override DataTable BuildSchemaTable()
+        //{
+        //    DataTable dt = base.BuildSchemaTable(true);
+        //    dt.Columns[GeometryColumn].DataType = typeof(byte[]);
+        //    //the natural return type is the native sql Geometry we need to override this to avoid a schema merge exception
+        //    return dt;
+        //}
+
+        public void RebuildSpatialIndex()
+        {
+            RebuildSpatialIndex(SpatialIndexGridDensity.Low, SpatialIndexGridDensity.Low, SpatialIndexGridDensity.Medium,
+                                SpatialIndexGridDensity.High);
+        }
+
+        public void RebuildSpatialIndex(SpatialIndexGridDensity level1, SpatialIndexGridDensity level2, SpatialIndexGridDensity level3, SpatialIndexGridDensity level4)
+        {
+
+        }
+
+        public void CreateIndex(string[] columnNames)
+        {
+
+        }
+
+        public void CreateEnvelopeColumns()
+        {
+            string minX = string.Format("[{0}_Envelope_MinX]", GeometryColumn),
+                miny = string.Format("[{0}_Envelope_MinY]", GeometryColumn),
+                maxX = string.Format("[{0}_Envelope_MaxX]", GeometryColumn),
+                maxY = string.Format("[{0}_Envelope_MaxY]", GeometryColumn);
+
+            StringBuilder sb = new StringBuilder();
+
+            //TODO:
+
+
+            using (IDbConnection conn = DbUtility.CreateConnection(ConnectionString))
+            {
+                using (IDbCommand cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = sb.ToString();
+                    cmd.CommandType = CommandType.Text;
+                    conn.Open();
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
+
+
+        public static MsSqlServer2008Provider<TOid> Create(string connectionString, IGeometryFactory geometryFactory,
+                                                           string schema, string tableName, FeatureDataTable model)
+        {
+            return CreateTableHelper.Create<TOid>(connectionString, geometryFactory, schema, tableName, model);
+        }
+
         #region Nested type: SchemaTableBuildException
 
         public class SchemaTableBuildException : Exception
@@ -328,27 +388,160 @@ WHERE rownumber BETWEEN {9} AND {10} ",
         }
 
         #endregion
+    }
 
-        //protected override DataTable BuildSchemaTable()
-        //{
-        //    DataTable dt = base.BuildSchemaTable(true);
-        //    dt.Columns[GeometryColumn].DataType = typeof(byte[]);
-        //    //the natural return type is the native sql Geometry we need to override this to avoid a schema merge exception
-        //    return dt;
-        //}
+    public enum SpatialIndexGridDensity
+    {
+        Low,
+        Medium,
+        High
+    }
 
-
-        public static MsSqlServer2008Provider<TOid> Create(string connectionString, string schema, string tableName, FeatureDataTable model)
+    public class InvalidDatabaseConfigurationException : Exception
+    {
+        public InvalidDatabaseConfigurationException(string message)
+            : base(message)
         {
-            return CreateTableHelper.Create<TOid>(connectionString, schema, tableName, model);
         }
     }
 
     internal static class CreateTableHelper
     {
-        public static MsSqlServer2008Provider<TOid> Create<TOid>(string connectionString, string schema, string tableName, FeatureDataTable model)
+        internal static bool EnsureDbIsSpatiallyEnabled(IDbConnection connection)
         {
-            throw new NotImplementedException();
+            return CheckIfObjectExists(connection, "sys", "spatial_reference_systems");
+        }
+
+
+        internal static bool CheckIfObjectExists(IDbConnection connection, string schema, string objectName)
+        {
+            IDbCommand cmd = connection.CreateCommand();
+            cmd.CommandText =
+                string.Format(
+                    @"SELECT 
+CASE WHEN object_id('[{0}].[{1}]') IS NULL THEN 0
+ELSE 1
+END
+	", schema, objectName);
+            cmd.CommandType = CommandType.Text;
+            return (int)cmd.ExecuteScalar() == 1;
+        }
+
+        internal static bool CheckProviderCompatibility<TOid>(IDbConnection connection,
+                                                              IGeometryFactory geometryFactory,
+                                                              string schema,
+                                                              string tableName,
+                                                              FeatureDataTable model,
+                                                              out MsSqlServer2008Provider<TOid> provider)
+        {
+            var p = new MsSqlServer2008Provider<TOid>(geometryFactory,
+                                                      connection.ConnectionString,
+                                                      schema,
+                                                      tableName,
+                                                      model.PrimaryKey[0].ColumnName,
+                                                      "Geom");
+
+            FeatureDataTable fdt = p.CreateNewTable();
+
+            if (FeatureDataTableModelIsCompatible(fdt, model))
+            {
+                provider = p;
+                return true;
+            }
+
+            provider = null;
+            return false;
+        }
+
+        internal static bool FeatureDataTableModelIsCompatible(FeatureDataTable a, FeatureDataTable b)
+        {
+            if (a.Columns.Count != b.Columns.Count)
+                return false;
+
+            foreach (DataColumn clm in a.Columns)
+            {
+                if (!b.Columns.Contains(clm.ColumnName))
+                    return false;
+
+                DataColumn clm2 = b.Columns[clm.ColumnName];
+
+                if (!DataColumnsCompatible(clm, clm2))
+                    return false;
+            }
+            return true;
+        }
+
+        internal static bool DataColumnsCompatible(DataColumn a, DataColumn b)
+        {
+            if (a.DataType != b.DataType)
+                return false;
+            //TODO: cases where coercion is possible
+            return true;
+        }
+
+
+        internal static MsSqlServer2008Provider<TOid> Create<TOid>(string connectionString,
+                                                                   IGeometryFactory geometryFactory,
+                                                                   string schema,
+                                                                   string tableName,
+                                                                   FeatureDataTable model)
+        {
+            using (IDbConnection conn = new SqlServerDbUtility().CreateConnection(connectionString))
+            {
+                conn.Open();
+                if (!EnsureDbIsSpatiallyEnabled(conn))
+                    throw new InvalidDatabaseConfigurationException("Database does not contain spatial components.");
+
+                if (CheckIfObjectExists(conn, schema, tableName))
+                {
+                    MsSqlServer2008Provider<TOid> provider;
+                    if (CheckProviderCompatibility(conn, geometryFactory, schema, tableName, model, out provider))
+                        return provider;
+
+                    throw new IncompatibleSchemaException(
+                        "The table already exists in the database but has an incompatible schema.");
+                }
+                string oidColumn, geometryColumn;
+                CreateDatabaseObjects(conn, schema, tableName, model, out oidColumn, out geometryColumn);
+
+                return new MsSqlServer2008Provider<TOid>(geometryFactory, connectionString, schema, tableName, oidColumn,
+                                                         geometryColumn);
+            }
+        }
+
+        internal static void CreateDatabaseObjects(IDbConnection conn, string schema, string tableName,
+                                                   FeatureDataTable model, out string oidColumn,
+                                                   out string geometryColumn)
+        {
+            SqlServerDbUtility util = new SqlServerDbUtility();
+            string oidCol = model.PrimaryKey[0].ColumnName, geomCol = "Geom";
+            StringBuilder sb = new StringBuilder();
+            sb.AppendFormat("CREATE TABLE  [{0}].[{1}] (", schema, tableName);
+            foreach (DataColumn column in model.Columns)
+            {
+
+                sb.AppendFormat("[{0}] {1},\n", column.ColumnName, SqlServerDbUtility.GetFullTypeString(column.DataType));
+            }
+
+            sb.Append("\n[Geom] geometry,");
+            sb.AppendFormat("CONSTRAINT [pk_{0}_{1}] PRIMARY KEY CLUSTERED([{1}])", tableName, oidCol);
+            sb.AppendLine(")");
+
+            oidColumn = oidCol;
+            geometryColumn = geomCol;
+
+            IDbCommand cmd = conn.CreateCommand();
+            cmd.CommandText = sb.ToString();
+
+            cmd.ExecuteNonQuery();
+        }
+    }
+
+    public class IncompatibleSchemaException : Exception
+    {
+        public IncompatibleSchemaException(string message)
+            : base(message)
+        {
         }
     }
 }

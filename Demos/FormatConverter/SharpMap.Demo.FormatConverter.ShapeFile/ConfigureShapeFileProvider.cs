@@ -74,6 +74,8 @@ namespace SharpMap.Demo.FormatConverter.ShapeFile
 
         public IWritableFeatureProvider ConstructTargetProvider(Type oidType, IGeometryFactory geometryFactory, ICoordinateSystemFactory csFactory, FeatureDataTable schemaTable)
         {
+            
+
             string directoryPath = GetDirectoryPath();
 
             CreateAction overwrite;

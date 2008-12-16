@@ -28,12 +28,11 @@
 using System;
 using System.Data;
 using IBM.Data.DB2;
-using IBM.Data.DB2Types;
 using SharpMap.Data.Providers.Db;
 
-namespace SharpMap.Data.Providers.DB2_SpatialExtender
+namespace SharpMap.Data.Providers
 {
-    public class DB2_SpatialExtender_Utility : IDbUtility<DbType>
+    public class DB2SpatialExtenderDbUtility : IDbUtility<DbType>
     {
         #region IDbUtility<DbType> Members
 
@@ -52,10 +51,10 @@ namespace SharpMap.Data.Providers.DB2_SpatialExtender
                                                       ParameterDirection parameterDirection)
         {
             DB2Parameter p = Equals(null, paramValue)
-                                    ? new DB2Parameter(
-                                          ParameterNameForQueries(parameterName), DBNull.Value)
-                                    : new DB2Parameter(
-                                          ParameterNameForQueries(parameterName), paramValue);
+                                 ? new DB2Parameter(
+                                       ParameterNameForQueries(parameterName), DBNull.Value)
+                                 : new DB2Parameter(
+                                       ParameterNameForQueries(parameterName), paramValue);
 
             p.Direction = parameterDirection;
             return p;
@@ -68,7 +67,7 @@ namespace SharpMap.Data.Providers.DB2_SpatialExtender
 
         public IDbDataAdapter CreateAdapter(IDbCommand cmd)
         {
-            return new DB2DataAdapter((DB2Command)cmd);
+            return new DB2DataAdapter((DB2Command) cmd);
         }
 
         public IDataParameter CreateParameter<TValue>(string parameterName, ParameterDirection parameterDirection)
@@ -84,10 +83,68 @@ namespace SharpMap.Data.Providers.DB2_SpatialExtender
 
         public IDataParameter CreateParameter(string parameterName, DbType dbType, ParameterDirection parameterDirection)
         {
-            IDataParameter p= new DB2Parameter(parameterName, GetDB2Type(dbType), GetDbSize(dbType))
-                                  {Direction = parameterDirection};
+            IDataParameter p = new DB2Parameter(parameterName, GetDB2Type(dbType), GetDbSize(dbType))
+                                   {Direction = parameterDirection};
             return p;
         }
+
+        string IDbUtility<DbType>.GetTypeString(DbType dbType)
+        {
+            return GetTypeString(dbType);
+        }
+
+        string IDbUtility<DbType>.GetTypeString(Type netType)
+        {
+            return GetTypeString(netType);
+        }
+
+        DbType IDbUtility<DbType>.GetDbType<TValue>()
+        {
+            return GetDbType<TValue>();
+        }
+
+        DbType IDbUtility<DbType>.GetDbType(Type netType)
+        {
+            return GetDbType(netType);
+        }
+
+        int IDbUtility<DbType>.GetDbSize(DbType dbType)
+        {
+            return GetDbSize(dbType);
+        }
+
+        string IDbUtility<DbType>.GetFullTypeString(DbType dbType, int size)
+        {
+            return GetFullTypeString(dbType, size);
+        }
+
+        string IDbUtility<DbType>.GetFullTypeString(Type netType, int size)
+        {
+            return GetFullTypeString(netType, size);
+        }
+
+        string IDbUtility<DbType>.GetFullTypeString(DbType dbType)
+        {
+            return GetFullTypeString(dbType);
+        }
+
+        string IDbUtility<DbType>.GetFullTypeString(Type netType)
+        {
+            return GetFullTypeString(netType);
+        }
+
+        int IDbUtility<DbType>.GetDbSize(Type dbType)
+        {
+            return GetDbSize(dbType);
+        }
+
+        public IDataParameter CreateParameter(string parameterName, object value, ParameterDirection paramDirection)
+        {
+            return new DB2Parameter(parameterName.StartsWith("@") ? parameterName : "@" + parameterName, value)
+                       {Direction = paramDirection};
+        }
+
+        #endregion
 
         public static string GetTypeString(DbType dbType)
         {
@@ -98,39 +155,46 @@ namespace SharpMap.Data.Providers.DB2_SpatialExtender
         {
             switch (netType.FullName)
             {
-                case "System.Single": return "REAL";
-                case "System.Double": return "FLOAT";
-                case "System.Decimal": return "DECIMAL";
+                case "System.Single":
+                    return "REAL";
+                case "System.Double":
+                    return "FLOAT";
+                case "System.Decimal":
+                    return "DECIMAL";
                 case "System.Byte":
                 case "System.Boolean":
-                case "System.Int16": return "SMALLINT";
-                case "System.Int32": return "INT";
-                case "System.Int64": return "BIGINT";
-                case "System.DateTime": return "TIMESTAMP";
-                case "System.TimeSpan": return "TIME";
-                //case "System.Guid": return "uuid";
-                case "System.Byte[]": return "BLOB";
-                case "System.String": return "VARCHAR(250)";
-                case "GeoAPI.Geometries.IGeometry": return "BLOB";
+                case "System.Int16":
+                    return "SMALLINT";
+                case "System.Int32":
+                    return "INT";
+                case "System.Int64":
+                    return "BIGINT";
+                case "System.DateTime":
+                    return "TIMESTAMP";
+                case "System.TimeSpan":
+                    return "TIME";
+                    //case "System.Guid": return "uuid";
+                case "System.Byte[]":
+                    return "BLOB";
+                case "System.String":
+                    return "VARCHAR(250)";
+                case "GeoAPI.Geometries.IGeometry":
+                    return "BLOB";
                 default:
                     throw (new NotSupportedException("Unsupported datatype '" + netType.Name + "' found in datasource"));
             }
         }
 
-
-
-        #endregion
-
         public static DbType GetDbType<TValue>()
         {
-            return GetDbType(typeof(TValue));
+            return GetDbType(typeof (TValue));
         }
 
 
         public static DB2Type GetDB2Type(DbType dbType)
         {
             switch (dbType.ToString())
-            { 
+            {
                 case "Binary":
                     return DB2Type.Binary;
                 case "Int64":
@@ -157,9 +221,10 @@ namespace SharpMap.Data.Providers.DB2_SpatialExtender
                 case "Currency":
                     return DB2Type.Decimal;
                 default:
-                    throw new NotSupportedException("Unsupported datatype '" + dbType.ToString() + "' found in datasource");
+                    throw new NotSupportedException("Unsupported datatype '" + dbType + "' found in datasource");
             }
         }
+
         public static DbType GetDbType(Type netType)
         {
             switch (netType.FullName)
@@ -189,7 +254,6 @@ namespace SharpMap.Data.Providers.DB2_SpatialExtender
                 default:
                     throw (new NotSupportedException("Unsupported datatype '" + netType.Name + "' found in datasource"));
             }
-        
         }
 
         public static int GetDbSize(DbType dbType)
@@ -206,35 +270,29 @@ namespace SharpMap.Data.Providers.DB2_SpatialExtender
                 return String.Format("@{0}", parameterName);
         }
 
-        #region IDbUtility<DbType> Members
-
-        string IDbUtility<DbType>.GetTypeString(DbType dbType)
+        public static string GetFullTypeString(DbType dbType, int size)
         {
-            return GetTypeString(dbType);
+            throw new NotImplementedException();
         }
 
-        string IDbUtility<DbType>.GetTypeString(Type netType)
+        public static string GetFullTypeString(Type netType, int size)
         {
-            return GetTypeString(netType);
+            return GetFullTypeString(GetDbType(netType), size);
         }
 
-        DbType IDbUtility<DbType>.GetDbType<TValue>()
+        public static string GetFullTypeString(DbType dbType)
         {
-            return GetDbType<TValue>();
+            return GetFullTypeString(dbType, GetDbSize(dbType));
         }
 
-        DbType IDbUtility<DbType>.GetDbType(Type netType)
+        public static string GetFullTypeString(Type netType)
         {
-            return GetDbType(netType);
+            return GetFullTypeString(GetDbType(netType));
         }
 
-        int IDbUtility<DbType>.GetDbSize(DbType dbType)
+        public static int GetDbSize(Type dbType)
         {
-            return GetDbSize(dbType);
+            return GetDbSize(GetDbType(dbType));
         }
-
-        #endregion
-
-
     }
 }

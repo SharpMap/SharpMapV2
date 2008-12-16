@@ -96,11 +96,11 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="SpatiaLite2_Provider.cs" />
-    <Compile Include="SpatiaLite2_ExpressionTreeToSqlCompiler.cs" />
+    <Compile Include="SpatiaLite2Provider.cs" />
+    <Compile Include="SpatiaLite2ExpressionTreeToSqlCompiler.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SpatiaLite2_SpatialUtility.cs" />
-    <Compile Include="SpatiaLite2_Exception.cs" />
+    <Compile Include="SpatiaLite2DbUtility.cs" />
+    <Compile Include="SpatiaLite2Exception.cs" />
   </ItemGroup>
   <Choose>
     <When Condition="'$(GeoAPIProjectReference)' == 'false'">

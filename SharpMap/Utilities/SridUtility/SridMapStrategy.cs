@@ -258,6 +258,12 @@ namespace SharpMap.Utilities.SridUtility
             }
             try
             {
+                if (string.IsNullOrEmpty(input))
+                {
+                    output = null;
+                    return false;
+                }
+
                 output = CoordinateSystemFactory.CreateFromWkt(input);
                 return true;
             }

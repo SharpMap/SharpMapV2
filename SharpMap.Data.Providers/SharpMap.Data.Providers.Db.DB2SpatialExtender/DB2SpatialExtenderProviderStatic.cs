@@ -29,29 +29,16 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Data;
+using System.Diagnostics;
 using System.Globalization;
-using System.Text;
-
-using IBM.Data.DB2;
-using IBM.Data.DB2Types;
 using GeoAPI.Geometries;
-using SharpMap.Data.Providers;
-using SharpMap.Data.Providers.DB2_SpatialExtender;
+using IBM.Data.DB2;
 
 namespace SharpMap.Data.Providers
 {
-    public static class DB2_SpatialExtender_ProviderStatic
+    public static class DB2SpatialExtenderProviderStatic
     {
         //private static readonly System.Globalization.CultureInfo
-
-        /// <summary>
-        /// Srid assumed when no Srid is mentioned
-        /// </summary>
-        public static String DefaultSrid = "0";//"2000000000";
-        /// <summary>
-        /// Name used when no geometry column is supplied with constructor of PostGisProvider(TOid)
-        /// </summary>
-        public static String DefaultGeometryColumnName = "XGeometryX";
 
         /// <summary>
         /// Name of spatial schema used with DB2SpatialExtender
@@ -59,25 +46,38 @@ namespace SharpMap.Data.Providers
         public const String DefaultSpatialSchema = "DB2GSE";
 
         /// <summary>
+        /// Name used when no geometry column is supplied with constructor of PostGisProvider(TOid)
+        /// </summary>
+        public static String DefaultGeometryColumnName = "XGeometryX";
+
+        /// <summary>
+        /// Srid assumed when no Srid is mentioned
+        /// </summary>
+        public static String DefaultSrid = "0"; //"2000000000";
+
+        /// <summary>
         /// Creates a spatially enabled database on the via connectionString specified Database;
         /// </summary>
         /// <typeparam name="TOid"></typeparam>
         /// <param name="featureDataTable"></param>
         /// <param name="connectionString"></param>
-        public static void CreateDataTable<TOid>(SharpMap.Data.FeatureDataTable featureDataTable, String connectionString)
+        public static void CreateDataTable<TOid>(FeatureDataTable featureDataTable, String connectionString)
         {
             CreateDataTable<TOid>(featureDataTable, featureDataTable.TableName, connectionString);
         }
 
-        public static void CreateDataTable<TOid>(FeatureDataTable featureDataTable, String tableName, String connectionString)
+        public static void CreateDataTable<TOid>(FeatureDataTable featureDataTable, String tableName,
+                                                 String connectionString)
         {
             CreateDataTable<TOid>(featureDataTable, tableName, connectionString, DefaultGeometryColumnName);
         }
 
-        public static void CreateDataTable<TOid>(FeatureDataTable featureDataTable, String tableName, String connectionString, String geometryColumnName)
+        public static void CreateDataTable<TOid>(FeatureDataTable featureDataTable, String tableName,
+                                                 String connectionString, String geometryColumnName)
         {
-            CreateDataTable<TOid>(featureDataTable, tableName, connectionString, geometryColumnName, OgcGeometryType.Geometry,
-                -1, -1, -1);
+            CreateDataTable<TOid>(featureDataTable, tableName, connectionString, geometryColumnName,
+                                  OgcGeometryType.Geometry,
+                                  -1, -1, -1);
         }
 
         public static void CreateDataTable<TOid>(
@@ -89,52 +89,56 @@ namespace SharpMap.Data.Providers
             Double smallRasterSize, Double mediumRasterSize, Double largeRasterSize
             )
         {
-
-            DB2Connection conn = new DB2Connection(connectionString);
+            var conn = new DB2Connection(connectionString);
             if (conn.State == ConnectionState.Closed) conn.Open();
 
-            string srid = featureDataTable.GeometryFactory.Srid == null ? DefaultSrid : featureDataTable.GeometryFactory.Srid;
+            string srid = featureDataTable.GeometryFactory.Srid ?? DefaultSrid;
             if (conn != null)
             {
-
                 try
                 {
                     string createTableClause = string.Format("CREATE TABLE \"{0}\".\"{1}\" ({2});",
-                        DefaultSpatialSchema,
-                        tableName,
-                        ColumnsClause(featureDataTable.Columns, featureDataTable.Constraints));
+                                                             DefaultSpatialSchema,
+                                                             tableName,
+                                                             ColumnsClause(featureDataTable.Columns,
+                                                                           featureDataTable.Constraints));
 
                     new DB2Command(createTableClause, conn).ExecuteNonQuery();
 
                     new DB2Command(string.Format("ALTER TABLE \"{0}\".\"{1}\" ADD COLUMN \"{2}\" \"{0}\".{3};",
-                        DefaultSpatialSchema, tableName, geometryColumnName, ToDb2GeometryType(geometryType)), conn).ExecuteNonQuery();
+                                                 DefaultSpatialSchema, tableName, geometryColumnName,
+                                                 ToDb2GeometryType(geometryType)), conn).ExecuteNonQuery();
 
-                    Object db2crsname = new DB2Command( String.Format(
-@"SELECT DISTINCT SPATIAL_REF_SYS.CS_NAME
+                    Object db2crsname = new DB2Command(String.Format(
+                                                           @"SELECT DISTINCT SPATIAL_REF_SYS.CS_NAME
    FROM ""{0}"".""SPATIAL_REF_SYS"" AS SPATIAL_REF_SYS
-   WHERE SPATIAL_REF_SYS.AUTH_SRID = {1};", 
-                        DefaultSpatialSchema, 
-                        srid),
-                        conn).ExecuteScalar();
+   WHERE SPATIAL_REF_SYS.AUTH_SRID = {1};",
+                                                           DefaultSpatialSchema,
+                                                           srid),
+                                                       conn).ExecuteScalar();
 
-                    if (db2crsname == null || db2crsname==DBNull.Value || ((String)db2crsname).Length == 0)
+                    if (db2crsname == null || db2crsname == DBNull.Value || ((String) db2crsname).Length == 0)
                         db2crsname = "DEFAULT_SRS";
 
                     //register spatial column
-                    DB2Command cmd =  new DB2Command(String.Format("CALL \"{0}\".ST_REGISTER_SPATIAL_COLUMN(?,?,?,?,?,?);", 
-                        DefaultSpatialSchema),
-                        conn);
+                    var cmd = new DB2Command(String.Format("CALL \"{0}\".ST_REGISTER_SPATIAL_COLUMN(?,?,?,?,?,?);",
+                                                           DefaultSpatialSchema),
+                                             conn);
                     //cmd.CommandType = CommandType.StoredProcedure;
-                    
+
                     //input parameters
                     //DB2Parameter par;
-                    DB2Parameter par1 = cmd.Parameters.Add(new DB2Parameter("@P1", DB2Type.VarChar, 130)); par1.Value = "\"" + DefaultSpatialSchema + "\"";
-                    DB2Parameter par2 = cmd.Parameters.Add(new DB2Parameter("@P2", DB2Type.VarChar, 130)); par2.Value = "\"" + tableName + "\"";
-                    DB2Parameter par3 = cmd.Parameters.Add(new DB2Parameter("@P3", DB2Type.VarChar, 130)); par3.Value = "\"" + geometryColumnName + "\"";
-                    DB2Parameter par4 = cmd.Parameters.Add(new DB2Parameter("@P4", DB2Type.VarChar, 130)); par4.Value = "\"" + db2crsname + "\"";
-                    
+                    DB2Parameter par1 = cmd.Parameters.Add(new DB2Parameter("@P1", DB2Type.VarChar, 130));
+                    par1.Value = "\"" + DefaultSpatialSchema + "\"";
+                    DB2Parameter par2 = cmd.Parameters.Add(new DB2Parameter("@P2", DB2Type.VarChar, 130));
+                    par2.Value = "\"" + tableName + "\"";
+                    DB2Parameter par3 = cmd.Parameters.Add(new DB2Parameter("@P3", DB2Type.VarChar, 130));
+                    par3.Value = "\"" + geometryColumnName + "\"";
+                    DB2Parameter par4 = cmd.Parameters.Add(new DB2Parameter("@P4", DB2Type.VarChar, 130));
+                    par4.Value = "\"" + db2crsname + "\"";
+
                     //output parameters
-                    DB2Parameter par5 = cmd.Parameters.Add(new DB2Parameter("@P5", DB2Type.Integer, 4)); 
+                    DB2Parameter par5 = cmd.Parameters.Add(new DB2Parameter("@P5", DB2Type.Integer, 4));
                     par5.Direction = ParameterDirection.Output;
                     DB2Parameter par6 = cmd.Parameters.Add(new DB2Parameter("@P6", DB2Type.VarChar, 1024));
                     par6.Direction = ParameterDirection.Output;
@@ -143,36 +147,36 @@ namespace SharpMap.Data.Providers
 
                     if (smallRasterSize != -1d)
                     {
-                    //adding spatial index
-                    new DB2Command(String.Format("CREATE INDEX \"{0}\".\"idx_{1}_{2}\" ON \"{0}\".\"{1}\"(\"{2}\") EXTEND USING \"{0}\".({3}, {4}, {5});",
-                        DefaultSpatialSchema,
-                        tableName,
-                        geometryColumnName,
-                        smallRasterSize, mediumRasterSize, largeRasterSize),    
-                        conn).ExecuteNonQuery();
+                        //adding spatial index
+                        new DB2Command(
+                            String.Format(
+                                "CREATE INDEX \"{0}\".\"idx_{1}_{2}\" ON \"{0}\".\"{1}\"(\"{2}\") EXTEND USING \"{0}\".({3}, {4}, {5});",
+                                DefaultSpatialSchema,
+                                tableName,
+                                geometryColumnName,
+                                smallRasterSize, mediumRasterSize, largeRasterSize),
+                            conn).ExecuteNonQuery();
                     }
                 }
                 catch (DB2Exception ex)
                 {
-                    System.Diagnostics.Trace.Write(ex.Message);
-                    //throw new DB2_SpatialExtender_Exception(string.Format("Cannot create geometry column with type of '{0}'", geometryType.ToString()));
-
+                    Trace.Write(ex.Message);
+                    //throw new DB2SpatialExtenderException(string.Format("Cannot create geometry column with type of '{0}'", geometryType.ToString()));
                 }
                 catch
-                { }
-
+                {
+                }
             }
             conn.Close();
             conn = null;
 
-            DB2_SpatialExtender_Provider<TOid> prov = new DB2_SpatialExtender_Provider<TOid>(
+            var prov = new DB2SpatialExtenderProvider<TOid>(
                 featureDataTable.GeometryFactory, connectionString, DefaultSpatialSchema, tableName,
                 featureDataTable.Columns[0].ColumnName, geometryColumnName);
 
             prov.Insert(featureDataTable);
 
             return;
-
         }
 
         internal static object ToDb2GeometryType(OgcGeometryType geometryType)
@@ -189,13 +193,13 @@ namespace SharpMap.Data.Providers
                 case OgcGeometryType.GeometryCollection:
                     return string.Format("ST_{0}", geometryType.ToString().ToUpper());
                 default:
-                    throw new ArgumentException(String.Format( "Invalid geometry type: {0}", geometryType.ToString()));
+                    throw new ArgumentException(String.Format("Invalid geometry type: {0}", geometryType));
             }
         }
 
         private static String ColumnsClause(DataColumnCollection dcc, ConstraintCollection ccc)
         {
-            String[] columns = new String[dcc.Count];
+            var columns = new String[dcc.Count];
 
             Int32 index = 0;
             foreach (DataColumn dc in dcc)
@@ -203,35 +207,37 @@ namespace SharpMap.Data.Providers
                 String columnName = dc.ColumnName;
 
                 columns[index++] = string.Format(" \"{0}\" {1}{2}",
-                    columnName, DB2_SpatialExtender_Utility.GetTypeString(dc.DataType),
-                    dc.DefaultValue == DBNull.Value ?
-                        ""
-                        :
-                        String.Format(" DEFAULT {0}", String.Format(CultureInfo.InvariantCulture, "{0}", dc.DefaultValue)));
+                                                 columnName, DB2SpatialExtenderDbUtility.GetTypeString(dc.DataType),
+                                                 dc.DefaultValue == DBNull.Value
+                                                     ?
+                                                         ""
+                                                     :
+                                                         String.Format(" DEFAULT {0}",
+                                                                       String.Format(CultureInfo.InvariantCulture, "{0}",
+                                                                                     dc.DefaultValue)));
                 ;
                 //dc.DataType.
                 if (index == 1) columns[0] = columns[0] + " NOT NULL";
-
             }
             index = 0;
 
-            String[] constraints = new String[ccc.Count];
+            var constraints = new String[ccc.Count];
             foreach (Constraint c in ccc)
             {
-                UniqueConstraint uc = c as UniqueConstraint;
+                var uc = c as UniqueConstraint;
                 if (uc != null)
                 {
                     if (uc.IsPrimaryKey)
                     {
                         constraints[index++] = String.Format(", CONSTRAINT \"{0}\" PRIMARY KEY ({1})",
-                            uc.ConstraintName,
-                            ColumnNamesToCommaSeparatedString(uc.Columns));
+                                                             uc.ConstraintName,
+                                                             ColumnNamesToCommaSeparatedString(uc.Columns));
                     }
                     else
                     {
                         constraints[index++] = String.Format(", CONSTRAINT \"{0}\" UNIQUE ({1})",
-                            uc.ConstraintName,
-                            ColumnNamesToCommaSeparatedString(uc.Columns));
+                                                             uc.ConstraintName,
+                                                             ColumnNamesToCommaSeparatedString(uc.Columns));
                     }
                 }
 
@@ -253,11 +259,10 @@ namespace SharpMap.Data.Providers
             String constraintsClause = "";
             if (index > 0)
             {
-                Array.Resize<String>(ref constraints, index);
+                Array.Resize(ref constraints, index);
                 constraintsClause = String.Join(String.Empty, constraints);
             }
             return String.Join(",", columns) + constraintsClause;
-
         }
 
         private static String ruleToAction(Rule rule)
@@ -276,12 +281,12 @@ namespace SharpMap.Data.Providers
             }
         }
 
-        static String OrdinalsToCommaSeparatedString(IEnumerable<DataColumn> dcc)
+        private static String OrdinalsToCommaSeparatedString(IEnumerable<DataColumn> dcc)
         {
             return OrdinalsToCommaSeparatedString(String.Empty, dcc);
         }
 
-        static String OrdinalsToCommaSeparatedString(String prefix, IEnumerable dcc)
+        private static String OrdinalsToCommaSeparatedString(String prefix, IEnumerable dcc)
         {
             String ret = "";
             foreach (DataColumn t in dcc)
@@ -293,12 +298,12 @@ namespace SharpMap.Data.Providers
             return ret;
         }
 
-        static String ColumnNamesToCommaSeparatedString(IEnumerable<DataColumn> dcc)
+        private static String ColumnNamesToCommaSeparatedString(IEnumerable<DataColumn> dcc)
         {
             return ColumnNamesToCommaSeparatedString(String.Empty, dcc);
         }
 
-        static String ColumnNamesToCommaSeparatedString(String prefix, IEnumerable<DataColumn> dcc)
+        private static String ColumnNamesToCommaSeparatedString(String prefix, IEnumerable<DataColumn> dcc)
         {
             String ret = "";
             foreach (DataColumn t in dcc)
@@ -326,23 +331,22 @@ namespace SharpMap.Data.Providers
             Boolean result = false;
             try
             {
-                using (DB2Connection conn = new DB2Connection(connectionString))
+                using (var conn = new DB2Connection(connectionString))
                 {
                     conn.Open();
 
                     object spatialSchema = new DB2Command(
-                        String.Format("SELECT COUNT(*) FROM SYSCAT.SCHEMATA WHERE (SCHEMANAME='{0}');", DB2_SpatialExtender_ProviderStatic.DefaultSpatialSchema),
+                        String.Format("SELECT COUNT(*) FROM SYSCAT.SCHEMATA WHERE (SCHEMANAME='{0}');",
+                                      DefaultSpatialSchema),
                         conn).ExecuteScalar();
 
-                    result = ((int)spatialSchema == 1);
+                    result = ((int) spatialSchema == 1);
                 }
             }
             catch
             {
-
             }
             return result;
         }
     }
-
 }

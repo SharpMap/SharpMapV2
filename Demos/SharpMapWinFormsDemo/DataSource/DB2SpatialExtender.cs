@@ -12,7 +12,6 @@ using GeoAPI.CoordinateSystems;
 using SharpMap.Utilities;
 using SharpMap.Data;
 using SharpMap.Data.Providers;
-using SharpMap.Data.Providers.DB2_SpatialExtender;
 
 namespace MapViewer.DataSource
 {
@@ -32,7 +31,7 @@ namespace MapViewer.DataSource
             }
             return true;
         }
-        
+
         private bool EnsureDataBases()
         {
             if (cbDataBases.Items.Count == 0)
@@ -94,11 +93,11 @@ namespace MapViewer.DataSource
         private string parseHost(string connectionString)
         {
             string serverElem = findServer(connectionString);
-            if (serverElem.Length == 0 )
+            if (serverElem.Length == 0)
                 return "";
             serverElem = serverElem.Substring(serverElem.IndexOf('=') + 1);
             string[] parts = serverElem.Split(':');
-            
+
             return parts[0];
         }
 
@@ -119,30 +118,30 @@ namespace MapViewer.DataSource
 
             //DataTable dtDataBases = db2dbenum.GetDataSources();
             DataTable dtDataBases = db2dbenum.GetDataSources(false);
-                //parseHost(ServerConnectionString),
-                //parsePort(ServerConnectionString),
-                //"", //tbUName.Text,
-                //""); //tbPassword.Text);
+            //parseHost(ServerConnectionString),
+            //parsePort(ServerConnectionString),
+            //"", //tbUName.Text,
+            //""); //tbPassword.Text);
             string hostName = parseHost(ServerConnectionString);
-            
+
             //local database server?
             bool localDbServer = string.Compare(hostName, Environment.MachineName, true) == 0;
             if (!localDbServer)
                 localDbServer = string.Compare(hostName, "localhost", true) == 0;
             if (!localDbServer)
-            { 
+            {
                 localDbServer = string.Compare(hostName,
-                    System.Net.Dns.GetHostAddresses(System.Net.Dns.GetHostName())[0].ToString())==0;
+                    System.Net.Dns.GetHostAddresses(System.Net.Dns.GetHostName())[0].ToString()) == 0;
             }
 
             var lst = new List<string>();
             foreach (DataRow dr in dtDataBases.Rows)
             {
-                if ( (localDbServer && dr["ServerName"] == DBNull.Value) ||
+                if ((localDbServer && dr["ServerName"] == DBNull.Value) ||
                      ((string)dr["ServerName"] == hostName))
                 {
                     var cn = ServerConnectionString + "Database=" + dr["DatabaseAlias"];
-                    if (DB2_SpatialExtender_ProviderStatic.IsSpatiallyEnabled(cn))
+                    if (DB2SpatialExtenderProviderStatic.IsSpatiallyEnabled(cn))
                     {
                         lst.Add((string)dr["DatabaseAlias"]);
                     }
@@ -164,9 +163,9 @@ namespace MapViewer.DataSource
             lastDbQueried = cbDataBases.Text;
 
             var serverConnectionString = ServerConnectionString + string.Format("Database={0}", cbDataBases.Text);
-            using ( var cn = new DB2Connection( serverConnectionString ) )
+            using (var cn = new DB2Connection(serverConnectionString))
             {
-              cn.Open();
+                cn.Open();
                 var cmd = new DB2Command(string.Format(
                     @"
 SELECT  x.table_schema AS ""Schema"", 
@@ -182,7 +181,7 @@ FROM    {0}.st_geometry_columns AS x
             LEFT JOIN {0}.st_spatial_reference_systems as y on x.srs_id=y.srs_id
             LEFT JOIN SYSCAT.KEYCOLUSE AS z0 ON (z0.TABSCHEMA =x.table_schema AND z0.TABNAME = x.table_name)
             LEFT JOIN SYSCAT.COLUMNS   AS z1 ON (z1.TABSCHEMA =x.table_schema AND z1.TABNAME = x.table_name AND z0.colname=z1.colname);",
-                                                                                                                                     DB2_SpatialExtender_ProviderStatic.DefaultSpatialSchema), cn);
+                                                                                                                                     DB2SpatialExtenderProviderStatic.DefaultSpatialSchema), cn);
 
                 DB2DataAdapter da = new DB2DataAdapter(cmd);
                 _datasetTables = new DataSet();
@@ -240,43 +239,43 @@ FROM    {0}.st_geometry_columns AS x
                 string tableName = (string)drv["TableName"];
                 string oidColumnName = (string)drv["OID"];
                 string geomColumn = (string)drv["GeometryColumn"];
-                int coordDimension = (int) drv["Dimension"];
+                int coordDimension = (int)drv["Dimension"];
                 string srid = (string)drv["SRID"];//((int)).ToString();
                 string spatialReference = (string)drv["SpatialReference"];
-                
+
                 IGeometryFactory gf = null;
                 GeometryServices gserv = new GeometryServices();
-                if ( spatialReference == "UNSPECIFIED" || spatialReference == "" )
+                if (spatialReference == "UNSPECIFIED" || spatialReference == "")
                 {
-                    gf = gserv[ srid ];
+                    gf = gserv[srid];
                 }
                 else
                 {
                     gf = gserv[spatialReference];
-                    if ( string.IsNullOrEmpty(gf.Srid) )
+                    if (string.IsNullOrEmpty(gf.Srid))
                         gf.Srid = srid;
                 }
 
-                
+
                 IFeatureProvider prov = null;
 
                 switch ((String)drv["OIDType"])
                 {
                     case "BIGINT":
-                        prov = new DB2_SpatialExtender_Provider<long>(gf, conn, schema, tableName, oidColumnName, geomColumn);
+                        prov = new DB2SpatialExtenderProvider<long>(gf, conn, schema, tableName, oidColumnName, geomColumn);
                         break;
                     case "INTEGER":
-                        prov = new DB2_SpatialExtender_Provider<int>(gf, conn, schema, tableName, oidColumnName, geomColumn);
+                        prov = new DB2SpatialExtenderProvider<int>(gf, conn, schema, tableName, oidColumnName, geomColumn);
                         break;
                     case "VARCHAR":
                     case "CLOB":
-                        prov = new DB2_SpatialExtender_Provider<string>(gf, conn, schema, tableName, oidColumnName, geomColumn);
+                        prov = new DB2SpatialExtenderProvider<string>(gf, conn, schema, tableName, oidColumnName, geomColumn);
                         break;
                     case "REAL":
-                        prov = new DB2_SpatialExtender_Provider<Single>(gf, conn, schema, tableName, oidColumnName, geomColumn);
+                        prov = new DB2SpatialExtenderProvider<Single>(gf, conn, schema, tableName, oidColumnName, geomColumn);
                         break;
                     case "DOUBLE":
-                        prov = new DB2_SpatialExtender_Provider<Double>(gf, conn, schema, tableName, oidColumnName, geomColumn);
+                        prov = new DB2SpatialExtenderProvider<Double>(gf, conn, schema, tableName, oidColumnName, geomColumn);
                         break;
                     default:
                         return null;
@@ -312,7 +311,7 @@ FROM    {0}.st_geometry_columns AS x
         private void cbTables_SelectedIndexChanged(object sender, EventArgs e)
         {
             lbSRID.Text = string.Format("SRID: {0}", ((DataRowView)cbTables.SelectedItem)["SRID"]);
-            
+
         }
     }
 }

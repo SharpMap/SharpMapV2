@@ -24,6 +24,8 @@ namespace SharpMap.Data.Providers.Db
         IDataParameter CreateParameter<TValue>(string parameterName, TValue parameterValue,
                                                ParameterDirection paramDirection);
 
+        IDataParameter CreateParameter(string parameterName, object value, ParameterDirection paramDirection);
+
         IDbCommand CreateCommand();
         IDbDataAdapter CreateAdapter(IDbCommand cmd);
 
@@ -37,9 +39,16 @@ namespace SharpMap.Data.Providers.Db
         string GetTypeString(TDbType dbType);
         string GetTypeString(Type netType);
 
+        string GetFullTypeString(TDbType dbType, Int32 size);
+        string GetFullTypeString(Type netType, Int32 size);
+
+        string GetFullTypeString(TDbType dbType);
+        string GetFullTypeString(Type netType);
+
         TDbType GetDbType<TValue>();
         TDbType GetDbType(Type netType);
         int GetDbSize(TDbType dbType);
+        int GetDbSize(Type dbType);
         IDataParameter CreateParameter(string parameterName, TDbType dbType, ParameterDirection parameterDirection);
     }
 }
