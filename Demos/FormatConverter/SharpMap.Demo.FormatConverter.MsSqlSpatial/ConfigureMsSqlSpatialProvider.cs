@@ -97,5 +97,15 @@ namespace SharpMap.Demo.FormatConverter.MsSqlSpatial
                 disposed = true;
             }
         }
+
+        #region IConfigureFeatureTarget Members
+
+
+        public void PostImport()
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
     }
 }

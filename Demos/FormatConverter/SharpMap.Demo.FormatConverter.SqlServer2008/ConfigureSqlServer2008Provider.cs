@@ -97,12 +97,14 @@ namespace SharpMap.Demo.FormatConverter.SqlServer2008
 
         #region IConfigureFeatureTarget Members
 
+        private Type _specializedType;
+
         public IWritableFeatureProvider ConstructTargetProvider(Type oidType, IGeometryFactory geometryFactory,
                                                                 ICoordinateSystemFactory csFactory,
                                                                 FeatureDataTable schemaTable)
         {
             Type typ = typeof(MsSqlServer2008Provider<>);
-            Type specialized = typ.MakeGenericType(oidType);
+            _specializedType = typ.MakeGenericType(oidType);
 
             Console.WriteLine("Please enter the connection string for the target database server.");
             string connectionString = Console.ReadLine();
@@ -113,7 +115,7 @@ namespace SharpMap.Demo.FormatConverter.SqlServer2008
             Console.WriteLine("Please enter the table name.");
             string tableName = Console.ReadLine();
 
-            _targetProvider = (IWritableFeatureProvider)specialized.GetMethod(
+            _targetProvider = (IWritableFeatureProvider)_specializedType.GetMethod(
                 "Create",
                 BindingFlags.Public | BindingFlags.Static,
                 null,
@@ -148,6 +150,24 @@ namespace SharpMap.Demo.FormatConverter.SqlServer2008
             Dispose(false);
         }
 
-        
+
+
+        #region IConfigureFeatureTarget Members
+
+
+        public void PostImport()
+        {
+
+            Console.WriteLine("Create Envelope Columns? Y to create otherwise any other key.");
+            if (string.Compare(Console.ReadLine(), "Y", StringComparison.CurrentCultureIgnoreCase) == 0)
+                _specializedType.GetMethod("CreateEnvelopeColumns", BindingFlags.Public | BindingFlags.Instance, null,
+                                           CallingConventions.HasThis, Type.EmptyTypes, null).Invoke(_targetProvider, new object[] { });
+
+            _specializedType.GetMethod("RebuildSpatialIndex", BindingFlags.Public | BindingFlags.Instance, null,
+                                CallingConventions.HasThis, Type.EmptyTypes, null).Invoke(_targetProvider, new object[] { });
+
+        }
+
+        #endregion
     }
 }

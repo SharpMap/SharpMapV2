@@ -225,6 +225,8 @@ namespace SharpMap.Demo.FormatConverter
 
                             ptarget.Insert(fdt);
                             ptarget.Close();
+
+                            ctarget.PostImport();
                         }
                     }
                     Console.WriteLine(string.Format("{0} records processed", fdt.Rows.Count));

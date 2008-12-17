@@ -224,5 +224,15 @@ namespace SharpMap.Demo.FormatConverter.ShapeFile
         }
 
         #endregion
+
+        #region IConfigureFeatureTarget Members
+
+
+        public virtual void PostImport()
+        {
+
+        }
+
+        #endregion
     }
 }

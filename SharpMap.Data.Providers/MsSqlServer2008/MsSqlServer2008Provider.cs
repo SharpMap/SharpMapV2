@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Text;
+using GeoAPI.Coordinates;
 using GeoAPI.DataStructures;
 using GeoAPI.Geometries;
 using SharpMap.Data.Providers.Db;
@@ -330,42 +331,171 @@ WHERE rownumber BETWEEN {9} AND {10} ",
 
         public void RebuildSpatialIndex()
         {
-            RebuildSpatialIndex(SpatialIndexGridDensity.Low, SpatialIndexGridDensity.Low, SpatialIndexGridDensity.Medium,
-                                SpatialIndexGridDensity.High);
+            RebuildSpatialIndex(SqlServer2008SpatialIndexGridDensity.Low, SqlServer2008SpatialIndexGridDensity.Low, SqlServer2008SpatialIndexGridDensity.Medium,
+                                SqlServer2008SpatialIndexGridDensity.High);
         }
 
-        public void RebuildSpatialIndex(SpatialIndexGridDensity level1, SpatialIndexGridDensity level2, SpatialIndexGridDensity level3, SpatialIndexGridDensity level4)
+        public void RebuildSpatialIndex(SqlServer2008SpatialIndexGridDensity level1, SqlServer2008SpatialIndexGridDensity level2, SqlServer2008SpatialIndexGridDensity level3, SqlServer2008SpatialIndexGridDensity level4)
         {
-
+            using (IDbConnection conn = DbUtility.CreateConnection(ConnectionString))
+            {
+                conn.Open();
+                RebuildSpatialIndex(conn, level1, level2, level3, level4);
+            }
         }
 
-        public void CreateIndex(string[] columnNames)
+        protected internal void RebuildSpatialIndex(IDbConnection conn, SqlServer2008SpatialIndexGridDensity level1, SqlServer2008SpatialIndexGridDensity level2, SqlServer2008SpatialIndexGridDensity level3, SqlServer2008SpatialIndexGridDensity level4)
         {
+            Func<SqlServer2008SpatialIndexGridDensity, string> dlgtName =
+                delegate(SqlServer2008SpatialIndexGridDensity o)
+                {
+                    switch (o)
+                    {
+                        case SqlServer2008SpatialIndexGridDensity.Low:
+                            return "LOW";
+                        case SqlServer2008SpatialIndexGridDensity.Medium:
+                            return "MEDIUM";
+                        default:
+                            return "HIGH";
+                    }
+                };
+
+            IExtents2D ext = GetExtents() as IExtents2D;
+
+            StringBuilder sb = new StringBuilder();
+
+            string ndxName = string.Format("[sidx_{0}_{1}]", Table, GeometryColumn);
+
+            sb.AppendFormat(
+                @"IF EXISTS(SELECT * FROM sys.indexes where name='{0}' and object_id = object_id('{1}'))
+BEGIN
+DROP INDEX {0} ON {1}
+END
+",
+                ndxName, QualifiedTableName);
+
+            sb.AppendFormat(
+                @"CREATE SPATIAL INDEX {0}
+   ON {2}({1})
+   USING GEOMETRY_GRID
+   WITH (
+    BOUNDING_BOX = ( xmin={3}, ymin={4}, xmax={5}, ymax={6} ),
+    GRIDS = ({7}, {8}, {9}, {10}));
+",
+                ndxName, GeometryColumn, QualifiedTableName, ext.Min[Ordinates.X], ext.Min[Ordinates.Y],
+                ext.Max[Ordinates.X], ext.Max[Ordinates.Y], dlgtName(level1), dlgtName(level2), dlgtName(level3),
+                dlgtName(level4));
+
+            using (IDbCommand cmd = conn.CreateCommand())
+            {
+                cmd.CommandText = sb.ToString();
+                cmd.CommandType = CommandType.Text;
+                cmd.ExecuteNonQuery();
+            }
+        }
+
+        public void CreateIndex(string indexName, IEnumerable<string> columnNames)
+        {
+            using (IDbConnection conn = DbUtility.CreateConnection(ConnectionString))
+            {
+                conn.Open();
+                CreateIndex(conn, indexName, columnNames);
+            }
+        }
+
+        protected internal void CreateIndex(IDbConnection conn, string indexName, IEnumerable<string> columnNames)
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.AppendFormat(
+                @"IF EXISTS (SELECT * FROM sys.indexes WHERE name = '{0}' and object_id = object_id('{1}'))
+BEGIN
+    DROP INDEX [{0}] on {1}
+END
+",
+                indexName, QualifiedTableName);
+
+            sb.AppendFormat(
+                @"CREATE  INDEX [{0}] ON {1}({2})", indexName, QualifiedTableName,
+                string.Join(",", Enumerable.ToArray(columnNames)));
+
+            using (IDbCommand cmd = conn.CreateCommand())
+            {
+                cmd.CommandText = sb.ToString();
+                cmd.CommandType = CommandType.Text;
+                cmd.ExecuteNonQuery();
+            }
+
 
         }
 
         public void CreateEnvelopeColumns()
         {
-            string minX = string.Format("[{0}_Envelope_MinX]", GeometryColumn),
-                miny = string.Format("[{0}_Envelope_MinY]", GeometryColumn),
-                maxX = string.Format("[{0}_Envelope_MaxX]", GeometryColumn),
-                maxY = string.Format("[{0}_Envelope_MaxY]", GeometryColumn);
+            using (IDbConnection conn = DbUtility.CreateConnection(ConnectionString))
+            {
+                conn.Open();
+                //using (IDbTransaction tran = conn.BeginTransaction())
+                //{
+                    CreateEnvelopeColumns(conn);
+                //}
+            }
+        }
+
+        protected internal void CreateEnvelopeColumns(IDbConnection conn)
+        {
+            string minX = string.Format("{0}_Envelope_MinX", GeometryColumn),
+                minY = string.Format("{0}_Envelope_MinY", GeometryColumn),
+                maxX = string.Format("{0}_Envelope_MaxX", GeometryColumn),
+                maxY = string.Format("{0}_Envelope_MaxY", GeometryColumn);
 
             StringBuilder sb = new StringBuilder();
 
-            //TODO:
+            Action<string> dlgtDrop = delegate(string colName)
+                                          {
+                                              sb.AppendFormat(
+                                                  @"IF EXISTS(SELECT * FROM sys.columns where name = '{0}' and object_id = object_id('{1}'))
+BEGIN
+ALTER TABLE {1} DROP COLUMN [{0}]
+END
+",
+                                                  colName, QualifiedTableName);
+                                          };
+
+            dlgtDrop(minX);
+            dlgtDrop(minY);
+            dlgtDrop(maxX);
+            dlgtDrop(maxY);
 
 
-            using (IDbConnection conn = DbUtility.CreateConnection(ConnectionString))
+            Action<string, int, string> dlgtCreate = delegate(string colName, int coordIndex, string selector)
+                                                         {
+                                                             sb.AppendFormat(
+                                                                 @"ALTER TABLE {0}
+    ADD [{1}] AS {2}.STEnvelope().STPointN({3}).{4} PERSISTED
+",
+                                                                 QualifiedTableName, colName,
+                                                                 GeometryColumn, coordIndex,
+                                                                 selector);
+                                                         };
+
+            dlgtCreate(minX, 1, "STX");
+            dlgtCreate(minY, 1, "STY");
+            dlgtCreate(maxX, 3, "STX");
+            dlgtCreate(maxY, 3, "STY");
+
+
+
+
+            using (IDbCommand cmd = conn.CreateCommand())
             {
-                using (IDbCommand cmd = conn.CreateCommand())
-                {
-                    cmd.CommandText = sb.ToString();
-                    cmd.CommandType = CommandType.Text;
-                    conn.Open();
-                    cmd.ExecuteNonQuery();
-                }
+                cmd.CommandText = sb.ToString();
+                cmd.CommandType = CommandType.Text;
+                cmd.ExecuteNonQuery();
             }
+
+            CreateIndex(conn, string.Format("ndx_{0}_{1}", Table, minX), new[] { minX });
+            CreateIndex(conn, string.Format("ndx_{0}_{1}", Table, minY), new[] { minY });
+            CreateIndex(conn, string.Format("ndx_{0}_{1}", Table, maxX), new[] { maxX });
+            CreateIndex(conn, string.Format("ndx_{0}_{1}", Table, maxY), new[] { maxY });
         }
 
 
@@ -390,7 +520,7 @@ WHERE rownumber BETWEEN {9} AND {10} ",
         #endregion
     }
 
-    public enum SpatialIndexGridDensity
+    public enum SqlServer2008SpatialIndexGridDensity
     {
         Low,
         Medium,
@@ -489,8 +619,13 @@ END
             using (IDbConnection conn = new SqlServerDbUtility().CreateConnection(connectionString))
             {
                 conn.Open();
+                //using (IDbTransaction tran = conn.BeginTransaction())
+                //{
+                //    try
+                //    {
                 if (!EnsureDbIsSpatiallyEnabled(conn))
-                    throw new InvalidDatabaseConfigurationException("Database does not contain spatial components.");
+                    throw new InvalidDatabaseConfigurationException(
+                        "Database does not contain spatial components.");
 
                 if (CheckIfObjectExists(conn, schema, tableName))
                 {
@@ -504,8 +639,21 @@ END
                 string oidColumn, geometryColumn;
                 CreateDatabaseObjects(conn, schema, tableName, model, out oidColumn, out geometryColumn);
 
-                return new MsSqlServer2008Provider<TOid>(geometryFactory, connectionString, schema, tableName, oidColumn,
-                                                         geometryColumn);
+                MsSqlServer2008Provider<TOid> prov = new MsSqlServer2008Provider<TOid>(geometryFactory,
+                                                                                       connectionString, schema,
+                                                                                       tableName, oidColumn,
+                                                                                       geometryColumn);
+
+
+                //    tran.Commit();
+                return prov;
+                //}
+                //catch
+                //{
+                //    tran.Rollback();
+                //    throw;
+                //}
+                //}
             }
         }
 
