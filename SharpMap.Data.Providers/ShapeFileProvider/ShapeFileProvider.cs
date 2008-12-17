@@ -1484,13 +1484,21 @@ namespace SharpMap.Data.Providers.ShapeFile
                             + 4 * (geometry as IMultiLineString).Count /* Parts array of integer indexes */
                             + 16 * pointCount;
             }
-            else if (geometry is IPolygon)
+            else if (geometry is IPolygon) /*jd: Contains Modifications from Lee Keel www.trimble.com to cope with unclosed polygons  */
             {
                 Int32 pointCount = (geometry as IPolygon).ExteriorRing.Coordinates.Count;
+                ILineString exring = (geometry as IPolygon).ExteriorRing;
+
+                 /* need to account for cases where the polygon is not closed. */
+                    if (exring.Coordinates[0] != exring.Coordinates[exring.Coordinates.Count - 1])
+                        pointCount++;
 
                 foreach (ILinearRing ring in (geometry as IPolygon).InteriorRings)
                 {
                     pointCount += ring.Coordinates.Count;
+                    /* need to account for cases where the polygon is not closed. */
+                    if (ring.Coordinates[0] != ring.Coordinates[ring.Coordinates.Count - 1])
+                        pointCount++;
                 }
 
                 byteCount = 4 /* ShapeType Integer */
@@ -1502,7 +1510,7 @@ namespace SharpMap.Data.Providers.ShapeFile
                     /* Parts array of rings: count of interior + 1 for exterior ring */)
                             + 16 * pointCount;
             }
-            else if (geometry is IMultiPolygon)
+            else if (geometry is IMultiPolygon)/*jd: Contains Modifications from Lee Keel www.trimble.com to cope with unclosed polygons  */
             {
                 Int32 pointCount = 0;
                 Int32 ringCount = 0;
@@ -1511,7 +1519,13 @@ namespace SharpMap.Data.Providers.ShapeFile
                 {
                     pointCount += p.ExteriorRing.PointCount;
                     foreach (ILinearRing ring in p.InteriorRings)
+                    {
                         pointCount += ring.PointCount;
+                        /* need to account for cases where the polygon is not closed. */
+                        if (ring.Coordinates[0] != ring.Coordinates[ring.Coordinates.Count - 1])
+                            pointCount++;
+                    }
+
                     ringCount += p.InteriorRingsCount + 1;
 
                 }
@@ -2446,8 +2460,15 @@ namespace SharpMap.Data.Providers.ShapeFile
                         writeMultiLineString(g as IMultiLineString);
                     }
                     break;
+                //case ShapeType.Polygon:
+                //    writePolygon(g as IPolygon);
+                //    break;
+
                 case ShapeType.Polygon:
-                    writePolygon(g as IPolygon);
+                    if (g is IPolygon)
+                        writePolygon(g as IPolygon);
+                    else if (g is IMultiPolygon)
+                        writeMultiPolygon(g as IMultiPolygon);
                     break;
                 case ShapeType.MultiPoint:
                     writeMultiPoint(g as IMultiPoint);
@@ -2549,22 +2570,72 @@ namespace SharpMap.Data.Providers.ShapeFile
             writePolySegments(multiLineString.Extents, parts, allPoints, allPoints.Count);
         }
 
+        /*jd: Contains Modifications from Lee Keel www.trimble.com to cope with unclosed polygons  */
         private void writePolygon(IPolygon polygon)
-        {
+        {   
             Int32[] parts = new Int32[polygon.InteriorRingsCount + 1];
-            ArrayList allPoints = new ArrayList();
+            List<ICoordinate> allPoints = new List<ICoordinate>();
             Int32 currentPartsIndex = 0;
             parts[currentPartsIndex++] = 0;
-            allPoints.AddRange(polygon.ExteriorRing.Coordinates);
+            allPoints.AddRange((IEnumerable<ICoordinate>)polygon.ExteriorRing.Coordinates);
+            /* need to account for cases where the polygon is not closed. */
+            if (polygon.ExteriorRing.Coordinates[0] != polygon.ExteriorRing.Coordinates[polygon.ExteriorRing.Coordinates.Count - 1])
+                allPoints.Add(polygon.ExteriorRing.Coordinates[0]);
 
             foreach (ILinearRing ring in polygon.InteriorRings)
             {
                 parts[currentPartsIndex++] = allPoints.Count;
-                allPoints.AddRange(ring.Coordinates);
+                allPoints.AddRange((IEnumerable<ICoordinate>)ring.Coordinates);
+
+                /* need to account for cases where the polygon is not closed. */
+                if (ring.Coordinates[0] != ring.Coordinates[ring.Coordinates.Count - 1])
+                    allPoints.Add(ring.Coordinates[0]);
+
             }
 
             _shapeFileWriter.Write(ByteEncoder.GetLittleEndian((Int32)ShapeType.Polygon));
             writePolySegments(polygon.Extents, parts, allPoints, allPoints.Count);
+        }
+        /*jd: Contains Modifications from Lee Keel www.trimble.com to cope with unclosed polygons  */
+        private void writeMultiPolygon(IMultiPolygon mpoly)
+        {
+            List<Int32> parts = new List<int>();
+            List<ICoordinate> points = new List<ICoordinate>();
+            Int32 pointIndex = 0;
+
+            foreach (IPolygon poly in (mpoly as IEnumerable<IPolygon>))
+            {
+                parts.Add(pointIndex);  /* Add point index for exterior ring */
+                pointIndex += poly.ExteriorRing.Coordinates.Count;  /* increment point position by number of points in exterior ring */
+                points.AddRange((IEnumerable<ICoordinate>)poly.ExteriorRing.Coordinates);     /* Add points for exterior ring */
+
+                /* need to account for cases where the polygon is not closed. */
+                if (poly.ExteriorRing.Coordinates[0] != poly.ExteriorRing.Coordinates[poly.ExteriorRing.Coordinates.Count - 1])
+                {
+                    //Close ring
+                    pointIndex++;
+                    points.Add(poly.ExteriorRing.Coordinates[0]);
+                }
+                foreach (ILinearRing ring in poly.InteriorRings)
+                {
+                    parts.Add(pointIndex);  /* Add startint point for this interior ring */
+                    pointIndex += ring.Coordinates.Count;               /* increment point position by number of points in exterior ring */
+                    points.AddRange((IEnumerable<ICoordinate>)ring.Coordinates);     /* Add points for exterior ring */
+
+                    /* need to account for cases where the polygon is not closed. */
+                    if (ring.Coordinates[0] != ring.Coordinates[ring.Coordinates.Count - 1])
+                    {
+                        //Close ring
+                        pointIndex++;
+                        points.Add(ring.Coordinates[0]);
+                    }
+                }
+
+            }
+
+            _shapeFileWriter.Write(ByteEncoder.GetLittleEndian((Int32)ShapeType.Polygon));
+            writePolySegments(mpoly.Extents, parts.ToArray(), points, points.Count);
+
         }
 
         #endregion
