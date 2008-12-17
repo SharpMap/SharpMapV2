@@ -1,49 +1,49 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿// Copyright 2006 - 2008: Rory Plaire (codekaizen@gmail.com)
+//
+// This file is part of SharpMap.
+// SharpMap is free software; you can redistribute it and/or modify
+// it under the terms of the GNU Lesser General Public License as published by
+// the Free Software Foundation; either version 2 of the License, or
+// (at your option) any later version.
+// 
+// SharpMap is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU Lesser General Public License for more details.
+
+// You should have received a copy of the GNU Lesser General Public License
+// along with SharpMap; if not, write to the Free Software
+// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
+
+#region Namespace imports
+
+using System;
+using System.Xml.Serialization;
+
+#endregion
 
 namespace SharpMap.Styles.Symbology.Capabilities
 {
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("xsd", "2.0.50727.1432")]
-    [System.SerializableAttribute()]
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.ComponentModel.DesignerCategoryAttribute("code")]
-    [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true, Namespace = "http://www.opengis.net/ogc")]
-    [System.Xml.Serialization.XmlRootAttribute(Namespace = "http://www.opengis.net/ogc", IsNullable = false)]
-    public partial class Filter_Capabilities
+    [Serializable]
+    [XmlType(AnonymousType = true, Namespace = "http://www.opengis.net/ogc")]
+    [XmlRoot(ElementName = "Filter_Capabilities", Namespace = "http://www.opengis.net/ogc", IsNullable = false)]
+    public class FilterCapabilities
     {
+        private object[] _idCapabilities;
+        private ScalarCapabilities _scalarCapabilities;
 
-        private Scalar_CapabilitiesType scalar_CapabilitiesField;
-
-        private object[] id_CapabilitiesField;
-
-        /// <remarks/>
-        public Scalar_CapabilitiesType Scalar_Capabilities
+        public ScalarCapabilities ScalarCapabilities
         {
-            get
-            {
-                return this.scalar_CapabilitiesField;
-            }
-            set
-            {
-                this.scalar_CapabilitiesField = value;
-            }
+            get { return _scalarCapabilities; }
+            set { _scalarCapabilities = value; }
         }
 
-        /// <remarks/>
-        [System.Xml.Serialization.XmlArrayItemAttribute("EID", typeof(EID), IsNullable = false)]
-        [System.Xml.Serialization.XmlArrayItemAttribute("FID", typeof(FID), IsNullable = false)]
-        public object[] Id_Capabilities
+        [XmlArrayItem("EID", typeof (Eid), IsNullable = false)]
+        [XmlArrayItem("FID", typeof (Fid), IsNullable = false)]
+        public object[] IdCapabilities
         {
-            get
-            {
-                return this.id_CapabilitiesField;
-            }
-            set
-            {
-                this.id_CapabilitiesField = value;
-            }
+            get { return _idCapabilities; }
+            set { _idCapabilities = value; }
         }
     }
 }
