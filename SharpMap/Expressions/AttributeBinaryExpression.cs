@@ -21,7 +21,7 @@ using GeoAPI.Diagnostics;
 
 namespace SharpMap.Expressions
 {
-    public class AttributeBinaryExpression : BinaryExpression
+    public class AttributeBinaryExpression : BinaryLogicExpression
     {
         private TypeCode _valueTypeCode = TypeCode.Empty;
 

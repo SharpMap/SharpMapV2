@@ -29,50 +29,50 @@ namespace SharpMap.Styles.Symbology
     [XmlType(Namespace = "http://www.opengis.net/se", TypeName = "SymbolizerType")]
     public abstract class Symbolizer
     {
-        private String nameField;
-        private Description descriptionField;
-        private BaseSymbolizerType baseSymbolizerField;
-        private OgcSymbologyEncodingVersion versionField;
-        private bool versionFieldSpecified;
-        private String uomField;
+        private String _name;
+        private Description _description;
+        private BaseSymbolizer _baseSymbolizer;
+        private OgcSymbologyEncodingVersion _version;
+        private bool _versionSpecified;
+        private String _uom;
 
         public String Name
         {
-            get { return nameField; }
-            set { nameField = value; }
+            get { return _name; }
+            set { _name = value; }
         }
 
         public Description Description
         {
-            get { return descriptionField; }
-            set { descriptionField = value; }
+            get { return _description; }
+            set { _description = value; }
         }
 
-        public BaseSymbolizerType BaseSymbolizer
+        public BaseSymbolizer BaseSymbolizer
         {
-            get { return baseSymbolizerField; }
-            set { baseSymbolizerField = value; }
+            get { return _baseSymbolizer; }
+            set { _baseSymbolizer = value; }
         }
 
         [XmlAttribute(AttributeName = "version")]
         public OgcSymbologyEncodingVersion Version
         {
-            get { return versionField; }
-            set { versionField = value; }
+            get { return _version; }
+            set { _version = value; }
         }
 
         [XmlIgnore]
         public Boolean VersionSpecified
         {
-            get { return versionFieldSpecified; }
-            set { versionFieldSpecified = value; }
+            get { return _versionSpecified; }
+            set { _versionSpecified = value; }
         }
 
         [XmlAttribute(DataType = "anyURI", AttributeName = "uom")]
         public String Uom
         {
-            get { return uomField; }
-            set { uomField = value; }
+            get { return _uom; }
+            set { _uom = value; }
         }
     }
 }

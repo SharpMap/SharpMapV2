@@ -12,30 +12,28 @@ namespace SharpMap.Styles.Symbology.Capabilities
     [XmlType(Namespace = "http://www.opengis.net/ogc", TypeName = "Scalar_CapabilitiesType")]
     public class ScalarCapabilities
     {
-        private object[] arithmeticOperatorsField;
-        private ComparisonOperator comparisonOperatorsField;
-        private LogicalOperators logicalOperatorsField;
+        private object[] _arithmeticOperators;
+        private ComparisonOperatorCapabilities _comparisonOperators;
+        private LogicalOperatorsCapabilities _logicalOperators;
 
-        /// <remarks/>
-        public LogicalOperators LogicalOperators
+        public LogicalOperatorsCapabilities LogicalOperators
         {
-            get { return logicalOperatorsField; }
-            set { logicalOperatorsField = value; }
+            get { return _logicalOperators; }
+            set { _logicalOperators = value; }
         }
 
-        public ComparisonOperator ComparisonOperators
+        public ComparisonOperatorCapabilities ComparisonOperators
         {
-            get { return comparisonOperatorsField; }
-            set { comparisonOperatorsField = value; }
+            get { return _comparisonOperators; }
+            set { _comparisonOperators = value; }
         }
 
-        /// <remarks/>
         [XmlArrayItem("Functions", typeof (FunctionsType), IsNullable = false)]
         [XmlArrayItem("SimpleArithmetic", typeof (SimpleArithmetic), IsNullable = false)]
         public object[] ArithmeticOperators
         {
-            get { return arithmeticOperatorsField; }
-            set { arithmeticOperatorsField = value; }
+            get { return _arithmeticOperators; }
+            set { _arithmeticOperators = value; }
         }
     }
 }

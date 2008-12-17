@@ -1,148 +1,93 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿// Copyright 2006 - 2008: Rory Plaire (codekaizen@gmail.com)
+//
+// This file is part of SharpMap.
+// SharpMap is free software; you can redistribute it and/or modify
+// it under the terms of the GNU Lesser General Public License as published by
+// the Free Software Foundation; either version 2 of the License, or
+// (at your option) any later version.
+// 
+// SharpMap is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU Lesser General Public License for more details.
+
+// You should have received a copy of the GNU Lesser General Public License
+// along with SharpMap; if not, write to the Free Software
+// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
+
+using System;
+using System.Xml.Serialization;
 
 namespace SharpMap.Styles.Symbology
 {
-    [System.SerializableAttribute()]
-    [System.Xml.Serialization.XmlTypeAttribute(Namespace = "http://www.opengis.net/se", TypeName = "RasterSymbolizer")]
-    [System.Xml.Serialization.XmlRootAttribute("RasterSymbolizer", Namespace = "http://www.opengis.net/se", IsNullable = false)]
-    class RasterSymbolizer
+    [Serializable]
+    [XmlType(Namespace = "http://www.opengis.net/se", TypeName = "RasterSymbolizerType")]
+    [XmlRoot("RasterSymbolizer", Namespace = "http://www.opengis.net/se", IsNullable = false)]
+    internal class RasterSymbolizer : Symbolizer
     {
-        private GeometryType geometryField;
+        private GeometryPropertyNameExpression _geometry;
+        private ParameterValue _opacity;
+        private ChannelSelection _channelSelection;
+        private OverlapBehavior _overlapBehavior;
+        private bool _overlapBehaviorSpecified;
+        private ColorMap _colorMap;
+        private ContrastEnhancement _contrastEnhancement;
+        private ShadedRelief _shadedRelief;
+        private ImageOutline _imageOutline;
 
-        private ParameterValue opacityField;
-
-        private ChannelSelection channelSelectionField;
-
-        private OverlapBehavior overlapBehaviorField;
-
-        private bool overlapBehaviorFieldSpecified;
-
-        private ColorMapType colorMapField;
-
-        private ContrastEnhancementType contrastEnhancementField;
-
-        private ShadedReliefType shadedReliefField;
-
-        private ImageOutlineType imageOutlineField;
-
-        /// <remarks/>
-        public GeometryType Geometry
+        public GeometryPropertyNameExpression Geometry
         {
-            get
-            {
-                return this.geometryField;
-            }
-            set
-            {
-                this.geometryField = value;
-            }
+            get { return _geometry; }
+            set { _geometry = value; }
         }
 
-        /// <remarks/>
-        public ParameterValueType Opacity
+        public ParameterValue Opacity
         {
-            get
-            {
-                return this.opacityField;
-            }
-            set
-            {
-                this.opacityField = value;
-            }
+            get { return _opacity; }
+            set { _opacity = value; }
         }
 
-        /// <remarks/>
-        public ChannelSelectionType ChannelSelection
+        public ChannelSelection ChannelSelection
         {
-            get
-            {
-                return this.channelSelectionField;
-            }
-            set
-            {
-                this.channelSelectionField = value;
-            }
+            get { return _channelSelection; }
+            set { _channelSelection = value; }
         }
 
-        /// <remarks/>
         public OverlapBehavior OverlapBehavior
         {
-            get
-            {
-                return this.overlapBehaviorField;
-            }
-            set
-            {
-                this.overlapBehaviorField = value;
-            }
+            get { return _overlapBehavior; }
+            set { _overlapBehavior = value; }
         }
 
-        /// <remarks/>
-        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        [XmlIgnore]
         public bool OverlapBehaviorSpecified
         {
-            get
-            {
-                return this.overlapBehaviorFieldSpecified;
-            }
-            set
-            {
-                this.overlapBehaviorFieldSpecified = value;
-            }
+            get { return _overlapBehaviorSpecified; }
+            set { _overlapBehaviorSpecified = value; }
         }
 
-        /// <remarks/>
-        public ColorMapType ColorMap
+        public ColorMap ColorMap
         {
-            get
-            {
-                return this.colorMapField;
-            }
-            set
-            {
-                this.colorMapField = value;
-            }
+            get { return _colorMap; }
+            set { _colorMap = value; }
         }
 
-        /// <remarks/>
-        public ContrastEnhancementType ContrastEnhancement
+        public ContrastEnhancement ContrastEnhancement
         {
-            get
-            {
-                return this.contrastEnhancementField;
-            }
-            set
-            {
-                this.contrastEnhancementField = value;
-            }
+            get { return _contrastEnhancement; }
+            set { _contrastEnhancement = value; }
         }
 
-        /// <remarks/>
-        public ShadedReliefType ShadedRelief
+        public ShadedRelief ShadedRelief
         {
-            get
-            {
-                return this.shadedReliefField;
-            }
-            set
-            {
-                this.shadedReliefField = value;
-            }
+            get { return _shadedRelief; }
+            set { _shadedRelief = value; }
         }
 
-        /// <remarks/>
-        public ImageOutlineType ImageOutline
+        public ImageOutline ImageOutline
         {
-            get
-            {
-                return this.imageOutlineField;
-            }
-            set
-            {
-                this.imageOutlineField = value;
-            }
+            get { return _imageOutline; }
+            set { _imageOutline = value; }
         }
     }
 }

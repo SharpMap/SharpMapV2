@@ -15,10 +15,11 @@
 // along with SharpMap; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
-
 namespace SharpMap.Expressions
 {
-    class BinaryComparisonExpression : ComparisonExpression
+    public class BinaryComparisonExpression : ComparisonExpression
     {
+        public BinaryComparisonExpression(Expression left, ComparisonOperator op, Expression right) 
+            : base(left, op, right) {}
     }
 }

@@ -31,5 +31,24 @@ namespace SharpMap.Expressions
         Mul,
         PropertyName,
         Sub,
+        And,
+        Not,
+        Or,
+        PropertyIsBetween,
+        PropertyIsEqualTo,
+        PropertyIsGreaterThan,
+        PropertyIsGreaterThanOrEqualTo,
+        PropertyIsLessThan,
+        PropertyIsLessThanOrEqualTo,
+        PropertyIsLike,
+        PropertyIsNotEqualTo,
+        PropertyIsNull,
+        FeatureId,
+        [XmlEnum(Name = "_Id")]
+        IdExpression,
+        [XmlEnum(Name = "comparisonOps")]
+        ComparisonExpression,
+        [XmlEnum(Name = "logicOps")]
+        LogicExpression,
     }
 }

@@ -1,46 +1,44 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿// Copyright 2006 - 2008: Rory Plaire (codekaizen@gmail.com)
+//
+// This file is part of SharpMap.
+// SharpMap is free software; you can redistribute it and/or modify
+// it under the terms of the GNU Lesser General Public License as published by
+// the Free Software Foundation; either version 2 of the License, or
+// (at your option) any later version.
+// 
+// SharpMap is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU Lesser General Public License for more details.
+
+// You should have received a copy of the GNU Lesser General Public License
+// along with SharpMap; if not, write to the Free Software
+// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
+
+using System;
+using System.Xml.Serialization;
 
 namespace SharpMap.Styles.Symbology
 {
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("xsd", "2.0.50727.1432")]
-    [System.SerializableAttribute()]
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.ComponentModel.DesignerCategoryAttribute("code")]
-    [System.Xml.Serialization.XmlTypeAttribute(Namespace = "http://www.opengis.net/se")]
-    [System.Xml.Serialization.XmlRootAttribute("RedChannel", Namespace = "http://www.opengis.net/se", IsNullable = false)]
-    class SelectedChannel
+    [Serializable]
+    [XmlType(Namespace = "http://www.opengis.net/se", TypeName = "SelectedChannelType")]
+    [XmlRoot("RedChannel", Namespace = "http://www.opengis.net/se", IsNullable = false)]
+    public class SelectedChannel
     {
-        private string sourceChannelNameField;
+        private string _sourceChannelName;
 
-        private ContrastEnhancementType contrastEnhancementField;
+        private ContrastEnhancement _contrastEnhancement;
 
-        /// <remarks/>
         public string SourceChannelName
         {
-            get
-            {
-                return this.sourceChannelNameField;
-            }
-            set
-            {
-                this.sourceChannelNameField = value;
-            }
+            get { return _sourceChannelName; }
+            set { _sourceChannelName = value; }
         }
 
-        /// <remarks/>
-        public ContrastEnhancementType ContrastEnhancement
+        public ContrastEnhancement ContrastEnhancement
         {
-            get
-            {
-                return this.contrastEnhancementField;
-            }
-            set
-            {
-                this.contrastEnhancementField = value;
-            }
+            get { return _contrastEnhancement; }
+            set { _contrastEnhancement = value; }
         }
     }
 }

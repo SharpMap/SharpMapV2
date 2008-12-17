@@ -1,111 +1,76 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿// Copyright 2006 - 2008: Rory Plaire (codekaizen@gmail.com)
+//
+// This file is part of SharpMap.
+// SharpMap is free software; you can redistribute it and/or modify
+// it under the terms of the GNU Lesser General Public License as published by
+// the Free Software Foundation; either version 2 of the License, or
+// (at your option) any later version.
+// 
+// SharpMap is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU Lesser General Public License for more details.
+
+// You should have received a copy of the GNU Lesser General Public License
+// along with SharpMap; if not, write to the Free Software
+// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
+
+using System;
+using System.Xml.Serialization;
 using SharpMap.Expressions;
 
 namespace SharpMap.Styles.Symbology
 {
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("xsd", "2.0.50727.1432")]
-    [System.SerializableAttribute()]
-    [System.Xml.Serialization.XmlTypeAttribute(Namespace = "http://www.opengis.net/se", IncludeInSchema = false)]
-    public enum ItemsChoiceType2
-    {
+    //[Serializable]
+    //[XmlType(Namespace = "http://www.opengis.net/se", IncludeInSchema = false)]
+    //public enum ItemsChoiceType2
+    //{
+    //    [XmlEnum("http://www.opengis.net/ogc:Add")] Add,
+    //    [XmlEnum("http://www.opengis.net/ogc:Div")] Div,
+    //    [XmlEnum("http://www.opengis.net/ogc:Function")] Function,
+    //    [XmlEnum("http://www.opengis.net/ogc:Literal")] Literal,
+    //    [XmlEnum("http://www.opengis.net/ogc:Mul")] Mul,
+    //    [XmlEnum("http://www.opengis.net/ogc:PropertyName")] PropertyName,
+    //    [XmlEnum("http://www.opengis.net/ogc:Sub")] Sub,
+    //}
 
-        /// <remarks/>
-        [System.Xml.Serialization.XmlEnumAttribute("http://www.opengis.net/ogc:Add")]
-        Add,
-
-        /// <remarks/>
-        [System.Xml.Serialization.XmlEnumAttribute("http://www.opengis.net/ogc:Div")]
-        Div,
-
-        /// <remarks/>
-        [System.Xml.Serialization.XmlEnumAttribute("http://www.opengis.net/ogc:Function")]
-        Function,
-
-        /// <remarks/>
-        [System.Xml.Serialization.XmlEnumAttribute("http://www.opengis.net/ogc:Literal")]
-        Literal,
-
-        /// <remarks/>
-        [System.Xml.Serialization.XmlEnumAttribute("http://www.opengis.net/ogc:Mul")]
-        Mul,
-
-        /// <remarks/>
-        [System.Xml.Serialization.XmlEnumAttribute("http://www.opengis.net/ogc:PropertyName")]
-        PropertyName,
-
-        /// <remarks/>
-        [System.Xml.Serialization.XmlEnumAttribute("http://www.opengis.net/ogc:Sub")]
-        Sub,
-    }
-
-    /// <remarks/>
-    [System.Xml.Serialization.XmlIncludeAttribute(typeof(SvgParameterType))]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("xsd", "2.0.50727.1432")]
-    [System.SerializableAttribute()]
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.ComponentModel.DesignerCategoryAttribute("code")]
-    [System.Xml.Serialization.XmlTypeAttribute(Namespace = "http://www.opengis.net/se")]
-    [System.Xml.Serialization.XmlRootAttribute("InitialGap", Namespace = "http://www.opengis.net/se", IsNullable = false)]
+    [XmlInclude(typeof (SvgParameter))]
+    [Serializable]
+    [XmlType(Namespace = "http://www.opengis.net/se", TypeName = "ParameterValueType")]
+    [XmlRoot("InitialGap", Namespace = "http://www.opengis.net/se", IsNullable = false)]
     public class ParameterValue
     {
+        private Expression[] _expressions;
+        private ExpressionType[] _expressionElementTypes;
+        private string[] _text;
 
-        private Expression[] itemsField;
-
-        private ItemsChoiceType2[] itemsElementNameField;
-
-        private string[] textField;
-
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute("Add", typeof(BinaryOperatorType), Namespace = "http://www.opengis.net/ogc")]
-        [System.Xml.Serialization.XmlElementAttribute("Div", typeof(BinaryOperatorType), Namespace = "http://www.opengis.net/ogc")]
-        [System.Xml.Serialization.XmlElementAttribute("Function", typeof(FunctionType1), Namespace = "http://www.opengis.net/ogc")]
-        [System.Xml.Serialization.XmlElementAttribute("Literal", typeof(LiteralType), Namespace = "http://www.opengis.net/ogc")]
-        [System.Xml.Serialization.XmlElementAttribute("Mul", typeof(BinaryOperatorType), Namespace = "http://www.opengis.net/ogc")]
-        [System.Xml.Serialization.XmlElementAttribute("PropertyName", typeof(PropertyNameType), Namespace = "http://www.opengis.net/ogc")]
-        [System.Xml.Serialization.XmlElementAttribute("Sub", typeof(BinaryOperatorType), Namespace = "http://www.opengis.net/ogc")]
-        [System.Xml.Serialization.XmlChoiceIdentifierAttribute("ItemsElementName")]
-        public ExpressionType[] Items
+        [XmlElement("Add", typeof (BinaryOperationExpression), Namespace = "http://www.opengis.net/ogc")]
+        [XmlElement("Div", typeof (BinaryOperationExpression), Namespace = "http://www.opengis.net/ogc")]
+        [XmlElement("Function", typeof (FunctionExpression), Namespace = "http://www.opengis.net/ogc")]
+        [XmlElement("Literal", typeof (LiteralExpression), Namespace = "http://www.opengis.net/ogc")]
+        [XmlElement("Mul", typeof (BinaryOperationExpression), Namespace = "http://www.opengis.net/ogc")]
+        [XmlElement("PropertyName", typeof (PropertyNameExpression), Namespace = "http://www.opengis.net/ogc")]
+        [XmlElement("Sub", typeof (BinaryOperationExpression), Namespace = "http://www.opengis.net/ogc")]
+        [XmlChoiceIdentifier("ExpressionElementTypes")]
+        public Expression[] Expressions
         {
-            get
-            {
-                return this.itemsField;
-            }
-            set
-            {
-                this.itemsField = value;
-            }
+            get { return _expressions; }
+            set { _expressions = value; }
         }
 
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute("ItemsElementName")]
-        [System.Xml.Serialization.XmlIgnoreAttribute()]
-        public ItemsChoiceType2[] ItemsElementName
+        [XmlElement("ExpressionElementTypes")]
+        [XmlIgnore]
+        public ExpressionType[] ExpressionElementTypes
         {
-            get
-            {
-                return this.itemsElementNameField;
-            }
-            set
-            {
-                this.itemsElementNameField = value;
-            }
+            get { return _expressionElementTypes; }
+            set { _expressionElementTypes = value; }
         }
 
-        /// <remarks/>
-        [System.Xml.Serialization.XmlTextAttribute()]
+        [XmlText]
         public string[] Text
         {
-            get
-            {
-                return this.textField;
-            }
-            set
-            {
-                this.textField = value;
-            }
+            get { return _text; }
+            set { _text = value; }
         }
     }
 }

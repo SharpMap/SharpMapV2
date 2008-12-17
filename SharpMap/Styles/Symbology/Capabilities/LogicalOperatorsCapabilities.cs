@@ -10,5 +10,5 @@ namespace SharpMap.Styles.Symbology.Capabilities
     [Serializable]
     [XmlType(AnonymousType = true, Namespace = "http://www.opengis.net/ogc")]
     [XmlRoot(Namespace = "http://www.opengis.net/ogc", IsNullable = false)]
-    public class LogicalOperators {}
+    public class LogicalOperatorsCapabilities {}
 }

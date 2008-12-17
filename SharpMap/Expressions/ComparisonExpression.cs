@@ -20,11 +20,11 @@ using System.Xml.Serialization;
 
 namespace SharpMap.Expressions
 {
+    [Serializable]
     [XmlInclude(typeof(PropertyIsBetweenExpression))]
     [XmlInclude(typeof(PropertyIsNullExpression))]
     [XmlInclude(typeof(PropertyIsLikeExpression))]
     [XmlInclude(typeof(BinaryComparisonExpression))]
-    [Serializable]
     [XmlType(Namespace = "http://www.opengis.net/ogc", TypeName = "ComparisonOpsType")]
     public class ComparisonExpression : BinaryExpressionBase<ComparisonOperator>
     {

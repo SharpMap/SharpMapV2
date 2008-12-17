@@ -4,16 +4,16 @@ namespace SharpMap.Expressions
 {
     public class UnaryExpression : Expression
     {
-        private readonly UnaryOperator _op;
+        private readonly UnaryLogicOperator _op;
         private readonly Expression _operand;
 
-        public UnaryExpression(UnaryOperator op, Expression operand)
+        public UnaryExpression(UnaryLogicOperator op, Expression operand)
         {
             _op = op;
             _operand = operand;
         }
 
-        public UnaryOperator Op
+        public UnaryLogicOperator Op
         {
             get { return _op; }
         }

@@ -24,15 +24,13 @@ namespace SharpMap.Expressions
     }
 
     [Serializable]
-    [XmlType(Namespace = "http://www.opengis.net/ogc")]
+    [XmlType(Namespace = "http://www.opengis.net/ogc", TypeName = "UnaryLogicOpType")]
     [XmlRoot("Not", Namespace = "http://www.opengis.net/ogc", IsNullable = false)]
     public class UnaryLogicExpression
     {
-        private object itemField;
+        private object _expression;
+        private ItemChoiceType3 _itemElementName;
 
-        private ItemChoiceType3 itemElementNameField;
-
-        /// <remarks/>
         [XmlElement("And", typeof (BinaryLogicExpression))]
         [XmlElement("Not", typeof (UnaryLogicExpression))]
         [XmlElement("Or", typeof(BinaryLogicExpression))]
@@ -47,19 +45,18 @@ namespace SharpMap.Expressions
         [XmlElement("PropertyIsNull", typeof (PropertyIsNullExpression))]
         [XmlElement("comparisonOps", typeof (ComparisonExpression))]
         [XmlElement("logicOps", typeof (LogicExpression))]
-        [XmlChoiceIdentifier("ItemElementName")]
-        public object Item
+        [XmlChoiceIdentifier("ExpressionElementType")]
+        public object Expression
         {
-            get { return itemField; }
-            set { itemField = value; }
+            get { return _expression; }
+            set { _expression = value; }
         }
 
-        /// <remarks/>
         [XmlIgnore]
-        public ItemChoiceType3 ItemElementName
+        public ItemChoiceType3 ExpressionElementType
         {
-            get { return itemElementNameField; }
-            set { itemElementNameField = value; }
+            get { return _itemElementName; }
+            set { _itemElementName = value; }
         }
     }
 }

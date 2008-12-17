@@ -1,4 +1,22 @@
-﻿using System;
+﻿// Copyright 2006 - 2008: Rory Plaire (codekaizen@gmail.com)
+//
+// This file is part of SharpMap.
+// SharpMap is free software; you can redistribute it and/or modify
+// it under the terms of the GNU Lesser General Public License as published by
+// the Free Software Foundation; either version 2 of the License, or
+// (at your option) any later version.
+// 
+// SharpMap is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU Lesser General Public License for more details.
+
+// You should have received a copy of the GNU Lesser General Public License
+// along with SharpMap; if not, write to the Free Software
+// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
+
+using System;
+using System.Xml.Schema;
 using System.Xml.Serialization;
 
 namespace SharpMap.Styles.Symbology
@@ -8,197 +26,119 @@ namespace SharpMap.Styles.Symbology
     [XmlRoot("OnlineResource", Namespace = "http://www.opengis.net/se", IsNullable = false)]
     public class OnlineResource
     {
-        private string typeField;
+        private string _type;
+        private string _href;
+        private string _role;
+        private string _arcRole;
+        private string _title;
+        private Show _show;
+        private bool _showSpecified;
+        private Actuate _actuate;
+        private bool _actuateSpecified;
 
-        private string hrefField;
-
-        private string roleField;
-
-        private string arcroleField;
-
-        private string titleField;
-
-        private OnlineResourceTypeShow showField;
-
-        private bool showFieldSpecified;
-
-        private OnlineResourceTypeActuate actuateField;
-
-        private bool actuateFieldSpecified;
-
-        public OnlineResourceType()
+        public OnlineResource()
         {
-            this.typeField = "simple";
+            _type = "simple";
         }
 
-        /// <remarks/>
-        [System.Xml.Serialization.XmlAttributeAttribute(Form = System.Xml.Schema.XmlSchemaForm.Qualified, Namespace = "http://www.w3.org/1999/xlink")]
-        public string type
+        [XmlAttribute(AttributeName = "type", Form = XmlSchemaForm.Qualified, Namespace = "http://www.w3.org/1999/xlink")]
+        public string Type
         {
-            get
-            {
-                return this.typeField;
-            }
-            set
-            {
-                this.typeField = value;
-            }
+            get { return _type; }
+            set { _type = value; }
         }
 
-        /// <remarks/>
-        [System.Xml.Serialization.XmlAttributeAttribute(Form = System.Xml.Schema.XmlSchemaForm.Qualified, Namespace = "http://www.w3.org/1999/xlink", DataType = "anyURI")]
-        public string href
+        [XmlAttribute(AttributeName = "href", Form = XmlSchemaForm.Qualified, Namespace = "http://www.w3.org/1999/xlink", DataType = "anyURI")]
+        public string Href
         {
-            get
-            {
-                return this.hrefField;
-            }
-            set
-            {
-                this.hrefField = value;
-            }
+            get { return _href; }
+            set { _href = value; }
         }
 
-        /// <remarks/>
-        [System.Xml.Serialization.XmlAttributeAttribute(Form = System.Xml.Schema.XmlSchemaForm.Qualified, Namespace = "http://www.w3.org/1999/xlink", DataType = "anyURI")]
-        public string role
+        [XmlAttribute(AttributeName = "role", Form = XmlSchemaForm.Qualified, Namespace = "http://www.w3.org/1999/xlink", DataType = "anyURI")]
+        public string Role
         {
-            get
-            {
-                return this.roleField;
-            }
-            set
-            {
-                this.roleField = value;
-            }
+            get { return _role; }
+            set { _role = value; }
         }
 
-        /// <remarks/>
-        [System.Xml.Serialization.XmlAttributeAttribute(Form = System.Xml.Schema.XmlSchemaForm.Qualified, Namespace = "http://www.w3.org/1999/xlink", DataType = "anyURI")]
-        public string arcrole
+        [XmlAttribute(AttributeName = "arcrole", Form = XmlSchemaForm.Qualified, Namespace = "http://www.w3.org/1999/xlink", DataType = "anyURI")]
+        public string ArcRole
         {
-            get
-            {
-                return this.arcroleField;
-            }
-            set
-            {
-                this.arcroleField = value;
-            }
+            get { return _arcRole; }
+            set { _arcRole = value; }
         }
 
-        /// <remarks/>
-        [System.Xml.Serialization.XmlAttributeAttribute(Form = System.Xml.Schema.XmlSchemaForm.Qualified, Namespace = "http://www.w3.org/1999/xlink")]
-        public string title
+        [XmlAttribute(AttributeName = "title", Form = XmlSchemaForm.Qualified, Namespace = "http://www.w3.org/1999/xlink")]
+        public string Title
         {
-            get
-            {
-                return this.titleField;
-            }
-            set
-            {
-                this.titleField = value;
-            }
+            get { return _title; }
+            set { _title = value; }
         }
 
-        /// <remarks/>
-        [System.Xml.Serialization.XmlAttributeAttribute(Form = System.Xml.Schema.XmlSchemaForm.Qualified, Namespace = "http://www.w3.org/1999/xlink")]
-        public OnlineResourceTypeShow show
+        [XmlAttribute(AttributeName = "show", Form = XmlSchemaForm.Qualified, Namespace = "http://www.w3.org/1999/xlink")]
+        public Show Show
         {
-            get
-            {
-                return this.showField;
-            }
-            set
-            {
-                this.showField = value;
-            }
+            get { return _show; }
+            set { _show = value; }
         }
 
-        /// <remarks/>
-        [System.Xml.Serialization.XmlIgnoreAttribute()]
-        public bool showSpecified
+        [XmlIgnore]
+        public bool ShowSpecified
         {
-            get
-            {
-                return this.showFieldSpecified;
-            }
-            set
-            {
-                this.showFieldSpecified = value;
-            }
+            get { return _showSpecified; }
+            set { _showSpecified = value; }
         }
 
-        /// <remarks/>
-        [System.Xml.Serialization.XmlAttributeAttribute(Form = System.Xml.Schema.XmlSchemaForm.Qualified, Namespace = "http://www.w3.org/1999/xlink")]
-        public OnlineResourceTypeActuate actuate
+        [XmlAttribute(AttributeName = "actuate", Form = XmlSchemaForm.Qualified, Namespace = "http://www.w3.org/1999/xlink")]
+        public Actuate Actuate
         {
-            get
-            {
-                return this.actuateField;
-            }
-            set
-            {
-                this.actuateField = value;
-            }
+            get { return _actuate; }
+            set { _actuate = value; }
         }
 
-        /// <remarks/>
-        [System.Xml.Serialization.XmlIgnoreAttribute()]
-        public bool actuateSpecified
+        [XmlIgnore]
+        public bool ActuateSpecified
         {
-            get
-            {
-                return this.actuateFieldSpecified;
-            }
-            set
-            {
-                this.actuateFieldSpecified = value;
-            }
+            get { return _actuateSpecified; }
+            set { _actuateSpecified = value; }
         }
     }
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("xsd", "2.0.50727.1432")]
-    [System.SerializableAttribute()]
-    [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true, Namespace = "http://www.w3.org/1999/xlink")]
-    public enum OnlineResourceTypeShow
+
+    [Serializable]
+    [XmlType(AnonymousType = true, Namespace = "http://www.w3.org/1999/xlink")]
+    public enum Show
     {
+        [XmlEnum(Name = "new")] 
+        New,
 
-        /// <remarks/>
-        @new,
+        [XmlEnum(Name = "replace")] 
+        Replace,
 
-        /// <remarks/>
-        replace,
+        [XmlEnum(Name = "embed")] 
+        Embed,
 
-        /// <remarks/>
-        embed,
+        [XmlEnum(Name = "other")] 
+        Other,
 
-        /// <remarks/>
-        other,
-
-        /// <remarks/>
-        none,
+        [XmlEnum(Name = "none")] 
+        None,
     }
 
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("xsd", "2.0.50727.1432")]
-    [System.SerializableAttribute()]
-    [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true, Namespace = "http://www.w3.org/1999/xlink")]
-    public enum OnlineResourceTypeActuate
+    [Serializable]
+    [XmlType(AnonymousType = true, Namespace = "http://www.w3.org/1999/xlink")]
+    public enum Actuate
     {
+        [XmlEnum(Name = "onLoad")] 
+        OnLoad,
 
-        /// <remarks/>
-        onLoad,
+        [XmlEnum(Name = "onRequest")] 
+        OnRequest,
 
-        /// <remarks/>
-        onRequest,
+        [XmlEnum(Name = "other")] 
+        Other,
 
-        /// <remarks/>
-        other,
-
-        /// <remarks/>
-        none,
+        [XmlEnum(Name = "none")] 
+        None,
     }
-
 }

@@ -19,26 +19,30 @@ using System;
 
 namespace SharpMap.Expressions
 {
-    public class AttributesPredicateExpression : BinaryExpression
+    public class AttributesPredicateExpression : BinaryLogicExpression
     {
         #region Overrides of Expression
 
-        public AttributesPredicateExpression(AttributeBinaryExpression left, BinaryLogicOperator op, AttributeBinaryExpression right)
-            : base(left, op, right) { }
-  
+        public AttributesPredicateExpression(AttributeBinaryExpression left,
+                                             BinaryLogicOperator op,
+                                             AttributeBinaryExpression right)
+            : base(left, op, right) {}
+
         public override Boolean Contains(Expression other)
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
 
         public override Expression Clone()
         {
-            return new AttributesPredicateExpression(Left.Clone() as AttributeBinaryExpression, 
-                                                    Op, 
-                                                    Right.Clone() as AttributeBinaryExpression);
+            return new AttributesPredicateExpression(Left.Clone() as AttributeBinaryExpression,
+                                                     Op,
+                                                     Right.Clone() as AttributeBinaryExpression);
         }
 
-        protected override BinaryExpressionBase<BinaryLogicOperator> Create(Expression left, BinaryLogicOperator op, Expression right)
+        protected override BinaryExpressionBase<BinaryLogicOperator> Create(Expression left,
+                                                                            BinaryLogicOperator op,
+                                                                            Expression right)
         {
             if (!(left is AttributeBinaryExpression && right is AttributeBinaryExpression))
             {
@@ -46,7 +50,9 @@ namespace SharpMap.Expressions
                                             "must be a AttributeBinaryExpression instance.");
             }
 
-            return new AttributesPredicateExpression(left as AttributeBinaryExpression, op, right as AttributeBinaryExpression);
+            return new AttributesPredicateExpression(left as AttributeBinaryExpression,
+                                                     op,
+                                                     right as AttributeBinaryExpression);
         }
 
         public override bool Equals(Expression other)
