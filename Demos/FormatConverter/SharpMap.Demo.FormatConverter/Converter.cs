@@ -210,7 +210,7 @@ namespace SharpMap.Demo.FormatConverter
                             (IConfigureFeatureTarget)Activator.CreateInstance(output.Builder))
                     {
                         Type oidType =
-                            GetTypeParamsOfBaseClasses(fdt.GetType(), typeof(FeatureDataTable<>))[0];
+                            GetTypeParamsOfBaseClass(fdt.GetType(), typeof(FeatureDataTable<>))[0];
 
                         using (IWritableFeatureProvider ptarget =
                              ctarget.ConstructTargetProvider(oidType, ((FeatureDataRow)fdt.Rows[0]).Geometry.Factory,
@@ -220,6 +220,8 @@ namespace SharpMap.Demo.FormatConverter
                             if (!ptarget.IsOpen)
                                 ptarget.Open();
 
+                            //jd: TODO: sort out FeatureDataTable type clashes 
+                            //e.g ShapeFileProvider (FeatureDataTable<UInt32>) and MsSqlServer2008Provider<Int32> (FeatureDataTable<Int32>)
 
                             ptarget.Insert(fdt);
                             ptarget.Close();
@@ -258,7 +260,7 @@ namespace SharpMap.Demo.FormatConverter
             return null;
         }
 
-        private Type[] GetTypeParamsOfBaseClasses(Type implementor, Type baseClassToFind)
+        private Type[] GetTypeParamsOfBaseClass(Type implementor, Type baseClassToFind)
         {
 
             for (Type t = implementor; t != null; t = t.BaseType)

@@ -36,7 +36,7 @@ using SharpMap.Expressions;
 using SharpMap.Indexing.RTree;
 using SharpMap.Utilities;
 using Trace = GeoAPI.Diagnostics.Trace;
-using ByteEncoder = GeoAPI.DataStructures.ByteEncoder; 
+using ByteEncoder = GeoAPI.DataStructures.ByteEncoder;
 #if DOTNET35
 using Processor = System.Linq.Enumerable;
 using Enumerable = System.Linq.Enumerable;
@@ -1500,6 +1500,25 @@ namespace SharpMap.Data.Providers.ShapeFile
                             4 *
                             ((geometry as IPolygon).InteriorRingsCount + 1
                     /* Parts array of rings: count of interior + 1 for exterior ring */)
+                            + 16 * pointCount;
+            }
+            else if (geometry is IMultiPolygon)
+            {
+                Int32 pointCount = 0;
+                Int32 ringCount = 0;
+                IMultiPolygon mp = geometry as IMultiPolygon;
+                foreach (IPolygon p in mp as IEnumerable<IPolygon>)
+                {
+                    pointCount += p.ExteriorRing.PointCount;
+                    foreach (ILinearRing ring in p.InteriorRings)
+                        pointCount += ring.PointCount;
+                    ringCount += p.InteriorRingsCount + 1;
+
+                }
+
+                byteCount = 4
+                            + ShapeFileConstants.BoundingBoxFieldByteLength + 4 + 4
+                            + 4 * ringCount
                             + 16 * pointCount;
             }
             else

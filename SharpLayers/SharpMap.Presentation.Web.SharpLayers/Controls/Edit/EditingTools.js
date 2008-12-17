@@ -14,20 +14,15 @@
 */
 Type.registerNamespace('SharpMap.Presentation.Web.SharpLayers.Controls.Edit');
 
-SharpMap.Presentation.Web.SharpLayers.Controls.Edit.EditingTools = function(element) {
-    SharpMap.Presentation.Web.SharpLayers.Controls.Edit.EditingTools.initializeBase(this, [element]);
+SharpMap.Presentation.Web.SharpLayers.Controls.Edit.EditingTools = function() {
+    SharpMap.Presentation.Web.SharpLayers.Controls.Edit.EditingTools.initializeBase(this);
 
 }
 SharpMap.Presentation.Web.SharpLayers.Controls.Edit.EditingTools.prototype = {
     initialize: function() {
         SharpMap.Presentation.Web.SharpLayers.Controls.Edit.EditingTools.callBaseMethod(this, 'initialize');
-
-        // TODO: Add your initalization code here
     },
-
     dispose: function() {
-        // TODO: Add your cleanup code here
-
         SharpMap.Presentation.Web.SharpLayers.Controls.Edit.EditingTools.callBaseMethod(this, 'dispose');
     },
     _toolBuilderDelegate: function() {
