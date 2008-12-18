@@ -18,7 +18,7 @@ SharpMap.Presentation.Web.SharpLayers.OpenLayersFactory.buildParams = function(o
     var newParams = {};
     for (var k in originalParams) {
         var v = originalParams[k];
-        if (v) {
+        if (v != null) {
             if (typeof (v) == "object" && v["typeToBuild"])
                 newParams[k] = $olFactory.buildOpenLayersObject(v);
             else
@@ -33,7 +33,7 @@ SharpMap.Presentation.Web.SharpLayers.OpenLayersFactory.buildOpenLayersObject = 
     if (typeToBuild == null)
         throw "Invalid build params";
     delete buildParams.typeToBuild;
-    
+
     switch (typeToBuild) {
         case "OpenLayers.Bounds":
             return $olFactory._buildBounds(buildParams);
