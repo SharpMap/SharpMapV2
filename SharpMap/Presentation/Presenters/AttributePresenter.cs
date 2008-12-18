@@ -175,7 +175,7 @@ namespace SharpMap.Presentation.Presenters
                 }
                 else
                 {
-                    PredicateExpression predicate = new BinaryExpression(viewDefinition.SpatialPredicate,
+                    PredicateExpression predicate = new BinaryLogicExpression(viewDefinition.SpatialPredicate,
                                                                          BinaryLogicOperator.And,
                                                                          oidExpression);
                     viewDefinition = new FeatureQueryExpression(projection, predicate);

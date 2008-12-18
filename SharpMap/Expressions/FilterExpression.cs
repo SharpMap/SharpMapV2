@@ -8,7 +8,7 @@ namespace SharpMap.Expressions
     [XmlRoot("Filter", Namespace = "http://www.opengis.net/ogc", IsNullable = false)]
     public class FilterExpression
     {
-        private object[] _expressions;
+        private Expression[] _expressions;
         private ExpressionType[] _expressionElementTypes;
 
         [XmlElement("And", typeof (BinaryLogicExpression))]
@@ -26,15 +26,15 @@ namespace SharpMap.Expressions
         [XmlElement("FeatureId", typeof(FeatureIdExpression))]
         [XmlElement("_Id", typeof (AbstractIdExpression))]
         [XmlElement("comparisonOps", typeof (ComparisonExpression))]
-        [XmlElement("logicOps", typeof (LogicExpression))]
+        //[XmlElement("logicOps", typeof (LogicExpression))]
         [XmlChoiceIdentifier("ExpressionElementTypes")]
-        public object[] Expressions
+        public Expression[] Expressions
         {
             get { return _expressions; }
             set { _expressions = value; }
         }
 
-        [XmlElement("ItemsElementName")]
+        [XmlElement("ExpressionElementTypes")]
         [XmlIgnore]
         public ExpressionType[] ExpressionElementTypes
         {

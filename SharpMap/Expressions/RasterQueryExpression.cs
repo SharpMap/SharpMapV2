@@ -68,7 +68,7 @@ namespace SharpMap.Expressions
                     return spatialBinaryExpression;
                 }
 
-                BinaryExpression binaryExpression = Predicate as BinaryExpression;
+                BinaryLogicExpression binaryExpression = Predicate as BinaryLogicExpression;
 
                 if (binaryExpression == null)
                 {

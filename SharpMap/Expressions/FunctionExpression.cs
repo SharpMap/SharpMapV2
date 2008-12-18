@@ -29,13 +29,13 @@ namespace SharpMap.Expressions
         private Expression[] _parameters;
         private ExpressionType[] _parameterTypes;
 
-        [XmlElement("Add", typeof(BinaryExpression), Order = 0)]
-        [XmlElement("Div", typeof(BinaryExpression), Order = 0)]
+        [XmlElement("Add", typeof(BinaryOperationExpression), Order = 0)]
+        [XmlElement("Div", typeof(BinaryOperationExpression), Order = 0)]
         [XmlElement("Function", typeof(FunctionExpression), Order = 0)]
         [XmlElement("Literal", typeof(LiteralExpression), Order = 0)]
-        [XmlElement("Mul", typeof(BinaryExpression), Order = 0)]
+        [XmlElement("Mul", typeof(BinaryOperationExpression), Order = 0)]
         [XmlElement("PropertyName", typeof(PropertyNameExpression), Order = 0)]
-        [XmlElement("Sub", typeof(BinaryExpression), Order = 0)]
+        [XmlElement("Sub", typeof(BinaryOperationExpression), Order = 0)]
         [XmlChoiceIdentifier("ParameterTypes")]
         public Expression[] Parameters
         {

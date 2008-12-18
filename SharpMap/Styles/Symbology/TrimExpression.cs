@@ -17,6 +17,7 @@
 
 using System;
 using System.Xml.Serialization;
+using SharpMap.Expressions;
 
 namespace SharpMap.Styles.Symbology
 {
@@ -57,6 +58,25 @@ namespace SharpMap.Styles.Symbology
             get { return _stripOffChar; }
             set { _stripOffChar = value; }
         }
+
+        #region Overrides of Expression
+
+        public override bool Contains(Expression other)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public override Expression Clone()
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public override bool Equals(Expression other)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        #endregion
     }
 
     [Serializable]

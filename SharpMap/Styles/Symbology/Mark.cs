@@ -16,105 +16,65 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System;
-using System.Collections.Generic;
-using System.Text;
+using System.Xml.Serialization;
 
 namespace SharpMap.Styles.Symbology
 {
-    [System.SerializableAttribute()]
-    [System.Xml.Serialization.XmlTypeAttribute(Namespace = "http://www.opengis.net/se")]
-    [System.Xml.Serialization.XmlRootAttribute("Mark", Namespace = "http://www.opengis.net/se", IsNullable = false)]
+    [Serializable]
+    [XmlType(Namespace = "http://www.opengis.net/se")]
+    [XmlRoot("Mark", Namespace = "http://www.opengis.net/se", IsNullable = false)]
     public class Mark
     {
-        private object[] itemsField;
+        private object[] _parameters;
+        private MarkType[] _parameterTypes;
+        private Fill _fill;
+        private Stroke _stroke;
 
-        private ItemsChoiceType3[] itemsElementNameField;
-
-        private FillType fillField;
-
-        private StrokeType strokeField;
-
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute("Format", typeof(string))]
-        [System.Xml.Serialization.XmlElementAttribute("InlineContent", typeof(InlineContentType))]
-        [System.Xml.Serialization.XmlElementAttribute("MarkIndex", typeof(string), DataType = "integer")]
-        [System.Xml.Serialization.XmlElementAttribute("OnlineResource", typeof(OnlineResourceType))]
-        [System.Xml.Serialization.XmlElementAttribute("WellKnownName", typeof(string))]
-        [System.Xml.Serialization.XmlChoiceIdentifierAttribute("ItemsElementName")]
-        public object[] Items
+        [XmlElement("Format", typeof (string))]
+        [XmlElement("InlineContent", typeof (InlineContent))]
+        [XmlElement("MarkIndex", typeof (string), DataType = "integer")]
+        [XmlElement("OnlineResource", typeof (OnlineResource))]
+        [XmlElement("WellKnownName", typeof (string))]
+        [XmlChoiceIdentifier("ParameterTypes")]
+        public object[] Parameters
         {
-            get
-            {
-                return this.itemsField;
-            }
-            set
-            {
-                this.itemsField = value;
-            }
+            get { return _parameters; }
+            set { _parameters = value; }
         }
 
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute("ItemsElementName")]
-        [System.Xml.Serialization.XmlIgnoreAttribute()]
-        public ItemsChoiceType3[] ItemsElementName
+        [XmlElement("ParameterTypes")]
+        [XmlIgnore]
+        public MarkType[] ParameterTypes
         {
-            get
-            {
-                return this.itemsElementNameField;
-            }
-            set
-            {
-                this.itemsElementNameField = value;
-            }
+            get { return _parameterTypes; }
+            set { _parameterTypes = value; }
         }
 
-        /// <remarks/>
-        public FillType Fill
+        public Fill Fill
         {
-            get
-            {
-                return this.fillField;
-            }
-            set
-            {
-                this.fillField = value;
-            }
+            get { return _fill; }
+            set { _fill = value; }
         }
 
-        /// <remarks/>
-        public StrokeType Stroke
+        public Stroke Stroke
         {
-            get
-            {
-                return this.strokeField;
-            }
-            set
-            {
-                this.strokeField = value;
-            }
+            get { return _stroke; }
+            set { _stroke = value; }
         }
     }
 
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("xsd", "2.0.50727.1432")]
-    [System.SerializableAttribute()]
-    [System.Xml.Serialization.XmlTypeAttribute(Namespace = "http://www.opengis.net/se", IncludeInSchema = false)]
-    public enum ItemsChoiceType3
+    [Serializable]
+    [XmlType(Namespace = "http://www.opengis.net/se", IncludeInSchema = false)]
+    public enum MarkType
     {
-
-        /// <remarks/>
         Format,
 
-        /// <remarks/>
         InlineContent,
 
-        /// <remarks/>
         MarkIndex,
 
-        /// <remarks/>
         OnlineResource,
 
-        /// <remarks/>
         WellKnownName,
     }
 }

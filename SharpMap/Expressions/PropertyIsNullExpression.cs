@@ -10,6 +10,8 @@ namespace SharpMap.Expressions
     {
         private PropertyNameExpression _propertyName;
 
+        public PropertyIsNullExpression(Expression left, ComparisonOperator op, Expression right) : base(left, op, right) {}
+
         public PropertyNameExpression PropertyName
         {
             get { return _propertyName; }

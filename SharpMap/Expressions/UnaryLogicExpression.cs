@@ -28,8 +28,8 @@ namespace SharpMap.Expressions
     [XmlRoot("Not", Namespace = "http://www.opengis.net/ogc", IsNullable = false)]
     public class UnaryLogicExpression
     {
-        private object _expression;
-        private ItemChoiceType3 _itemElementName;
+        private Expression _expression;
+        private ExpressionType _itemElementName;
 
         [XmlElement("And", typeof (BinaryLogicExpression))]
         [XmlElement("Not", typeof (UnaryLogicExpression))]
@@ -44,16 +44,17 @@ namespace SharpMap.Expressions
         [XmlElement("PropertyIsNotEqualTo", typeof(BinaryComparisonExpression))]
         [XmlElement("PropertyIsNull", typeof (PropertyIsNullExpression))]
         [XmlElement("comparisonOps", typeof (ComparisonExpression))]
-        [XmlElement("logicOps", typeof (LogicExpression))]
+        //[XmlElement("logicOps", typeof (LogicExpression))]
         [XmlChoiceIdentifier("ExpressionElementType")]
-        public object Expression
+        public Expression Expression
         {
             get { return _expression; }
             set { _expression = value; }
         }
 
         [XmlIgnore]
-        public ItemChoiceType3 ExpressionElementType
+        [XmlElement("ExpressionElementType")]
+        public ExpressionType ExpressionElementType
         {
             get { return _itemElementName; }
             set { _itemElementName = value; }

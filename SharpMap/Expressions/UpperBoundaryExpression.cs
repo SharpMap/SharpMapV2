@@ -27,13 +27,13 @@ namespace SharpMap.Expressions
         private Expression _expression;
         private ExpressionType _expressionType;
 
-        [XmlElement("Add", typeof(BinaryExpression))]
-        [XmlElement("Div", typeof(BinaryExpression))]
+        [XmlElement("Add", typeof(BinaryOperationExpression))]
+        [XmlElement("Div", typeof(BinaryOperationExpression))]
         [XmlElement("Function", typeof(FunctionExpression))]
         [XmlElement("Literal", typeof(LiteralExpression))]
-        [XmlElement("Mul", typeof(BinaryExpression))]
+        [XmlElement("Mul", typeof(BinaryOperationExpression))]
         [XmlElement("PropertyName", typeof(PropertyNameExpression))]
-        [XmlElement("Sub", typeof(BinaryExpression))]
+        [XmlElement("Sub", typeof(BinaryOperationExpression))]
         [XmlChoiceIdentifier("ExpressionElementType")]
         public Expression Expression
         {
@@ -59,5 +59,24 @@ namespace SharpMap.Expressions
                 _expressionType = value;
             }
         }
+
+        #region Overrides of Expression
+
+        public override bool Contains(Expression other)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public override Expression Clone()
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public override bool Equals(Expression other)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        #endregion
     }
 }

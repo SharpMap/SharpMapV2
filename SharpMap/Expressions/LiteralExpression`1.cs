@@ -66,5 +66,10 @@ namespace SharpMap.Expressions
         {
             return _value;
         }
+
+        protected override void SetValue(object value)
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }

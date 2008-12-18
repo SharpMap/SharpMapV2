@@ -25,15 +25,15 @@ namespace SharpMap.Styles.Symbology
     [XmlRoot("Stroke", Namespace = "http://www.opengis.net/se", IsNullable = false)]
     public class Stroke
     {
-        private object _item;
+        private object _value;
         private SvgParameter[] _svgParameter;
 
         [XmlElement("GraphicFill", typeof (GraphicFill))]
         [XmlElement("GraphicStroke", typeof (GraphicStroke))]
-        public object Item
+        public object Value
         {
-            get { return _item; }
-            set { _item = value; }
+            get { return _value; }
+            set { _value = value; }
         }
 
         [XmlElement("SvgParameter")]

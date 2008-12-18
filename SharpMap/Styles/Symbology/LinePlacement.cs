@@ -16,156 +16,80 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System;
-using System.Collections.Generic;
-using System.Text;
+using System.Xml.Serialization;
 
 namespace SharpMap.Styles.Symbology
 {
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("xsd", "2.0.50727.1432")]
-    [System.SerializableAttribute()]
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.ComponentModel.DesignerCategoryAttribute("code")]
-    [System.Xml.Serialization.XmlTypeAttribute(Namespace = "http://www.opengis.net/se")]
-    [System.Xml.Serialization.XmlRootAttribute("LinePlacement", Namespace = "http://www.opengis.net/se", IsNullable = false)]
-    class LinePlacement
+    [Serializable]
+    [XmlType(Namespace = "http://www.opengis.net/se")]
+    [XmlRoot("LinePlacement", Namespace = "http://www.opengis.net/se", IsNullable = false)]
+    public class LinePlacement
     {
-        private ParameterValue perpendicularOffsetField;
+        private ParameterValue _perpendicularOffset;
+        private bool _isRepeated;
+        private bool _isRepeatedSpecified;
+        private ParameterValue _initialGap;
+        private ParameterValue _gap;
+        private bool _isAligned;
+        private bool _isAlignedSpecified;
+        private bool _generalizeLine;
+        private bool _generalizeLineSpecified;
 
-        private bool isRepeatedField;
-
-        private bool isRepeatedFieldSpecified;
-
-        private ParameterValueType initialGapField;
-
-        private ParameterValueType gapField;
-
-        private bool isAlignedField;
-
-        private bool isAlignedFieldSpecified;
-
-        private bool generalizeLineField;
-
-        private bool generalizeLineFieldSpecified;
-
-        /// <remarks/>
-        public ParameterValueType PerpendicularOffset
+        public ParameterValue PerpendicularOffset
         {
-            get
-            {
-                return this.perpendicularOffsetField;
-            }
-            set
-            {
-                this.perpendicularOffsetField = value;
-            }
+            get { return _perpendicularOffset; }
+            set { _perpendicularOffset = value; }
         }
 
-        /// <remarks/>
         public bool IsRepeated
         {
-            get
-            {
-                return this.isRepeatedField;
-            }
-            set
-            {
-                this.isRepeatedField = value;
-            }
+            get { return _isRepeated; }
+            set { _isRepeated = value; }
         }
 
-        /// <remarks/>
-        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        [XmlIgnore]
         public bool IsRepeatedSpecified
         {
-            get
-            {
-                return this.isRepeatedFieldSpecified;
-            }
-            set
-            {
-                this.isRepeatedFieldSpecified = value;
-            }
+            get { return _isRepeatedSpecified; }
+            set { _isRepeatedSpecified = value; }
         }
 
-        /// <remarks/>
-        public ParameterValueType InitialGap
+        public ParameterValue InitialGap
         {
-            get
-            {
-                return this.initialGapField;
-            }
-            set
-            {
-                this.initialGapField = value;
-            }
+            get { return _initialGap; }
+            set { _initialGap = value; }
         }
 
-        /// <remarks/>
-        public ParameterValueType Gap
+        public ParameterValue Gap
         {
-            get
-            {
-                return this.gapField;
-            }
-            set
-            {
-                this.gapField = value;
-            }
+            get { return _gap; }
+            set { _gap = value; }
         }
 
-        /// <remarks/>
         public bool IsAligned
         {
-            get
-            {
-                return this.isAlignedField;
-            }
-            set
-            {
-                this.isAlignedField = value;
-            }
+            get { return _isAligned; }
+            set { _isAligned = value; }
         }
 
-        /// <remarks/>
-        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        [XmlIgnore]
         public bool IsAlignedSpecified
         {
-            get
-            {
-                return this.isAlignedFieldSpecified;
-            }
-            set
-            {
-                this.isAlignedFieldSpecified = value;
-            }
+            get { return _isAlignedSpecified; }
+            set { _isAlignedSpecified = value; }
         }
 
-        /// <remarks/>
         public bool GeneralizeLine
         {
-            get
-            {
-                return this.generalizeLineField;
-            }
-            set
-            {
-                this.generalizeLineField = value;
-            }
+            get { return _generalizeLine; }
+            set { _generalizeLine = value; }
         }
 
-        /// <remarks/>
-        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        [XmlIgnore]
         public bool GeneralizeLineSpecified
         {
-            get
-            {
-                return this.generalizeLineFieldSpecified;
-            }
-            set
-            {
-                this.generalizeLineFieldSpecified = value;
-            }
+            get { return _generalizeLineSpecified; }
+            set { _generalizeLineSpecified = value; }
         }
     }
 }

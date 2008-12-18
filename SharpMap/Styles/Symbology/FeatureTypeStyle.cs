@@ -16,130 +16,69 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System;
-using System.Collections.Generic;
-using System.Text;
+using System.Xml;
+using System.Xml.Serialization;
 
 namespace SharpMap.Styles.Symbology
 {
-
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("xsd", "2.0.50727.1432")]
-    [System.SerializableAttribute()]
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.ComponentModel.DesignerCategoryAttribute("code")]
-    [System.Xml.Serialization.XmlTypeAttribute(Namespace = "http://www.opengis.net/se")]
-    [System.Xml.Serialization.XmlRootAttribute("FeatureTypeStyle", Namespace = "http://www.opengis.net/se", IsNullable = false)]
-    public partial class FeatureTypeStyleType
+    [Serializable]
+    [XmlType(Namespace = "http://www.opengis.net/se", TypeName = "FeatureTypeStyleType")]
+    [XmlRoot("FeatureTypeStyle", Namespace = "http://www.opengis.net/se", IsNullable = false)]
+    public class FeatureTypeStyle
     {
+        private string _name;
+        private Description _description;
+        private XmlQualifiedName _featureTypeName;
+        private string[] _semanticTypeIdentifier;
+        private object[] _items;
+        private Version _version;
+        private bool _versionSpecified;
 
-        private string nameField;
-
-        private DescriptionType descriptionField;
-
-        private System.Xml.XmlQualifiedName featureTypeNameField;
-
-        private string[] semanticTypeIdentifierField;
-
-        private object[] itemsField;
-
-        private VersionType versionField;
-
-        private bool versionFieldSpecified;
-
-        /// <remarks/>
         public string Name
         {
-            get
-            {
-                return this.nameField;
-            }
-            set
-            {
-                this.nameField = value;
-            }
+            get { return _name; }
+            set { _name = value; }
         }
 
-        /// <remarks/>
-        public DescriptionType Description
+        public Description Description
         {
-            get
-            {
-                return this.descriptionField;
-            }
-            set
-            {
-                this.descriptionField = value;
-            }
+            get { return _description; }
+            set { _description = value; }
         }
 
-        /// <remarks/>
-        public System.Xml.XmlQualifiedName FeatureTypeName
+        public XmlQualifiedName FeatureTypeName
         {
-            get
-            {
-                return this.featureTypeNameField;
-            }
-            set
-            {
-                this.featureTypeNameField = value;
-            }
+            get { return _featureTypeName; }
+            set { _featureTypeName = value; }
         }
 
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute("SemanticTypeIdentifier")]
+        [XmlElement("SemanticTypeIdentifier")]
         public string[] SemanticTypeIdentifier
         {
-            get
-            {
-                return this.semanticTypeIdentifierField;
-            }
-            set
-            {
-                this.semanticTypeIdentifierField = value;
-            }
+            get { return _semanticTypeIdentifier; }
+            set { _semanticTypeIdentifier = value; }
         }
 
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute("OnlineResource", typeof(OnlineResourceType))]
-        [System.Xml.Serialization.XmlElementAttribute("Rule", typeof(RuleType))]
+        [XmlElement("OnlineResource", typeof (OnlineResource))]
+        [XmlElement("Rule", typeof (Rule))]
         public object[] Items
         {
-            get
-            {
-                return this.itemsField;
-            }
-            set
-            {
-                this.itemsField = value;
-            }
+            get { return _items; }
+            set { _items = value; }
         }
 
-        /// <remarks/>
-        [System.Xml.Serialization.XmlAttributeAttribute()]
-        public VersionType version
+        [XmlAttribute(AttributeName = "version")]
+        public Version Version
         {
-            get
-            {
-                return this.versionField;
-            }
-            set
-            {
-                this.versionField = value;
-            }
+            get { return _version; }
+            set { _version = value; }
         }
 
-        /// <remarks/>
-        [System.Xml.Serialization.XmlIgnoreAttribute()]
-        public bool versionSpecified
+        [XmlIgnore]
+        public bool VersionSpecified
         {
-            get
-            {
-                return this.versionFieldSpecified;
-            }
-            set
-            {
-                this.versionFieldSpecified = value;
-            }
+            get { return _versionSpecified; }
+            set { _versionSpecified = value; }
         }
     }
 }

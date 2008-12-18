@@ -274,7 +274,7 @@ namespace SharpMap.Data
 
                     PredicateExpression predicate = _viewDefinition.Predicate == null
                                                         ? (PredicateExpression)value
-                                                        : new BinaryExpression(value,
+                                                        : new BinaryLogicExpression(value,
                                                                                BinaryLogicOperator.And,
                                                                                _viewDefinition.SpatialPredicate);
 

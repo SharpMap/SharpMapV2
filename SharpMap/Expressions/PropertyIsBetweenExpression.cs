@@ -13,13 +13,16 @@ namespace SharpMap.Expressions
         private LowerBoundaryExpression _lowerBoundaryField;
         private UpperBoundaryExpression _upperBoundaryField;
 
-        [XmlElement("Add", typeof (BinaryExpression))]
-        [XmlElement("Div", typeof (BinaryExpression))]
+        public PropertyIsBetweenExpression(Expression left, ComparisonOperator op, Expression right) 
+            : base(left, op, right) {}
+
+        [XmlElement("Add", typeof(BinaryOperationExpression))]
+        [XmlElement("Div", typeof(BinaryOperationExpression))]
         [XmlElement("Function", typeof (FunctionExpression))]
         [XmlElement("Literal", typeof (LiteralExpression))]
-        [XmlElement("Mul", typeof (BinaryExpression))]
+        [XmlElement("Mul", typeof(BinaryOperationExpression))]
         [XmlElement("PropertyName", typeof (PropertyNameExpression))]
-        [XmlElement("Sub", typeof (BinaryExpression))]
+        [XmlElement("Sub", typeof(BinaryOperationExpression))]
         [XmlChoiceIdentifier("ExpressionElementType")]
         public Expression Expression
         {

@@ -14,6 +14,8 @@ namespace SharpMap.Expressions
         private String _singleChar;
         private String _escapeChar;
 
+        public PropertyIsLikeExpression(Expression left, ComparisonOperator op, Expression right) : base(left, op, right) {}
+
         public PropertyNameExpression PropertyName
         {
             get { return _propertyName; }

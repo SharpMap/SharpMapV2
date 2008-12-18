@@ -34,5 +34,14 @@ namespace SharpMap.Expressions
             get { return _expressionElementTypes; }
             set { _expressionElementTypes = value; }
         }
+
+        #region Overrides of BinaryExpressionBase<ExpressionType>
+
+        protected override BinaryExpressionBase<ExpressionType> Create(Expression left, ExpressionType op, Expression right)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        #endregion
     }
 }

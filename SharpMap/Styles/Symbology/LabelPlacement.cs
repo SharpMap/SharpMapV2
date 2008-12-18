@@ -16,36 +16,23 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System;
-using System.Collections.Generic;
-using System.Text;
+using System.Xml.Serialization;
 
 namespace SharpMap.Styles.Symbology
 {
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("xsd", "2.0.50727.1432")]
-    [System.SerializableAttribute()]
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.ComponentModel.DesignerCategoryAttribute("code")]
-    [System.Xml.Serialization.XmlTypeAttribute(Namespace = "http://www.opengis.net/se")]
-    [System.Xml.Serialization.XmlRootAttribute("LabelPlacement", Namespace = "http://www.opengis.net/se", IsNullable = false)]
-    class LabelPlacement
+    [Serializable]
+    [XmlType(Namespace = "http://www.opengis.net/se")]
+    [XmlRoot("LabelPlacement", Namespace = "http://www.opengis.net/se", IsNullable = false)]
+    public class LabelPlacement
     {
+        private object _item;
 
-        private object itemField;
-
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute("LinePlacement", typeof(LinePlacementType))]
-        [System.Xml.Serialization.XmlElementAttribute("PointPlacement", typeof(PointPlacementType))]
+        [XmlElement("LinePlacement", typeof (LinePlacement))]
+        [XmlElement("PointPlacement", typeof (PointPlacement))]
         public object Item
         {
-            get
-            {
-                return this.itemField;
-            }
-            set
-            {
-                this.itemField = value;
-            }
+            get { return _item; }
+            set { _item = value; }
         }
     }
 }
