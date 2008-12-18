@@ -106,7 +106,7 @@ namespace SharpMap.Demo.FormatConverter.SqlServer2008
             Type typ = typeof(MsSqlServer2008Provider<>);
             _specializedType = typ.MakeGenericType(oidType);
 
-            Console.WriteLine("Please enter the connection string for the target database server.");
+            Console.WriteLine("Please enter the connection string for the target database server. Remember 'Connection Timeout=0' for large datasets.");
             string connectionString = Console.ReadLine();
 
             Console.WriteLine("Please enter the schema for the table.");
@@ -163,6 +163,7 @@ namespace SharpMap.Demo.FormatConverter.SqlServer2008
                 _specializedType.GetMethod("CreateEnvelopeColumns", BindingFlags.Public | BindingFlags.Instance, null,
                                            CallingConventions.HasThis, Type.EmptyTypes, null).Invoke(_targetProvider, new object[] { });
 
+            Console.WriteLine("Creating Spatial Index");
             _specializedType.GetMethod("RebuildSpatialIndex", BindingFlags.Public | BindingFlags.Instance, null,
                                 CallingConventions.HasThis, Type.EmptyTypes, null).Invoke(_targetProvider, new object[] { });
 

@@ -418,6 +418,7 @@ END
                 @"CREATE  INDEX [{0}] ON {1}({2})", indexName, QualifiedTableName,
                 string.Join(",", Enumerable.ToArray(columnNames)));
 
+
             using (IDbCommand cmd = conn.CreateCommand())
             {
                 cmd.CommandText = sb.ToString();
@@ -465,21 +466,27 @@ END
             dlgtDrop(maxX);
             dlgtDrop(maxY);
 
+            sb.AppendFormat(
+                @"
+                ALTER TABLE {0} ADD", QualifiedTableName);
 
             Action<string, int, string> dlgtCreate = delegate(string colName, int coordIndex, string selector)
                                                          {
                                                              sb.AppendFormat(
-                                                                 @"ALTER TABLE {0}
-    ADD [{1}] AS {2}.STEnvelope().STPointN({3}).{4} PERSISTED
+                                                                 @"
+     [{0}] AS {1}.STEnvelope().STPointN({2}).{3} PERSISTED
 ",
-                                                                 QualifiedTableName, colName,
+                                                                 colName,
                                                                  GeometryColumn, coordIndex,
                                                                  selector);
                                                          };
 
             dlgtCreate(minX, 1, "STX");
+            sb.AppendLine(",");
             dlgtCreate(minY, 1, "STY");
+            sb.AppendLine(","); 
             dlgtCreate(maxX, 3, "STX");
+            sb.AppendLine(","); 
             dlgtCreate(maxY, 3, "STY");
 
 

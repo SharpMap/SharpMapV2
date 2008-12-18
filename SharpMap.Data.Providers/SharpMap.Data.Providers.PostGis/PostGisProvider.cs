@@ -28,25 +28,25 @@
  *    http://npgsql.projects.postgresql.org/
  *    
  */
-#if DEBUG
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Diagnostics;
-using GeoAPI.DataStructures;
 using GeoAPI.Geometries;
 using Npgsql;
 using SharpMap.Data.Providers.Db;
 using SharpMap.Data.Providers.Db.Expressions;
 using SharpMap.Data.Providers.PostGis;
 using SharpMap.Expressions;
-#endif
+
 #if DOTNET35
 using Processor = System.Linq.Enumerable;
 using Enumerable = System.Linq.Enumerable;
 using Caster = System.Linq.Enumerable;
 #else
-
+using Processor = GeoAPI.DataStructures.Processor;
+using Caster = GeoAPI.DataStructures.Caster;
+using Enumerable = GeoAPI.DataStructures.Enumerable;
 #endif
 
 namespace SharpMap.Data.Providers

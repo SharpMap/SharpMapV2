@@ -59,13 +59,12 @@ namespace MapViewer.DataSource
                 case "decimal":
                     return new MsSqlServer2008Provider<decimal>(f, conn, schema, tableName, oidColumn, geometryColumn);
                 case "int":
+                case "smallint":
                     return new MsSqlServer2008Provider<int>(f, conn, schema, tableName, oidColumn, geometryColumn);
                 case "float":
                 case "numeric":
                 case "real":
                     return new MsSqlServer2008Provider<double>(f, conn, schema, tableName, oidColumn, geometryColumn);
-                case "smallint":
-                    return new MsSqlServer2008Provider<short>(f, conn, schema, tableName, oidColumn, geometryColumn);
                 case "tinyint":
                     return new MsSqlServer2008Provider<byte>(f, conn, schema, tableName, oidColumn, geometryColumn);
                 case "uniqueidentifier":

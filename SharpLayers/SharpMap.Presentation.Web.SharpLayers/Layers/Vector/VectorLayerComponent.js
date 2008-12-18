@@ -63,7 +63,7 @@ SharpMap.Presentation.Web.SharpLayers.Layers.Vector.VectorLayerComponent.prototy
     _sldLoaded: function(e) {
         var opts = this.get_builderParams();
         opts.sld.remove_sldLoaded(this._loadDelegate);
-        if (opts.styleSelector)
+        if (opts.styleSelector && this.get_hostedItem() != null)
             this.get_hostedItem().styleMap = new OpenLayers.StyleMap(opts.styleSelector(opts.sld.get_hostedItem()));
     }
 

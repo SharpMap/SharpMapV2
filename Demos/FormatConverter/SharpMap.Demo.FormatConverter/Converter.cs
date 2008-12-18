@@ -223,13 +223,14 @@ namespace SharpMap.Demo.FormatConverter
                             //jd: TODO: sort out FeatureDataTable type clashes 
                             //e.g ShapeFileProvider (FeatureDataTable<UInt32>) and MsSqlServer2008Provider<Int32> (FeatureDataTable<Int32>)
 
+                            Console.WriteLine("Beginning Import.");
                             ptarget.Insert(fdt);
                             ptarget.Close();
+                            Console.WriteLine(string.Format("{0} records processed", fdt.Rows.Count));
 
                             ctarget.PostImport();
                         }
                     }
-                    Console.WriteLine(string.Format("{0} records processed", fdt.Rows.Count));
                 }
                 else
                     Console.WriteLine("No records to process.");
@@ -354,7 +355,7 @@ namespace SharpMap.Demo.FormatConverter
         {
             Console.WriteLine(
                 "Application demonstrating the use of SharpMap v2 \nto convert and process between different data sources.");
-            Console.WriteLine("© Newgrove Consultants Ltd / John Diss 2008\n ");
+            Console.WriteLine("© Newgrove Consultants Ltd / John Diss 2008 www.newgrove.com\n ");
         }
 
         #region Nested type: ProcessorItem

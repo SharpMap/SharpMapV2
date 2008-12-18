@@ -39,6 +39,8 @@ namespace SharpMap.Presentation.AspNet.WmsServer
         /// <returns></returns>
         protected abstract override IMapRequestConfigFactory CreateConfigFactory();
 
+       
+
 
         public override Stream Render(out string mimeType)
         {

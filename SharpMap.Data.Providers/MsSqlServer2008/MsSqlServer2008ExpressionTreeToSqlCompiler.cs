@@ -17,6 +17,7 @@ using System.Text;
 using GeoAPI.Geometries;
 using SharpMap.Data.Providers.Db;
 using SharpMap.Expressions;
+using SharpMap.Utilities.SridUtility;
 
 namespace SharpMap.Data.Providers.MsSqlServer2008
 {
@@ -32,18 +33,20 @@ namespace SharpMap.Data.Providers.MsSqlServer2008
                                                                   SpatialOperation op,
                                                                   IGeometry geom)
         {
+
+            int? geomSrid = SridMap.DefaultInstance.Process(geom.SpatialReference, (int?)null);
+            int? provSrid = SridMap.DefaultInstance.Process(Provider.SpatialReference, (int?)null);
+
             string declaredParamName = string.Format("@dparam_{0}", ParameterDeclarations.Count);
             ParameterDeclarations.Add(
                 string.Format("DECLARE {0} geometry\n SET {0} = geometry::STGeomFromWKB({1},{2})\n ",
                               declaredParamName,
                               CreateParameter(geom).ParameterName,
-                              Provider.ParseSrid(geom.Srid).HasValue && Provider.ParseSrid(geom.Srid).Value > 0
-                                  ?
-                                      Provider.ParseSrid(geom.Srid).Value
-                                  : !Provider.ParseSrid(Provider.Srid).HasValue ||
-                                    Provider.ParseSrid(Provider.Srid).Value < 0
+                             geomSrid.HasValue && geomSrid.Value > 0
+                                  ? geomSrid.Value
+                                  : !provSrid.HasValue || provSrid.Value < 0
                                         ? 0
-                                        : Provider.ParseSrid(Provider.Srid)));
+                                        : provSrid.Value));
 
             builder.AppendFormat(" {0}.{1}.{2}({3}) = 1 ",
                                  Provider.Table,
@@ -54,7 +57,7 @@ namespace SharpMap.Data.Providers.MsSqlServer2008
 
         private static string GetSpatialMethodName(SpatialOperation op)
         {
-            return string.Format("ST{0}", Enum.GetName(typeof (SpatialOperation), op));
+            return string.Format("ST{0}", Enum.GetName(typeof(SpatialOperation), op));
         }
 
         protected override void WriteSpatialExtentsExpressionSql(StringBuilder builder,

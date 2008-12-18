@@ -123,6 +123,8 @@ namespace SharpMap.Data.Providers.Db
                 return SqlDbType.Decimal;
             if (netType == typeof(byte[]))
                 return SqlDbType.VarBinary;
+            if (netType == typeof(Boolean))
+                return SqlDbType.Bit; 
 
             throw new NotImplementedException();
         }

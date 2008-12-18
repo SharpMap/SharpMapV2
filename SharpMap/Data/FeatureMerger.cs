@@ -207,11 +207,22 @@ namespace SharpMap.Data
 
                 for (Int32 i = 0; i < _targetDataTable.Columns.Count; i++)
                 {
-                    if (_targetDataTable.Columns[i].Ordinal != schemaModel.Columns[i].Ordinal)
+                    //jd: this seems to fix an issue where the columns would be mapped incorrectly.. 
+                    //however I think there is another issue where the destination table is one column short..
+
+                    string columnName = _targetDataTable.Columns[i].ColumnName;
+                    if (_targetDataTable.Columns[i].Ordinal != schemaModel.Columns[columnName].Ordinal)
                     {
                         _columnMap = generateColumnMapper(schemaModel);
                         return;
                     }
+
+                    //jd:the following test is always true
+                    //if (_targetDataTable.Columns[i].Ordinal != schemaModel.Columns[i].Ordinal)
+                    //{
+                    //    _columnMap = generateColumnMapper(schemaModel);
+                    //    return;
+                    //}
                 }
             }
 

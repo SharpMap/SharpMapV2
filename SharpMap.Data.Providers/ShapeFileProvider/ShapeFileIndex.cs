@@ -116,6 +116,8 @@ namespace SharpMap.Data.Providers.ShapeFile
                 return ShapeFileConstants.HeaderSizeBytes / 2;
             }
 
+
+
             IndexEntry lastEntry = _shapeIndex.Values[_shapeIndex.Count - 1];
             return lastEntry.Offset + lastEntry.Length + ShapeFileConstants.ShapeRecordHeaderByteLength / 2;
         }
