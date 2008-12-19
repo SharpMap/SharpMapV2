@@ -103,6 +103,14 @@ namespace SharpMap.Demo.FormatConverter.SqlServer2008
                                                                 ICoordinateSystemFactory csFactory,
                                                                 FeatureDataTable schemaTable)
         {
+
+            //if (oidType == typeof(UInt16))
+            //    oidType = typeof(Int16);
+            //else if (oidType == typeof(UInt32))
+            //    oidType = typeof(Int32);
+            //else if (oidType == typeof(UInt64))
+            //    oidType = typeof(Int64);
+
             Type typ = typeof(MsSqlServer2008Provider<>);
             _specializedType = typ.MakeGenericType(oidType);
 

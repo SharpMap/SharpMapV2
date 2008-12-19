@@ -436,7 +436,7 @@ END
                 conn.Open();
                 //using (IDbTransaction tran = conn.BeginTransaction())
                 //{
-                    CreateEnvelopeColumns(conn);
+                CreateEnvelopeColumns(conn);
                 //}
             }
         }
@@ -484,9 +484,9 @@ END
             dlgtCreate(minX, 1, "STX");
             sb.AppendLine(",");
             dlgtCreate(minY, 1, "STY");
-            sb.AppendLine(","); 
+            sb.AppendLine(",");
             dlgtCreate(maxX, 3, "STX");
-            sb.AppendLine(","); 
+            sb.AppendLine(",");
             dlgtCreate(maxY, 3, "STY");
 
 
@@ -592,6 +592,7 @@ END
 
         internal static bool FeatureDataTableModelIsCompatible(FeatureDataTable a, FeatureDataTable b)
         {
+            //TODO: need to handle case where envelope columns are the only difference
             if (a.Columns.Count != b.Columns.Count)
                 return false;
 
@@ -610,9 +611,45 @@ END
 
         internal static bool DataColumnsCompatible(DataColumn a, DataColumn b)
         {
+            //if (a.DataType == typeof(Int16) && b.DataType == typeof(UInt16))
+            //    return true;
+            //if (b.DataType == typeof(Int16) && a.DataType == typeof(UInt16))
+            //    return true;
+            //if (a.DataType == typeof(Int32) && b.DataType == typeof(UInt32))
+            //    return true;
+            //if (b.DataType == typeof(Int32) && a.DataType == typeof(UInt32))
+            //    return true;
+            //if (a.DataType == typeof(Int64) && b.DataType == typeof(UInt64))
+            //    return true;
+            //if (b.DataType == typeof(Int64) && a.DataType == typeof(UInt64))
+            //    return true;
+
+
+            //if (a.DataType == typeof(Int16) && (b.DataType == typeof(Int32) || b.DataType == typeof(Int64)))
+            //    return true;
+            //if (b.DataType == typeof(Int16) && (a.DataType == typeof(Int32) || a.DataType == typeof(Int64)))
+            //    return true;
+
+            //if (a.DataType == typeof(Int32) && (b.DataType == typeof(Int64)))
+            //    return true;
+            //if (b.DataType == typeof(Int32) && (a.DataType == typeof(Int64)))
+            //    return true;
+
+
+            //if (b.DataType == typeof(Int16) && a.DataType == typeof(UInt16))
+            //    return true;
+            //if (a.DataType == typeof(Int32) && b.DataType == typeof(UInt32))
+            //    return true;
+            //if (b.DataType == typeof(Int32) && a.DataType == typeof(UInt32))
+            //    return true;
+            //if (a.DataType == typeof(Int64) && b.DataType == typeof(UInt64))
+            //    return true;
+            //if (b.DataType == typeof(Int64) && a.DataType == typeof(UInt64))
+            //    return true;
+
             if (a.DataType != b.DataType)
                 return false;
-            //TODO: cases where coercion is possible
+
             return true;
         }
 

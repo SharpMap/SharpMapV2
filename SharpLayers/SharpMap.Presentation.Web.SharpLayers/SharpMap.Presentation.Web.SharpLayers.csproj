@@ -75,7 +75,7 @@
     <None Include="bin\AjaxControlToolkit.DLL" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="OpenLayers\OpenLayers.js" />
+    <None Include="OpenLayers\OpenLayers_lf.js" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BuilderParamsBase.cs" />
@@ -173,6 +173,7 @@
     <EmbeddedResource Include="Controls\Scale\ScaleBar.js" />
     <EmbeddedResource Include="Controls\Containers\ToolPanel.js" />
     <EmbeddedResource Include="Controls\GenericOLControl.js" />
+    <EmbeddedResource Include="OpenLayers\OpenLayers.js" />
     <Content Include="OpenLayers\Reference\Ajax.js" />
     <Content Include="OpenLayers\Reference\BaseTypes.js" />
     <Content Include="OpenLayers\Reference\BaseTypes\Bounds.js" />
