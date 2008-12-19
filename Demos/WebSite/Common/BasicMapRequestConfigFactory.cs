@@ -65,6 +65,8 @@ namespace SharpMap.Presentation.AspNet.Demo.Common
 
             config.MimeType = context.Request["mimeType"] ?? "image/png";
 
+            config.BaseSrid = "EPSG:4326";
+
             return config;
         }
 

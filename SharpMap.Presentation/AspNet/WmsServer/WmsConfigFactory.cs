@@ -89,6 +89,7 @@ namespace SharpMap.Presentation.AspNet.WmsServer
             if (context.Request.Params["CRS"] == null)
                 WmsException.ThrowWmsException("Required parameter CRS not specified");
             config.Crs = context.Request.Params["CRS"];
+            config.BaseSrid = config.Crs;
 
             if (context.Request.Params["BBOX"] == null)
                 WmsException.ThrowWmsException(WmsExceptionCode.InvalidDimensionValue,

@@ -33,5 +33,14 @@ namespace SharpMap.Presentation.AspNet.Demo.GeoJson
         }
 
         #endregion
+
+        #region IMapRequestConfig Members
+
+        public string BaseSrid
+        {
+            get; set;
+        }
+
+        #endregion
     }
 }

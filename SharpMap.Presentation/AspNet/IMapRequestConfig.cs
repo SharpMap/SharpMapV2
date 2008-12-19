@@ -25,6 +25,9 @@ namespace SharpMap.Presentation.AspNet
     /// </summary>
     public interface IMapRequestConfig
     {
+
+        String BaseSrid { get; set; }
+
         /// <summary>
         /// a string which uniquely identifies this map. To be used by any caching block.
         /// </summary>

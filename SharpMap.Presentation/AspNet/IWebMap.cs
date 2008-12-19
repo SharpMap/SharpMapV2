@@ -27,7 +27,7 @@ namespace SharpMap.Presentation.AspNet
         IGeometryServices GeometryServices { get; }
 
 
-        string BaseSrid { get; }
+        //string BaseSrid { get; }
 
         /// <summary>
         /// The Map instance

@@ -42,9 +42,6 @@ namespace SharpMap.Presentation.AspNet.Demo.NoCache
             return new NoCacheProvider();
         }
 
-        public override string BaseSrid
-        {
-            get { return "EPSG:4326"; }
-        }
+        
     }
 }

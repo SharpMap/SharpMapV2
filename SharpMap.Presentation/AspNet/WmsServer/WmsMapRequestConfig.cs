@@ -77,5 +77,15 @@ namespace SharpMap.Presentation.AspNet.WmsServer
         }
 
         #endregion
+
+        #region IMapRequestConfig Members
+
+        public string BaseSrid
+        {
+            get;
+            set;
+        }
+
+        #endregion
     }
 }

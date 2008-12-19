@@ -17,7 +17,6 @@ using SharpMap.Presentation.AspNet.Demo.Common;
 using SharpMap.Presentation.AspNet.WmsServer;
 using SharpMap.Presentation.AspNet.WmsServer.Caching;
 using SharpMap.Rendering.Web;
-using SharpMap.Utilities.SridUtility;
 
 namespace SharpMap.Presentation.AspNet.Demo.Wms
 {
@@ -50,9 +49,6 @@ namespace SharpMap.Presentation.AspNet.Demo.Wms
                        };
         }
 
-        public override string BaseSrid
-        {
-            get { return "EPSG:4326"; }
-        }
+       
     }
 }

@@ -45,5 +45,14 @@ namespace SharpMap.Presentation.AspNet.Demo
         }
 
         #endregion
+
+        #region IMapRequestConfig Members
+
+        public string BaseSrid
+        {
+            get; set;
+        }
+
+        #endregion
     }
 }

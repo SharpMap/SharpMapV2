@@ -33,13 +33,30 @@ namespace SharpMap.Rendering.Web
     public class GdiImageRenderer
         : IWebMapRenderer<Image>
     {
+        public GdiImageRenderer(PixelFormat pxfrmt)
+        {
+            _pixelFormat = pxfrmt;
+        }
+
+        public GdiImageRenderer()
+            : this(PixelFormat.Format32bppArgb)
+        { }
+
         private static ImageCodecInfo _defaultCodec;
         private readonly RenderQueue _renderQ = new RenderQueue();
         private GdiMatrix _gdiViewMatrix;
-        private Graphics _graphics;
 
         private ImageCodecInfo _imageCodecInfo;
         private bool disposed;
+
+        private readonly PixelFormat _pixelFormat;
+        public PixelFormat PixelFormat
+        {
+            get
+            {
+                return _pixelFormat;
+            }
+        }
 
         public ImageCodecInfo ImageCodec
         {
@@ -89,7 +106,7 @@ namespace SharpMap.Rendering.Web
         public Image Render(WebMapView mapView, out string mimeType)
         {
 
-            Bitmap bmp = new Bitmap(Width, Height);
+            Bitmap bmp = new Bitmap(Width, Height, PixelFormat);
             Graphics g = Graphics.FromImage(bmp);
             g.SmoothingMode = SmoothingMode.AntiAlias;
             g.Transform = GetGdiViewTransform();
@@ -144,6 +161,12 @@ namespace SharpMap.Rendering.Web
         public event EventHandler RenderDone;
 
         Stream IWebMapRenderer.Render(WebMapView map, out string mimeType)
+        {
+            return RenderStreamInternal(map, out mimeType);
+        }
+
+
+        protected virtual Stream RenderStreamInternal(WebMapView map, out string mimeType)
         {
             Image im = Render(map, out mimeType);
 

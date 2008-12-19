@@ -59,7 +59,7 @@ namespace SharpMap.Presentation.Web.SharpLayers.Layers.Wms
         public string Crs { get; set; }
 
         [SharpLayersSerialization(SerializedName = "TRANSPARENT")]
-        public bool Transaparent
+        public bool Transparent
         {
             get { return _transaparent; }
             set { _transaparent = value; }
