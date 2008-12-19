@@ -331,10 +331,9 @@ OPEN col FOR
 		        ELSE CAST(0 as bit)
 		    END AS ""PK""
     FROM    information_schema.columns AS x 
-		        LEFT JOIN (SELECT z.f_table_name FROM geometry_columns AS z) AS cte ON cte.f_table_name=x.table_name
-		        LEFT JOIN geometry_columns AS y ON y.f_table_name=x.table_name
-                LEFT JOIN information_schema.key_column_usage AS u ON u.table_name=x.table_name
-    WHERE cte.f_table_name=x.table_name AND ( RTRIM(x.column_name) <> RTRIM(y.f_geometry_column))
+		        LEFT JOIN (SELECT DISTINCT z.f_table_name FROM geometry_columns AS z) AS cte ON cte.f_table_name=x.table_name
+		        LEFT JOIN information_schema.key_column_usage AS u ON u.table_name=x.table_name
+    WHERE cte.f_table_name=x.table_name AND (RTRIM(x.data_type) <> 'USER-DEFINED')
     ORDER BY ""TableName"", x.ordinal_position;
 RETURN NEXT col;
 RETURN;
@@ -406,6 +405,7 @@ $BODY$
                 dgvColumns.Columns["SortOrder"].ReadOnly = false;// SortOrder
             }
 
+            oidcolumn = -2;
             setOidColumn(-1);
             foreach (DataGridViewRow dgvr in dgvColumns.Rows)
                 if ((bool)dgvr.Cells["PK"].Value)
@@ -438,7 +438,7 @@ $BODY$
 
         private void dgvColumns_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
         {
-            if (e.ColumnIndex != 2) return;
+            if (dgvColumns.Columns[e.ColumnIndex].Name != "ColumnName") return;
 
             setOidColumn(e.RowIndex);
         }
@@ -449,10 +449,10 @@ $BODY$
             if (oidcolumn == rowindex) return;
             var fnt = dgvColumns.DefaultCellStyle.Font;
 
-            if (oidcolumn >= 0)
+            if (oidcolumn >= 0 )
             {
                 dgvColumns.Rows[oidcolumn].Cells["ColumnName"].Style.Font =
-                new System.Drawing.Font(fnt.FontFamily.Name, fnt.SizeInPoints, System.Drawing.FontStyle.Bold);
+                new System.Drawing.Font(fnt.FontFamily.Name, fnt.SizeInPoints, System.Drawing.FontStyle.Regular);
 
                 dgvColumns.Rows[oidcolumn].Cells["PK"].Value = false;
             }
@@ -460,7 +460,7 @@ $BODY$
             if (rowindex >= 0)
             {
                 dgvColumns.Rows[rowindex].Cells["ColumnName"].Style.Font =
-                    new System.Drawing.Font(fnt.FontFamily.Name, fnt.SizeInPoints, System.Drawing.FontStyle.Regular); ;
+                    new System.Drawing.Font(fnt.FontFamily.Name, fnt.SizeInPoints, System.Drawing.FontStyle.Bold); ;
                 dgvColumns.Rows[rowindex].Cells["PK"].Value = true;
             }
             oidcolumn = rowindex;
