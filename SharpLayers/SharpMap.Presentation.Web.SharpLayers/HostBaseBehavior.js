@@ -25,8 +25,8 @@ SharpMap.Presentation.Web.SharpLayers.HostBaseBehavior = function(element) {
 SharpMap.Presentation.Web.SharpLayers.HostBaseBehavior.prototype = {
     initialize: function() {
         SharpMap.Presentation.Web.SharpLayers.HostBaseBehavior.callBaseMethod(this, 'initialize');
-        this.buildObject();
-
+        //this.buildObject();
+        SharpMap.Presentation.Web.SharpLayers.InitSync.addInit(this);
 
     },
     dispose: function() {
@@ -35,13 +35,13 @@ SharpMap.Presentation.Web.SharpLayers.HostBaseBehavior.prototype = {
             if (item.dispose != null)
                 item.dispose();
             else if (item.destroy != null)
-            try{item.destroy();}catch(e){}
+                try { item.destroy(); } catch (e) { }
             this.set_hostedItem(null);
         }
         delete this._hostedItem;
         delete this._builderDelegate;
         delete this._builderParams;
-        
+
         SharpMap.Presentation.Web.SharpLayers.OpenLayersRegistry.remove(this.get_registryItem());
         SharpMap.Presentation.Web.SharpLayers.HostBaseBehavior.callBaseMethod(this, 'dispose');
     },

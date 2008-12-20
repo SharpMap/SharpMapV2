@@ -25,8 +25,8 @@ SharpMap.Presentation.Web.SharpLayers.ComponentBase = function(element) {
 SharpMap.Presentation.Web.SharpLayers.ComponentBase.prototype = {
     initialize: function() {
         SharpMap.Presentation.Web.SharpLayers.ComponentBase.callBaseMethod(this, 'initialize');
-        this.buildObject();
-
+        //this.buildObject();
+        SharpMap.Presentation.Web.SharpLayers.InitSync.addInit(this);
 
     },
     dispose: function() {

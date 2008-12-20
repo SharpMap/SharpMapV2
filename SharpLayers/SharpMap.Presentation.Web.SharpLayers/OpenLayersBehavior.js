@@ -14,6 +14,33 @@
 */
 Type.registerNamespace('SharpMap.Presentation.Web.SharpLayers');
 Type.registerNamespace('SharpMap.Presentation.Web.SharpLayers.OpenLayersFactory');
+
+
+SharpMap.Presentation.Web.SharpLayers.InitSync = {
+    _loaded: false,
+    get_pageLoaded: function() {
+        return this._loaded;
+    },
+    _pending: [],
+    addInit: function(obj) {
+        if (SharpMap.Presentation.Web.SharpLayers.InitSync.get_pageLoaded())
+            obj.buildObject();
+        else
+            SharpMap.Presentation.Web.SharpLayers.InitSync._pending.push(obj);
+    },
+    doInit: function() {
+        while (SharpMap.Presentation.Web.SharpLayers.InitSync._pending.length > 0) {
+            var obj = SharpMap.Presentation.Web.SharpLayers.InitSync._pending.pop();
+            obj.buildObject();
+        }
+        SharpMap.Presentation.Web.SharpLayers.InitSync._loaded = true;
+        Sys.WebForms.PageRequestManager.getInstance().remove_pageLoaded(SharpMap.Presentation.Web.SharpLayers.InitSync.doInit);
+    }
+}
+
+Sys.WebForms.PageRequestManager.getInstance().add_pageLoaded(SharpMap.Presentation.Web.SharpLayers.InitSync.doInit);
+
+
 SharpMap.Presentation.Web.SharpLayers.OpenLayersFactory.buildParams = function(originalParams) {
     var newParams = {};
     for (var k in originalParams) {
@@ -224,3 +251,5 @@ $olRegistry = SharpMap.Presentation.Web.SharpLayers.OpenLayersRegistry;
 $olRegItem = SharpMap.Presentation.Web.SharpLayers.OpenLayersRegistryItem;
 $olFactory = SharpMap.Presentation.Web.SharpLayers.OpenLayersFactory;
 $geomUtils = SharpMap.Presentation.Web.SharpLayers.GeometryUtilities;
+
+  
