@@ -24,10 +24,9 @@ SharpMap.Presentation.Web.SharpLayers.MapHostBehavior.prototype = {
     initialize: function() {
         this._builderDelegate = Function.createDelegate(this, this._mapBuilderDelegate);
 
-        var _this = this;
-        var f = function() { _this.get_hostedItem().zoomToMaxExtent(); Sys.Application.remove_load(f); };
-        Sys.Application.add_load(f);
-
+//        var _this = this;
+//        var f = function() { _this.get_hostedItem().zoomToMaxExtent() };
+//        SharpMap.Presentation.Web.SharpLayers.InitSync.addLoad(f);
         SharpMap.Presentation.Web.SharpLayers.MapHostBehavior.callBaseMethod(this, 'initialize');
     },
 

@@ -38,10 +38,10 @@ SharpMap.Presentation.Web.SharpLayers.Layers.Vector.VectorLayerComponent.prototy
             }
             options.strategies = strats;
         }
-        if (options["protocol"] != null)
+        if (options["protocol"] != null) {
             if (typeof options.protocol == "string")
-            options.protocol = $find(options.protocol).get_hostedItem();
-
+                options.protocol = $find(options.protocol).get_hostedItem();
+        }
         if (options["sld"] != null && options["styleSelector"] != null) {
             if (typeof options.sld == "string")
                 options.sld = $find(options.sld);

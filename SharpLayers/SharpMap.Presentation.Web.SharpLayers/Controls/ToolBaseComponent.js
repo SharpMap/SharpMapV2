@@ -23,6 +23,14 @@ SharpMap.Presentation.Web.SharpLayers.Controls.ToolBaseComponent.prototype = {
     initialize: function() {
         this._builderDelegate = Function.createDelegate(this, this._toolBuilderDelegate);
         SharpMap.Presentation.Web.SharpLayers.Controls.ToolBaseComponent.callBaseMethod(this, 'initialize');
+
+        var mapHost = this.get_targetMapHost();
+        var _this = this;
+        var f = function() {
+            mapHost.get_hostedItem().addControl(_this.get_hostedItem());
+        };
+        SharpMap.Presentation.Web.SharpLayers.InitSync.addLoad(f);
+
     },
 
     dispose: function() {
@@ -40,8 +48,6 @@ SharpMap.Presentation.Web.SharpLayers.Controls.ToolBaseComponent.prototype = {
     buildObject: function() {
         SharpMap.Presentation.Web.SharpLayers.Controls.ToolBaseComponent.callBaseMethod(this, 'buildObject');
         //add the control to the map
-        var mapHost = this.get_targetMapHost();
-        mapHost.get_hostedItem().addControl(this.get_hostedItem());
     }
 }
 SharpMap.Presentation.Web.SharpLayers.Controls.ToolBaseComponent.registerClass('SharpMap.Presentation.Web.SharpLayers.Controls.ToolBaseComponent', SharpMap.Presentation.Web.SharpLayers.ComponentBase);

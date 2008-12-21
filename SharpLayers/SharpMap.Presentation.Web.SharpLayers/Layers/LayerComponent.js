@@ -25,6 +25,13 @@ SharpMap.Presentation.Web.SharpLayers.Layers.LayerComponent.prototype = {
     initialize: function() {
         this._builderDelegate = Function.createDelegate(this, this._layerBuilderDelegate);
         SharpMap.Presentation.Web.SharpLayers.Layers.LayerComponent.callBaseMethod(this, 'initialize');
+        var mapHost = this.get_targetMapHost();
+        var _this = this;
+        var f = function() {
+            //add the layer to the map
+            mapHost.get_hostedItem().addLayer(_this.get_hostedItem());
+        }
+        SharpMap.Presentation.Web.SharpLayers.InitSync.addLoad(f);
     },
     dispose: function() {
         delete this._builderDelegate;
@@ -47,9 +54,6 @@ SharpMap.Presentation.Web.SharpLayers.Layers.LayerComponent.prototype = {
     },
     buildObject: function() {
         SharpMap.Presentation.Web.SharpLayers.Layers.LayerComponent.callBaseMethod(this, 'buildObject');
-        //add the layer to the map
-        var mapHost = this.get_targetMapHost();
-        mapHost.get_hostedItem().addLayer(this.get_hostedItem());
     }
 }
 SharpMap.Presentation.Web.SharpLayers.Layers.LayerComponent.registerClass('SharpMap.Presentation.Web.SharpLayers.Layers.LayerComponent', SharpMap.Presentation.Web.SharpLayers.ComponentBase);
