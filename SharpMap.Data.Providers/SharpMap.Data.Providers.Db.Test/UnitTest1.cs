@@ -190,7 +190,7 @@ namespace SharpMap.Data.Providers.Db.Test
 
             var binaryExpression =
                 new BinaryExpression(new PropertyNameExpression("VHG5"),
-                                     BinaryOperator.GreaterThan, new LiteralExpression<int>(6));
+                                     BinaryLogicOperator.GreaterThan, new LiteralExpression<int>(6));
 
             var providerProps =
                 new ProviderPropertiesExpression(

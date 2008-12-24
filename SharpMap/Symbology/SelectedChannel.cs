@@ -22,14 +22,13 @@ namespace SharpMap.Symbology
 {
     [Serializable]
     [XmlType(Namespace = "http://www.opengis.net/se", TypeName = "SelectedChannelType")]
-    [XmlRoot("RedChannel", Namespace = "http://www.opengis.net/se", IsNullable = false)]
+    //[XmlRoot("RedChannel", Namespace = "http://www.opengis.net/se", IsNullable = false)]
     public class SelectedChannel
     {
-        private string _sourceChannelName;
-
+        private String _sourceChannelName;
         private ContrastEnhancement _contrastEnhancement;
 
-        public string SourceChannelName
+        public String SourceChannelName
         {
             get { return _sourceChannelName; }
             set { _sourceChannelName = value; }

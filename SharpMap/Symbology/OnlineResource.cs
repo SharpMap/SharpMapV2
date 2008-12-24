@@ -26,15 +26,15 @@ namespace SharpMap.Symbology
     [XmlRoot("OnlineResource", Namespace = "http://www.opengis.net/se", IsNullable = false)]
     public class OnlineResource
     {
-        private string _type;
-        private string _href;
-        private string _role;
-        private string _arcRole;
-        private string _title;
+        private String _type;
+        private String _href;
+        private String _role;
+        private String _arcRole;
+        private String _title;
         private Show _show;
-        private bool _showSpecified;
+        private Boolean _showSpecified;
         private Actuate _actuate;
-        private bool _actuateSpecified;
+        private Boolean _actuateSpecified;
 
         public OnlineResource()
         {
@@ -42,35 +42,35 @@ namespace SharpMap.Symbology
         }
 
         [XmlAttribute(AttributeName = "type", Form = XmlSchemaForm.Qualified, Namespace = "http://www.w3.org/1999/xlink")]
-        public string Type
+        public String Type
         {
             get { return _type; }
             set { _type = value; }
         }
 
         [XmlAttribute(AttributeName = "href", Form = XmlSchemaForm.Qualified, Namespace = "http://www.w3.org/1999/xlink", DataType = "anyURI")]
-        public string Href
+        public String Href
         {
             get { return _href; }
             set { _href = value; }
         }
 
         [XmlAttribute(AttributeName = "role", Form = XmlSchemaForm.Qualified, Namespace = "http://www.w3.org/1999/xlink", DataType = "anyURI")]
-        public string Role
+        public String Role
         {
             get { return _role; }
             set { _role = value; }
         }
 
         [XmlAttribute(AttributeName = "arcrole", Form = XmlSchemaForm.Qualified, Namespace = "http://www.w3.org/1999/xlink", DataType = "anyURI")]
-        public string ArcRole
+        public String ArcRole
         {
             get { return _arcRole; }
             set { _arcRole = value; }
         }
 
         [XmlAttribute(AttributeName = "title", Form = XmlSchemaForm.Qualified, Namespace = "http://www.w3.org/1999/xlink")]
-        public string Title
+        public String Title
         {
             get { return _title; }
             set { _title = value; }
@@ -84,7 +84,7 @@ namespace SharpMap.Symbology
         }
 
         [XmlIgnore]
-        public bool ShowSpecified
+        public Boolean ShowSpecified
         {
             get { return _showSpecified; }
             set { _showSpecified = value; }
@@ -98,7 +98,7 @@ namespace SharpMap.Symbology
         }
 
         [XmlIgnore]
-        public bool ActuateSpecified
+        public Boolean ActuateSpecified
         {
             get { return _actuateSpecified; }
             set { _actuateSpecified = value; }

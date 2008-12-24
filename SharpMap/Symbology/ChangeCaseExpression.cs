@@ -28,7 +28,7 @@ namespace SharpMap.Symbology
     {
         private ParameterValue _stringValue;
         private ChangeCaseDirection _direction;
-        private bool _directionSpecified;
+        private Boolean _directionSpecified;
 
         [XmlElement(Order = 0)]
         public ParameterValue StringValue
@@ -45,7 +45,7 @@ namespace SharpMap.Symbology
         }
 
         [XmlIgnore]
-        public bool DirectionSpecified
+        public Boolean DirectionSpecified
         {
             get { return _directionSpecified; }
             set { _directionSpecified = value; }
@@ -53,7 +53,7 @@ namespace SharpMap.Symbology
 
         #region Overrides of Expression
 
-        public override bool Contains(Expression other)
+        public override Boolean Contains(Expression other)
         {
             throw new System.NotImplementedException();
         }
@@ -63,7 +63,7 @@ namespace SharpMap.Symbology
             throw new System.NotImplementedException();
         }
 
-        public override bool Equals(Expression other)
+        public override Boolean Equals(Expression other)
         {
             throw new System.NotImplementedException();
         }

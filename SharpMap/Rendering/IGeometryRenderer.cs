@@ -15,25 +15,18 @@
 // along with SharpMap; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
-using System;
+using GeoAPI.Geometries;
+using SharpMap.Symbology;
 
-namespace SharpMap.Expressions
+namespace SharpMap.Rendering
 {
-    public class AllBandsExpression : ProjectionExpression
+    public interface IGeometryRenderer
     {
-        public override Boolean Contains(Expression other)
-        {
-            return Equals(other);
-        }
-
-        public override Expression Clone()
-        {
-            return new AllBandsExpression();
-        }
-
-        public override Boolean Equals(Expression other)
-        {
-            return other is AllBandsExpression;
-        }
+        void DrawMultiLineString(IScene scene, IMultiLineString multiLineString, LineSymbolizer symbolizer, RenderState renderState);
+        void DrawLineString(IScene scene, ILineString line, LineSymbolizer symbolizer, RenderState renderState);
+        void DrawMultiPolygon(IScene scene, IMultiPolygon multipolygon, PolygonSymbolizer symbolizer, RenderState renderState);
+        void DrawPolygon(IScene scene, IPolygon polygon, PolygonSymbolizer symbolizer, RenderState renderState);
+        void DrawPoint(IScene scene, IPoint point, PointSymbolizer symbolizer, RenderState renderState);
+        void DrawMultiPoint(IScene scene, IMultiPoint multiPoint, PointSymbolizer symbolizer, RenderState renderState);
     }
 }

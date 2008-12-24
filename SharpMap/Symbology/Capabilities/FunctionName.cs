@@ -28,18 +28,18 @@ namespace SharpMap.Styles.Symbology.Capabilities
     [XmlType(Namespace = "http://www.opengis.net/ogc", TypeName = "FunctionNameType")]
     public class FunctionName
     {
-        private string _nArgs;
-        private string _value;
+        private String _nArgs;
+        private String _value;
 
         [XmlAttribute(AttributeName = "nArgs")]
-        public string ParameterCount
+        public String ParameterCount
         {
             get { return _nArgs; }
             set { _nArgs = value; }
         }
 
         [XmlText]
-        public string Value
+        public String Value
         {
             get { return _value; }
             set { _value = value; }

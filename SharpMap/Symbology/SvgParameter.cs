@@ -25,10 +25,10 @@ namespace SharpMap.Symbology
     [XmlRoot("SvgParameter", Namespace = "http://www.opengis.net/se", IsNullable = false)]
     public class SvgParameter : ParameterValue
     {
-        private string _name;
+        private String _name;
 
         [XmlAttribute(AttributeName = "name")]
-        public string Name
+        public String Name
         {
             get { return _name; }
             set { _name = value; }

@@ -37,12 +37,12 @@ namespace SharpMap.Symbology
     [XmlInclude(typeof (SvgParameter))]
     [Serializable]
     [XmlType(Namespace = "http://www.opengis.net/se", TypeName = "ParameterValueType")]
-    [XmlRoot("InitialGap", Namespace = "http://www.opengis.net/se", IsNullable = false)]
+    // [XmlRoot("InitialGap", Namespace = "http://www.opengis.net/se", IsNullable = false)]
     public class ParameterValue
     {
         private Expression[] _expressions;
         private ExpressionType[] _expressionElementTypes;
-        private string[] _text;
+        private String[] _text;
 
         [XmlElement("Add", typeof (BinaryOperationExpression), Namespace = "http://www.opengis.net/ogc")]
         [XmlElement("Div", typeof (BinaryOperationExpression), Namespace = "http://www.opengis.net/ogc")]
@@ -67,7 +67,7 @@ namespace SharpMap.Symbology
         }
 
         [XmlText]
-        public string[] Text
+        public String[] Text
         {
             get { return _text; }
             set { _text = value; }

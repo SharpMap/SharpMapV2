@@ -14,13 +14,12 @@
  */
 using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace SharpMap.Expressions
 {
     public class ProviderPropertiesExpression : Expression
     {
-        private CollectionExpression<ProviderPropertyExpression> _providerProps;
+        private readonly CollectionExpression<ProviderPropertyExpression> _providerProps;
 
         public ProviderPropertiesExpression(CollectionExpression<ProviderPropertyExpression> _providerProps)
         {
@@ -28,8 +27,7 @@ namespace SharpMap.Expressions
         }
 
         public ProviderPropertiesExpression(IEnumerable<ProviderPropertyExpression> properties)
-            : this(new CollectionExpression<ProviderPropertyExpression>(properties))
-        { }
+            : this(new CollectionExpression<ProviderPropertyExpression>(properties)) {}
 
         public CollectionExpression<ProviderPropertyExpression> ProviderProperties
         {
@@ -37,29 +35,33 @@ namespace SharpMap.Expressions
         }
 
 
-        public override bool Contains(Expression other)
+        public override Boolean Contains(Expression other)
         {
             return ReferenceEquals(this, other);
         }
 
         public override Expression Clone()
         {
-            return new ProviderPropertiesExpression((CollectionExpression<ProviderPropertyExpression>)ProviderProperties.Clone());
+            return
+                new ProviderPropertiesExpression(
+                    (CollectionExpression<ProviderPropertyExpression>) ProviderProperties.Clone());
         }
 
-        public override bool Equals(Expression other)
+        public override Boolean Equals(Expression other)
         {
-            if (!(other is ProviderPropertiesExpression))
+            ProviderPropertiesExpression providerPropertiesExpression = other as ProviderPropertiesExpression;
+
+            if (ReferenceEquals(providerPropertiesExpression, null))
+            {
                 return false;
+            }
 
-
-            if (ReferenceEquals(this, other))
+            if (ReferenceEquals(providerPropertiesExpression, this))
+            {
                 return true;
+            }
 
-            return ProviderProperties.Equals(
-                ((ProviderPropertiesExpression)other).ProviderProperties);
-
-
+            return ProviderProperties.Equals(providerPropertiesExpression.ProviderProperties);
         }
     }
 }

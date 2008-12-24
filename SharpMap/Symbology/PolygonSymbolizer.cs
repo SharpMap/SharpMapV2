@@ -23,7 +23,7 @@ namespace SharpMap.Symbology
     [Serializable]
     [XmlType(Namespace = "http://www.opengis.net/se", TypeName = "PolygonSymbolizerType")]
     [XmlRoot("PolygonSymbolizer", Namespace = "http://www.opengis.net/se", IsNullable = false)]
-    internal class PolygonSymbolizer : Symbolizer
+    public class PolygonSymbolizer : Symbolizer
     {
         private GeometryPropertyNameExpression _geometry;
         private Fill _fill;

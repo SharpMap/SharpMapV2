@@ -16,20 +16,20 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System;
-using SharpMap.Styles;
+using SharpMap.Symbology;
 
 namespace SharpMap.Presentation
 {
     public sealed class LayerStyleChangeRequestEventArgs : EventArgs
     {
-        private readonly IStyle _style;
+        private readonly Style _style;
 
-        public LayerStyleChangeRequestEventArgs(IStyle style)
+        public LayerStyleChangeRequestEventArgs(Style style)
         {
             _style = style;
         }
 
-        public IStyle Style
+        public Style Style
         {
             get { return _style; }
         }

@@ -26,14 +26,14 @@ namespace SharpMap.Symbology
     public class LinePlacement
     {
         private ParameterValue _perpendicularOffset;
-        private bool _isRepeated;
-        private bool _isRepeatedSpecified;
+        private Boolean _isRepeated;
+        private Boolean _isRepeatedSpecified;
         private ParameterValue _initialGap;
         private ParameterValue _gap;
-        private bool _isAligned;
-        private bool _isAlignedSpecified;
-        private bool _generalizeLine;
-        private bool _generalizeLineSpecified;
+        private Boolean _isAligned;
+        private Boolean _isAlignedSpecified;
+        private Boolean _generalizeLine;
+        private Boolean _generalizeLineSpecified;
 
         public ParameterValue PerpendicularOffset
         {
@@ -41,14 +41,14 @@ namespace SharpMap.Symbology
             set { _perpendicularOffset = value; }
         }
 
-        public bool IsRepeated
+        public Boolean IsRepeated
         {
             get { return _isRepeated; }
             set { _isRepeated = value; }
         }
 
         [XmlIgnore]
-        public bool IsRepeatedSpecified
+        public Boolean IsRepeatedSpecified
         {
             get { return _isRepeatedSpecified; }
             set { _isRepeatedSpecified = value; }
@@ -66,27 +66,27 @@ namespace SharpMap.Symbology
             set { _gap = value; }
         }
 
-        public bool IsAligned
+        public Boolean IsAligned
         {
             get { return _isAligned; }
             set { _isAligned = value; }
         }
 
         [XmlIgnore]
-        public bool IsAlignedSpecified
+        public Boolean IsAlignedSpecified
         {
             get { return _isAlignedSpecified; }
             set { _isAlignedSpecified = value; }
         }
 
-        public bool GeneralizeLine
+        public Boolean GeneralizeLine
         {
             get { return _generalizeLine; }
             set { _generalizeLine = value; }
         }
 
         [XmlIgnore]
-        public bool GeneralizeLineSpecified
+        public Boolean GeneralizeLineSpecified
         {
             get { return _generalizeLineSpecified; }
             set { _generalizeLineSpecified = value; }

@@ -55,7 +55,7 @@ namespace SharpMap.Expressions
                                                      right as AttributeBinaryExpression);
         }
 
-        public override bool Equals(Expression other)
+        public override Boolean Equals(Expression other)
         {
             AttributesPredicateExpression predicate = other as AttributesPredicateExpression;
 

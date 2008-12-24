@@ -576,38 +576,38 @@ namespace SharpMap.Data.Providers.Db
             }
         }
 
-        protected virtual string GetBinaryExpressionString(BinaryOperator binaryOperator, Expression right)
+        protected virtual string GetBinaryExpressionString(BinaryLogicOperator binaryOperator, Expression right)
         {
             if (right is LiteralExpression && Equals(null, ((LiteralExpression)right).Value))
             {
                 switch (binaryOperator)
                 {
-                    case BinaryOperator.Equals:
+                    case BinaryLogicOperator.Equals:
                         return " IS ";
-                    case BinaryOperator.NotEquals:
+                    case BinaryLogicOperator.NotEquals:
                         return " IS NOT ";
                 }
             }
 
             switch (binaryOperator)
             {
-                case BinaryOperator.And:
+                case BinaryLogicOperator.And:
                     return " AND ";
-                case BinaryOperator.Equals:
+                case BinaryLogicOperator.Equals:
                     return " = ";
-                case BinaryOperator.GreaterThan:
+                case BinaryLogicOperator.GreaterThan:
                     return " > ";
-                case BinaryOperator.GreaterThanOrEqualTo:
+                case BinaryLogicOperator.GreaterThanOrEqualTo:
                     return " >= ";
-                case BinaryOperator.LessThan:
+                case BinaryLogicOperator.LessThan:
                     return " < ";
-                case BinaryOperator.LessThanOrEqualTo:
+                case BinaryLogicOperator.LessThanOrEqualTo:
                     return " <= ";
-                case BinaryOperator.Like:
+                case BinaryLogicOperator.Like:
                     return " LIKE ";
-                case BinaryOperator.NotEquals:
+                case BinaryLogicOperator.NotEquals:
                     return " <> ";
-                case BinaryOperator.Or:
+                case BinaryLogicOperator.Or:
                     return " OR ";
                 default:
                     throw new ArgumentException(string.Format("Unknown binary operator {0}", binaryOperator));

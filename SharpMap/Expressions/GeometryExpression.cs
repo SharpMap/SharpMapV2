@@ -34,7 +34,7 @@ namespace SharpMap.Expressions
             _geometry = geometry;
         }
 
-        public override string ToString()
+        public override String ToString()
         {
             return Geometry.ToString();
         }
@@ -86,12 +86,12 @@ namespace SharpMap.Expressions
             return geometryExpression != null && Equals(_geometry, geometryExpression._geometry);
         }
 
-        public override bool IsNull
+        public override Boolean IsNull
         {
             get { return _geometry == null; }
         }
 
-        public override bool IsEmpty
+        public override Boolean IsEmpty
         {
             get { return _geometry != null && _geometry.IsEmpty; }
         }

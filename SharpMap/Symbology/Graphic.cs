@@ -25,7 +25,7 @@ namespace SharpMap.Symbology
     [XmlRoot("Graphic", Namespace = "http://www.opengis.net/se", IsNullable = false)]
     public class Graphic
     {
-        private object[] _items;
+        private Object[] _items;
         private ParameterValue _opacity;
         private ParameterValue _size;
         private ParameterValue _rotation;
@@ -34,7 +34,7 @@ namespace SharpMap.Symbology
 
         [XmlElement("ExternalGraphic", typeof (ExternalGraphic))]
         [XmlElement("Mark", typeof (Mark))]
-        public object[] Items
+        public Object[] Items
         {
             get { return _items; }
             set { _items = value; }

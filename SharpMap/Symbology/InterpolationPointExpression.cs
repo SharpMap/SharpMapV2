@@ -26,11 +26,11 @@ namespace SharpMap.Symbology
     [XmlRoot("InterpolationPoint", Namespace = "http://www.opengis.net/se", IsNullable = false)]
     public class InterpolationPointExpression : Expression
     {
-        private double _data;
+        private Double _data;
         private ParameterValue _value;
 
         [XmlElement(Order = 0)]
-        public double Data
+        public Double Data
         {
             get { return _data; }
             set { _data = value; }
@@ -45,7 +45,7 @@ namespace SharpMap.Symbology
 
         #region Overrides of Expression
 
-        public override bool Contains(Expression other)
+        public override Boolean Contains(Expression other)
         {
             throw new System.NotImplementedException();
         }
@@ -55,7 +55,7 @@ namespace SharpMap.Symbology
             throw new System.NotImplementedException();
         }
 
-        public override bool Equals(Expression other)
+        public override Boolean Equals(Expression other)
         {
             throw new System.NotImplementedException();
         }

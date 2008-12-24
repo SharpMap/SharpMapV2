@@ -23,7 +23,7 @@ namespace SharpMap.Symbology
     [Serializable]
     [XmlType(Namespace = "http://www.opengis.net/se", TypeName = "ChannelSelectionType")]
     [XmlRoot("ChannelSelection", Namespace = "http://www.opengis.net/se", IsNullable = false)]
-    internal class ChannelSelection
+    public class ChannelSelection
     {
         private SelectedChannel[] _channels;
         private Channel[] _channelElementType;

@@ -23,7 +23,7 @@ namespace SharpMap.Symbology
     [Serializable]
     [XmlType(Namespace = "http://www.opengis.net/se", TypeName = "TextSymbolizerType")]
     [XmlRoot("TextSymbolizer", Namespace = "http://www.opengis.net/se", IsNullable = false)]
-    internal class TextSymbolizer
+    public class TextSymbolizer
     {
         private GeometryPropertyNameExpression _geometry;
         private ParameterValue _label;
@@ -43,7 +43,7 @@ namespace SharpMap.Symbology
             get { return _label; }
             set { _label = value; }
         }
-
+        
         [XmlArrayItem("SvgParameter", IsNullable = false)]
         public SvgParameter[] Font
         {

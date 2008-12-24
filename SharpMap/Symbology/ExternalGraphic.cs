@@ -25,19 +25,19 @@ namespace SharpMap.Symbology
     [XmlRoot("ExternalGraphic", Namespace = "http://www.opengis.net/se", IsNullable = false)]
     public class ExternalGraphic
     {
-        private object _item;
-        private string _format;
+        private Object _item;
+        private String _format;
         private ColorReplacementExpression[] _colorReplacement;
 
         [XmlElement("InlineContent", typeof (InlineContent))]
         [XmlElement("OnlineResource", typeof (OnlineResource))]
-        public object Item
+        public Object Item
         {
             get { return _item; }
             set { _item = value; }
         }
 
-        public string Format
+        public String Format
         {
             get { return _format; }
             set { _format = value; }

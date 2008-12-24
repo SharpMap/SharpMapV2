@@ -23,11 +23,11 @@ namespace SharpMap.Expressions
     /// <summary>
     /// Represents an expression used to select, project, transform, render or style geographical data.
     /// </summary>
-    [XmlInclude(typeof (LiteralExpression))]
-    [XmlInclude(typeof (FunctionExpression))]
-    [XmlInclude(typeof (PropertyNameExpression))]
-    [XmlInclude(typeof (BinaryOperationExpression))]
-    [XmlInclude(typeof (Expression))]
+    [XmlInclude(typeof(LiteralExpression))]
+    [XmlInclude(typeof(FunctionExpression))]
+    [XmlInclude(typeof(PropertyNameExpression))]
+    [XmlInclude(typeof(BinaryOperationExpression))]
+    [XmlInclude(typeof(Expression))]
     [Serializable]
     [XmlType(Namespace = "http://www.opengis.net/ogc", TypeName = "ExpressionType")]
     public abstract class Expression : IEquatable<Expression>

@@ -23,7 +23,7 @@ namespace SharpMap.Symbology
     [Serializable]
     [XmlType(Namespace = "http://www.opengis.net/se")]
     [XmlRoot("PointSymbolizer", Namespace = "http://www.opengis.net/se", IsNullable = false)]
-    internal class PointSymbolizer : Symbolizer
+    public class PointSymbolizer : Symbolizer
     {
         private GeometryPropertyNameExpression _geometry;
         private Graphic _graphic;

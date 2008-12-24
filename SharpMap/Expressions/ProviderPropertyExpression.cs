@@ -19,7 +19,6 @@ namespace SharpMap.Expressions
     public abstract class ProviderPropertyExpression : Expression
     {
         private readonly PropertyNameExpression _propertyNameExpression;
-
         private readonly LiteralExpression _propertyValueExpression;
 
         protected ProviderPropertyExpression(PropertyNameExpression nameExpression,
@@ -43,23 +42,20 @@ namespace SharpMap.Expressions
     public abstract class ProviderPropertyExpression<TValue> : ProviderPropertyExpression
     {
         public ProviderPropertyExpression(PropertyNameExpression propertyNameExpression,
-                                           LiteralExpression<TValue> value)
-            : base(propertyNameExpression, value)
-        {
-        }
+                                          LiteralExpression<TValue> value)
+            : base(propertyNameExpression, value) {}
 
-        public ProviderPropertyExpression(string propertyName,
+        public ProviderPropertyExpression(String propertyName,
                                           TValue value)
-            : this(new PropertyNameExpression(propertyName), new LiteralExpression<TValue>(value))
-        { }
+            : this(new PropertyNameExpression(propertyName), new LiteralExpression<TValue>(value)) {}
 
 
         public new LiteralExpression<TValue> PropertyValueExpression
         {
-            get { return (LiteralExpression<TValue>)base.PropertyValueExpression; }
+            get { return (LiteralExpression<TValue>) base.PropertyValueExpression; }
         }
 
-        public override bool Equals(Expression other)
+        public override Boolean Equals(Expression other)
         {
             var pp2 = other as ProviderPropertyExpression<TValue>;
 
@@ -68,10 +64,13 @@ namespace SharpMap.Expressions
                    && Equals(pp2.PropertyValueExpression, PropertyValueExpression);
         }
 
-        public override bool Contains(Expression other)
+        public override Boolean Contains(Expression other)
         {
             if (ReferenceEquals(this, other))
+            {
                 return true;
+            }
+
             throw new NotImplementedException();
         }
     }

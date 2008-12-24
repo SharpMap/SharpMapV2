@@ -36,7 +36,7 @@ namespace SharpMap.Expressions
             _extents = extents;
         }
 
-        public override string ToString()
+        public override String ToString()
         {
             return Extents.ToString();
         }

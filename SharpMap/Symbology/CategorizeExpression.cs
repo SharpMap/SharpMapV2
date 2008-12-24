@@ -31,7 +31,7 @@ namespace SharpMap.Symbology
         private ParameterValue[] _threshold;
         private ParameterValue[] _value1;
         private ThreshholdsBelongToType _threshholdsBelongTo;
-        private bool _threshholdsBelongToSpecified;
+        private Boolean _threshholdsBelongToSpecified;
 
         [XmlElement(Order = 0)]
         public ParameterValue LookupValue
@@ -69,7 +69,7 @@ namespace SharpMap.Symbology
         }
 
         [XmlIgnore]
-        public bool ThreshholdsBelongToSpecified
+        public Boolean ThreshholdsBelongToSpecified
         {
             get { return _threshholdsBelongToSpecified; }
             set { _threshholdsBelongToSpecified = value; }
@@ -77,7 +77,7 @@ namespace SharpMap.Symbology
 
         #region Overrides of Expression
 
-        public override bool Contains(Expression other)
+        public override Boolean Contains(Expression other)
         {
             throw new System.NotImplementedException();
         }
@@ -87,7 +87,7 @@ namespace SharpMap.Symbology
             throw new System.NotImplementedException();
         }
 
-        public override bool Equals(Expression other)
+        public override Boolean Equals(Expression other)
         {
             throw new System.NotImplementedException();
         }

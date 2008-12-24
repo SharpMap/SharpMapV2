@@ -46,9 +46,9 @@ namespace SharpMap.Symbology
         private ParameterValue _lookupValue;
         private InterpolationPointExpression[] _interpolationPoint;
         private Mode _mode;
-        private bool _modeSpecified;
+        private Boolean _modeSpecified;
         private Method _method;
-        private bool _methodSpecified;
+        private Boolean _methodSpecified;
 
         [XmlElement(Order = 0)]
         public ParameterValue LookupValue
@@ -72,7 +72,7 @@ namespace SharpMap.Symbology
         }
 
         [XmlIgnore]
-        public bool ModeSpecified
+        public Boolean ModeSpecified
         {
             get { return _modeSpecified; }
             set { _modeSpecified = value; }
@@ -86,7 +86,7 @@ namespace SharpMap.Symbology
         }
 
         [XmlIgnore]
-        public bool MethodSpecified
+        public Boolean MethodSpecified
         {
             get { return _methodSpecified; }
             set { _methodSpecified = value; }
@@ -94,7 +94,7 @@ namespace SharpMap.Symbology
 
         #region Overrides of Expression
 
-        public override bool Contains(Expression other)
+        public override Boolean Contains(Expression other)
         {
             throw new System.NotImplementedException();
         }
@@ -104,7 +104,7 @@ namespace SharpMap.Symbology
             throw new System.NotImplementedException();
         }
 
-        public override bool Equals(Expression other)
+        public override Boolean Equals(Expression other)
         {
             throw new System.NotImplementedException();
         }

@@ -15,11 +15,13 @@
 // along with SharpMap; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
+using System;
+
 namespace SharpMap.Expressions
 {
     public class AllAttributesExpression : ProjectionExpression
     {
-        public override bool Contains(Expression other)
+        public override Boolean Contains(Expression other)
         {
             return Equals(other);
         }
@@ -29,7 +31,7 @@ namespace SharpMap.Expressions
             return new AllAttributesExpression();
         }
 
-        public override bool Equals(Expression other)
+        public override Boolean Equals(Expression other)
         {
             return other is AllAttributesExpression;
         }

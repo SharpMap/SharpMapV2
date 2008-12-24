@@ -23,13 +23,13 @@ namespace SharpMap.Symbology
     [Serializable]
     [XmlType(Namespace = "http://www.opengis.net/se", TypeName = "RasterSymbolizerType")]
     [XmlRoot("RasterSymbolizer", Namespace = "http://www.opengis.net/se", IsNullable = false)]
-    internal class RasterSymbolizer : Symbolizer
+    public class RasterSymbolizer : Symbolizer
     {
         private GeometryPropertyNameExpression _geometry;
         private ParameterValue _opacity;
         private ChannelSelection _channelSelection;
         private OverlapBehavior _overlapBehavior;
-        private bool _overlapBehaviorSpecified;
+        private Boolean _overlapBehaviorSpecified;
         private ColorMap _colorMap;
         private ContrastEnhancement _contrastEnhancement;
         private ShadedRelief _shadedRelief;
@@ -60,7 +60,7 @@ namespace SharpMap.Symbology
         }
 
         [XmlIgnore]
-        public bool OverlapBehaviorSpecified
+        public Boolean OverlapBehaviorSpecified
         {
             get { return _overlapBehaviorSpecified; }
             set { _overlapBehaviorSpecified = value; }

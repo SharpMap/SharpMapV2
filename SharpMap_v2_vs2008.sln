@@ -61,8 +61,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpMap.Utilities", "Sharp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpMap.Data.Providers.SpatiaLite2", "SharpMap.Data.Providers\SharpMap.Data.Providers.SpatialLite2\SharpMap.Data.Providers.SpatiaLite2.csproj", "{1BDB6244-385F-4482-8AE7-CECE83508DE1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpMapSymbology", "SharpMap\Symbology\SharpMapSymbology.csproj", "{C0E364F7-3A86-4DC4-865A-34ADAE4BAA7E}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpMap.Data.Providers.PostGis", "SharpMap.Data.Providers\SharpMap.Data.Providers.PostGis\SharpMap.Data.Providers.PostGis.csproj", "{7C533D86-BD73-4F55-AE8B-2D95D97C0436}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpMap.Presentation.Web.SharpLayers", "SharpLayers\SharpMap.Presentation.Web.SharpLayers\SharpMap.Presentation.Web.SharpLayers.csproj", "{7B83D60D-7B44-4A10-BB86-CD8ACF6C1D8E}"
@@ -396,18 +394,6 @@ Global
 		{1BDB6244-385F-4482-8AE7-CECE83508DE1}.Release_Net35|Any CPU.Build.0 = Release_Net35|Any CPU
 		{1BDB6244-385F-4482-8AE7-CECE83508DE1}.Release|Any CPU.ActiveCfg = Release_Net35|Any CPU
 		{1BDB6244-385F-4482-8AE7-CECE83508DE1}.Release|Any CPU.Build.0 = Release_Net35|Any CPU
-		{C0E364F7-3A86-4DC4-865A-34ADAE4BAA7E}.Debug_Net20|Any CPU.ActiveCfg = Debug|Any CPU
-		{C0E364F7-3A86-4DC4-865A-34ADAE4BAA7E}.Debug_Net20|Any CPU.Build.0 = Debug|Any CPU
-		{C0E364F7-3A86-4DC4-865A-34ADAE4BAA7E}.Debug_Net35|Any CPU.ActiveCfg = Debug|Any CPU
-		{C0E364F7-3A86-4DC4-865A-34ADAE4BAA7E}.Debug_Net35|Any CPU.Build.0 = Debug|Any CPU
-		{C0E364F7-3A86-4DC4-865A-34ADAE4BAA7E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C0E364F7-3A86-4DC4-865A-34ADAE4BAA7E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C0E364F7-3A86-4DC4-865A-34ADAE4BAA7E}.Release_Net20|Any CPU.ActiveCfg = Release|Any CPU
-		{C0E364F7-3A86-4DC4-865A-34ADAE4BAA7E}.Release_Net20|Any CPU.Build.0 = Release|Any CPU
-		{C0E364F7-3A86-4DC4-865A-34ADAE4BAA7E}.Release_Net35|Any CPU.ActiveCfg = Release|Any CPU
-		{C0E364F7-3A86-4DC4-865A-34ADAE4BAA7E}.Release_Net35|Any CPU.Build.0 = Release|Any CPU
-		{C0E364F7-3A86-4DC4-865A-34ADAE4BAA7E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C0E364F7-3A86-4DC4-865A-34ADAE4BAA7E}.Release|Any CPU.Build.0 = Release|Any CPU
 		{7C533D86-BD73-4F55-AE8B-2D95D97C0436}.Debug_Net20|Any CPU.ActiveCfg = Debug_Net20|Any CPU
 		{7C533D86-BD73-4F55-AE8B-2D95D97C0436}.Debug_Net20|Any CPU.Build.0 = Debug_Net20|Any CPU
 		{7C533D86-BD73-4F55-AE8B-2D95D97C0436}.Debug_Net35|Any CPU.ActiveCfg = Debug_Net35|Any CPU

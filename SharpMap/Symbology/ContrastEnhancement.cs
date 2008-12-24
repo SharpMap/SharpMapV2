@@ -25,26 +25,26 @@ namespace SharpMap.Symbology
     [XmlRoot("ContrastEnhancement", Namespace = "http://www.opengis.net/se", IsNullable = false)]
     public class ContrastEnhancement
     {
-        private object _item;
-        private double _gammaValue;
-        private bool _gammaValueSpecified;
+        private Object _item;
+        private Double _gammaValue;
+        private Boolean _gammaValueSpecified;
 
         [XmlElement("Histogram", typeof (Histogram))]
         [XmlElement("Normalize", typeof (Normalize))]
-        public object Item
+        public Object Item
         {
             get { return _item; }
             set { _item = value; }
         }
 
-        public double GammaValue
+        public Double GammaValue
         {
             get { return _gammaValue; }
             set { _gammaValue = value; }
         }
 
         [XmlIgnore]
-        public bool GammaValueSpecified
+        public Boolean GammaValueSpecified
         {
             get { return _gammaValueSpecified; }
             set { _gammaValueSpecified = value; }

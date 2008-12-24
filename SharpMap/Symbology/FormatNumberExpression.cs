@@ -28,10 +28,10 @@ namespace SharpMap.Symbology
     public class FormatNumberExpression : SymbologyFunctionExpression
     {
         private ParameterValue _numericValue;
-        private string _pattern;
-        private string _negativePattern;
-        private string _decimalPoint;
-        private string _groupingSeparator;
+        private String _pattern;
+        private String _negativePattern;
+        private String _decimalPoint;
+        private String _groupingSeparator;
 
         public FormatNumberExpression()
         {
@@ -47,14 +47,14 @@ namespace SharpMap.Symbology
         }
 
         [XmlElement(Order = 1)]
-        public string Pattern
+        public String Pattern
         {
             get { return _pattern; }
             set { _pattern = value; }
         }
 
         [XmlElement(Order = 2)]
-        public string NegativePattern
+        public String NegativePattern
         {
             get { return _negativePattern; }
             set { _negativePattern = value; }
@@ -62,7 +62,7 @@ namespace SharpMap.Symbology
 
         [XmlAttribute(AttributeName = "decimalPoint")]
         [DefaultValue(".")]
-        public string DecimalPoint
+        public String DecimalPoint
         {
             get { return _decimalPoint; }
             set { _decimalPoint = value; }
@@ -70,7 +70,7 @@ namespace SharpMap.Symbology
 
         [XmlAttribute(AttributeName = "groupingSeparator")]
         [DefaultValue(",")]
-        public string GroupingSeparator
+        public String GroupingSeparator
         {
             get { return _groupingSeparator; }
             set { _groupingSeparator = value; }
@@ -78,7 +78,7 @@ namespace SharpMap.Symbology
 
         #region Overrides of Expression
 
-        public override bool Contains(Expression other)
+        public override Boolean Contains(Expression other)
         {
             throw new System.NotImplementedException();
         }
@@ -88,7 +88,7 @@ namespace SharpMap.Symbology
             throw new System.NotImplementedException();
         }
 
-        public override bool Equals(Expression other)
+        public override Boolean Equals(Expression other)
         {
             throw new System.NotImplementedException();
         }

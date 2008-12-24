@@ -95,7 +95,7 @@ namespace SharpMap.Rendering
             }
         }
 
-        private void checkIndex(int index)
+        private void checkIndex(Int32 index)
         {
             if (index < 0 || index >= ComponentCount)
             {

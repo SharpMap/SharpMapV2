@@ -23,7 +23,7 @@ namespace SharpMap.Symbology
     [Serializable]
     [XmlType(Namespace = "http://www.opengis.net/se")]
     [XmlRoot("LineSymbolizer", Namespace = "http://www.opengis.net/se", IsNullable = false)]
-    internal class LineSymbolizer : Symbolizer
+    public class LineSymbolizer : Symbolizer
     {
         private GeometryPropertyNameExpression _geometry;
         private Stroke _stroke;

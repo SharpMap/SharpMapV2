@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using SharpMap.Data;
 using SharpMap.Styles;
 using SharpMap.Layers;
+using SharpMap.Symbology;
 
 namespace SharpMap.Rendering
 {
@@ -57,6 +58,6 @@ namespace SharpMap.Rendering
         /// An enumeration of <typeparamref name="TRenderObject"/> instances 
         /// used to draw the spatial data.
         /// </returns>
-        new IEnumerable<TRenderObject> RenderFeature(IFeatureDataRecord feature, IStyle style, RenderState renderState, ILayer layer);
+        new IEnumerable<TRenderObject> RenderFeature(IFeatureDataRecord feature, FeatureStyle style, RenderState renderState, ILayer layer);
     }
 }

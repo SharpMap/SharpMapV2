@@ -25,32 +25,32 @@ namespace SharpMap.Symbology
     [XmlRoot("ShadedRelief", Namespace = "http://www.opengis.net/se", IsNullable = false)]
     public class ShadedRelief
     {
-        private bool _brightnessOnly;
-        private bool _brightnessOnlySpecified;
-        private double _reliefFactor;
-        private bool _reliefFactorSpecified;
+        private Boolean _brightnessOnly;
+        private Boolean _brightnessOnlySpecified;
+        private Double _reliefFactor;
+        private Boolean _reliefFactorSpecified;
 
-        public bool BrightnessOnly
+        public Boolean BrightnessOnly
         {
             get { return _brightnessOnly; }
             set { _brightnessOnly = value; }
         }
 
         [XmlIgnore]
-        public bool BrightnessOnlySpecified
+        public Boolean BrightnessOnlySpecified
         {
             get { return _brightnessOnlySpecified; }
             set { _brightnessOnlySpecified = value; }
         }
 
-        public double ReliefFactor
+        public Double ReliefFactor
         {
             get { return _reliefFactor; }
             set { _reliefFactor = value; }
         }
 
         [XmlIgnore]
-        public bool ReliefFactorSpecified
+        public Boolean ReliefFactorSpecified
         {
             get { return _reliefFactorSpecified; }
             set { _reliefFactorSpecified = value; }

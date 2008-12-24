@@ -23,21 +23,21 @@ namespace SharpMap.Expressions
                                                   StringExpression right)
             : base(left, op, right) {}
 
-        public AttributeBinaryStringExpression(PropertyNameExpression left, BinaryStringOperator op, string value)
+        public AttributeBinaryStringExpression(PropertyNameExpression left, BinaryStringOperator op, String value)
             : this(left, op, new StringExpression(value)) {}
 
-        public AttributeBinaryStringExpression(string propertyName, BinaryStringOperator op, string value)
+        public AttributeBinaryStringExpression(String propertyName, BinaryStringOperator op, String value)
             : this(new PropertyNameExpression(propertyName), op, new StringExpression(value)) {}
 
-        public AttributeBinaryStringExpression(string propertyName,
+        public AttributeBinaryStringExpression(String propertyName,
                                                BinaryStringOperator op,
-                                               string value,
+                                               String value,
                                                StringComparison comparison)
             : this(new PropertyNameExpression(propertyName), op, new StringExpression(value, comparison)) {}
 
         public AttributeBinaryStringExpression(PropertyNameExpression left,
                                                BinaryStringOperator op,
-                                               string value,
+                                               String value,
                                                StringComparison comparison)
             : this(left, op, new StringExpression(value, comparison)) {}
 

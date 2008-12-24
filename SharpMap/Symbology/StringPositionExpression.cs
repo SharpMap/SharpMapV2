@@ -29,7 +29,7 @@ namespace SharpMap.Symbology
         private ParameterValue _lookupString;
         private ParameterValue _stringValue;
         private SearchDirection _searchDirection;
-        private bool _searchDirectionSpecified;
+        private Boolean _searchDirectionSpecified;
 
         [XmlElement(Order = 0)]
         public ParameterValue LookupString
@@ -53,7 +53,7 @@ namespace SharpMap.Symbology
         }
 
         [XmlIgnore]
-        public bool SearchDirectionSpecified
+        public Boolean SearchDirectionSpecified
         {
             get { return _searchDirectionSpecified; }
             set { _searchDirectionSpecified = value; }
@@ -61,7 +61,7 @@ namespace SharpMap.Symbology
 
         #region Overrides of Expression
 
-        public override bool Contains(Expression other)
+        public override Boolean Contains(Expression other)
         {
             throw new System.NotImplementedException();
         }
@@ -71,7 +71,7 @@ namespace SharpMap.Symbology
             throw new System.NotImplementedException();
         }
 
-        public override bool Equals(Expression other)
+        public override Boolean Equals(Expression other)
         {
             throw new System.NotImplementedException();
         }

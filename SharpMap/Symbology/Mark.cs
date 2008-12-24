@@ -25,18 +25,18 @@ namespace SharpMap.Symbology
     [XmlRoot("Mark", Namespace = "http://www.opengis.net/se", IsNullable = false)]
     public class Mark
     {
-        private object[] _parameters;
+        private Object[] _parameters;
         private MarkType[] _parameterTypes;
         private Fill _fill;
         private Stroke _stroke;
 
-        [XmlElement("Format", typeof (string))]
+        [XmlElement("Format", typeof (String))]
         [XmlElement("InlineContent", typeof (InlineContent))]
-        [XmlElement("MarkIndex", typeof (string), DataType = "integer")]
+        [XmlElement("MarkIndex", typeof (String), DataType = "integer")]
         [XmlElement("OnlineResource", typeof (OnlineResource))]
-        [XmlElement("WellKnownName", typeof (string))]
+        [XmlElement("WellKnownName", typeof (String))]
         [XmlChoiceIdentifier("ParameterTypes")]
-        public object[] Parameters
+        public Object[] Parameters
         {
             get { return _parameters; }
             set { _parameters = value; }

@@ -300,12 +300,9 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="Rendering\AffineMatrix.cs" />
     <Compile Include="Rendering\IFeatureRenderer.cs" />
+    <Compile Include="Rendering\IScene.cs" />
     <Compile Include="Rendering\ITextRenderer`3.cs" />
-    <Compile Include="Rendering\LinearFactory.cs" />
-    <Compile Include="Rendering\Matrix.cs" />
-    <Compile Include="Rendering\MatrixProcessor.cs" />
     <Compile Include="Rendering\Rendering2D\IRasterRenderer2D.cs" />
     <Compile Include="Rendering\Rendering2D\IRasterRenderer2D`1.cs" />
     <Compile Include="Rendering\Rendering2D\ITextRenderer2D.cs" />
@@ -313,21 +310,14 @@
     <Compile Include="Rendering\Rendering2D\IVectorRenderer2D.cs" />
     <Compile Include="Rendering\Rendering2D\Renderer2D.cs" />
     <Compile Include="Rendering\Rendering2D\TextRenderer2D`1.cs" />
-    <Compile Include="Rendering\IHasEmpty.cs" />
     <Compile Include="Rendering\IViewRectangle`1.cs" />
-    <Compile Include="Rendering\LabelFilterDelegate.cs" />
-    <Compile Include="Rendering\ILabel`4.cs" />
     <Compile Include="Rendering\Rendering2D\BasicGeometryRenderer2D`1.cs" />
-    <Compile Include="Rendering\IFeatureRenderer`1.cs" />
-    <Compile Include="Rendering\IGeometryRenderer`2.cs" />
+    <Compile Include="Rendering\IGeometryRenderer.cs" />
     <Compile Include="Rendering\Rendering2D\IVectorRenderer2D`1.cs" />
     <Compile Include="Rendering\RenderState.cs" />
     <Compile Include="Rendering\Symbol`2.cs" />
     <Compile Include="Rendering\Vector.cs" />
-    <Compile Include="Styles\CollisionDetectionType.cs" />
     <Compile Include="Expressions\FeatureIdExpression.cs" />
-    <Compile Include="Styles\HorizontalAlignment.cs" />
-    <Compile Include="Styles\VerticalAlignment.cs" />
     <Compile Include="Symbology\AnchorPoint.cs" />
     <Compile Include="Symbology\BaseSymbolizer.cs" />
     <Compile Include="Symbology\Capabilities\ComparisonOperatorCapabilities.cs" />
@@ -352,9 +342,10 @@
     <Compile Include="Symbology\Displacement.cs" />
     <Compile Include="Symbology\ElseFilter.cs" />
     <Compile Include="Symbology\ExternalGraphic.cs" />
-    <Compile Include="Symbology\FeatureTypeStyle.cs" />
+    <Compile Include="Symbology\FeatureStyle.cs" />
     <Compile Include="Symbology\Fill.cs" />
-    <Compile Include="Symbology\Font.cs" />
+    <Compile Include="Symbology\Style.cs" />
+    <Compile Include="Symbology\StyleFont.cs" />
     <Compile Include="Symbology\FormatDateExpression.cs" />
     <Compile Include="Symbology\FormatNumberExpression.cs" />
     <Compile Include="Symbology\GeometryPropertyNameExpression.cs" />
@@ -402,7 +393,6 @@
     <Compile Include="Presentation\Presenters\LayersPresenter.cs" />
     <Compile Include="Presentation\Presenters\LayerStylePresenter.cs" />
     <Compile Include="Presentation\Presenters\ToolsPresenter.cs" />
-    <Compile Include="Rendering\ColorMatrix.cs" />
     <Compile Include="Presentation\FeaturesSelectionChangedEventArgs.cs" />
     <Compile Include="Rendering\Figure`2.cs" />
     <Compile Include="Rendering\Rendering2D\Figure2D.cs" />
@@ -410,7 +400,6 @@
     <Compile Include="Presentation\IViewSelection`3.cs" />
     <Compile Include="Rendering\Rendering2D\RasterRenderer2D`1.cs" />
     <Compile Include="Presentation\Views\IAttributeView.cs" />
-    <Compile Include="Rendering\ILabelRenderer`4.cs" />
     <Compile Include="Presentation\Views\ILayerStyleView.cs" />
     <Compile Include="Presentation\Views\ILayersView.cs" />
     <Compile Include="Rendering\IRasterRenderer`1.cs" />
@@ -443,25 +432,9 @@
     <Compile Include="Presentation\ViewSelection`3.cs" />
     <Compile Include="Presentation\ViewSelection2D.cs" />
     <Compile Include="Rendering\Rendering2D\Size2D.cs" />
-    <Compile Include="Styles\StyleColorBlend.cs" />
     <Compile Include="Rendering\Thematics\CustomTheme.cs" />
     <Compile Include="Rendering\Thematics\GradientTheme.cs" />
     <Compile Include="Rendering\Thematics\ITheme.cs" />
-    <Compile Include="Styles\LinearGradientStyleBrush.cs" />
-    <Compile Include="Styles\SolidStyleBrush.cs" />
-    <Compile Include="Styles\StyleBrush.cs" />
-    <Compile Include="Styles\StyleColor.cs" />
-    <Compile Include="Styles\LineDashCap.cs" />
-    <Compile Include="Styles\LineDashStyle.cs" />
-    <Compile Include="Styles\StyleFont.cs" />
-    <Compile Include="Styles\StyleFontFamily.cs" />
-    <Compile Include="Styles\StyleFontStyle.cs" />
-    <Compile Include="Styles\StyleLineCap.cs" />
-    <Compile Include="Styles\StyleLineJoin.cs" />
-    <Compile Include="Styles\StylePen.cs" />
-    <Compile Include="Styles\StylePenAlignment.cs" />
-    <Compile Include="Styles\StyleRenderingMode.cs" />
-    <Compile Include="Styles\StyleTextRenderingHint.cs" />
     <Compile Include="Tools\StandardMapTools2D.cs" />
     <Compile Include="Indexing\BinaryTree\BinaryTree.cs" />
     <Compile Include="Indexing\RTree\GuttmanQuadraticInsert.cs" />
@@ -479,12 +452,10 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Styles\DefaultSymbol.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="SharpMap.cd" />
     <None Include="Map Model.cd" />
-    <None Include="Rendering\RenderingClasses.cd" />
     <None Include="SharpMap.snk" />
   </ItemGroup>
   <ItemGroup>

@@ -20,12 +20,12 @@ using System.Xml.Serialization;
 
 namespace SharpMap.Symbology
 {
+    [Serializable]
     [XmlInclude(typeof (RasterSymbolizer))]
     [XmlInclude(typeof (TextSymbolizer))]
     [XmlInclude(typeof (PointSymbolizer))]
     [XmlInclude(typeof (PolygonSymbolizer))]
     [XmlInclude(typeof (LineSymbolizer))]
-    [Serializable]
     [XmlType(Namespace = "http://www.opengis.net/se", TypeName = "SymbolizerType")]
     public abstract class Symbolizer
     {
@@ -33,7 +33,7 @@ namespace SharpMap.Symbology
         private Description _description;
         private BaseSymbolizer _baseSymbolizer;
         private OgcSymbologyEncodingVersion _version;
-        private bool _versionSpecified;
+        private Boolean _versionSpecified;
         private String _uom;
 
         public String Name

@@ -28,8 +28,8 @@ namespace SharpMap.Symbology
     {
         private ParameterValue _stringValue;
         private StripOffPositionType _stripOffPosition;
-        private bool _stripOffPositionSpecified;
-        private string _stripOffChar;
+        private Boolean _stripOffPositionSpecified;
+        private String _stripOffChar;
 
         [XmlElement(Order = 0)]
         public ParameterValue StringValue
@@ -46,14 +46,14 @@ namespace SharpMap.Symbology
         }
 
         [XmlIgnore]
-        public bool StripOffPositionSpecified
+        public Boolean StripOffPositionSpecified
         {
             get { return _stripOffPositionSpecified; }
             set { _stripOffPositionSpecified = value; }
         }
 
         [XmlAttribute(AttributeName = "stripOffChar")]
-        public string StripOffChar
+        public String StripOffChar
         {
             get { return _stripOffChar; }
             set { _stripOffChar = value; }
@@ -61,7 +61,7 @@ namespace SharpMap.Symbology
 
         #region Overrides of Expression
 
-        public override bool Contains(Expression other)
+        public override Boolean Contains(Expression other)
         {
             throw new System.NotImplementedException();
         }
@@ -71,7 +71,7 @@ namespace SharpMap.Symbology
             throw new System.NotImplementedException();
         }
 
-        public override bool Equals(Expression other)
+        public override Boolean Equals(Expression other)
         {
             throw new System.NotImplementedException();
         }

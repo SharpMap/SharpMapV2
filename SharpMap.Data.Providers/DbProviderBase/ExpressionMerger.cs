@@ -55,7 +55,7 @@ namespace SharpMap.Data.Providers.Db
 
         private static PredicateExpression MergePredicateExpressions(PredicateExpression expression, PredicateExpression binaryExpression)
         {
-            return new BinaryExpression(expression, BinaryOperator.And, binaryExpression);
+            return new BinaryExpression(expression, BinaryLogicOperator.And, binaryExpression);
         }
 
 

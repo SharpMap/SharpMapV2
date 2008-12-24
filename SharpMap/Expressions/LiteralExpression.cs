@@ -47,7 +47,7 @@ namespace SharpMap.Expressions
         //    }
         //}
 
-        public override string ToString()
+        public override String ToString()
         {
             return Value == null
                        ? "<null>"

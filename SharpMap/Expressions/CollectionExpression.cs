@@ -47,9 +47,9 @@ namespace SharpMap.Expressions
             CollectionExpression ce = other as CollectionExpression;
 
             return ce != null &&
-                   Enumerable.All(Caster.Cast<object>(_collection), delegate(Object item)
+                   Enumerable.All(Caster.Cast<Object>(_collection), delegate(Object item)
                    {
-                       return Enumerable.Contains(Caster.Cast<object>(ce._collection), item);
+                       return Enumerable.Contains(Caster.Cast<Object>(ce._collection), item);
                    });
         }
 
@@ -57,12 +57,12 @@ namespace SharpMap.Expressions
         {
             CollectionExpression ce = other as CollectionExpression;
 
-            return ce != null && Enumerable.SequenceEqual(Caster.Cast<object>(_collection), Caster.Cast<object>(ce._collection));
+            return ce != null && Enumerable.SequenceEqual(Caster.Cast<Object>(_collection), Caster.Cast<Object>(ce._collection));
         }
 
         public override Expression Clone()
         {
-            return new CollectionExpression(Enumerable.ToArray(Caster.Cast<object>(_collection)));
+            return new CollectionExpression(Enumerable.ToArray(Caster.Cast<Object>(_collection)));
         }
 
         #region IEnumerable Members

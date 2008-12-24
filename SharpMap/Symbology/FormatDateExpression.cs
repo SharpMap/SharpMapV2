@@ -27,7 +27,7 @@ namespace SharpMap.Symbology
     public class FormatDateExpression : SymbologyFunctionExpression
     {
         private ParameterValue _dateValue;
-        private string _pattern;
+        private String _pattern;
 
         [XmlElement(Order = 0)]
         public ParameterValue DateValue
@@ -37,7 +37,7 @@ namespace SharpMap.Symbology
         }
 
         [XmlElement(Order = 1)]
-        public string Pattern
+        public String Pattern
         {
             get { return _pattern; }
             set { _pattern = value; }
@@ -45,7 +45,7 @@ namespace SharpMap.Symbology
 
         #region Overrides of Expression
 
-        public override bool Contains(Expression other)
+        public override Boolean Contains(Expression other)
         {
             throw new System.NotImplementedException();
         }
@@ -55,7 +55,7 @@ namespace SharpMap.Symbology
             throw new System.NotImplementedException();
         }
 
-        public override bool Equals(Expression other)
+        public override Boolean Equals(Expression other)
         {
             throw new System.NotImplementedException();
         }

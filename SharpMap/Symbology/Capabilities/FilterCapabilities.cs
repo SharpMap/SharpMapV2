@@ -29,7 +29,7 @@ namespace SharpMap.Styles.Symbology.Capabilities
     [XmlRoot(ElementName = "Filter_Capabilities", Namespace = "http://www.opengis.net/ogc", IsNullable = false)]
     public class FilterCapabilities
     {
-        private object[] _idCapabilities;
+        private Object[] _idCapabilities;
         private ScalarCapabilities _scalarCapabilities;
 
         public ScalarCapabilities ScalarCapabilities
@@ -40,7 +40,7 @@ namespace SharpMap.Styles.Symbology.Capabilities
 
         [XmlArrayItem("EID", typeof (Eid), IsNullable = false)]
         [XmlArrayItem("FID", typeof (Fid), IsNullable = false)]
-        public object[] IdCapabilities
+        public Object[] IdCapabilities
         {
             get { return _idCapabilities; }
             set { _idCapabilities = value; }

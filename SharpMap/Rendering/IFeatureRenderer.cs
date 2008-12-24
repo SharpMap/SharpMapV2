@@ -15,10 +15,9 @@
 // along with SharpMap; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
-using System.Collections;
 using SharpMap.Data;
-using SharpMap.Styles;
 using SharpMap.Layers;
+using SharpMap.Symbology;
 
 namespace SharpMap.Rendering
 {
@@ -30,7 +29,7 @@ namespace SharpMap.Rendering
         /// <summary>
         /// Gets or sets the default style if no style or theme information is provided.
         /// </summary>
-        IStyle DefaultStyle { get; set; }
+        FeatureStyle DefaultStyle { get; set; }
 
         /// <summary>
         /// Renders the attributes and/or spatial data in the <paramref name="feature"/>.
@@ -38,25 +37,6 @@ namespace SharpMap.Rendering
         /// <param name="feature">
         /// A <see cref="IFeatureDataRecord"/> instance with spatial data.
         /// </param>
-        /// <returns>
-        /// An enumeration of rendered objects used to draw the spatial data.
-        /// </returns>
-        IEnumerable RenderFeature(IFeatureDataRecord feature);
-
-        /// <summary>
-        /// Renders the attributes and/or spatial data in the <paramref name="feature"/>.
-        /// </summary>
-        /// <param name="feature">
-        /// A <see cref="IFeatureDataRecord"/> instance with spatial data.
-        /// </param>
-        /// <param name="style">
-        /// Style used to render the feature.
-        /// </param>
-        /// <returns>
-        /// An enumeration of rendered objects used to draw the spatial data.
-        /// </returns>
-        IEnumerable RenderFeature(IFeatureDataRecord feature, IStyle style, RenderState renderState, ILayer layer);
-
-		void CleanUp();
+        void RenderFeature(IScene scene, ILayer layer, IFeatureDataRecord feature, RenderState renderState);
     }
 }

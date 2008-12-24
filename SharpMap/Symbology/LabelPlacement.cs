@@ -25,11 +25,11 @@ namespace SharpMap.Symbology
     [XmlRoot("LabelPlacement", Namespace = "http://www.opengis.net/se", IsNullable = false)]
     public class LabelPlacement
     {
-        private object _item;
+        private Object _item;
 
         [XmlElement("LinePlacement", typeof (LinePlacement))]
         [XmlElement("PointPlacement", typeof (PointPlacement))]
-        public object Item
+        public Object Item
         {
             get { return _item; }
             set { _item = value; }
