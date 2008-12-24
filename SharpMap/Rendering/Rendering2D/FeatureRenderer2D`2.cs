@@ -22,6 +22,7 @@ using System.ComponentModel;
 using SharpMap.Data;
 using SharpMap.Rendering.Thematics;
 using SharpMap.Styles;
+using SharpMap.Symbology;
 using IMatrix2D = NPack.Interfaces.IMatrix<NPack.DoubleComponent>;
 using SharpMap.Layers;
 
@@ -30,10 +31,7 @@ namespace SharpMap.Rendering.Rendering2D
     /// <summary>
     /// The base class for 2D feature renderers.
     /// </summary>
-    /// <typeparam name="TStyle">The type of style to use.</typeparam>
-    /// <typeparam name="TRenderObject">The type of render object produced.</typeparam>
-    public abstract class FeatureRenderer2D<TStyle, TRenderObject> : Renderer2D, IFeatureRenderer<TRenderObject>
-        where TStyle : class, IStyle
+    public abstract class FeatureRenderer2D : Renderer2D, IFeatureRenderer
     {
         private readonly VectorRenderer2D<TRenderObject> _vectorRenderer;
         private TStyle _defaultStyle;

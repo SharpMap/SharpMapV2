@@ -23,7 +23,7 @@ namespace SharpMap.Rendering.Rendering2D
     /// <summary>
     /// Represents a series of figures of connected points in 2D space.
     /// </summary>
-    public class Path2D : Path<Point2D, Rectangle2D>
+    public class Path2D : Path<TCoordinate, Rectangle<TCoordinate>>
     {
         /// <summary>
         /// Creates a new empty <see cref="Path2D"/>.

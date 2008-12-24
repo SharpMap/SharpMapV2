@@ -303,6 +303,12 @@
     <Compile Include="Rendering\IFeatureRenderer.cs" />
     <Compile Include="Rendering\IScene.cs" />
     <Compile Include="Rendering\ITextRenderer`3.cs" />
+    <Compile Include="Rendering\Point.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Rendering\Rectangle.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Rendering\Rendering2D\IRasterRenderer2D.cs" />
     <Compile Include="Rendering\Rendering2D\IRasterRenderer2D`1.cs" />
     <Compile Include="Rendering\Rendering2D\ITextRenderer2D.cs" />
@@ -310,11 +316,13 @@
     <Compile Include="Rendering\Rendering2D\IVectorRenderer2D.cs" />
     <Compile Include="Rendering\Rendering2D\Renderer2D.cs" />
     <Compile Include="Rendering\Rendering2D\TextRenderer2D`1.cs" />
-    <Compile Include="Rendering\IViewRectangle`1.cs" />
+    <Compile Include="Rendering\ISceneExtent`1.cs" />
     <Compile Include="Rendering\Rendering2D\BasicGeometryRenderer2D`1.cs" />
     <Compile Include="Rendering\IGeometryRenderer.cs" />
     <Compile Include="Rendering\Rendering2D\IVectorRenderer2D`1.cs" />
     <Compile Include="Rendering\RenderState.cs" />
+    <Compile Include="Rendering\RenderingMode.cs" />
+    <Compile Include="Rendering\Size.cs" />
     <Compile Include="Rendering\Symbol`2.cs" />
     <Compile Include="Rendering\Vector.cs" />
     <Compile Include="Expressions\FeatureIdExpression.cs" />
@@ -424,12 +432,9 @@
     <Compile Include="Rendering\Rendering2D\Symbol2D.cs" />
     <Compile Include="Rendering\Rendering2D\VectorRenderer2D`1.cs" />
     <Compile Include="Rendering\Rendering2D\Matrix2D.cs" />
-    <Compile Include="Rendering\Rendering2D\Rectangle2D.cs" />
     <Compile Include="Rendering\RenderExceptions.cs" />
-    <Compile Include="Rendering\Rendering2D\Point2D.cs" />
     <Compile Include="Presentation\ViewSelection`3.cs" />
     <Compile Include="Presentation\ViewSelection2D.cs" />
-    <Compile Include="Rendering\Rendering2D\Size2D.cs" />
     <Compile Include="Tools\StandardMapTools2D.cs" />
     <Compile Include="Indexing\BinaryTree\BinaryTree.cs" />
     <Compile Include="Indexing\RTree\GuttmanQuadraticInsert.cs" />

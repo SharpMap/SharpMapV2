@@ -40,9 +40,9 @@ namespace SharpMap.Rendering
         public static readonly Rectangle<TCoordinate> Empty = new Rectangle<TCoordinate>();
 
 		/// <summary>
-		/// A Rectangle2D with zero height and zero width centered at (0, 0).
+		/// A <see cref="Rectangle{TCoordinate}" /> with zero height and zero width centered at (0, 0).
 		/// </summary>
-        public static readonly Rectangle2D Zero = new Rectangle2D(0, 0, 0, 0);
+        public static readonly Rectangle<TCoordinate> Zero = new Rectangle<TCoordinate>(0, 0, 0, 0);
 
         private DoubleComponent _bottom;
         private DoubleComponent _left;
@@ -249,9 +249,9 @@ namespace SharpMap.Rendering
 
         #endregion
 
-        internal static Rectangle2D FromLTRB(Double left, Double top, Double right, Double bottom)
+        internal static Rectangle<TCoordinate> FromLTRB(Double left, Double top, Double right, Double bottom)
         {
-            return new Rectangle2D(left, top, right, bottom);
+            return new Rectangle<TCoordinate>(left, top, right, bottom);
         }
 
         #region Intersects
@@ -341,37 +341,37 @@ namespace SharpMap.Rendering
         }
 
         /// <summary>
-        /// Gets the coordinates of the center of the <see cref="Rectangle2D"/>.
+        /// Gets the coordinates of the center of the <see cref="Rectangle{TCoordinate}"/>.
         /// </summary>
         /// <seealso cref="Location"/>
         /// <seealso cref="X"/>
         /// <seealso cref="Y"/>
-        public Point2D Center
+        public TCoordinate Center
         {
             get { return new Point2D(X + Width / 2, Y + Height / 2); }
         }
 
         /// <summary>
-        /// Gets the coordinates of the upper left corner of the <see cref="Rectangle2D"/>.
+        /// Gets the coordinates of the upper left corner of the <see cref="Rectangle{TCoordinate}"/>.
         /// </summary>
         /// <seealso cref="Center"/>
-        public Point2D Location
+        public TCoordinate Location
         {
             get { return new Point2D((Double)_left, (Double)_top); }
         }
 
         /// <summary>
-        /// Gets the size of the <see cref="Rectangle2D"/>.
+        /// Gets the size of the <see cref="Rectangle{TCoordinate}"/>.
         /// </summary>
         /// <seealso cref="Width"/>
         /// <seealso cref="Height"/>
-        public Size2D Size
+        public Size<TCoordinate> Size
         {
             get { return new Size2D(Width, Height); }
         }
 
         /// <summary>
-        /// Gets the width of the <see cref="Rectangle2D"/>.
+        /// Gets the width of the <see cref="Rectangle{TCoordinate}"/>.
         /// </summary>
         /// <seealso cref="Size"/>
         public Double Width
@@ -404,12 +404,12 @@ namespace SharpMap.Rendering
         }
         #endregion
 
-		public Point2D UpperLeft
+		public TCoordinate UpperLeft
 		{
 			get { return Location; }
 		}
 
-		public Point2D UpperRight
+		public TCoordinate UpperRight
 		{
 			get { return new Point2D(X + Width, Y); }
 		}
