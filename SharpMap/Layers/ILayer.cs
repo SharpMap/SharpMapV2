@@ -25,6 +25,7 @@ using SharpMap.Data;
 using SharpMap.Data.Caching;
 using SharpMap.Expressions;
 using SharpMap.Styles;
+using SharpMap.Symbology;
 
 namespace SharpMap.Layers
 {
@@ -80,7 +81,7 @@ namespace SharpMap.Layers
 		/// <summary>
 		/// The style for the layer.
 		/// </summary>
-		IStyle Style { get; set; }
+		Style Style { get; set; }
 
         /// <summary>
         /// Gets an <see cref="IGeometry"/> instance describing the region which has been

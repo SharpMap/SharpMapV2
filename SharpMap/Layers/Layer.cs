@@ -27,7 +27,7 @@ using SharpMap.Data;
 using GeoAPI.Geometries;
 using SharpMap.Data.Caching;
 using SharpMap.Expressions;
-using SharpMap.Styles;
+using SharpMap.Symbology;
 
 namespace SharpMap.Layers
 {
@@ -118,7 +118,7 @@ namespace SharpMap.Layers
         private readonly ILayer _parent;
         //private ICoordinateTransformation _coordinateTransform;
         private String _layerName;
-        private IStyle _style;
+        private Style _style;
         private Boolean _disposed;
         private readonly IAsyncProvider _dataSource;
         private Boolean _asyncQuery;
@@ -130,6 +130,7 @@ namespace SharpMap.Layers
         private IAsyncResult _loadAsyncResult;
         private readonly Object _loadCompletionSync = new Object();
         private Dictionary<PropertyDescriptor, Object> _propertyValues;
+        private Boolean _enabled;
 
         #endregion
 
@@ -174,11 +175,11 @@ namespace SharpMap.Layers
         /// The <see cref="IProvider"/> which provides the data 
         /// for the layer.
         /// </param>
-        protected Layer(String layerName, IStyle style, IProvider dataSource)
+        protected Layer(String layerName, Style style, IProvider dataSource)
             : this(layerName, style, dataSource, null, null) { }
 
         protected Layer(String layerName,
-                        IStyle style,
+                        Style style,
                         IProvider dataSource,
                         IGeometryFactory geometryFactory,
                         ILayer parent)
@@ -433,19 +434,11 @@ namespace SharpMap.Layers
         /// Gets or sets a value which indicates if the layer 
         /// is enabled (visible or able to participate in queries) or not.
         /// </summary>
-        /// <remarks>
-        /// This property is a convenience property which exposes 
-        /// the value of <see cref="SharpMap.Styles.Style.Enabled"/>. 
-        /// If setting this property and the Style property 
-        /// value is null, a new <see cref="Style"/> 
-        /// object is created and assigned to the Style property, 
-        /// and then the Style.Enabled property is set.
-        /// </remarks>
         public virtual Boolean Enabled
         {
             get
             {
-                return Style.Enabled;
+                return _enabled;
             }
             set
             {
@@ -456,7 +449,7 @@ namespace SharpMap.Layers
                     return;
                 }
 
-                Style.Enabled = value;
+                _enabled = value;
                 OnEnabledChanged();
             }
         }
@@ -615,7 +608,7 @@ namespace SharpMap.Layers
         /// <summary>
         /// Gets or sets the style for the layer.
         /// </summary>
-        public virtual IStyle Style
+        public virtual Style Style
         {
             get
             {
@@ -685,7 +678,7 @@ namespace SharpMap.Layers
             }
         }
 
-        protected virtual IStyle CreateStyle()
+        protected virtual Style CreateStyle()
         {
             return new Style();
         }

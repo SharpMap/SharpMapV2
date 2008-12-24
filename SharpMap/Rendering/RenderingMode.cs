@@ -15,15 +15,17 @@
 // along with SharpMap; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
-using NPack;
-using NPack.Interfaces;
+using System;
 
 namespace SharpMap.Rendering
 {
-    public interface IViewRectangle<TPoint> : IAffineTransformMatrix<DoubleComponent>
-        where TPoint : IVector<DoubleComponent>
+    [Flags]
+    public enum RenderingMode
     {
-		TPoint GetLowerBound(IVector<DoubleComponent> axis);
-		TPoint GetUpperBound(IVector<DoubleComponent> axis);
+        Default = HighQuality,
+        HighSpeed = 0,
+        AntiAlias = 1,
+        ClearType = 2,
+        HighQuality = AntiAlias,
     }
 }

@@ -15,26 +15,15 @@
 // along with SharpMap; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
-using System;
-using IMatrix2D = NPack.Interfaces.IMatrix<NPack.DoubleComponent>;
+using NPack;
+using NPack.Interfaces;
 
 namespace SharpMap.Rendering
 {
-    /// <summary>
-    /// Interface to a graphical renderer.
-    /// </summary>
-    public interface IRenderer : IDisposable
+    public interface ISceneExtent<TCoordinate> : IAffineTransformMatrix<DoubleComponent>
+        where TCoordinate : IVector<DoubleComponent>
     {
-        /// <summary>
-        /// Gets or sets a matrix used to transform 
-        /// coordinate values during rendering.
-        /// </summary>
-        IMatrix2D RenderTransform { get; set; }
-
-        /// <summary>
-        /// Gets or sets a <see cref="StyleRenderingMode"/> 
-        /// value used to render objects.
-        /// </summary>
-        RenderingMode StyleRenderingMode { get; set; }
+		TCoordinate GetLowerBound(IVector<DoubleComponent> axis);
+		TCoordinate GetUpperBound(IVector<DoubleComponent> axis);
     }
 }

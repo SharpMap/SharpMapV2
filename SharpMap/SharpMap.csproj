@@ -410,8 +410,6 @@
     <Compile Include="Rendering\Path`2.cs" />
     <Compile Include="Rendering\IRenderer.cs" />
     <Compile Include="Presentation\Views\IMapView2D.cs" />
-    <Compile Include="Rendering\Rendering2D\Label2D.cs" />
-    <Compile Include="Rendering\Rendering2D\LabelCollisionDetection2D.cs" />
     <Compile Include="Rendering\Rendering2D\BasicLabelRenderer2D`1.cs" />
     <Compile Include="Rendering\LayerRendererRegistry.cs" />
     <Compile Include="Presentation\MapViewPropertyChangeEventArgs`1.cs" />
@@ -432,9 +430,6 @@
     <Compile Include="Presentation\ViewSelection`3.cs" />
     <Compile Include="Presentation\ViewSelection2D.cs" />
     <Compile Include="Rendering\Rendering2D\Size2D.cs" />
-    <Compile Include="Rendering\Thematics\CustomTheme.cs" />
-    <Compile Include="Rendering\Thematics\GradientTheme.cs" />
-    <Compile Include="Rendering\Thematics\ITheme.cs" />
     <Compile Include="Tools\StandardMapTools2D.cs" />
     <Compile Include="Indexing\BinaryTree\BinaryTree.cs" />
     <Compile Include="Indexing\RTree\GuttmanQuadraticInsert.cs" />
@@ -460,6 +455,9 @@
   </ItemGroup>
   <ItemGroup>
     <Service Include="{B4F97281-0DBD-4835-9ED8-7DFB966E87FF}" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Rendering\Thematics\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Target Name="BeforeBuild">

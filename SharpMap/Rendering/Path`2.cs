@@ -27,7 +27,7 @@ namespace SharpMap.Rendering
 {
     /// <summary>
     /// Represents a series of figures of connected points in an 
-    /// n-dimensional vector space, which is set by generic parameters.
+    /// n-dimensional cartesian space, which is set by generic parameters.
     /// </summary>
     /// <typeparam name="TPoint">Type of point used in the path.</typeparam>
     /// <typeparam name="TViewBounds">Type of rectilinear used to bound the path.</typeparam>

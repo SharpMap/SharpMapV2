@@ -27,38 +27,36 @@ namespace SharpMap.Rendering
 {
     /// <summary>
     /// Represents a graphical figure, which is a portion of a 
-    /// <see cref="Path{TPoint,TBounds}"/>.
+    /// <see cref="Path{TCoordinate}"/>.
     /// </summary>
-    /// <typeparam name="TPoint">Type of point to use in the figure.</typeparam>
-    /// <typeparam name="TBounds">Type of rectilinear shape to bound this figure.</typeparam>
-    public abstract class Figure<TPoint, TBounds>
-        : ICloneable, IEnumerable<TPoint>, IEquatable<Figure<TPoint, TBounds>>
-        where TPoint : IVectorD
-        where TBounds : IMatrixD
+    /// <typeparam name="TCoordinate">Type of point to use in the figure.</typeparam>
+    public abstract class Figure<TCoordinate>
+        : ICloneable, IEnumerable<TCoordinate>, IEquatable<Figure<TCoordinate>>
+        where TCoordinate : IVectorD
     {
-        private readonly List<TPoint> _points = new List<TPoint>();
+        private readonly List<TCoordinate> _points = new List<TCoordinate>();
         private Boolean _isClosed;
-        private TBounds _bounds;
+        private Rectangle<TCoordinate> _bounds;
 
         #region Object Construction
 
         /// <summary>
-        /// Creates a new open <see cref="Figure{TPoint, TBounds}"/> 
+        /// Creates a new open <see cref="Figure{TCoordinate, TBounds}"/> 
         /// from the given points.
         /// </summary>
         /// <param name="points">The points from which to create the figure.</param>
-        public Figure(IEnumerable<TPoint> points)
+        public Figure(IEnumerable<TCoordinate> points)
             : this(points, false) { }
 
         /// <summary>
-        /// Creates a new <see cref="Figure{TPoint, TBounds}"/> 
+        /// Creates a new <see cref="Figure{TCoordinate, TBounds}"/> 
         /// from the given points.
         /// </summary>
         /// <param name="points">The points from which to create the figure.</param>
         /// <param name="isClosed">True to close the path, false to keep it open.</param>
-        public Figure(IEnumerable<TPoint> points, Boolean isClosed)
+        public Figure(IEnumerable<TCoordinate> points, Boolean isClosed)
         {
-            foreach (TPoint point in points)
+            foreach (TCoordinate point in points)
             {
                 _points.Add(point);
             }
@@ -77,7 +75,7 @@ namespace SharpMap.Rendering
         {
             return
                 String.Format("[{0}] Number of {2} points: {1}; Closed: {3}", GetType(), Points.Count,
-                              typeof (TPoint).Name, IsClosed);
+                              typeof (TCoordinate).Name, IsClosed);
         }
 
         #endregion
@@ -93,7 +91,7 @@ namespace SharpMap.Rendering
             {
                 Int32 hash = 86848163;
 
-                foreach (TPoint p in Points)
+                foreach (TCoordinate p in Points)
                 {
                     hash ^= p.GetHashCode();
                 }
@@ -108,13 +106,13 @@ namespace SharpMap.Rendering
 
         public override Boolean Equals(Object obj)
         {
-            Figure<TPoint, TBounds> other = obj as Figure<TPoint, TBounds>;
+            Figure<TCoordinate> other = obj as Figure<TCoordinate>;
             return Equals(other);
         }
 
-        #region IEquatable<Path<TPoint>> Members
+        #region IEquatable<Path<TCoordinate>> Members
 
-        public Boolean Equals(Figure<TPoint, TBounds> other)
+        public Boolean Equals(Figure<TCoordinate> other)
         {
             if (other == null)
             {
@@ -152,9 +150,9 @@ namespace SharpMap.Rendering
         /// Creates an exact copy of this figure.
         /// </summary>
         /// <returns>A point-by-point copy of this figure.</returns>
-        public Figure<TPoint, TBounds> Clone()
+        public Figure<TCoordinate> Clone()
         {
-            Figure<TPoint, TBounds> figure = CreateFigure(Points, IsClosed);
+            Figure<TCoordinate> figure = CreateFigure(Points, IsClosed);
             return figure;
         }
 
@@ -174,7 +172,7 @@ namespace SharpMap.Rendering
         /// <summary>
         /// Gets the bounds of this figure.
         /// </summary>
-        public TBounds Bounds
+        public Rectangle<TCoordinate> Bounds
         {
             get
             {
@@ -190,7 +188,7 @@ namespace SharpMap.Rendering
         /// <summary>
         /// Gets a value indicating an empty bounds shape.
         /// </summary>
-        protected abstract TBounds EmptyBounds { get; }
+        protected abstract Rectangle<TCoordinate> EmptyBounds { get; }
 
         /// <summary>
         /// Gets true if the figure is closed, false if open.
@@ -204,7 +202,7 @@ namespace SharpMap.Rendering
         /// <summary>
         /// A list of the points in this figure.
         /// </summary>
-        public IList<TPoint> Points
+        public IList<TCoordinate> Points
         {
             get { return _points.AsReadOnly(); }
         }
@@ -213,7 +211,7 @@ namespace SharpMap.Rendering
 
         #region Public methods
 
-        public void Add(TPoint point)
+        public void Add(TCoordinate point)
         {
             _points.Add(point);
         }
@@ -234,10 +232,10 @@ namespace SharpMap.Rendering
         /// Computes the minimum bounding rectilinear shape that contains this figure.
         /// </summary>
         /// <returns>
-        /// A <typeparamref name="TBounds"/> instance describing a minimally bounding 
+        /// A <see name="Rectangle{TCoordinate}"/> instance describing a minimally bounding 
         /// rectilinear space which contains the figure.
         /// </returns>
-        protected abstract TBounds ComputeBounds();
+        protected abstract Rectangle<TCoordinate> ComputeBounds();
 
         /// <summary>
         /// Creates a new figure with the given points, either open or closed.
@@ -245,12 +243,12 @@ namespace SharpMap.Rendering
         /// <param name="points">Points to use in sequence to create the figure.</param>
         /// <param name="isClosed">True if the figure is closed, false otherwise.</param>
         /// <returns>A new Figure instance.</returns>
-        protected abstract Figure<TPoint, TBounds> CreateFigure(IEnumerable<TPoint> points,
-                                                                                Boolean isClosed);
+        protected abstract Figure<TCoordinate> CreateFigure(IEnumerable<TCoordinate> points,
+                                                            Boolean isClosed);
 
         #endregion
 
-        internal List<TPoint> PointsInternal
+        internal List<TCoordinate> PointsInternal
         {
             get { return _points; }
         }
@@ -259,7 +257,7 @@ namespace SharpMap.Rendering
         {
             for (Int32 i = 0; i < _points.Count; i++)
             {
-                TPoint point = _points[i];
+                TCoordinate point = _points[i];
 
                 DoubleComponent[] pointComponents = point.Components;
                 Array.Resize(ref pointComponents, pointComponents.Length + 1);
@@ -271,11 +269,11 @@ namespace SharpMap.Rendering
             }
         }
 
-        #region IEnumerable<TPoint> Members
+        #region IEnumerable<TCoordinate> Members
 
-        public IEnumerator<TPoint> GetEnumerator()
+        public IEnumerator<TCoordinate> GetEnumerator()
         {
-            foreach (TPoint p in _points)
+            foreach (TCoordinate p in _points)
             {
                 yield return p;
             }
