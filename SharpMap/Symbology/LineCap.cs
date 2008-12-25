@@ -15,29 +15,27 @@
 // along with SharpMap; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
-namespace SharpMap.Styles
+namespace SharpMap.Symbology
 {
     /// <summary>
-    /// Describes how to form the end of a dash in a drawn line.
+    /// Describes how to form and end of a line stroke.
     /// </summary>
-    public enum LineDashCap
+    public enum LineCap
     {
         /// <summary>
-        /// Makes the cap of the dash flat, so it is square to the sides of the dash.
+        /// Makes the cap of the line flat against the end of the line.
         /// </summary>
-        Flat = 0,
+        Butt = 1,
 
         /// <summary>
         /// Makes the cap of the dash rounded, so it forms an arc from the sides
-        /// of the dash.
+        /// of the line stroke.
         /// </summary>
         Round = 2,
 
         /// <summary>
-        /// Makes each side of the cap of the dash an obtuse angle 
-        /// from the side of the dash, so a triangle is formed for the cap
-        /// when they meet.
+        /// Makes the cap of the dash offset and squared to the sides of the line stroke.
         /// </summary>
-        Triangle = 3
+        Square = 3
     }
 }

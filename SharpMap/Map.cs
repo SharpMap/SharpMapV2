@@ -32,8 +32,7 @@ using NPack.Interfaces;
 using SharpMap.Data;
 using SharpMap.Expressions;
 using SharpMap.Layers;
-using SharpMap.Rendering.Thematics;
-using SharpMap.Styles;
+using SharpMap.Symbology;
 using SharpMap.Tools;
 
 namespace SharpMap
@@ -1191,10 +1190,10 @@ namespace SharpMap
 
         private static void changeLayerEnabled(ILayer layer, Boolean enabled)
         {
-            layer.Style.Enabled = enabled;
+            layer.Enabled = enabled;
         }
 
-        private static void setLayerStyleInternal(ILayer layer, IStyle style)
+        private static void setLayerStyleInternal(ILayer layer, Style style)
         {
             if (layer == null)
             {

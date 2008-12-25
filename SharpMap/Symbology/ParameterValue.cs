@@ -17,6 +17,7 @@
 
 using System;
 using System.Xml.Serialization;
+using SharpMap.Data;
 using SharpMap.Expressions;
 
 namespace SharpMap.Symbology
@@ -43,7 +44,10 @@ namespace SharpMap.Symbology
         private Expression[] _expressions;
         private ExpressionType[] _expressionElementTypes;
         private String[] _text;
-
+        
+        /// <summary>
+        /// Used by the XML serializer.
+        /// </summary>
         [XmlElement("Add", typeof (BinaryOperationExpression), Namespace = "http://www.opengis.net/ogc")]
         [XmlElement("Div", typeof (BinaryOperationExpression), Namespace = "http://www.opengis.net/ogc")]
         [XmlElement("Function", typeof (FunctionExpression), Namespace = "http://www.opengis.net/ogc")]
@@ -71,6 +75,11 @@ namespace SharpMap.Symbology
         {
             get { return _text; }
             set { _text = value; }
+        }
+
+        public TValue GetValue<TValue>(IDataObject dataObject)
+        {
+            
         }
     }
 }

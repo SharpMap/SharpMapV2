@@ -17,6 +17,7 @@
 
 using System;
 using System.Collections.Generic;
+using GeoAPI.Coordinates;
 using NPack;
 using NPack.Interfaces;
 using IMatrixD = NPack.Interfaces.IMatrix<NPack.DoubleComponent>;
@@ -33,52 +34,63 @@ namespace SharpMap.Rendering
                                            IComparable<Rectangle<TCoordinate>>, 
                                            //IHasEmpty, 
                                            IVertexStream<TCoordinate, DoubleComponent>
+        where TCoordinate : ICoordinate<TCoordinate>, IEquatable<TCoordinate>,
+                            IComparable<TCoordinate>, IConvertible,
+                            IComputable<Double, TCoordinate>
     {
+
+        internal static Rectangle<TCoordinate> FromLTRB(ICoordinateFactory<TCoordinate> coordinateFactory, Double left, Double top, Double right, Double bottom)
+        {
+            return new Rectangle<TCoordinate>(coordinateFactory, left, top, right, bottom);
+        }
+
 		/// <summary>
 		/// An empty <see cref="Rectangle{TCoordinate}" />, having no value.
 		/// </summary>
         public static readonly Rectangle<TCoordinate> Empty = new Rectangle<TCoordinate>();
 
-		/// <summary>
-		/// A <see cref="Rectangle{TCoordinate}" /> with zero height and zero width centered at (0, 0).
-		/// </summary>
-        public static readonly Rectangle<TCoordinate> Zero = new Rectangle<TCoordinate>(0, 0, 0, 0);
+        ///// <summary>
+        ///// A <see cref="Rectangle{TCoordinate}" /> with zero height and zero width centered at (0, 0).
+        ///// </summary>
+        //public static readonly Rectangle<TCoordinate> Zero = new Rectangle<TCoordinate>(0, 0, 0, 0);
 
-        private DoubleComponent _bottom;
-        private DoubleComponent _left;
-        private DoubleComponent _right;
-        private DoubleComponent _top;
+        private TCoordinate _min;
+        private TCoordinate _max;
         private Boolean _hasValue;
 
         #region Constructors
 		/// <summary>
-		/// Creates a new Rectangle2D with the given values for the sides.
+		/// Creates a new <see cref="Rectangle{TCoordinate}" /> with the given values for the sides.
 		/// </summary>
 		/// <param name="left">The X value of the left side.</param>
 		/// <param name="top">The Y value of the top side.</param>
 		/// <param name="right">The X value of the right side.</param>
 		/// <param name="bottom">The Y value of the bottom side.</param>
-        public Rectangle2D(Double left, Double top, Double right, Double bottom)
+        public Rectangle(ICoordinateFactory<TCoordinate> coordinateFactory, Double left, Double top, Double right, Double bottom)
         {
-            _left = left;
-            _right = right;
-            _top = top;
-            _bottom = bottom;
+            _min = coordinateFactory.Create(left, top);
+            _max = coordinateFactory.Create(right, bottom);
             _hasValue = true;
         }
 
 		/// <summary>
-		/// Creates a new Rectangle2D with the upper-left at
+        /// Creates a new <see cref="Rectangle{TCoordinate}"/> with the upper-left at
 		/// <paramref name="location"/>, and the given <paramref name="size"/>.
 		/// </summary>
-		/// <param name="location">The upper-left point of the Rectangle2D.</param>
-		/// <param name="size">The size of the Rectangle2D.</param>
-        public Rectangle2D(Point2D location, Size2D size)
+        /// <param name="location">The upper-left point of the <see cref="Rectangle{TCoordinate}"/>.</param>
+        /// <param name="size">The size of the <see cref="Rectangle{TCoordinate}"/>.</param>
+        public Rectangle(Point<TCoordinate> location, Size<TCoordinate> size)
         {
-            _left = location.X;
-            _top = location.Y;
-            _right = _left + size.Width;
-            _bottom = _top + size.Height;
+		    _min = location.Coordinate;
+		    _max = (TCoordinate)_min.Add(size);
+
+            _hasValue = true;
+        }
+
+        internal Rectangle(TCoordinate min, TCoordinate max)
+        {
+            _min = min;
+            _max = max;
 
             _hasValue = true;
         }
@@ -90,7 +102,7 @@ namespace SharpMap.Rendering
         {
             return
                 String.Format(
-                    "[Rectangle2D] Left: {0:N3}; Top: {1:N3}; Right: {2:N3}; Bottom: {3:N3}; IsEmpty: {4}", 
+                    "[Rectangle<TCoordinate>] Left: {0:N3}; Top: {1:N3}; Right: {2:N3}; Bottom: {3:N3}; IsEmpty: {4}", 
                     Left, Top, Right, Bottom, IsEmpty);
         }
         #endregion
@@ -106,9 +118,9 @@ namespace SharpMap.Rendering
 
         public Boolean Equals(IMatrixD other)
         {
-            if (other is Rectangle2D)
+            if (other is Rectangle<TCoordinate>)
             {
-                return Equals((Rectangle2D)other);
+                return Equals((Rectangle<TCoordinate>)other);
             }
 
             if (IsEmpty && other == null)
@@ -156,21 +168,21 @@ namespace SharpMap.Rendering
             return true;
         }
 
-        public static Boolean operator ==(Rectangle2D lhs, Rectangle2D rhs)
+        public static Boolean operator ==(Rectangle<TCoordinate> lhs, Rectangle<TCoordinate> rhs)
         {
             return (lhs.Equals(rhs));
         }
 
-        public static Boolean operator !=(Rectangle2D lhs, Rectangle2D rhs)
+        public static Boolean operator !=(Rectangle<TCoordinate> lhs, Rectangle<TCoordinate> rhs)
         {
             return !(lhs.Equals(rhs));
         }
 
         public override Boolean Equals(Object obj)
         {
-            if (obj is Rectangle2D)
+            if (obj is Rectangle<TCoordinate>)
             {
-                return Equals((Rectangle2D)obj);
+                return Equals((Rectangle<TCoordinate>)obj);
             }
 
             if (obj is IMatrixD)
@@ -181,7 +193,7 @@ namespace SharpMap.Rendering
             return false;
         }
 
-        public Boolean Equals(Rectangle2D rectangle)
+        public Boolean Equals(Rectangle<TCoordinate> rectangle)
         {
             return IsEmpty == rectangle.IsEmpty &&
                    Left == rectangle.Left &&
@@ -192,10 +204,10 @@ namespace SharpMap.Rendering
 
         #endregion
 
-        #region IComparable<Rectangle2D> Members
+        #region IComparable<Rectangle<TCoordinate>> Members
 
         /// <summary>
-        /// Compares this <see cref="Rectangle2D"/> instance with another instance.
+        /// Compares this <see cref="Rectangle{TCoordinate}"/> instance with another instance.
         /// </summary>
         /// <remarks>
         /// The comparison for non-intersecting rectangles is computed by determining where 
@@ -221,13 +233,13 @@ namespace SharpMap.Rendering
         /// </pre>
         /// Any intersecting rectangle returns a 0, regardless of the position of the top-left corner.
         /// </remarks>
-        /// <param name="other">Rectangle2D to perform comparison with.</param>
+        /// <param name="other">Rectangle<TCoordinate> to perform comparison with.</param>
         /// <returns>
-        /// Returns 0 if the <see cref="Rectangle2D"/> instances intersect each other,
+        /// Returns 0 if the <see cref="Rectangle{TCoordinate}"/> instances intersect each other,
         /// 1 if this rectangle is located to the right or downward from the <paramref name="other"/>
         /// rectangle, and -1 if this rectangle is located to the left or upward from the other.
         /// </returns>
-        public Int32 CompareTo(Rectangle2D other)
+        public Int32 CompareTo(Rectangle<TCoordinate> other)
         {
             if (other.IsEmpty && IsEmpty)
             {
@@ -249,18 +261,13 @@ namespace SharpMap.Rendering
 
         #endregion
 
-        internal static Rectangle<TCoordinate> FromLTRB(Double left, Double top, Double right, Double bottom)
-        {
-            return new Rectangle<TCoordinate>(left, top, right, bottom);
-        }
-
         #region Intersects
         /// <summary>
-        /// Determines whether this <see cref="Rectangle2D"/> intersects another.
+        /// Determines whether this <see cref="Rectangle{TCoordinate}"/> intersects another.
         /// </summary>
-        /// <param name="rectangle"><see cref="Rectangle2D"/> to check intersection with.</param>
+        /// <param name="rectangle"><see cref="Rectangle{TCoordinate}"/> to check intersection with.</param>
         /// <returns>True if there is intersection, false if not.</returns>
-        public Boolean Intersects(Rectangle2D rectangle)
+        public Boolean Intersects(Rectangle<TCoordinate> rectangle)
         {
             if (IsEmpty || rectangle.IsEmpty)
             {
@@ -278,66 +285,66 @@ namespace SharpMap.Rendering
 
         /// <summary>
         /// Gets the X value of the coordinate of the upper left 
-        /// corner of the <see cref="Rectangle2D"/>.
+        /// corner of the <see cref="Rectangle{TCoordinate}"/>.
         /// </summary>
         /// <seealso cref="Location"/>
         public Double X
         {
-            get { return (Double)_left; }
+            get { return _min[Ordinates.X]; }
         }
 
         /// <summary>
         /// Gets the Y value of the coordinate of the upper left 
-        /// corner of the <see cref="Rectangle2D"/>.
+        /// corner of the <see cref="Rectangle{TCoordinate}"/>.
         /// </summary>
         /// <seealso cref="Location"/>
         public Double Y
         {
-            get { return (Double)_top; }
+            get { return _min[Ordinates.Y]; }
         }
 
         /// <summary>
-        /// Gets the X value of the left edge of the <see cref="Rectangle2D"/>.
+        /// Gets the X value of the left edge of the <see cref="Rectangle{TCoordinate}"/>.
         /// </summary>
         /// <seealso cref="Bottom"/>
         /// <seealso cref="Right"/>
         /// <seealso cref="Top"/>
         public Double Left
         {
-            get { return (Double)_left; }
+            get { return X; }
         }
 
         /// <summary>
-        /// Gets the Y value of the top edge of the <see cref="Rectangle2D"/>.
+        /// Gets the Y value of the top edge of the <see cref="Rectangle{TCoordinate}"/>.
         /// </summary>
         /// <seealso cref="Bottom"/>
         /// <seealso cref="Right"/>
         /// <seealso cref="Left"/>
         public Double Top
         {
-            get { return (Double)_top; }
+            get { return Y; }
         }
 
         /// <summary>
-        /// Gets the X value of the right edge of the <see cref="Rectangle2D"/>.
+        /// Gets the X value of the right edge of the <see cref="Rectangle{TCoordinate}"/>.
         /// </summary>
         /// <seealso cref="Bottom"/>
         /// <seealso cref="Top"/>
         /// <seealso cref="Left"/>
         public Double Right
         {
-            get { return (Double)_right; }
+            get { return _max[Ordinates.X]; }
         }
 
         /// <summary>
-        /// Gets the Y value of the bottom edge of the <see cref="Rectangle2D"/>.
+        /// Gets the Y value of the bottom edge of the <see cref="Rectangle{TCoordinate}"/>.
         /// </summary>
         /// <seealso cref="Right"/>
         /// <seealso cref="Top"/>
         /// <seealso cref="Left"/>
         public Double Bottom
         {
-            get { return (Double)_bottom; }
+            get { return _max[Ordinates.Y]; }
         }
 
         /// <summary>
@@ -348,7 +355,7 @@ namespace SharpMap.Rendering
         /// <seealso cref="Y"/>
         public TCoordinate Center
         {
-            get { return new Point2D(X + Width / 2, Y + Height / 2); }
+            get { return ((IDivisible<Double, TCoordinate>)_min.Add(_max)).Divide(2); }
         }
 
         /// <summary>
@@ -357,7 +364,7 @@ namespace SharpMap.Rendering
         /// <seealso cref="Center"/>
         public TCoordinate Location
         {
-            get { return new Point2D((Double)_left, (Double)_top); }
+            get { return _min; }
         }
 
         /// <summary>
@@ -367,7 +374,7 @@ namespace SharpMap.Rendering
         /// <seealso cref="Height"/>
         public Size<TCoordinate> Size
         {
-            get { return new Size2D(Width, Height); }
+            get { return new Size<TCoordinate>(Width, Height); }
         }
 
         /// <summary>
@@ -376,20 +383,29 @@ namespace SharpMap.Rendering
         /// <seealso cref="Size"/>
         public Double Width
         {
-            get { return (Double)_right.Subtract(_left); }
+            get { return _max.Subtract(_min)[Ordinates.X]; }
         }
 
         /// <summary>
-        /// Gets the height of the <see cref="Rectangle2D"/>.
+        /// Gets the height of the <see cref="Rectangle{TCoordinate}"/>.
         /// </summary>
         /// <seealso cref="Size"/>
         public Double Height
         {
-            get { return (Double)_bottom.Subtract(_top); }
+            get { return _max.Subtract(_min)[Ordinates.Y]; }
+        }
+
+        /// <summary>
+        /// Gets the depth of the <see cref="Rectangle{TCoordinate}"/>.
+        /// </summary>
+        /// <seealso cref="Size"/>
+        public Double Depth
+        {
+            get { return _max.Subtract(_min)[Ordinates.Z]; }
         }
 
 		/// <summary>
-		/// Gets true if the Rectangle2D has no set value.
+		/// Gets <see langword="true"/> if the <see cref="Rectangle{TCoordinate}"/> has no set value.
 		/// </summary>
         public Boolean IsEmpty
         {
@@ -398,40 +414,40 @@ namespace SharpMap.Rendering
         #endregion
 
         #region Clone
-        public Rectangle2D Clone()
+        public Rectangle<TCoordinate> Clone()
         {
-            return new Rectangle2D(Location, Size);
+            return new Rectangle<TCoordinate>(_min.Clone(), _max.Clone());
         }
         #endregion
 
 		public TCoordinate UpperLeft
 		{
-			get { return Location; }
+			get { return _min; }
 		}
 
-		public TCoordinate UpperRight
+        //public TCoordinate UpperRight
+        //{
+        //    get { return new Point<TCoordinate>(X + Width, Y); }
+        //}
+
+        //public TCoordinate LowerLeft
+        //{
+        //    get { return new Point<TCoordinate>(X, Y + Height); }
+        //}
+
+		public TCoordinate LowerRight
 		{
-			get { return new Point2D(X + Width, Y); }
-		}
+			get { return _max; }
+        }
 
-		public Point2D LowerLeft
-		{
-			get { return new Point2D(X, Y + Height); }
-		}
+        #region ISceneExtent<Point<TCoordinate>> Members
 
-		public Point2D LowerRight
-		{
-			get { return new Point2D(X + Width, Y + Height); }
-		}
-
-        #region IViewRectangle<Point2D> Members
-
-		Point2D ISceneExtent<Point2D>.GetLowerBound(IVector<DoubleComponent> axis)
+        TCoordinate ISceneExtent<TCoordinate>.GetLowerBound(IVector<DoubleComponent> axis)
         {
 			return UpperLeft;
         }
 
-		Point2D ISceneExtent<Point2D>.GetUpperBound(IVector<DoubleComponent> axis)
+        TCoordinate ISceneExtent<TCoordinate>.GetUpperBound(IVector<DoubleComponent> axis)
         {
 			return LowerRight;
         }
@@ -678,64 +694,44 @@ namespace SharpMap.Rendering
         /// </summary>
         /// <param name="row">The index of the row of the element.</param>
         /// <param name="column">The index of the column of the element.</param>
-        /// <returns></returns>
         DoubleComponent IMatrixD.this[Int32 row, Int32 column]
         {
             get
             {
                 checkIndexes(row, column);
 
-                if (row == 0)
-                {
-                    if (column == 0)
-                    {
-                        return _left;
-                    }
-                    else
-                    {
-                        return _top;
-                    }
-                }
-                else
-                {
-                    if (column == 0)
-                    {
-                        return _right;
-                    }
-                    else
-                    {
-                        return _bottom;
-                    }
-                }
+                return row == 0 ? _min[column] : _max[column];
             }
             set
             {
-                checkIndexes(row, column);
+                throw new NotSupportedException();
 
-                if (row == 0)
-                {
-                    if (column == 0)
-                    {
-                        _left = value;
-                    }
-                    else
-                    {
-                        _top = value;
-                    }
-                }
-                else
-                {
-                    if (column == 0)
-                    {
-                        _right = value;
-                    }
-                    else
-                    {
-                        _bottom = value;
-                    }
-                }
+                //checkIndexes(row, column);
 
-                _hasValue = true;
+                //if (row == 0)
+                //{
+                //    if (column == 0)
+                //    {
+                //        _left = value;
+                //    }
+                //    else
+                //    {
+                //        _top = value;
+                //    }
+                //}
+                //else
+                //{
+                //    if (column == 0)
+                //    {
+                //        _right = value;
+                //    }
+                //    else
+                //    {
+                //        _bottom = value;
+                //    }
+                //}
+
+                //_hasValue = true;
             }
         }
 
@@ -753,7 +749,7 @@ namespace SharpMap.Rendering
         #region IAffineTransformMatrix<DoubleComponent> Members
 
         /// <summary>
-        /// Scales the matrix by the given <paramref name="amount"/> in all orthoganal columns.
+        /// Scales the matrix by the given <paramref name="amount"/> in all orthogonal columns.
         /// </summary>
         /// <param name="amount">Amount to scale by.</param>
         public void Scale(DoubleComponent amount)
@@ -763,8 +759,7 @@ namespace SharpMap.Rendering
                 return;
             }
 
-            _right = _right.Multiply(amount);
-            _bottom = _bottom.Multiply(amount);
+            _max = _max.Multiply((Double)amount);
         }
 
         /// <summary>
@@ -777,18 +772,13 @@ namespace SharpMap.Rendering
         public void Scale(IVectorD scaleVector)
         {
             if (scaleVector == null) throw new ArgumentNullException("scaleVector");
-            if (scaleVector.ComponentCount != 2)
-            {
-                throw new ArgumentException("Number of components in scale vector must be 2.", "scaleVector");
-            }
 
             if (IsEmpty)
             {
                 return;
             }
 
-            _right = _right.Multiply(scaleVector[0]);
-            _bottom = _bottom.Multiply(scaleVector[1]);
+            _max = (TCoordinate)_max.Multiply(scaleVector);
         }
 
         /// <summary>
@@ -802,10 +792,8 @@ namespace SharpMap.Rendering
                 return;
             }
 
-            _left = _left.Add(amount);
-            _top = _top.Add(amount);
-            _right = _right.Add(amount);
-            _bottom = _bottom.Add(amount);
+            _min = ((IAddable<Double, TCoordinate>)_min).Add((Double)amount);
+            _max = ((IAddable<Double, TCoordinate>)_max).Add((Double)amount);
         }
 
         /// <summary>
@@ -818,34 +806,29 @@ namespace SharpMap.Rendering
         public void Translate(IVectorD translateVector)
         {
             if (translateVector == null) throw new ArgumentNullException("translateVector");
-            if (translateVector.ComponentCount != 2)
-            {
-                throw new ArgumentException("Number of components in scale vector must be 2.", "translateVector");
-            }
 
             if (IsEmpty)
             {
                 return;
             }
 
-            _left = _left.Add(translateVector[0]);
-            _top = _top.Add(translateVector[1]);
-            _right = _right.Add(translateVector[0]);
-            _bottom = _bottom.Add(translateVector[1]);
+            _min = (TCoordinate)_min.Add(translateVector);
+            _max = (TCoordinate)_max.Add(translateVector);
         }
         #endregion
 
-        #region IVertexStream<Point2D,DoubleComponent> Members
+        #region IVertexStream<TCoordinate> Members
 
-        public IEnumerable<Point2D> GetVertexes()
+        public IEnumerable<TCoordinate> GetVertexes()
         {
-            yield return LowerLeft;
-            yield return UpperLeft;
-            yield return UpperRight;
-            yield return LowerRight;
+            throw new NotImplementedException();
+            //yield return LowerLeft;
+            //yield return UpperLeft;
+            //yield return UpperRight;
+            //yield return LowerRight;
         }
 
-        public IEnumerable<Point2D> GetVertexes(ITransformMatrix<DoubleComponent> transform)
+        public IEnumerable<TCoordinate> GetVertexes(ITransformMatrix<DoubleComponent> transform)
         {
             throw new NotImplementedException();
         }
@@ -858,12 +841,12 @@ namespace SharpMap.Rendering
         {
             if (row < 0 || row > 1)
             {
-                throw new ArgumentOutOfRangeException("row", row, "A Rectangle2D has only 2 rows.");
+                throw new ArgumentOutOfRangeException("row", row, "A Rectangle<TCoordinate> has only 2 rows.");
             }
 
             if (column < 0 || column > 1)
             {
-                throw new ArgumentOutOfRangeException("column", row, "A Rectangle2D has only 2 columns.");
+                throw new ArgumentOutOfRangeException("column", row, "A Rectangle<TCoordinate> has only 2 columns.");
             }
         }
         #endregion

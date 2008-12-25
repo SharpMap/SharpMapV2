@@ -17,7 +17,6 @@
 
 using System;
 using SharpMap.Rendering;
-using SharpMap.Rendering.Rendering2D;
 
 namespace SharpMap.Presentation
 {

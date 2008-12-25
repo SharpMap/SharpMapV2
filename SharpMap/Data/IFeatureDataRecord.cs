@@ -26,7 +26,7 @@ namespace SharpMap.Data
 	/// Encapsulates both the <see cref="Geometry"/> and
     /// attribute values for a feature.
 	/// </summary>
-	public interface IFeatureDataRecord : IDataRecord
+	public interface IFeatureDataRecord : IDataRecord, IDataObject
 	{
 		/// <summary>
 		/// Gets the geometry for the current position in the reader.
@@ -72,12 +72,10 @@ namespace SharpMap.Data
         /// </remarks>
         Type OidType { get; }
 
-        ///// <summary>
-        ///// Gets an array of columns describing the schema of the 
-        ///// feature.
-        ///// </summary>
-        //DataColumn[] Schema { get; }
-
+        /// <summary>
+        /// Gets or sets an <see cref="ICoordinateTransformation"/> to apply to the 
+        /// <see cref="Geometry"/> property of this feature.
+        /// </summary>
         ICoordinateTransformation CoordinateTransformation { get; set; }
 	}
 }

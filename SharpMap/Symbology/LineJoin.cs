@@ -15,20 +15,15 @@
 // along with SharpMap; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
-namespace SharpMap.Styles
+namespace SharpMap.Symbology
 {
-    public enum StyleLineCap
+    /// <summary>
+    /// Determines how line segment strokes are joined.
+    /// </summary>
+    public enum LineJoin
     {
-        AnchorMask = 240,
-        ArrowAnchor = 20,
-        Custom = 0xff,
-        DiamondAnchor = 0x13,
-        Flat = 0,
-        NoAnchor = 0x10,
-        Round = 2,
-        RoundAnchor = 0x12,
-        Square = 1,
-        SquareAnchor = 0x11,
-        Triangle = 3
+        Miter,
+        Round,
+        Bevel,
     }
 }

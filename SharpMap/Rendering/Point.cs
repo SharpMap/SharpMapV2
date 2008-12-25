@@ -17,7 +17,7 @@
 
 using System;
 using System.Collections.Generic;
-
+using GeoAPI.Coordinates;
 using NPack;
 using NPack.Interfaces;
 using IMatrixD = NPack.Interfaces.IMatrix<NPack.DoubleComponent>;
@@ -30,57 +30,58 @@ namespace SharpMap.Rendering
     /// </summary>
     [Serializable]
     public struct Point<TCoordinate> : IVectorD, IComputable<Double, Point<TCoordinate>>
+        where TCoordinate : ICoordinate<TCoordinate>, IEquatable<TCoordinate>,
+                            IComparable<TCoordinate>, IConvertible,
+                            IComputable<Double, TCoordinate>
     {
         public static readonly Point<TCoordinate> Empty = new Point<TCoordinate>();
-        public static readonly Point<TCoordinate> Zero = new Point<TCoordinate>(0, 0);
-        public static readonly Point<TCoordinate> One = new Point<TCoordinate>(1, 1);
+        //public static readonly Point<TCoordinate> Zero = new Point<TCoordinate>(0, 0);
+        //public static readonly Point<TCoordinate> One = new Point<TCoordinate>(1, 1);
 
         public static Point<TCoordinate> operator +(Point<TCoordinate> lhs, Point<TCoordinate> rhs)
         {
-            return new Point<TCoordinate>(lhs.Add(rhs));
+            return new Point<TCoordinate>(lhs._coordinate.Factory as ICoordinateFactory<TCoordinate>, lhs.Add(rhs));
         }
 
         public static Point<TCoordinate> operator -(Point<TCoordinate> lhs, Point<TCoordinate> rhs)
         {
-            return new Point<TCoordinate>(lhs.Subtract(rhs));
+            return new Point<TCoordinate>(lhs._coordinate.Factory as ICoordinateFactory<TCoordinate>, lhs.Subtract(rhs));
         }
 
-        private DoubleComponent _x, _y;
+        private readonly TCoordinate _coordinate;
         private Boolean _hasValue;
 
         #region Constructors
-        public Point(Double x, Double y)
+        public Point(TCoordinate coordinate)
         {
-            _x = x;
-            _y = y;
+            _coordinate = coordinate;
             _hasValue = true;
         }
 
-        public Point(Double[] elements)
+        public Point(ICoordinateFactory<TCoordinate> coordinateFactory, Double x, Double y)
+        {
+            _coordinate = coordinateFactory.Create(x, y);
+            _hasValue = true;
+        }
+
+        public Point(ICoordinateFactory<TCoordinate> coordinateFactory, Double[] elements)
         {
             if (elements == null) throw new ArgumentNullException("elements");
 
-            if (elements.Length != 2)
+            if (elements.Length != 2 || elements.Length != 3)
             {
-                throw new ArgumentException("Elements array must have only 2 components.");
+                throw new ArgumentException("Elements array must have only 2 or 3 components.");
             }
 
-            _x = elements[0];
-            _y = elements[1];
+            _coordinate = coordinateFactory.Create(elements);
             _hasValue = true;
         }
 
-        public Point(IVectorD vector)
+        public Point(ICoordinateFactory<TCoordinate> coordinateFactory, IVectorD vector)
         {
             if (vector == null) throw new ArgumentNullException("vector");
 
-            if (vector.ComponentCount != 2)
-            {
-                throw new ArgumentException("Elements array must have only 2 components.");
-            }
-
-            _x = vector[0];
-            _y = vector[1];
+            _coordinate = coordinateFactory.Create(vector);
             _hasValue = true;
         }
         #endregion
@@ -88,14 +89,14 @@ namespace SharpMap.Rendering
         #region ToString
         public override String ToString()
         {
-            return String.Format("[Point<TCoordinate>] ({0:N3}, {1:N3})", _x, _y);
+            return _coordinate.ToString();
         }
         #endregion
 
         #region GetHashCode
         public override Int32 GetHashCode()
         {
-            return unchecked((Int32)_x ^ (Int32)_y);
+            return _coordinate.GetHashCode() ^ 3;
         }
         #endregion
 
@@ -138,78 +139,58 @@ namespace SharpMap.Rendering
 
         public Boolean Equals(Point<TCoordinate> point)
         {
-            return _x.Equals(point._x) &&
-                _y.Equals(point._y) &&
-                IsEmpty == point.IsEmpty;
+            return _coordinate.Equals(point._coordinate) &&
+                    IsEmpty == point.IsEmpty;
         }
 
         #region IEquatable<IViewVector> Members
 
         public Boolean Equals(IVectorD other)
         {
-            if (other == null)
-            {
-                return false;
-            }
-
-            if ((this as IVectorD).ComponentCount != other.ComponentCount)
-            {
-                return false;
-            }
-
-            if (!_x.Equals(other[0]) || !_y.Equals(other[1]))
-            {
-                return false;
-            }
-
-            return true;
+            return _coordinate.Equals(other);
         }
 
         #endregion
 
         #region IEquatable<IMatrixD> Members
 
-        ///<summary>
-        ///Indicates whether the current object is equal to another object of the same type.
-        ///</summary>
+        /// <summary>
+        /// Indicates whether the current object is equal to another object of the same type. 
+        /// </summary>
         ///
-        ///<returns>
-        ///true if the current object is equal to the other parameter; otherwise, false.
-        ///</returns>
+        /// <returns>
+        /// <see langword="true"/> if the current object is equal to the other parameter; otherwise, <see langword="false"/>.
+        /// </returns>
         ///
-        ///<param name="other">An object to compare with this object.</param>
+        /// <param name="other">An object to compare with this object.</param>
         public Boolean Equals(IMatrixD other)
         {
-            if (other == null)
-            {
-                return false;
-            }
-
-            if (other.RowCount != 1 || other.ColumnCount != 2)
-            {
-                return false;
-            }
-
-            if (!other[0, 0].Equals(_x) || !other[0, 1].Equals(_y))
-            {
-                return false;
-            }
-
-            return true;
+            return _coordinate.Equals(other);
         }
 
         #endregion
         #endregion
 
         #region Properties
+
+        public TCoordinate Coordinate
+        {
+            get { return _coordinate; }
+        }
+
         public Double X
         {
-            get { return (Double)_x; }
+            get { return _coordinate[Ordinates.X]; }
         }
 
         public Double Y
         {
-            get { return (Double)_y; }
+            get { return _coordinate[Ordinates.Y]; }
+        }
+
+        public Double Z
+        {
+            get { return _coordinate[Ordinates.Z]; }
         }
 
         public Double this[Int32 element]
@@ -218,27 +199,28 @@ namespace SharpMap.Rendering
             {
                 checkIndex(element);
 
-                return element == 0 ? (Double)_x : (Double)_y;
+                return (Double)_coordinate[element];
             }
         }
 
         public void GetComponents(out DoubleComponent a, out DoubleComponent b)
         {
-            a = _x;
-            b = _y;
+            a = X;
+            b = Y;
         }
 
         public void GetComponents(out DoubleComponent a, out DoubleComponent b, out DoubleComponent c)
         {
-            GetComponents(out a, out b);
-            c = Double.NaN;
+            a = X;
+            b = Y;
+            c = Z;
         }
 
         public void GetComponents(out DoubleComponent a, out DoubleComponent b, out DoubleComponent c, out DoubleComponent d)
         {
             GetComponents(out a, out b, out c);
-            d = Double.NaN;
-        } 
+            d = 1;
+        }
 
         public Boolean IsEmpty
         {
@@ -249,14 +231,14 @@ namespace SharpMap.Rendering
         #region Clone
         public Point<TCoordinate> Clone()
         {
-            return new Point<TCoordinate>((Double)_x, (Double)_y);
+            return new Point<TCoordinate>(_coordinate.Clone());
         }
         #endregion
 
         #region Negative
         public Point<TCoordinate> Negative()
         {
-            return new Point<TCoordinate>((Double)_x.Negative(), (Double)_y.Negative());
+            return new Point<TCoordinate>(((IVector<DoubleComponent, TCoordinate>)_coordinate).Negative());
         }
         #endregion
 
@@ -278,7 +260,7 @@ namespace SharpMap.Rendering
 
         public Point<TCoordinate> Subtract(Point<TCoordinate> b)
         {
-            return new Point<TCoordinate>(X - b.X, Y - b.Y);
+            return new Point<TCoordinate>(_coordinate.Subtract(b._coordinate));
         }
 
         #endregion
@@ -287,7 +269,7 @@ namespace SharpMap.Rendering
 
         Point<TCoordinate> IHasZero<Point<TCoordinate>>.Zero
         {
-            get { return Zero; }
+            get { return new Point<TCoordinate>(_coordinate.Zero); }
         }
 
         #endregion
@@ -296,7 +278,7 @@ namespace SharpMap.Rendering
 
         public Point<TCoordinate> Add(Point<TCoordinate> b)
         {
-            return new Point<TCoordinate>(X + b.X, Y + b.Y);
+            return new Point<TCoordinate>(_coordinate.Add(b._coordinate));
         }
 
         #endregion
@@ -314,7 +296,7 @@ namespace SharpMap.Rendering
 
         Point<TCoordinate> IHasOne<Point<TCoordinate>>.One
         {
-            get { return One; }
+            get { return new Point<TCoordinate>(((IHasOne<TCoordinate>)_coordinate).One); }
         }
 
         #endregion
@@ -394,8 +376,10 @@ namespace SharpMap.Rendering
 
         public IEnumerator<Double> GetEnumerator()
         {
-            yield return (Double)_x;
-            yield return (Double)_y;
+            foreach (DoubleComponent component in _coordinate)
+            {
+                yield return (Double)component;
+            }
         }
 
         #endregion
@@ -428,7 +412,7 @@ namespace SharpMap.Rendering
 
         Int32 IVectorD.ComponentCount
         {
-            get { return IsEmpty ? 0 : 2; }
+            get { return IsEmpty ? 0 : _coordinate.ComponentCount; }
         }
 
         /// <summary>
@@ -436,18 +420,19 @@ namespace SharpMap.Rendering
         /// </summary>
         DoubleComponent[] IVectorD.Components
         {
-            get { return new DoubleComponent[] { _x, _y }; }
+            get { return ((IVectorD)_coordinate).Components; }
             set
             {
-                if (value == null)
-                {
-                    throw new ArgumentNullException("value");
-                }
+                //if (value == null)
+                //{
+                //    throw new ArgumentNullException("value");
+                //}
 
-                checkIndex(value.Length - 1);
+                //checkIndex(value.Length - 1);
 
-                _x = value[0];
-                _y = value[1];
+                //_x = value[0];
+                //_y = value[1];
+                throw new NotSupportedException();
             }
         }
 
@@ -460,18 +445,19 @@ namespace SharpMap.Rendering
             }
             set
             {
-                checkIndex(index);
+                //checkIndex(index);
 
-                if (index == 0)
-                {
-                    _x = value;
-                }
-                else
-                {
-                    _y = value;
-                }
+                //if (index == 0)
+                //{
+                //    _x = value;
+                //}
+                //else
+                //{
+                //    _y = value;
+                //}
 
-                _hasValue = true;
+                //_hasValue = true;
+                throw new NotSupportedException();
             }
         }
 
@@ -514,10 +500,9 @@ namespace SharpMap.Rendering
         /// <summary>
         /// Returns the additive identity.
         /// </summary>
-        /// <value>e</value>
         IMatrixD IHasZero<IMatrixD>.Zero
         {
-            get { return Zero; }
+            get { return new Point<TCoordinate>(_coordinate.Zero); }
         }
 
         #endregion
@@ -571,10 +556,9 @@ namespace SharpMap.Rendering
         /// <summary>
         /// Returns the multiplicative identity.
         /// </summary>
-        /// <value>e</value>
         IMatrixD IHasOne<IMatrixD>.One
         {
-            get { return One; }
+            get { return ((IHasOne<Point<TCoordinate>>)this).One; }
         }
 
         #endregion
@@ -584,15 +568,13 @@ namespace SharpMap.Rendering
         ///<summary>
         ///Returns an enumerator that iterates through the collection.
         ///</summary>
-        ///
         ///<returns>
         ///A <see cref="T:System.Collections.Generic.IEnumerator`1"></see> that can be used to iterate through the collection.
         ///</returns>
         ///<filterpriority>1</filterpriority>
         IEnumerator<DoubleComponent> IEnumerable<DoubleComponent>.GetEnumerator()
         {
-            yield return _x;
-            yield return _y;
+            return _coordinate.GetEnumerator();
         }
 
         #endregion
@@ -723,7 +705,7 @@ namespace SharpMap.Rendering
 
         IVectorD INegatable<IVectorD>.Negative()
         {
-            return new Point<TCoordinate>(-X, -Y);
+            return ((IVectorD)_coordinate).Negative();
         }
 
         #endregion
@@ -734,12 +716,8 @@ namespace SharpMap.Rendering
         {
             if (b == null) throw new ArgumentNullException("b");
 
-            if (b.ComponentCount != 2)
-            {
-                throw new ArgumentException("Vector must have only 2 components.");
-            }
-
-            return new Point<TCoordinate>(X - (Double)b[0], Y - (Double)b[1]);
+            ICoordinateFactory<TCoordinate> factory = _coordinate.Factory as ICoordinateFactory<TCoordinate>;
+            return new Point<TCoordinate>(factory.Create(_coordinate.Subtract(b)));
         }
 
         #endregion
@@ -759,12 +737,8 @@ namespace SharpMap.Rendering
         {
             if (b == null) throw new ArgumentNullException("b");
 
-            if (b.ComponentCount != 2)
-            {
-                throw new ArgumentException("Vector must have only 2 components.");
-            }
-
-            return new Point<TCoordinate>(X + (Double)b[0], Y + (Double)b[1]);
+            ICoordinateFactory<TCoordinate> factory = _coordinate.Factory as ICoordinateFactory<TCoordinate>;
+            return new Point<TCoordinate>(factory.Create(_coordinate.Add(b)));
         }
 
         #endregion
@@ -791,7 +765,7 @@ namespace SharpMap.Rendering
 
         IVectorD IHasOne<IVectorD>.One
         {
-            get { return new Point<TCoordinate>(1, 1); }
+            get { return ((IHasOne<IVectorD>)_coordinate).One; }
         }
 
         #endregion

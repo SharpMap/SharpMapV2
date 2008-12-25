@@ -18,6 +18,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using GeoAPI.Coordinates;
 using NPack;
 using NPack.Interfaces;
 using IMatrixD = NPack.Interfaces.IMatrix<NPack.DoubleComponent>;
@@ -30,11 +31,14 @@ namespace SharpMap.Rendering
     /// <see cref="Path{TCoordinate}"/>.
     /// </summary>
     /// <typeparam name="TCoordinate">Type of point to use in the figure.</typeparam>
-    public abstract class Figure<TCoordinate>
-        : ICloneable, IEnumerable<TCoordinate>, IEquatable<Figure<TCoordinate>>
-        where TCoordinate : IVectorD
+    public class Figure<TCoordinate> : ICloneable,
+                                       IEnumerable<TCoordinate>,
+                                       IEquatable<Figure<TCoordinate>>
+        where TCoordinate : ICoordinate<TCoordinate>, IEquatable<TCoordinate>,
+                            IComparable<TCoordinate>, IConvertible,
+                            IComputable<Double, TCoordinate>
     {
-        private readonly List<TCoordinate> _points = new List<TCoordinate>();
+        private readonly ICoordinateSequence<TCoordinate> _points;
         private Boolean _isClosed;
         private Rectangle<TCoordinate> _bounds;
 
@@ -75,7 +79,7 @@ namespace SharpMap.Rendering
         {
             return
                 String.Format("[{0}] Number of {2} points: {1}; Closed: {3}", GetType(), Points.Count,
-                              typeof (TCoordinate).Name, IsClosed);
+                              typeof(TCoordinate).Name, IsClosed);
         }
 
         #endregion
@@ -176,7 +180,7 @@ namespace SharpMap.Rendering
         {
             get
             {
-                if (ReferenceEquals(_bounds, null) || _bounds.Equals(EmptyBounds))
+                if (_bounds.IsEmpty)
                 {
                     _bounds = ComputeBounds();
                 }
@@ -184,11 +188,6 @@ namespace SharpMap.Rendering
                 return _bounds;
             }
         }
-
-        /// <summary>
-        /// Gets a value indicating an empty bounds shape.
-        /// </summary>
-        protected abstract Rectangle<TCoordinate> EmptyBounds { get; }
 
         /// <summary>
         /// Gets true if the figure is closed, false if open.
@@ -200,11 +199,11 @@ namespace SharpMap.Rendering
         }
 
         /// <summary>
-        /// A list of the points in this figure.
+        /// Gets the points in this figure.
         /// </summary>
-        public IList<TCoordinate> Points
+        public ICoordinateSequence<TCoordinate> Points
         {
-            get { return _points.AsReadOnly(); }
+            get { return _points.Freeze(); }
         }
 
         #endregion
@@ -220,7 +219,7 @@ namespace SharpMap.Rendering
         /// Marks the figure as closed.
         /// </summary>
         public void Close()
-        {           
+        {
             IsClosed = true;
         }
 
@@ -235,7 +234,10 @@ namespace SharpMap.Rendering
         /// A <see name="Rectangle{TCoordinate}"/> instance describing a minimally bounding 
         /// rectilinear space which contains the figure.
         /// </returns>
-        protected abstract Rectangle<TCoordinate> ComputeBounds();
+        protected Rectangle<TCoordinate> ComputeBounds()
+        {
+            return new Rectangle<TCoordinate>(_points.Minimum, _points.Maximum);
+        }
 
         /// <summary>
         /// Creates a new figure with the given points, either open or closed.
@@ -243,15 +245,13 @@ namespace SharpMap.Rendering
         /// <param name="points">Points to use in sequence to create the figure.</param>
         /// <param name="isClosed">True if the figure is closed, false otherwise.</param>
         /// <returns>A new Figure instance.</returns>
-        protected abstract Figure<TCoordinate> CreateFigure(IEnumerable<TCoordinate> points,
-                                                            Boolean isClosed);
+        protected Figure<TCoordinate> CreateFigure(IEnumerable<TCoordinate> points,
+                                                   Boolean isClosed)
+        {
+            return new Figure<TCoordinate>(_points, isClosed);
+        }
 
         #endregion
-
-        internal List<TCoordinate> PointsInternal
-        {
-            get { return _points; }
-        }
 
         internal void TransformPoints(ITransformMatrix<DoubleComponent> transform)
         {

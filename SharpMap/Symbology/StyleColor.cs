@@ -42,8 +42,9 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using GeoAPI.DataStructures;
 
-namespace SharpMap.Styles
+namespace SharpMap.Symbology
 {
     /// <summary>
     /// Represents a 32-bit color in BGRA (blue, green, red, alpha) format.
@@ -110,8 +111,20 @@ namespace SharpMap.Styles
 
         public override String ToString()
         {
-            return "[StyleColor] " + (LookupColorName(this) 
-                ?? String.Format("B = {0}; G = {1}; R = {2}; A = {3}", B, G, R, A));
+            return LookupColorName(this) ??
+                   AsArgbHex;
+        }
+
+        public String AsArgbHex
+        {
+            get
+            {
+                return "#" +
+                       NumberBaseConverter.ConvertToHex(A, 2) +
+                       NumberBaseConverter.ConvertToHex(R, 2) +
+                       NumberBaseConverter.ConvertToHex(G, 2) +
+                       NumberBaseConverter.ConvertToHex(B, 2);
+            } 
         }
 
         /// <summary>
@@ -149,6 +162,38 @@ namespace SharpMap.Styles
         public static StyleColor FromBgra(Int32 b, Int32 g, Int32 r, Int32 a)
         {
             return new StyleColor(b, g, r, a);
+        }
+
+        public static StyleColor FromArgbString(String argb)
+        {
+            Int32 len = argb.Length;
+
+            if (argb[0] == '#')
+            {
+                argb = argb.Substring(1);
+                len--;
+            }
+
+            switch (len)
+            {
+                case 3:
+                    argb = "F" + argb;
+                    goto case 4;
+                case 4:
+                    Char[] chars = new Char[] { argb[0], argb[0], argb[1], argb[1], argb[2], argb[2], argb[3], argb[3] };
+                    argb = new String(chars);
+                    goto case 8;
+                case 6:
+                    argb = "FF" + argb;
+                    goto case 8;
+                case 8:
+                    UInt32 argbValue;
+                    NumberBaseConverter.ConvertFromHex(argb, out argbValue);
+                    Byte[] bytes = BitConverter.GetBytes(argbValue);
+                    return new StyleColor(bytes[3], bytes[2], bytes[1], bytes[0]);
+                default:
+                    throw new ArgumentException("Value must be in format: [#][AA]RRGGBB or [#][A]RGB");
+            }
         }
 
         /// <summary> 
@@ -2245,7 +2290,7 @@ namespace SharpMap.Styles
         #region Color name lookup by value
 
         private static readonly Object _colorNameLookupSync = new Object();
-        private static readonly Dictionary<StyleColor, String> _colorNameLookup 
+        private static readonly Dictionary<StyleColor, String> _colorNameLookup
             = new Dictionary<StyleColor, String>();
 
         /// <summary>
