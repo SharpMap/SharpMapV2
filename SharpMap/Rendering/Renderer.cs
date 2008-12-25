@@ -34,7 +34,7 @@ namespace SharpMap.Rendering
 
         #region Dispose Pattern
 
-        ~Renderer2D()
+        ~Renderer()
         {
             Dispose(false);
         }
@@ -87,29 +87,6 @@ namespace SharpMap.Rendering
             get { return _renderMode; }
             set { _renderMode = value; }
         }
-
-        #endregion
-
-
-        #region Explicit Interface Implementation
-
-        #region IRenderer Members
-
-        IMatrixD IRenderer.RenderTransform
-        {
-            get { return RenderTransform; }
-            set
-            {
-                if (!(value is Matrix2D))
-                {
-                    throw new ArgumentException("Only a Matrix2D is supported on a Renderer2D instance.", "value");
-                }
-
-                RenderTransform = value as Matrix2D;
-            }
-        }
-
-        #endregion
 
         #endregion
     }

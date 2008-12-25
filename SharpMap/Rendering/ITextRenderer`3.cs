@@ -16,30 +16,32 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System;
-using System.Collections;
-using SharpMap.Styles;
+using GeoAPI.Coordinates;
+using NPack.Interfaces;
+using SharpMap.Symbology;
 using IMatrixD = NPack.Interfaces.IMatrix<NPack.DoubleComponent>;
 using IVectorD = NPack.Interfaces.IVector<NPack.DoubleComponent>;
 
 namespace SharpMap.Rendering
 {
-    public interface ITextRenderer<TPoint, TSize, TRectangle> : IRenderer
-        where TPoint : IVectorD
-        where TSize : IVectorD
-        where TRectangle : IMatrixD, IEquatable<TRectangle>
+    public interface ITextRenderer<TCoordinate> : IRenderer
+        where TCoordinate : ICoordinate<TCoordinate>, IEquatable<TCoordinate>,
+                            IComparable<TCoordinate>, IConvertible,
+                            IComputable<Double, TCoordinate>
     {
         /// <summary>
-        /// Gets or sets a <see cref="StyleTextRenderingHint"/> to control how rendered text appears.
+        /// Gets or sets a <see cref="TextRenderingHint"/> to control how rendered text appears.
         /// </summary>
-        StyleTextRenderingHint TextRenderingHint { get; set; }
+        TextRenderingHint TextRenderingHint { get; set; }
 
         /// <summary>
-        /// Measures the <typeparamref name="TSize"/> of a String in the given <paramref name="font"/>.
+        /// Measures the size of a string 
+        /// in the given <paramref name="font"/>.
         /// </summary>
         /// <param name="text">The String to measure.</param>
         /// <param name="font">The font to use to draw the String.</param>
         /// <returns>A measurement of the String.</returns>
-        TSize MeasureString(String text, StyleFont font);
+        Size<TCoordinate> MeasureString(String text, StyleFont font);
 
         /// <summary>
         /// Renders a text String.
@@ -47,11 +49,11 @@ namespace SharpMap.Rendering
         /// <param name="text">The text to render.</param>
         /// <param name="font">The font to use to draw the text.</param>
         /// <param name="location">The location in view coordinates to render the text at.</param>
-        /// <param name="fontBrush">The brush to use to paint the text.</param>
+        /// <param name="fill">The brush to use to paint the text.</param>
         /// <returns>
         /// A set of object instances representing the rendered text.
         /// </returns>
-        IEnumerable RenderText(String text, StyleFont font, TPoint location, StyleBrush fontBrush);
+        void RenderText(IScene scene, String text, StyleFont font, TCoordinate location, Fill fill);
 
         /// <summary>
         /// Renders a text String.
@@ -64,7 +66,7 @@ namespace SharpMap.Rendering
         /// <param name="flowPath">
         /// A path which the text is rendered to flow on.
         /// </param>
-        /// <param name="fontBrush">
+        /// <param name="fill">
         /// The brush to use to paint the text.
         /// </param>
         /// <param name="transform">
@@ -73,8 +75,10 @@ namespace SharpMap.Rendering
         /// <returns>
         /// A set of object instances representing the rendered text.
         /// </returns>
-        IEnumerable RenderText(String text, StyleFont font, TRectangle layoutRectangle,
-                                              Path<TPoint, TRectangle> flowPath, StyleBrush fontBrush, 
-                                              IMatrixD transform);
+        void RenderText(IScene scene, String text, StyleFont font, 
+                        Rectangle<TCoordinate> layoutRectangle,
+                        Path<TCoordinate> flowPath, 
+                        Fill fill, 
+                        IMatrixD transform);
     }
 }

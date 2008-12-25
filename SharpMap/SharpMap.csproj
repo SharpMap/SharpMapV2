@@ -301,21 +301,25 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="Rendering\BasicGeometryRenderer.cs" />
+    <Compile Include="Rendering\BasicLabelRenderer.cs" />
+    <Compile Include="Rendering\FeatureRenderer.cs" />
     <Compile Include="Rendering\IFeatureRenderer.cs" />
     <Compile Include="Rendering\IScene.cs" />
     <Compile Include="Rendering\ITextRenderer`3.cs" />
     <Compile Include="Rendering\Point.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Rendering\RasterRenderer.cs" />
     <Compile Include="Rendering\Rectangle.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Rendering\Renderer.cs" />
     <Compile Include="Rendering\Rendering2D\IRasterRenderer2D.cs" />
     <Compile Include="Rendering\Rendering2D\IRasterRenderer2D`1.cs" />
     <Compile Include="Rendering\Rendering2D\ITextRenderer2D.cs" />
     <Compile Include="Rendering\Rendering2D\ITextRenderer2D`1.cs" />
     <Compile Include="Rendering\Rendering2D\IVectorRenderer2D.cs" />
-    <Compile Include="Rendering\Rendering2D\Renderer2D.cs" />
     <Compile Include="Rendering\Rendering2D\TextRenderer2D`1.cs" />
     <Compile Include="Rendering\ISceneExtent`1.cs" />
     <Compile Include="Rendering\Rendering2D\BasicGeometryRenderer2D`1.cs" />
@@ -325,8 +329,11 @@
     <Compile Include="Rendering\RenderingMode.cs" />
     <Compile Include="Rendering\Size.cs" />
     <Compile Include="Rendering\Symbol`2.cs" />
+    <Compile Include="Rendering\TextRenderer.cs" />
+    <Compile Include="Rendering\TextRenderingHint.cs" />
     <Compile Include="Rendering\Vector.cs" />
     <Compile Include="Expressions\FeatureIdExpression.cs" />
+    <Compile Include="Rendering\VectorRenderer.cs" />
     <Compile Include="Symbology\AnchorPoint.cs" />
     <Compile Include="Symbology\BaseSymbolizer.cs" />
     <Compile Include="Symbology\Capabilities\ComparisonOperatorCapabilities.cs" />

@@ -15,15 +15,20 @@
 // along with SharpMap; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
+using System;
 using System.IO;
+using GeoAPI.Coordinates;
+using NPack.Interfaces;
 using IMatrixD = NPack.Interfaces.IMatrix<NPack.DoubleComponent>;
 using IVectorD = NPack.Interfaces.IVector<NPack.DoubleComponent>;
 
 namespace SharpMap.Rendering
 {
-    public interface IRasterRenderer<TRectangle> : IRenderer
-        where TRectangle : IMatrixD
+    public interface IRasterRenderer<TCoordinate> : IRenderer
+        where TCoordinate : ICoordinate<TCoordinate>, IEquatable<TCoordinate>,
+                            IComparable<TCoordinate>, IConvertible,
+                            IComputable<Double, TCoordinate>
     {
-        void RenderRaster(IScene scene, Stream rasterData, TRectangle viewBounds, TRectangle rasterBounds);
+        void RenderRaster(IScene scene, Stream rasterData, Rectangle<TCoordinate> rasterBounds);
     }
 }
