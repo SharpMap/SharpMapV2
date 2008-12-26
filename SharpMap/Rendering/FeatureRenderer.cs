@@ -31,7 +31,7 @@ namespace SharpMap.Rendering
     /// </summary>
     public abstract class FeatureRenderer : Renderer, IFeatureRenderer
     {
-        private readonly VectorRenderer2D _vectorRenderer;
+        private readonly VectorRenderer _vectorRenderer;
         private TStyle _defaultStyle;
 
         #region Object construction and disposal

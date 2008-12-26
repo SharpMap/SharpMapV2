@@ -304,9 +304,13 @@
     <Compile Include="Rendering\BasicGeometryRenderer.cs" />
     <Compile Include="Rendering\BasicLabelRenderer.cs" />
     <Compile Include="Rendering\FeatureRenderer.cs" />
+    <Compile Include="Rendering\IBrush.cs" />
     <Compile Include="Rendering\IFeatureRenderer.cs" />
+    <Compile Include="Rendering\IPen.cs" />
     <Compile Include="Rendering\IScene.cs" />
-    <Compile Include="Rendering\ITextRenderer`3.cs" />
+    <Compile Include="Rendering\ISymbol.cs" />
+    <Compile Include="Rendering\ITextRenderer`1.cs" />
+    <Compile Include="Rendering\IVectorRenderer2D.cs" />
     <Compile Include="Rendering\Point.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -315,23 +319,14 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Rendering\Renderer.cs" />
-    <Compile Include="Rendering\Rendering2D\IRasterRenderer2D.cs" />
-    <Compile Include="Rendering\Rendering2D\IRasterRenderer2D`1.cs" />
-    <Compile Include="Rendering\Rendering2D\ITextRenderer2D.cs" />
-    <Compile Include="Rendering\Rendering2D\ITextRenderer2D`1.cs" />
-    <Compile Include="Rendering\Rendering2D\IVectorRenderer2D.cs" />
-    <Compile Include="Rendering\Rendering2D\TextRenderer2D`1.cs" />
     <Compile Include="Rendering\ISceneExtent`1.cs" />
-    <Compile Include="Rendering\Rendering2D\BasicGeometryRenderer2D`1.cs" />
     <Compile Include="Rendering\IGeometryRenderer.cs" />
-    <Compile Include="Rendering\Rendering2D\IVectorRenderer2D`1.cs" />
     <Compile Include="Rendering\RenderState.cs" />
     <Compile Include="Rendering\RenderingMode.cs" />
     <Compile Include="Rendering\Size.cs" />
     <Compile Include="Rendering\Symbol`2.cs" />
     <Compile Include="Rendering\TextRenderer.cs" />
     <Compile Include="Rendering\TextRenderingHint.cs" />
-    <Compile Include="Rendering\Vector.cs" />
     <Compile Include="Expressions\FeatureIdExpression.cs" />
     <Compile Include="Rendering\VectorRenderer.cs" />
     <Compile Include="Symbology\AnchorPoint.cs" />
@@ -415,7 +410,6 @@
     <Compile Include="Presentation\FeaturesSelectionChangedEventArgs.cs" />
     <Compile Include="Rendering\Figure`1.cs" />
     <Compile Include="Presentation\IViewSelection`3.cs" />
-    <Compile Include="Rendering\Rendering2D\RasterRenderer2D`1.cs" />
     <Compile Include="Presentation\Views\IAttributeView.cs" />
     <Compile Include="Presentation\Views\ILayerStyleView.cs" />
     <Compile Include="Presentation\Views\ILayersView.cs" />
@@ -423,11 +417,9 @@
     <Compile Include="Presentation\Views\IToolsView.cs" />
     <Compile Include="Presentation\Presenters\MapPresenter2D.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Rendering\Rendering2D\FeatureRenderer2D`2.cs" />
     <Compile Include="Rendering\Path`1.cs" />
     <Compile Include="Rendering\IRenderer.cs" />
     <Compile Include="Presentation\Views\IMapView2D.cs" />
-    <Compile Include="Rendering\Rendering2D\BasicLabelRenderer2D`1.cs" />
     <Compile Include="Rendering\LayerRendererRegistry.cs" />
     <Compile Include="Presentation\MapViewPropertyChangeEventArgs`1.cs" />
     <Compile Include="Tools\IMapTool.cs" />
@@ -438,7 +430,6 @@
     <Compile Include="Tools\MapToolSetChange.cs" />
     <Compile Include="Tools\MapToolSetChangedEventArgs.cs" />
     <Compile Include="Tools\MapTool`1.cs" />
-    <Compile Include="Rendering\Rendering2D\VectorRenderer2D`1.cs" />
     <Compile Include="Rendering\RenderExceptions.cs" />
     <Compile Include="Presentation\ViewSelection`3.cs" />
     <Compile Include="Tools\StandardMapTools2D.cs" />
@@ -466,9 +457,6 @@
   </ItemGroup>
   <ItemGroup>
     <Service Include="{B4F97281-0DBD-4835-9ED8-7DFB966E87FF}" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Rendering\Thematics\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Target Name="BeforeBuild">

@@ -15,28 +15,9 @@
 // along with SharpMap; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
-using SharpMap.Data;
-using SharpMap.Layers;
-using SharpMap.Symbology;
-
 namespace SharpMap.Rendering
 {
-    /// <summary>
-    /// Interface to a graphical renderer of feature data.
-    /// </summary>
-    public interface IFeatureRenderer : IRenderer
+    public interface IBrush
     {
-        /// <summary>
-        /// Gets or sets the default style if no style or theme information is provided.
-        /// </summary>
-        FeatureStyle DefaultStyle { get; set; }
-
-        /// <summary>
-        /// Renders the attributes and/or spatial data in the <paramref name="feature"/>.
-        /// </summary>
-        /// <param name="feature">
-        /// A <see cref="IFeatureDataRecord"/> instance with spatial data.
-        /// </param>
-        void RenderFeature(IScene scene, ILayer layer, IFeatureDataRecord feature, FeatureStyle style, RenderState renderState);
     }
 }

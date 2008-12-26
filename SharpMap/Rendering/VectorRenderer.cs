@@ -30,7 +30,7 @@ namespace SharpMap.Rendering.Rendering2D
     /// This class is used to create a new IVectorRender2D for various graphics systems.
     /// </remarks>
     /// <typeparam name="TRenderObject">The type of rendered object to produce.</typeparam>
-    public abstract class VectorRenderer2D<TRenderObject> : Renderer, IVectorRenderer2D<TRenderObject>
+    public abstract class VectorRenderer2D<TRenderObject> : Renderer, IVectorRenderer
     {
         #region IVectorRenderer2D Members
 
