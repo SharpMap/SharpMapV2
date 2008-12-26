@@ -15,9 +15,16 @@
 // along with SharpMap; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
+using System;
+using SharpMap.Symbology;
+
 namespace SharpMap.Rendering
 {
     public interface IScene
     {
+        IPen CreatePen(StyleColor color, Single width, Single opacity, 
+                       LineJoin lineJoin, LineCap lineCap, Single[] dashArray, 
+                       Single dashOffset);
+        IBrush CreateBrush(StyleColor color, Single opacity);
     }
 }
