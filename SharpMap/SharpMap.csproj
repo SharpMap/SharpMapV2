@@ -304,18 +304,19 @@
     <Compile Include="Rendering\BasicGeometryRenderer.cs" />
     <Compile Include="Rendering\BasicLabelRenderer.cs" />
     <Compile Include="Rendering\FeatureRenderer.cs" />
+    <Compile Include="Rendering\IBitmapTransform.cs" />
     <Compile Include="Rendering\IBrush.cs" />
     <Compile Include="Rendering\IFeatureRenderer.cs" />
     <Compile Include="Rendering\IPen.cs" />
     <Compile Include="Rendering\IScene.cs" />
     <Compile Include="Rendering\ISymbol.cs" />
     <Compile Include="Rendering\ITextRenderer`1.cs" />
-    <Compile Include="Rendering\IVectorRenderer2D.cs" />
-    <Compile Include="Rendering\Point.cs">
+    <Compile Include="Rendering\IVectorRenderer`1.cs" />
+    <Compile Include="Rendering\Point`1.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Rendering\RasterRenderer.cs" />
-    <Compile Include="Rendering\Rectangle.cs">
+    <Compile Include="Rendering\RasterRenderer`1.cs" />
+    <Compile Include="Rendering\Rectangle`1.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Rendering\Renderer.cs" />
@@ -323,8 +324,8 @@
     <Compile Include="Rendering\IGeometryRenderer.cs" />
     <Compile Include="Rendering\RenderState.cs" />
     <Compile Include="Rendering\RenderingMode.cs" />
-    <Compile Include="Rendering\Size.cs" />
-    <Compile Include="Rendering\Symbol`2.cs" />
+    <Compile Include="Rendering\Size`1.cs" />
+    <Compile Include="Rendering\Symbol`1.cs" />
     <Compile Include="Rendering\TextRenderer.cs" />
     <Compile Include="Rendering\TextRenderingHint.cs" />
     <Compile Include="Expressions\FeatureIdExpression.cs" />
@@ -420,7 +421,6 @@
     <Compile Include="Rendering\Path`1.cs" />
     <Compile Include="Rendering\IRenderer.cs" />
     <Compile Include="Presentation\Views\IMapView2D.cs" />
-    <Compile Include="Rendering\LayerRendererRegistry.cs" />
     <Compile Include="Presentation\MapViewPropertyChangeEventArgs`1.cs" />
     <Compile Include="Tools\IMapTool.cs" />
     <Compile Include="Tools\IMapToolSet.cs" />

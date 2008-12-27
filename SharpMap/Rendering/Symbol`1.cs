@@ -19,6 +19,8 @@ using System;
 using System.IO;
 using System.Runtime.Serialization;
 using GeoAPI.Algorithms;
+using GeoAPI.Coordinates;
+using NPack.Interfaces;
 using IMatrixD = NPack.Interfaces.IMatrix<NPack.DoubleComponent>;
 using IAffineMatrixD = NPack.Interfaces.IAffineTransformMatrix<NPack.DoubleComponent>;
 using IVectorD = NPack.Interfaces.IVector<NPack.DoubleComponent>;
@@ -28,18 +30,19 @@ namespace SharpMap.Rendering
     /// <summary>
     /// Represents a graphical symbol used for point data on a map.
     /// </summary>
-    public abstract class Symbol<TPoint, TSize> : ICloneable, IDisposable, ISerializable
-        where TPoint : IVectorD
-        where TSize : IVectorD
+    public abstract class Symbol<TCoordinate> : ICloneable, IDisposable, ISerializable
+        where TCoordinate : ICoordinate<TCoordinate>, IEquatable<TCoordinate>,
+                            IComparable<TCoordinate>, IConvertible,
+                            IComputable<Double, TCoordinate>
     {
-        private ColorMatrix _colorTransform = ColorMatrix.Identity;
+        private IBitmapTransform _bitmapTransform;
         private Stream _symbolData;
         private String _symbolDataHash;
         private Boolean _disposed;
         private IAffineMatrixD _rotationTransform;
         private IAffineMatrixD _scalingTransform;
         private IAffineMatrixD _translationTransform;
-        private TSize _size;
+        private Size<TCoordinate> _size;
 
         #region Object construction / disposal
 
@@ -49,13 +52,13 @@ namespace SharpMap.Rendering
             initMatrixes();
         }
 
-        protected Symbol(TSize size)
+        protected Symbol(Size<TCoordinate> size)
             : this()
         {
             _size = size;
         }
 
-        protected Symbol(Stream symbolData, TSize size)
+        protected Symbol(Stream symbolData, Size<TCoordinate> size)
         {
             _size = size;
 
@@ -63,8 +66,9 @@ namespace SharpMap.Rendering
             {
                 if (symbolData.Position != 0)
                 {
-                    throw new InvalidOperationException(
-                        "Symbol data stream isn't at the beginning, and it can't be repositioned");
+                    throw new InvalidOperationException("Symbol data stream isn't " +
+                                                        "at the beginning, and it can't " +
+                                                        "be repositioned");
                 }
 
                 MemoryStream copy = new MemoryStream();
@@ -105,7 +109,7 @@ namespace SharpMap.Rendering
         #endregion
 
         /// <summary>
-        /// Gets a value indicating if the <see cref="Symbol{TPoint,TSize}"/>
+        /// Gets a value indicating if the <see cref="Symbol{TPoint,Size<TCoordinate>}"/>
         /// is disposed.
         /// </summary>
         public Boolean IsDisposed
@@ -158,10 +162,11 @@ namespace SharpMap.Rendering
             {
                 if (value != null && value != value.One)
                 {
-                    throw new NotSupportedException(
-                        "Setting affine transform directly with a value other than " +
-                        "null or an identity matrix is not supported. " +
-                        "Use ScaleX, ScaleY, SetOffset and Rotation.");
+                    throw new NotSupportedException("Setting affine transform directly " +
+                                                    "with a value other than " +
+                                                    "null or an identity matrix " +
+                                                    "is not supported. Use ScaleX, ScaleY, " +
+                                                    "SetOffset and Rotation.");
                 }
 
                 _rotationTransform = _scalingTransform = _translationTransform = CreateIdentityMatrix();
@@ -169,19 +174,19 @@ namespace SharpMap.Rendering
         }
 
         /// <summary>
-        /// Gets or sets a <see cref="ColorMatrix"/> used to change the color 
+        /// Gets or sets a <see cref="IBitmapTransform"/> used to change the color 
         /// of this symbol.
         /// </summary>
-        public ColorMatrix ColorTransform
+        public IBitmapTransform BitmapTransform
         {
-            get { return _colorTransform; }
-            set { _colorTransform = value; }
+            get { return _bitmapTransform; }
+            set { _bitmapTransform = value; }
         }
 
         /// <summary>
         /// Gets or sets a vector by which to offset the symbol.
         /// </summary>
-        public TPoint Offset
+        public TCoordinate Offset
         {
             get
             {
@@ -198,7 +203,7 @@ namespace SharpMap.Rendering
         /// <summary>
         /// Gets or sets the size of this symbol.
         /// </summary>
-        public TSize Size
+        public Size<TCoordinate> Size
         {
             get
             {
@@ -213,7 +218,7 @@ namespace SharpMap.Rendering
         }
 
         /// <summary>
-        /// Gets a stream containing the <see cref="Symbol{TPoint,TSize}"/> 
+        /// Gets a stream containing the <see cref="Symbol{TCoordinate}"/> 
         /// data.
         /// </summary>
         /// <remarks>
@@ -304,11 +309,11 @@ namespace SharpMap.Rendering
             }
         }
 
-        protected abstract Symbol<TPoint, TSize> CreateNew(TSize size);
+        protected abstract Symbol<TCoordinate> CreateNew(Size<TCoordinate> size);
         protected abstract IAffineMatrixD CreateIdentityMatrix();
         protected abstract IAffineMatrixD CreateMatrix(IMatrixD matrix);
-        protected abstract TPoint GetOffset(IAffineMatrixD translationMatrix);
-        protected abstract void SetOffset(TPoint offset);
+        protected abstract TCoordinate GetOffset(IAffineMatrixD translationMatrix);
+        protected abstract void SetOffset(TCoordinate offset);
         #endregion
 
         #region ICloneable Members
@@ -317,11 +322,11 @@ namespace SharpMap.Rendering
         /// Clones this symbol.
         /// </summary>
         /// <returns>
-        /// A duplicate of this <see cref="Symbol{TPoint,TSize}"/>.
+        /// A duplicate of this <see cref="Symbol{TCoordinate}"/>.
         /// </returns>
-        public Symbol<TPoint, TSize> Clone()
+        public Symbol<TCoordinate> Clone()
         {
-            Symbol<TPoint, TSize> clone = CreateNew(Size);
+            Symbol<TCoordinate> clone = CreateNew(Size);
             MemoryStream copy;
             lock (_symbolData)
             {
@@ -339,7 +344,7 @@ namespace SharpMap.Rendering
             }
             clone.SymbolData = copy;
             clone._symbolDataHash = _symbolDataHash;
-            clone.ColorTransform = ColorTransform.Clone();
+            clone.BitmapTransform = BitmapTransform.Clone();
             clone._rotationTransform = CreateMatrix(_rotationTransform.Clone());
             clone._translationTransform = CreateMatrix(_translationTransform.Clone());
             clone._scalingTransform = CreateMatrix(_scalingTransform.Clone());
@@ -350,7 +355,7 @@ namespace SharpMap.Rendering
         /// Clones this symbol.
         /// </summary>
         /// <returns>
-        /// A duplicate of this <see cref="Symbol{TPoint,TSize}"/> 
+        /// A duplicate of this <see cref="Symbol{TCoordinate}"/> 
         /// as an object reference.
         /// </returns>
         Object ICloneable.Clone()

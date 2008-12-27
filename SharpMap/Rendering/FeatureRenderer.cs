@@ -16,9 +16,9 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.ComponentModel;
+using GeoAPI.Coordinates;
+using NPack.Interfaces;
 using SharpMap.Data;
 using SharpMap.Symbology;
 using IMatrix2D = NPack.Interfaces.IMatrix<NPack.DoubleComponent>;
@@ -29,14 +29,17 @@ namespace SharpMap.Rendering
     /// <summary>
     /// The base class for feature renderers.
     /// </summary>
-    public abstract class FeatureRenderer : Renderer, IFeatureRenderer
+    public abstract class FeatureRenderer<TCoordinate> : Renderer, IFeatureRenderer
+        where TCoordinate : ICoordinate<TCoordinate>, IEquatable<TCoordinate>,
+                            IComparable<TCoordinate>, IConvertible,
+                            IComputable<Double, TCoordinate>
     {
-        private readonly VectorRenderer _vectorRenderer;
-        private TStyle _defaultStyle;
+        private readonly VectorRenderer<TCoordinate> _vectorRenderer;
+        private FeatureStyle _defaultStyle;
 
         #region Object construction and disposal
 
-        protected FeatureRenderer2D(VectorRenderer2D<TRenderObject> vectorRenderer)
+        protected FeatureRenderer(VectorRenderer<TCoordinate> vectorRenderer)
         {
             _vectorRenderer = vectorRenderer;
         }
@@ -59,10 +62,10 @@ namespace SharpMap.Rendering
         #endregion
 
         /// <summary>
-        /// Gets the Renderer2D which the featurer renderer 
+        /// Gets the <see cref="VectorRenderer{TCoordinate}"/> which the featurer renderer 
         /// uses to render graphics primitives.
         /// </summary>
-        protected VectorRenderer2D<TRenderObject> VectorRenderer
+        protected VectorRenderer<TCoordinate> VectorRenderer
         {
             get { return _vectorRenderer; }
         }
@@ -81,25 +84,7 @@ namespace SharpMap.Rendering
 
         #endregion
 
-        #region IFeatureRenderer<TRenderObject> Members
-
-        /// <summary>
-        /// Renders a feature into displayable render objects.
-        /// </summary>
-        /// <param name="feature">The feature to render.</param>
-        /// <returns>An enumeration of positioned render objects for display.</returns>
-        public IEnumerable<TRenderObject> RenderFeature(IFeatureDataRecord feature)
-        {
-            TStyle style = DefaultStyle;
-
-            if (style == null)
-            {
-                throw new InvalidOperationException("Cannot render feature without style. " +
-                                                    "DefaultStyle is null.");
-            }
-
-            return RenderFeature(feature, style, RenderState.Normal, null);
-        }
+        #region IFeatureRenderer Members
 
         /// <summary>
         /// Renders a feature into displayable render objects.
@@ -107,10 +92,8 @@ namespace SharpMap.Rendering
         /// <param name="feature">The feature to render.</param>
         /// <param name="style">The style to use to render the feature.</param>
         /// <returns>An enumeration of positioned render objects for display.</returns>
-        public IEnumerable<TRenderObject> RenderFeature(IFeatureDataRecord feature, 
-                                                        TStyle style,
-                                                        RenderState renderState, 
-                                                        ILayer layer)
+        public void RenderFeature(IScene scene, ILayer layer, IFeatureDataRecord feature, 
+                                  FeatureStyle style, RenderState renderState)
         {
             Boolean cancel = false;
 
@@ -118,22 +101,17 @@ namespace SharpMap.Rendering
 
             if (cancel)
             {
-                yield break;
+                return;
             }
             
-            if (style == default(TStyle))
+            if (style == null)
             {
                 throw new InvalidOperationException("Cannot render feature without a style.");
             }
 
-            IEnumerable<TRenderObject> renderedObjects = DoRenderFeature(feature, style, renderState, layer);
+            DoRenderFeature(scene, layer, feature, style, renderState);
 
             OnFeatureRendered();
-
-            foreach (TRenderObject renderObject in renderedObjects)
-            {
-                yield return renderObject;
-            }
         }
 
         #endregion
@@ -141,7 +119,7 @@ namespace SharpMap.Rendering
         /// <summary>
         /// Gets or sets the default style if no style or theme information is provided.
         /// </summary>
-        public TStyle DefaultStyle
+        public FeatureStyle DefaultStyle
         {
             get { return _defaultStyle; }
             set
@@ -162,14 +140,7 @@ namespace SharpMap.Rendering
         /// </param>
         /// <returns></returns>
         /// <param name="layer"></param>
-        protected abstract IEnumerable<TRenderObject> DoRenderFeature(IFeatureDataRecord feature, TStyle style,
-                                                                      RenderState state, ILayer layer);
-
-
-    	public virtual void CleanUp()
-    	{
-    		
-    	}
+        protected abstract void DoRenderFeature(IScene scene, ILayer layer, IFeatureDataRecord feature, FeatureStyle style, RenderState state);
 
         #region Protected virtual methods
 
@@ -178,11 +149,11 @@ namespace SharpMap.Rendering
         /// </summary>
         protected virtual void OnFeatureRendered()
         {
-            EventHandler @event = FeatureRendered;
+            EventHandler e = FeatureRendered;
 
-            if (@event != null)
+            if (e != null)
             {
-                @event(this, EventArgs.Empty); //Fire event
+                e(this, EventArgs.Empty); //Fire event
             }
         }
 
@@ -194,63 +165,16 @@ namespace SharpMap.Rendering
         /// </param>
         protected virtual void OnFeatureRendering(ref Boolean cancel)
         {
-            CancelEventHandler @event = FeatureRendering;
+            CancelEventHandler e = FeatureRendering;
 
-            if (@event != null)
+            if (e != null)
             {
                 CancelEventArgs args = new CancelEventArgs(cancel);
-                @event(this, args); //Fire event
+                e(this, args); //Fire event
 
                 cancel = args.Cancel;
             }
         }
-
-        #endregion
-
-        #region Explicit Interface Implementation
-
-        #region IFeatureRenderer Members
-
-        IStyle IFeatureRenderer.DefaultStyle
-        {
-            get { return DefaultStyle; }
-            set
-            {
-                if (!(value is TStyle))
-                {
-                    throw new ArgumentException("DefaultStyle must be of type " + typeof (TStyle));
-                }
-
-                DefaultStyle = (TStyle) value;
-            }
-        }
-
-        IEnumerable IFeatureRenderer.RenderFeature(IFeatureDataRecord feature)
-        {
-            return RenderFeature(feature);
-        }
-
-        IEnumerable IFeatureRenderer.RenderFeature(IFeatureDataRecord feature, 
-                                                   IStyle style, 
-                                                   RenderState renderState, 
-                                                   ILayer layer)
-        {
-            return RenderFeature(feature, style as TStyle, renderState, layer);
-        }
-
-        #endregion
-
-        #region IFeatureRenderer<TRenderObject> Members
-
-        IEnumerable<TRenderObject> IFeatureRenderer<TRenderObject>.RenderFeature(IFeatureDataRecord feature, 
-                                                                                 IStyle style, 
-                                                                                 RenderState renderState, 
-                                                                                 ILayer layer)
-        {
-            return RenderFeature(feature, style as TStyle, renderState, layer);
-        }
-
-    	#endregion
 
         #endregion
     }

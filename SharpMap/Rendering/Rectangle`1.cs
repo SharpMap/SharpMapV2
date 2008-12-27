@@ -80,9 +80,18 @@ namespace SharpMap.Rendering
         /// <param name="location">The upper-left point of the <see cref="Rectangle{TCoordinate}"/>.</param>
         /// <param name="size">The size of the <see cref="Rectangle{TCoordinate}"/>.</param>
         public Rectangle(Point<TCoordinate> location, Size<TCoordinate> size)
+            : this(location.Coordinate, size) { }
+
+        /// <summary>
+        /// Creates a new <see cref="Rectangle{TCoordinate}"/> with the upper-left at
+        /// <paramref name="location"/>, and the given <paramref name="size"/>.
+        /// </summary>
+        /// <param name="location">The upper-left point of the <see cref="Rectangle{TCoordinate}"/>.</param>
+        /// <param name="size">The size of the <see cref="Rectangle{TCoordinate}"/>.</param>
+        public Rectangle(TCoordinate location, Size<TCoordinate> size)
         {
-		    _min = location.Coordinate;
-		    _max = (TCoordinate)_min.Add(size);
+            _min = location;
+            _max = (TCoordinate)_min.Add(size);
 
             _hasValue = true;
         }

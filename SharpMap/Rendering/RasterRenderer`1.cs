@@ -16,7 +16,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System;
-using System.Collections.Generic;
+using System.IO;
 using GeoAPI.Coordinates;
 using NPack.Interfaces;
 using IMatrixD = NPack.Interfaces.IMatrix<NPack.DoubleComponent>;
@@ -24,21 +24,14 @@ using IVectorD = NPack.Interfaces.IVector<NPack.DoubleComponent>;
 
 namespace SharpMap.Rendering
 {
-    /// <summary>
-    /// Provides a base class for generating rendered objects from vector shapes.
-    /// </summary>
-    /// <remarks>
-    /// This class is used to create a new <see cref="IVectorRenderer{TCoordinate}"/> for various graphics systems.
-    /// </remarks>
-    public abstract class VectorRenderer<TCoordinate> : Renderer, IVectorRenderer<TCoordinate>
+    public abstract class RasterRenderer<TCoordinate> : Renderer, IRasterRenderer<TCoordinate>
         where TCoordinate : ICoordinate<TCoordinate>, IEquatable<TCoordinate>,
                             IComparable<TCoordinate>, IConvertible,
                             IComputable<Double, TCoordinate>
     {
-        #region Implementation of IVectorRenderer<TCoordinate>
+        #region Implementation of IRasterRenderer<TCoordinate>
 
-        public abstract void RenderPaths(IScene scene, IEnumerable<Path<TCoordinate>> paths, IPen stroke, IBrush fill);
-        public abstract void RenderSymbols(IScene scene, IEnumerable<TCoordinate> locations, ISymbol symbolData);
+        public abstract void RenderRaster(IScene scene, Stream rasterData, Rectangle<TCoordinate> rasterBounds);
 
         #endregion
     }

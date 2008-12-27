@@ -23,15 +23,20 @@ using System.Reflection;
 using System.Threading;
 using GeoAPI.Coordinates;
 using GeoAPI.Geometries;
+using NPack.Interfaces;
 using SharpMap.Data;
 using SharpMap.Layers;
+using SharpMap.Symbology;
 
 namespace SharpMap.Rendering
 {
 	/// <summary>
 	/// A basic renderer which renders the geometric paths from feature geometry.
 	/// </summary>
-	public class BasicGeometryRenderer<TCoordinate> : FeatureRenderer, IGeometryRenderer
+	public class BasicGeometryRenderer<TCoordinate> : FeatureRenderer<TCoordinate>, IGeometryRenderer
+        where TCoordinate : ICoordinate<TCoordinate>, IEquatable<TCoordinate>,
+                            IComparable<TCoordinate>, IConvertible,
+                            IComputable<Double, TCoordinate>
 	{
 		#region Type Members
 		private static Object _defaultSymbol;
@@ -73,8 +78,8 @@ namespace SharpMap.Rendering
         /// <param name="vectorRenderer">
         /// A vector renderer.
         /// </param>
-        public BasicGeometryRenderer2D(VectorRenderer2D<TRenderObject> vectorRenderer)
-            : this(vectorRenderer, new GeometryStyle()) { } 
+        public BasicGeometryRenderer(VectorRenderer<TCoordinate> vectorRenderer)
+            : this(vectorRenderer, new FeatureStyle()) { } 
 
 		/// <summary>
 		/// Creates a new BasicGeometryRenderer2D with the given VectorRenderer2D instance.
@@ -85,7 +90,7 @@ namespace SharpMap.Rendering
 		/// <param name="defaultStyle"> 
 		/// The default style to apply to a feature's geometry.
 		/// </param>
-		public BasicGeometryRenderer2D(VectorRenderer2D<TRenderObject> vectorRenderer, GeometryStyle defaultStyle)
+		public BasicGeometryRenderer(VectorRenderer<TCoordinate> vectorRenderer, FeatureStyle defaultStyle)
 			: base(vectorRenderer)
 		{
             DefaultStyle = defaultStyle;
@@ -108,7 +113,7 @@ namespace SharpMap.Rendering
 		/// <param name="feature">The feature to render.</param>
 		/// <param name="style">The style to use to render the feature.</param>
 		/// <returns>An enumeration of positioned render objects suitable for display.</returns>
-		protected override  DoRenderFeature(IFeatureDataRecord feature, GeometryStyle style, RenderState renderState, ILayer layer)
+		protected override void DoRenderFeature(IScene scene, ILayer layer, IFeatureDataRecord feature, FeatureStyle style, RenderState state)
 		{
 			if (feature == null) throw new ArgumentNullException("feature");
 			if (style == null) throw new ArgumentNullException("style");
@@ -118,159 +123,73 @@ namespace SharpMap.Rendering
 				throw new InvalidOperationException("Feature must have a geometry to be rendered.");
 			}
 
-			return renderGeometry(feature.Geometry, style, renderState);
+			return renderGeometry(feature.Geometry, style, state);
 		}
 
 		/// <summary>
 		/// Renders a <see cref="IMultiLineString"/>.
 		/// </summary>
-		/// <param name="lines">IMultiLineString to be rendered.</param>
-		/// <param name="fill">Pen used for filling (null or transparent for no filling).</param>
-		/// <param name="highlightFill">Pen used for filling when highlighted.</param>
-		/// <param name="selectFill">Pen used for filling when selected.</param>
-		/// <param name="outline">Outline pen style (null if no outline).</param>
-		/// <param name="highlightOutline">Outline pen style used when highlighted.</param>
-		/// <param name="selectOutline">Outline pen style used when selected.</param>
-		public virtual IEnumerable<TRenderObject> DrawMultiLineString(
-			IMultiLineString lines, StylePen fill, StylePen highlightFill, StylePen selectFill,
-            StylePen outline, StylePen highlightOutline, StylePen selectOutline, RenderState renderState)
+		/// <param name="multiLineString">IMultiLineString to be rendered.</param>
+		public virtual void DrawMultiLineString(IScene scene, IMultiLineString multiLineString, LineSymbolizer symbolizer, RenderState renderState)
 		{
-		    if (lines == null) throw new ArgumentNullException("lines");
+		    if (multiLineString == null) throw new ArgumentNullException("multiLineString");
 
-		    return drawLineStrings(lines, fill, highlightFill, selectFill,
-                outline, highlightOutline, selectOutline, renderState);
+            drawLineStrings(scene, multiLineString, symbolizer, renderState);
 		}
 
 	    /// <summary>
 		/// Renders a <see cref="ILineString"/>.
 		/// </summary>
 		/// <param name="line">ILineString to render.</param>
-		/// <param name="fill">
-		/// Pen used for filling (null or transparent for no filling).
-		/// </param>
-		/// <param name="highlightFill">
-		/// Pen used for filling when highlighted.
-		/// </param>
-		/// <param name="selectFill">
-		/// Pen used for filling when selected.
-		/// </param>
-		/// <param name="outline">
-		/// Outline pen style (null if no outline).
-		/// </param>
-		/// <param name="highlightOutline">
-		/// Outline pen style used when highlighted.
-		/// </param>
-		/// <param name="selectOutline">
-		/// Outline pen style used when selected.
-		/// </param>
-		public virtual IEnumerable<TRenderObject> DrawLineString(
-			ILineString line, StylePen fill, StylePen highlightFill, StylePen selectFill,
-            StylePen outline, StylePen highlightOutline, StylePen selectOutline, RenderState renderState)
+		public virtual void DrawLineString(IScene scene, ILineString line, LineSymbolizer symbolizer, RenderState renderState)
 		{
 		    if (line == null) throw new ArgumentNullException("line");
 
-		    return drawLineStrings(new ILineString[] { line },
-                fill, highlightFill, selectFill,
-                outline, highlightOutline, selectOutline, 
-                renderState);
+		    drawLineStrings(scene, line, symbolizer, renderState);
 		}
 
 	    /// <summary>
 		/// Renders a <see cref="IMultiPolygon"/>.
 		/// </summary>
 		/// <param name="multipolygon">IMultiPolygon to render.</param>
-		/// <param name="fill">
-		/// Brush used for filling (null or transparent for no filling).
-		/// </param>
-		/// <param name="highlightFill">
-		/// Brush used for filling when highlighted.
-		/// </param>
-		/// <param name="selectFill">
-		/// Brush used for filling when selected.
-		/// </param>
-		/// <param name="outline">
-		/// Outline pen style (null if no outline).
-		/// </param>
-		/// <param name="highlightOutline">
-		/// Outline pen style used when highlighted.
-		/// </param>
-		/// <param name="selectOutline">
-		/// Outline pen style used when selected.
-		/// </param>
-		public virtual IEnumerable<TRenderObject> DrawMultiPolygon(IMultiPolygon multipolygon, 
-            StyleBrush fill, StyleBrush highlightFill, StyleBrush selectFill,
-            StylePen outline, StylePen highlightOutline, StylePen selectOutline, 
-            RenderState renderState)
+		public virtual void DrawMultiPolygon(IScene scene, IMultiPolygon multipolygon, PolygonSymbolizer symbolizer, RenderState renderState)
 	    {
 	        if (multipolygon == null) throw new ArgumentNullException("multipolygon");
 
-	        return drawPolygons(multipolygon, fill, highlightFill, selectFill,
-                outline, highlightOutline, selectOutline, renderState);
+	        drawPolygons(scene, multipolygon, symbolizer, renderState);
 	    }
 
 	    /// <summary>
 		/// Renders a <see cref="IPolygon"/>.
 		/// </summary>
 		/// <param name="polygon">IPolygon to render</param>
-		/// <param name="fill">Brush used for filling (null or transparent for no filling).</param>
-		/// <param name="highlightFill">Brush used for filling when highlighted.</param>
-		/// <param name="selectFill">Brush used for filling when selected.</param>
-		/// <param name="outline">Outline pen style (null if no outline).</param>
-		/// <param name="highlightOutline">Outline pen style used when highlighted.</param>
-		/// <param name="selectOutline">Outline pen style used when selected.</param>
-		public virtual IEnumerable<TRenderObject> DrawPolygon(IPolygon polygon, 
-            StyleBrush fill, StyleBrush highlightFill, StyleBrush selectFill,
-			StylePen outline, StylePen highlightOutline, StylePen selectOutline, 
-            RenderState renderState)
+		public virtual void DrawPolygon(IScene scene, IPolygon polygon, PolygonSymbolizer symbolizer, RenderState renderState)
 	    {
 	        if (polygon == null) throw new ArgumentNullException("polygon");
 
-	        return drawPolygons(new IPolygon[] { polygon }, 
-                fill, highlightFill, selectFill,
-                outline, highlightOutline, selectOutline, 
-                renderState);
+	        drawPolygons(scene, polygon , symbolizer, renderState);
 	    }
 
 	    /// <summary>
 		/// Renders a <see cref="IPoint"/>.
 		/// </summary>
 		/// <param name="point">IPoint to render.</param>
-		/// <param name="symbol">Symbol to place over point.</param>
-		/// <param name="highlightSymbol">
-		/// Symbol to use for point when point is highlighted.
-		/// </param>
-		/// <param name="selectSymbol">
-		/// Symbol to use for point when point is selected.
-		/// </param>
-		public virtual IEnumerable<TRenderObject> DrawPoint(IPoint point, 
-            Symbol2D symbol, Symbol2D highlightSymbol, Symbol2D selectSymbol, 
-            RenderState renderState)
+		public virtual void DrawPoint(IScene scene, IPoint point, PointSymbolizer symbolizer, RenderState renderState)
 	    {
 	        if (point == null) throw new ArgumentNullException("point");
 
-	        return drawPoints(new IPoint[] { point }, 
-                symbol, highlightSymbol, selectSymbol, renderState);
+	        drawPoints(scene, point, symbolizer, renderState);
 	    }
 
 	    /// <summary>
 		/// Renders a <see cref="IMultiPoint"/>.
 		/// </summary>
-		/// <param name="points">IMultiPoint to render.</param>
-		/// <param name="symbol">Symbol to place over point.</param>
-		/// <param name="highlightSymbol">
-		/// Symbol to use for point when point is highlighted.
-		/// </param>
-		/// <param name="selectSymbol">
-		/// Symbol to use for point when point is selected.
-		/// </param>
-		public virtual IEnumerable<TRenderObject> DrawMultiPoint(IMultiPoint points,
-            Symbol2D symbol, Symbol2D highlightSymbol, Symbol2D selectSymbol, 
-            RenderState renderState)
+		/// <param name="multiPoint">IMultiPoint to render.</param>
+		public virtual void DrawMultiPoint(IScene scene, IMultiPoint multiPoint, PointSymbolizer symbolizer, RenderState renderState)
 	    {
-	        if (points == null) throw new ArgumentNullException("points");
+	        if (multiPoint == null) throw new ArgumentNullException("multiPoint");
 
-	        return drawPoints(points, 
-                symbol, highlightSymbol, selectSymbol, renderState);
+	        drawPoints(scene, multiPoint, symbolizer, renderState);
 	    }
 
 	    #region Private helper methods
@@ -373,10 +292,7 @@ namespace SharpMap.Rendering
                 renderState);
 		}
 
-		private IEnumerable<TRenderObject> drawLineStrings(IEnumerable<ILineString> lines, 
-            StylePen fill, StylePen highlightFill, StylePen selectFill, 
-            StylePen outline, StylePen highlightOutline, StylePen selectOutline, 
-            RenderState renderState)
+		private void drawLineStrings(IScene scene, Object lines, LineSymbolizer symbolizer, RenderState renderState)
 		{
             if (fill == null) throw new ArgumentNullException("fill");
 

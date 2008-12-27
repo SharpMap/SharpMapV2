@@ -16,71 +16,43 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System;
-using System.Collections;
-using System.Collections.Generic;
+using GeoAPI.Coordinates;
 using NPack;
 using NPack.Interfaces;
-using SharpMap.Styles;
+using SharpMap.Symbology;
 
-namespace SharpMap.Rendering.Rendering2D
+namespace SharpMap.Rendering
 {
-    public abstract class TextRenderer2D<TRenderObject> : Renderer2D, ITextRenderer2D<TRenderObject>
+    public abstract class TextRenderer<TCoordinate> : Renderer, ITextRenderer<TCoordinate>
+        where TCoordinate : ICoordinate<TCoordinate>, IEquatable<TCoordinate>,
+                            IComparable<TCoordinate>, IConvertible,
+                            IComputable<Double, TCoordinate>
     {
-        private StyleTextRenderingHint _textRenderingHint;
+        private TextRenderingHint _textRenderingHint;
 
-        protected TextRenderer2D() : this(StyleTextRenderingHint.SystemDefault) { }
+        protected TextRenderer() : this(TextRenderingHint.SystemDefault) { }
 
-        protected TextRenderer2D(StyleTextRenderingHint textRenderingHint)
+        protected TextRenderer(TextRenderingHint textRenderingHint)
         {
             _textRenderingHint = textRenderingHint;
         }
-        #region ITextRenderer2D<TRenderObject> Members
-
-        public abstract IEnumerable<TRenderObject> RenderText(String text, StyleFont font, Rectangle2D layoutRectangle,
-                                                              Path2D flowPath, StyleBrush fontBrush, Matrix2D transform);
-
-        #endregion
 
         #region ITextRenderer<Point2D,Size2D,Rectangle2D,TRenderObject> Members
 
-        public StyleTextRenderingHint TextRenderingHint
+        public TextRenderingHint TextRenderingHint
         {
             get { return _textRenderingHint; }
             set { _textRenderingHint = value; }
         }
 
-        public abstract Size2D MeasureString(String text, StyleFont font);
+        public abstract Size<TCoordinate> MeasureString(String text, StyleFont font);
+        public abstract void RenderText(IScene scene, string text, StyleFont font, TCoordinate location, Fill fill);
+        public abstract void RenderText(IScene scene, string text, StyleFont font, Rectangle<TCoordinate> layoutRectangle, Path<TCoordinate> flowPath, Fill fill, IMatrix<DoubleComponent> transform);
 
-        public IEnumerable<TRenderObject> RenderText(String text, StyleFont font, Point2D location, StyleBrush fontBrush)
+        public void RenderText(IScene scene, String text, StyleFont font, TCoordinate location, IBrush fontBrush)
         {
-            Rectangle2D layoutRectangle = new Rectangle2D(location, MeasureString(text, font));
-            return RenderText(text, font, layoutRectangle, null, fontBrush, null);
-        }
-
-        #endregion
-
-        #region ITextRenderer<Point2D,Size2D,Rectangle2D> Explicit Members
-
-        IEnumerable ITextRenderer<Point2D, Size2D, Rectangle2D>.RenderText(
-            String text, StyleFont font, Rectangle2D layoutRectangle, Path<Point2D, Rectangle2D> flowPath, 
-            StyleBrush fontBrush, IMatrix<DoubleComponent> transform)
-        {
-            if (!(flowPath is Path2D))
-            {
-                throw new ArgumentException("Parameter must be a Path2D instance.", "flowPath");
-            }
-
-            if (!(transform is Matrix2D))
-            {
-                throw new ArgumentException("Parameter must be a Matrix2D instance.", "transform");
-            }
-
-            return RenderText(text, font, layoutRectangle, flowPath as Path2D, fontBrush, transform as Matrix2D);
-        }
-
-        IEnumerable ITextRenderer<Point2D, Size2D, Rectangle2D>.RenderText(String text, StyleFont font, Point2D location, StyleBrush fontBrush)
-        {
-            throw new Exception("The method or operation is not implemented.");
+            Rectangle<TCoordinate> layoutRectangle = new Rectangle<TCoordinate>(location, MeasureString(text, font));
+            RenderText(scene, text, font, layoutRectangle, null, fontBrush, null);
         }
 
         #endregion
