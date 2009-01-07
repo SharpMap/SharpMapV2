@@ -24,7 +24,6 @@ using GeoAPI.Geometries;
 using SharpMap.Data;
 using SharpMap.Data.Caching;
 using SharpMap.Expressions;
-using SharpMap.Styles;
 using SharpMap.Symbology;
 
 namespace SharpMap.Layers
@@ -52,10 +51,6 @@ namespace SharpMap.Layers
 		/// <summary>
 		/// Gets or sets a value representing the visibility of the layer.
 		/// </summary>
-		/// <remarks>
-		/// Should be the same value as <see cref="Style"/>'s 
-		/// <see cref="IStyle.Enabled"/> value.
-		/// </remarks>
 		Boolean Enabled { get; set; }
 
 		/// <summary>

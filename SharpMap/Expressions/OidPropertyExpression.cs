@@ -19,8 +19,13 @@ using System;
 
 namespace SharpMap.Expressions
 {
-    public class AllAttributesExpression : SelectExpression
+    public class OidPropertyExpression : Expression, IEquatable<OidPropertyExpression>
     {
+        public override ExpressionType ExpressionType
+        {
+            get { return ExpressionType.Other; }
+        }
+
         public override Boolean Contains(Expression other)
         {
             return Equals(other);
@@ -28,12 +33,31 @@ namespace SharpMap.Expressions
 
         public override Expression Clone()
         {
-            return new AllAttributesExpression();
+            return new OidPropertyExpression();
         }
 
         public override Boolean Equals(Expression other)
         {
-            return other is AllAttributesExpression;
+            return other is OidPropertyExpression;
+        }
+
+        #region IEquatable<OidExpression> Members
+
+        public Boolean Equals(OidPropertyExpression other)
+        {
+            return other != null;
+        }
+
+        #endregion
+
+        public override Boolean Equals(Object obj)
+        {
+            return Equals(obj as OidPropertyExpression);
+        }
+
+        public override Int32 GetHashCode()
+        {
+            return 7;
         }
     }
 }

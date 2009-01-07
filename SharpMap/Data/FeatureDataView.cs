@@ -272,8 +272,8 @@ namespace SharpMap.Data
                         return;
                     }
 
-                    PredicateExpression predicate = _viewDefinition.Predicate == null
-                                                        ? (PredicateExpression)value
+                    LogicExpression predicate = _viewDefinition.Predicate == null
+                                                        ? (LogicExpression)value
                                                         : new BinaryLogicExpression(value,
                                                                                BinaryLogicOperator.And,
                                                                                _viewDefinition.SpatialPredicate);

@@ -38,5 +38,10 @@ namespace SharpMap.Expressions
                    spatialExpression.IsEmpty || 
                    spatialExpression.IsNull;
         }
+
+        public override ExpressionType ExpressionType
+        {
+            get { return ExpressionType.SpatialExpression; }
+        }
     }
 }

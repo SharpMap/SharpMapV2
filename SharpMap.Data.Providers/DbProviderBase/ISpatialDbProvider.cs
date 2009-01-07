@@ -32,7 +32,7 @@ namespace SharpMap.Data.Providers.Db
         /// <summary>
         /// Definition query used for limiting dataset (WHERE clause)
         /// </summary>
-        PredicateExpression DefinitionQuery { get; set; }
+        LogicExpression DefinitionQuery { get; set; }
 
         IDbUtility DbUtility { get; }
         String GeometryColumnConversionFormatString { get; }

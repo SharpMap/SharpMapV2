@@ -16,9 +16,16 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 
+using System;
+
 namespace SharpMap.Rendering
 {
-    public interface ISymbol
+    public interface ISymbol<TCoordinate>
     {
+        Double Opacity { get; }
+        Size<TCoordinate> Size { get; }
+        Double Rotation { get; }
+        TCoordinate AnchorPoint { get; }
+        TCoordinate Displacement { get; }
     }
 }

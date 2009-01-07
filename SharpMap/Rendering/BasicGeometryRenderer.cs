@@ -18,9 +18,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.IO;
-using System.Reflection;
-using System.Threading;
 using GeoAPI.Coordinates;
 using GeoAPI.Geometries;
 using NPack.Interfaces;
@@ -33,43 +30,18 @@ namespace SharpMap.Rendering
 	/// <summary>
 	/// A basic renderer which renders the geometric paths from feature geometry.
 	/// </summary>
-	public class BasicGeometryRenderer<TCoordinate> : FeatureRenderer<TCoordinate>, IGeometryRenderer
+    public class BasicGeometryRenderer<TCoordinate> : FeatureRenderer<TCoordinate>//, IGeometryRenderer<TCoordinate>
         where TCoordinate : ICoordinate<TCoordinate>, IEquatable<TCoordinate>,
                             IComparable<TCoordinate>, IConvertible,
                             IComputable<Double, TCoordinate>
 	{
 		#region Type Members
-		private static Object _defaultSymbol;
-		private static readonly Object _defaultSymbolSync = new Object();
-
-		/// <summary>
-		/// The default basic symbol for rendering point data.
-		/// </summary>
-		public static Symbol2D DefaultSymbol
-		{
-			get
-			{
-				if (Thread.VolatileRead(ref _defaultSymbol) == null)
-				{
-					lock (_defaultSymbolSync)
-					{
-						if (Thread.VolatileRead(ref _defaultSymbol) == null)
-						{
-							Stream data = Assembly.GetExecutingAssembly()
-								.GetManifestResourceStream("SharpMap.Styles.DefaultSymbol.png");
-                            Symbol2D symbol = new Symbol2D(data, new Size2D(16, 16));
-							Thread.VolatileWrite(ref _defaultSymbol, symbol);
-						}
-					}
-				}
-
-                return (Symbol2D)(_defaultSymbol as Symbol2D).Clone();
-			}
-		}
 
 		// DON'T remove - this eliminates the .beforefieldinit IL metadata
-		static BasicGeometryRenderer2D() { }
+		static BasicGeometryRenderer() { }
 		#endregion
+
+        private ISymbol<TCoordinate> _defaultSymbol;
 
 		#region Object construction and disposal
         /// <summary>
@@ -78,8 +50,8 @@ namespace SharpMap.Rendering
         /// <param name="vectorRenderer">
         /// A vector renderer.
         /// </param>
-        public BasicGeometryRenderer(VectorRenderer<TCoordinate> vectorRenderer)
-            : this(vectorRenderer, new FeatureStyle()) { } 
+        public BasicGeometryRenderer(VectorRenderer<TCoordinate> vectorRenderer, TextRenderer<TCoordinate> textRenderer)
+            : this(vectorRenderer, textRenderer, new FeatureStyle()) { } 
 
 		/// <summary>
 		/// Creates a new BasicGeometryRenderer2D with the given VectorRenderer2D instance.
@@ -90,8 +62,8 @@ namespace SharpMap.Rendering
 		/// <param name="defaultStyle"> 
 		/// The default style to apply to a feature's geometry.
 		/// </param>
-		public BasicGeometryRenderer(VectorRenderer<TCoordinate> vectorRenderer, FeatureStyle defaultStyle)
-			: base(vectorRenderer)
+		public BasicGeometryRenderer(VectorRenderer<TCoordinate> vectorRenderer, TextRenderer<TCoordinate> textRenderer, FeatureStyle defaultStyle)
+			: base(vectorRenderer, textRenderer)
 		{
             DefaultStyle = defaultStyle;
 		}
@@ -100,16 +72,28 @@ namespace SharpMap.Rendering
 		/// <summary>
 		/// Finalizer for BasicGeometryRenderer2D.
 		/// </summary>
-		~BasicGeometryRenderer2D()
+		~BasicGeometryRenderer()
 		{
 			Dispose(false);
 		}
 		#endregion
-		#endregion
+        #endregion
+
+        /// <summary>
+        /// The default basic symbol for rendering point data.
+        /// </summary>
+        public ISymbol<TCoordinate> DefaultSymbol
+        {
+            get
+            {
+                return _defaultSymbol;
+            }
+        }
 
 		/// <summary>
 		/// Renders the geometry of the <paramref name="feature"/>.
-		/// </summary>
+        /// </summary>
+        /// <param name="scene">The <see cref="IScene"/> to render to.</param>
 		/// <param name="feature">The feature to render.</param>
 		/// <param name="style">The style to use to render the feature.</param>
 		/// <returns>An enumeration of positioned render objects suitable for display.</returns>
@@ -129,8 +113,7 @@ namespace SharpMap.Rendering
 		/// <summary>
 		/// Renders a <see cref="IMultiLineString"/>.
 		/// </summary>
-		/// <param name="multiLineString">IMultiLineString to be rendered.</param>
-		public virtual void DrawMultiLineString(IScene scene, IMultiLineString multiLineString, LineSymbolizer symbolizer, RenderState renderState)
+        public virtual void DrawMultiLineString(IScene scene, IMultiLineString<TCoordinate> multiLineString, IPen stroke, Double perpendicularOffset, RenderState renderState)
 		{
 		    if (multiLineString == null) throw new ArgumentNullException("multiLineString");
 
@@ -140,8 +123,7 @@ namespace SharpMap.Rendering
 	    /// <summary>
 		/// Renders a <see cref="ILineString"/>.
 		/// </summary>
-		/// <param name="line">ILineString to render.</param>
-		public virtual void DrawLineString(IScene scene, ILineString line, LineSymbolizer symbolizer, RenderState renderState)
+        public virtual void DrawLineString(IScene scene, ILineString<TCoordinate> line, IPen stroke, Double perpendicularOffset, RenderState renderState)
 		{
 		    if (line == null) throw new ArgumentNullException("line");
 
@@ -151,8 +133,7 @@ namespace SharpMap.Rendering
 	    /// <summary>
 		/// Renders a <see cref="IMultiPolygon"/>.
 		/// </summary>
-		/// <param name="multipolygon">IMultiPolygon to render.</param>
-		public virtual void DrawMultiPolygon(IScene scene, IMultiPolygon multipolygon, PolygonSymbolizer symbolizer, RenderState renderState)
+        public virtual void DrawMultiPolygon(IScene scene, IMultiPolygon<TCoordinate> multipolygon, IPen stroke, IBrush fill, Double perpendicularOffset, TCoordinate displacement, RenderState renderState)
 	    {
 	        if (multipolygon == null) throw new ArgumentNullException("multipolygon");
 
@@ -162,8 +143,7 @@ namespace SharpMap.Rendering
 	    /// <summary>
 		/// Renders a <see cref="IPolygon"/>.
 		/// </summary>
-		/// <param name="polygon">IPolygon to render</param>
-		public virtual void DrawPolygon(IScene scene, IPolygon polygon, PolygonSymbolizer symbolizer, RenderState renderState)
+        public virtual void DrawPolygon(IScene scene, IPolygon<TCoordinate> polygon, IPen stroke, IBrush fill, Double perpendicularOffset, TCoordinate displacement, RenderState renderState)
 	    {
 	        if (polygon == null) throw new ArgumentNullException("polygon");
 
@@ -173,8 +153,7 @@ namespace SharpMap.Rendering
 	    /// <summary>
 		/// Renders a <see cref="IPoint"/>.
 		/// </summary>
-		/// <param name="point">IPoint to render.</param>
-		public virtual void DrawPoint(IScene scene, IPoint point, PointSymbolizer symbolizer, RenderState renderState)
+        public virtual void DrawPoint(IScene scene, IPoint<TCoordinate> point, ISymbol<TCoordinate> graphic, RenderState renderState)
 	    {
 	        if (point == null) throw new ArgumentNullException("point");
 
@@ -184,8 +163,7 @@ namespace SharpMap.Rendering
 	    /// <summary>
 		/// Renders a <see cref="IMultiPoint"/>.
 		/// </summary>
-		/// <param name="multiPoint">IMultiPoint to render.</param>
-		public virtual void DrawMultiPoint(IScene scene, IMultiPoint multiPoint, PointSymbolizer symbolizer, RenderState renderState)
+        public virtual void DrawMultiPoint(IScene scene, IMultiPoint<TCoordinate> multiPoint, ISymbol<TCoordinate> graphic, RenderState renderState)
 	    {
 	        if (multiPoint == null) throw new ArgumentNullException("multiPoint");
 
@@ -193,8 +171,7 @@ namespace SharpMap.Rendering
 	    }
 
 	    #region Private helper methods
-		private IEnumerable<TRenderObject> renderGeometry(
-            IGeometry geometry, GeometryStyle style, RenderState renderState)
+		private void renderGeometry(IScene scene, IGeometry geometry, FeatureStyle style, RenderState renderState)
 		{
 			if (geometry is IPolygon)
 			{

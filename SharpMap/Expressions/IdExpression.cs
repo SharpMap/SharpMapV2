@@ -16,43 +16,18 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System;
+using System.Xml.Serialization;
 
 namespace SharpMap.Expressions
 {
-    public class OidExpression : Expression, IEquatable<OidExpression>
+    [Serializable]
+    [XmlInclude(typeof(FeatureIdExpression))]
+    [XmlType(Namespace = "http://www.opengis.net/ogc", TypeName = "AbstractIdType")]
+    public abstract class IdExpression : Expression
     {
-        public override Boolean Contains(Expression other)
+        public override ExpressionType ExpressionType
         {
-            return Equals(other);
-        }
-
-        public override Expression Clone()
-        {
-            return new OidExpression();
-        }
-
-        public override Boolean Equals(Expression other)
-        {
-            return other is OidExpression;
-        }
-
-        #region IEquatable<OidExpression> Members
-
-        public Boolean Equals(OidExpression other)
-        {
-            return other != null;
-        }
-
-        #endregion
-
-        public override Boolean Equals(Object obj)
-        {
-            return Equals(obj as OidExpression);
-        }
-
-        public override Int32 GetHashCode()
-        {
-            return 7;
+            get { return ExpressionType.IdExpression; }
         }
     }
 }

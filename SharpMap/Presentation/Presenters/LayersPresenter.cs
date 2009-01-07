@@ -18,16 +18,21 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using GeoAPI.Coordinates;
+using NPack.Interfaces;
 using SharpMap.Layers;
 using SharpMap.Presentation.Views;
-using SharpMap.Styles;
+using SharpMap.Symbology;
 
 namespace SharpMap.Presentation.Presenters
 {
 	/// <summary>
-	/// Provides a presenter for the layers of a <see cref="Map"/>.
+	/// Provides a presenter for the layers of a <see cref="Map{TCoordinate}"/>.
 	/// </summary>
-	public class LayersPresenter : MapLayersListenerPresenter<ILayersView>
+    public class LayersPresenter<TCoordinate> : MapLayersListenerPresenter<TCoordinate, ILayersView>
+        where TCoordinate : ICoordinate<TCoordinate>, IEquatable<TCoordinate>,
+                            IComparable<TCoordinate>, IConvertible,
+                            IComputable<Double, TCoordinate>
 	{
 		private readonly EventHandler<LayerActionEventArgs> _layersChildrenVisibleChangeRequestedDelegate;
         private readonly EventHandler<LayerActionEventArgs> _selectedLayersChangeRequestedDelegate;
@@ -35,12 +40,12 @@ namespace SharpMap.Presentation.Presenters
         private readonly EventHandler<LayerActionEventArgs> _layerSelectabilityChangeRequestedDelegate;
 
 		/// <summary>
-        /// Creates a new instance of a <see cref="LayersPresenter"/> with the given <see cref="Map"/>
+        /// Creates a new instance of a <see cref="LayersPresenter{TCoordinate}"/> with the given <see cref="Map{TCoordinate}"/>
 		/// instance and the given concrete <see cref="ILayersView"/> implementation.
 		/// </summary>
 		/// <param name="map">Map to present.</param>
 		/// <param name="view">View to present to.</param>
-		public LayersPresenter(Map map, ILayersView view)
+		public LayersPresenter(Map<TCoordinate> map, ILayersView view)
 			: base(map, view)
 		{
 			_selectedLayersChangeRequestedDelegate = handleLayerSelectionChangedRequested;
@@ -56,16 +61,16 @@ namespace SharpMap.Presentation.Presenters
 
 		protected override void OnMapPropertyChanged(String propertyName)
 		{
-			if(propertyName == Map.SelectedLayersProperty.Name)
+			if(propertyName == Map<TCoordinate>.SelectedLayersProperty.Name)
 			{
 				View.SelectedLayers = new List<String>(generateLayerNames(Map.SelectedLayers));
 			}
 
-			if(propertyName == Map.ActiveToolProperty.Name)
+			if(propertyName == Map<TCoordinate>.ActiveToolProperty.Name)
 			{
 			}
 
-			if(propertyName == Map.SpatialReferenceProperty.Name)
+			if(propertyName == Map<TCoordinate>.SpatialReferenceProperty.Name)
 			{
 			}
 		}

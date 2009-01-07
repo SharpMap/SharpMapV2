@@ -25,9 +25,8 @@ using GeoAPI.Diagnostics;
 using SharpMap.Data;
 using SharpMap.Data.Providers;
 using SharpMap.Expressions;
-using SharpMap.Rendering.Thematics;
-using SharpMap.Styles;
 using System.Collections.Generic;
+using SharpMap.Symbology;
 
 namespace SharpMap.Layers
 {
@@ -57,7 +56,6 @@ namespace SharpMap.Layers
         private readonly FeatureDataTable _features;
         private readonly FeatureDataView _selectedFeatures;
         private readonly FeatureDataView _highlightedFeatures;
-        private ITheme _theme;
         #endregion
 
         ///// <summary>
@@ -119,6 +117,28 @@ namespace SharpMap.Layers
                                                        DataViewRowState.CurrentRows);
             _highlightedFeatures.IsViewDefinitionExclusive = true;
         }
+
+        #region IDisposable Members
+
+        /// <summary>
+        /// Disposes the object.
+        /// </summary>
+        protected override void Dispose(Boolean disposing)
+        {
+            if (IsDisposed)
+            {
+                return;
+            }
+
+            if (DataSource != null)
+            {
+                DataSource.Dispose();
+            }
+
+            base.Dispose(disposing);
+        }
+
+        #endregion
 
         #region IFeatureLayer Members
 
@@ -253,12 +273,6 @@ namespace SharpMap.Layers
             if (query == null) throw new ArgumentNullException("query");
 
             return Features.Select(query.SpatialPredicate);
-        }
-
-        public virtual ITheme Theme
-        {
-            get { return _theme; }
-            set { _theme = value; }
         }
 
         #endregion

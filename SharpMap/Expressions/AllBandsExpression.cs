@@ -19,7 +19,7 @@ using System;
 
 namespace SharpMap.Expressions
 {
-    public class AllBandsExpression : ProjectionExpression
+    public class AllBandsExpression : SelectExpression
     {
         public override Boolean Contains(Expression other)
         {

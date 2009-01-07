@@ -19,7 +19,6 @@ using System;
 using System.Xml.Serialization;
 using GeoAPI.DataStructures;
 using GeoAPI.DataStructures.Collections.Generic;
-using SharpMap.Data;
 using SharpMap.Expressions;
 
 namespace SharpMap.Symbology
@@ -32,6 +31,15 @@ namespace SharpMap.Symbology
         private GraphicFill _graphicFill;
         private readonly HybridDictionary<String, SvgParameter> _svgParameterMap
             = new HybridDictionary<String, SvgParameter>();
+
+        private readonly StyleColor? _defaultColor = StyleColor.Transparent;
+
+        public Fill() { }
+
+        public Fill(StyleColor defaultColor)
+        {
+            _defaultColor = defaultColor;
+        }
 
         public GraphicFill GraphicFill
         {
@@ -52,16 +60,16 @@ namespace SharpMap.Symbology
             }
         }
 
-        public StyleColor GetColor(IFeatureDataRecord feature)
+        public StyleColor GetColor(Evaluator evaluator)
         {
-            Expression expression = _svgParameterMap["fill"].Expression;
-            String result = feature.EvaluateFor<String>();
-            return result == null ? StyleColor.Transparent : StyleColor.FromArgbString(result);
+            Expression expression = (Expression)_svgParameterMap["fill"];
+            String result = (String)evaluator.Evaluate(expression);
+            return result == null ? _defaultColor.Value : StyleColor.FromArgbString(result);
         }
 
-        public Single GetOpacity(IFeatureDataRecord feature)
+        public Single GetOpacity(Evaluator evaluator)
         {
-            return feature.Evaluate<Single>(_svgParameterMap["fill-opacity"]);
+            return Convert.ToSingle(evaluator.Evaluate((Expression)_svgParameterMap["fill-opacity"]));
         }
     }
 }

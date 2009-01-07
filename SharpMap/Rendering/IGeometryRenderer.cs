@@ -15,18 +15,23 @@
 // along with SharpMap; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
+using System;
+using GeoAPI.Coordinates;
 using GeoAPI.Geometries;
-using SharpMap.Symbology;
+using NPack.Interfaces;
 
 namespace SharpMap.Rendering
 {
-    public interface IGeometryRenderer
+    public interface IGeometryRenderer<TCoordinate>
+        where TCoordinate : ICoordinate<TCoordinate>, IEquatable<TCoordinate>,
+                            IComparable<TCoordinate>, IConvertible,
+                            IComputable<Double, TCoordinate>
     {
-        void DrawMultiLineString(IScene scene, IMultiLineString multiLineString, LineSymbolizer symbolizer, RenderState renderState);
-        void DrawLineString(IScene scene, ILineString line, LineSymbolizer symbolizer, RenderState renderState);
-        void DrawMultiPolygon(IScene scene, IMultiPolygon multipolygon, PolygonSymbolizer symbolizer, RenderState renderState);
-        void DrawPolygon(IScene scene, IPolygon polygon, PolygonSymbolizer symbolizer, RenderState renderState);
-        void DrawPoint(IScene scene, IPoint point, PointSymbolizer symbolizer, RenderState renderState);
-        void DrawMultiPoint(IScene scene, IMultiPoint multiPoint, PointSymbolizer symbolizer, RenderState renderState);
+        void DrawMultiLineString(IScene scene, IMultiLineString<TCoordinate> multiLineString, IPen stroke, Double perpendicularOffset, RenderState renderState);
+        void DrawLineString(IScene scene, ILineString<TCoordinate> line, IPen stroke, Double perpendicularOffset, RenderState renderState);
+        void DrawMultiPolygon(IScene scene, IMultiPolygon<TCoordinate> multipolygon, IPen stroke, IBrush fill, Double perpendicularOffset, TCoordinate displacement, RenderState renderState);
+        void DrawPolygon(IScene scene, IPolygon<TCoordinate> polygon, IPen stroke, IBrush fill, Double perpendicularOffset, TCoordinate displacement, RenderState renderState);
+        void DrawPoint(IScene scene, IPoint<TCoordinate> point, ISymbol<TCoordinate> graphic, RenderState renderState);
+        void DrawMultiPoint(IScene scene, IMultiPoint<TCoordinate> multiPoint, ISymbol<TCoordinate> graphic, RenderState renderState);
     }
 }

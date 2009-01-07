@@ -19,39 +19,32 @@ using System;
 using System.Collections.Generic;
 using GeoAPI.Coordinates;
 using GeoAPI.Geometries;
+using NPack.Interfaces;
 using SharpMap.Data;
-using SharpMap.Styles;
 using SharpMap.Layers;
 
-namespace SharpMap.Rendering.Rendering2D
+namespace SharpMap.Rendering
 {
     /// <summary>
-    /// The base class for 2D feature renderers which produce labels.
+    /// The base class for feature renderers which produce labels.
     /// </summary>
-    /// <typeparam name="TRenderObject">Type of render object to generate.</typeparam>
-    public class BasicLabelRenderer2D<TRenderObject>
-        : FeatureRenderer2D<LabelStyle, TRenderObject>, ILabelRenderer<Point2D, Size2D, Rectangle2D, TRenderObject>
+    /// <typeparam name="TCoordinate">Type of render object to generate.</typeparam>
+    public class BasicLabelRenderer<TCoordinate> : FeatureRenderer<TCoordinate>
+        where TCoordinate : ICoordinate<TCoordinate>, IEquatable<TCoordinate>,
+                            IComparable<TCoordinate>, IConvertible,
+                            IComputable<Double, TCoordinate>
     {
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="feature"></param>
-        /// <returns></returns>
         //private delegate String LabelTextFormatter(FeatureDataRow feature);
 
-        private TextRenderer2D<TRenderObject> _textRenderer;
+        private TextRenderer<TCoordinate> _textRenderer;
         private Dictionary<LabelStyle, LabelCollisionDetection2D> collisionDetectors = new Dictionary<LabelStyle, LabelCollisionDetection2D>();
         private Dictionary<LabelStyle, LabelLayer.LabelTextFormatter> textFormatters = new Dictionary<LabelStyle, LabelLayer.LabelTextFormatter>();
 
         #region Object construction and disposal
-        public BasicLabelRenderer2D(TextRenderer2D<TRenderObject> textRenderer,
-            VectorRenderer2D<TRenderObject> vectorRenderer)
-            : this(textRenderer, vectorRenderer, StyleTextRenderingHint.SystemDefault)
-        {
-        }
+        public BasicLabelRenderer(TextRenderer<TCoordinate> textRenderer, VectorRenderer<TCoordinate> vectorRenderer)
+            : this(textRenderer, vectorRenderer, TextRenderingHint.SystemDefault) { }
 
-        public BasicLabelRenderer2D(TextRenderer2D<TRenderObject> textRenderer,
-            VectorRenderer2D<TRenderObject> vectorRenderer, StyleTextRenderingHint renderingHint)
+        public BasicLabelRenderer(TextRenderer<TCoordinate> textRenderer, VectorRenderer<TCoordinate> vectorRenderer, TextRenderingHint renderingHint)
             : base(vectorRenderer)
         {
             if (textRenderer == null) throw new ArgumentNullException("textRenderer");
@@ -60,13 +53,13 @@ namespace SharpMap.Rendering.Rendering2D
             TextRenderer.TextRenderingHint = renderingHint;
         }
 
-        ~BasicLabelRenderer2D()
+        ~BasicLabelRenderer()
         {
             Dispose(false);
         }
         #endregion
 
-        public TextRenderer2D<TRenderObject> TextRenderer
+        public TextRenderer<TCoordinate> TextRenderer
         {
             get { return _textRenderer; }
             private set { _textRenderer = value; }

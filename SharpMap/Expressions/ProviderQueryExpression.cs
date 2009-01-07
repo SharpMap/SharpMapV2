@@ -12,14 +12,14 @@ namespace SharpMap.Expressions
             get { return _providerPropertiesExpression; }
         }
 
-        public ProviderQueryExpression(ProviderPropertiesExpression providerPropertiesExpression, ProjectionExpression projection, PredicateExpression predicate)
+        public ProviderQueryExpression(ProviderPropertiesExpression providerPropertiesExpression, SelectExpression projection, LogicExpression predicate)
             : base(projection, predicate)
         {
             _providerPropertiesExpression = providerPropertiesExpression;
         }
 
 
-        public ProviderQueryExpression(IEnumerable<ProviderPropertyExpression> providerProperties, ProjectionExpression projection, PredicateExpression predicate)
+        public ProviderQueryExpression(IEnumerable<ProviderPropertyExpression> providerProperties, SelectExpression projection, LogicExpression predicate)
             : this(new ProviderPropertiesExpression(providerProperties), projection, predicate)
         { }
     }

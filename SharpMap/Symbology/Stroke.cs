@@ -18,8 +18,6 @@
 using System;
 using System.Xml.Serialization;
 using GeoAPI.DataStructures;
-using GeoAPI.DataStructures.Collections.Generic;
-using SharpMap.Data;
 using SharpMap.Expressions;
 
 namespace SharpMap.Symbology
@@ -27,11 +25,9 @@ namespace SharpMap.Symbology
     [Serializable]
     [XmlType(Namespace = "http://www.opengis.net/se", TypeName = "StrokeType")]
     [XmlRoot("Stroke", Namespace = "http://www.opengis.net/se", IsNullable = false)]
-    public class Stroke
+    public class Stroke : NameMappedParameterObject
     {
         private Object _fillOrStroke;
-        private readonly HybridDictionary<String, SvgParameter> _svgParameterMap 
-            = new HybridDictionary<String, SvgParameter>();
 
         /// <summary>
         /// Used by the XML serializer.
@@ -62,36 +58,36 @@ namespace SharpMap.Symbology
         [XmlElement("SvgParameter")]
         public SvgParameter[] SvgParameter
         {
-            get { return Enumerable.ToArray(_svgParameterMap.Values); }
+            get { return Enumerable.ToArray<SvgParameter>(ParameterMap.Values); }
             set
             {
                 foreach (SvgParameter parameter in value)
                 {
-                    _svgParameterMap[parameter.Name] = parameter;
+                    ParameterMap[parameter.Name] = parameter;
                 }
             }
         }
 
-        public StyleColor GetColor(IFeatureDataRecord feature)
+        public StyleColor GetColor(Evaluator evaluator)
         {
-            Expression expression = _svgParameterMap["stroke"].Expression;
-            String result = feature.EvaluateFor<String>();
+            Expression expression = (Expression)ParameterMap["stroke"];
+            String result = (String)evaluator.Evaluate(expression);
             return result == null ? StyleColor.Transparent : StyleColor.FromArgbString(result);
         }
 
-        public Single GetOpacity(IFeatureDataRecord feature)
+        public Single GetOpacity(Evaluator evaluator)
         {
-            return feature.Evaluate<Single>(_svgParameterMap["stroke-opacity"]);
+            return Convert.ToSingle(evaluator.Evaluate((Expression)ParameterMap["stroke-opacity"]));
         }
 
-        public Single GetWidth(IFeatureDataRecord feature)
+        public Single GetWidth(Evaluator evaluator)
         {
-            return feature.Evaluate<Single>(_svgParameterMap["stroke-width"]);
+            return Convert.ToSingle(evaluator.Evaluate((Expression)ParameterMap["stroke-width"]));
         }
 
-        public LineJoin GetLineJoin(IFeatureDataRecord feature)
+        public LineJoin GetLineJoin(Evaluator evaluator)
         {
-            String result = feature.Evaluate<String>(_svgParameterMap["stroke-linejoin"]);
+            String result = (String)evaluator.Evaluate((Expression)ParameterMap["stroke-linejoin"]);
 
             if (String.Equals(result, LineJoin.Miter.ToString(), StringComparison.InvariantCultureIgnoreCase))
             {
@@ -111,9 +107,9 @@ namespace SharpMap.Symbology
             return LineJoin.Miter;
         }
 
-        public LineCap GetLineCap(IFeatureDataRecord feature)
+        public LineCap GetLineCap(Evaluator evaluator)
         {
-            String result = feature.Evaluate<String>(_svgParameterMap["stroke-linecap"]);
+            String result = (String)evaluator.Evaluate((Expression)ParameterMap["stroke-linecap"]);
 
             if (String.Equals(result, LineCap.Butt.ToString(), StringComparison.InvariantCultureIgnoreCase))
             {
@@ -133,14 +129,14 @@ namespace SharpMap.Symbology
             return LineCap.Butt;
         }
 
-        public Single[] GetDashArray(IFeatureDataRecord feature)
+        public Single[] GetDashArray(Evaluator evaluator)
         {
-            return feature.Evaluate<Single[]>(_svgParameterMap["stroke-dasharray"]);
+            return (Single[])evaluator.Evaluate((Expression)ParameterMap["stroke-dasharray"]);
         }
 
-        public Single GetDashOffset(IFeatureDataRecord feature)
+        public Single GetDashOffset(Evaluator evaluator)
         {
-            return feature.Evaluate<Single>(_svgParameterMap["stroke-dashoffset"]);
+            return Convert.ToSingle(evaluator.Evaluate((Expression)ParameterMap["stroke-dashoffset"]));
         }
     }
 }

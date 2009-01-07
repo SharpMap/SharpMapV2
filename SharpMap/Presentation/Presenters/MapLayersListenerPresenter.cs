@@ -1,22 +1,24 @@
 using System;
 using System.ComponentModel;
+using GeoAPI.Coordinates;
 using GeoAPI.Diagnostics;
+using NPack.Interfaces;
 using SharpMap.Diagnostics;
 
 namespace SharpMap.Presentation.Presenters
 {
-    /// <summary>
-    /// 
-    /// </summary>
     /// <typeparam name="TView">Type of view to manage.</typeparam>
-    public abstract class MapLayersListenerPresenter<TView> : BasePresenter<TView>
+    public abstract class MapLayersListenerPresenter<TCoordinate, TView> : BasePresenter<TCoordinate, TView>
+        where TCoordinate : ICoordinate<TCoordinate>, IEquatable<TCoordinate>,
+                            IComparable<TCoordinate>, IConvertible,
+                            IComputable<Double, TCoordinate>
         where TView : class
     {
         #region Instance Fields
         #endregion
 
         #region Object construction / disposal
-        protected MapLayersListenerPresenter(Map map, TView view)
+        protected MapLayersListenerPresenter(Map<TCoordinate> map, TView view)
             : base(map, view)
         {
             map.Layers.ListChanged += handleLayersChanged;

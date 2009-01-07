@@ -17,23 +17,10 @@
 
 using System;
 
-namespace SharpMap.Expressions
+namespace SharpMap.Rendering
 {
-    public class AllAttributesExpression : SelectExpression
+    public interface IRenderLayer
     {
-        public override Boolean Contains(Expression other)
-        {
-            return Equals(other);
-        }
-
-        public override Expression Clone()
-        {
-            return new AllAttributesExpression();
-        }
-
-        public override Boolean Equals(Expression other)
-        {
-            return other is AllAttributesExpression;
-        }
+        Int32 Order { get; }
     }
 }

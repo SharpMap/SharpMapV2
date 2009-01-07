@@ -25,7 +25,7 @@ namespace SharpMap.Rendering
         Default = HighQuality,
         HighSpeed = 0,
         AntiAlias = 1,
-        ClearType = 2,
+        Subpixel = 2,
         HighQuality = AntiAlias,
     }
 }

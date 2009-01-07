@@ -22,13 +22,13 @@ using System.ComponentModel;
 using System.Diagnostics;
 using GeoAPI.Coordinates;
 using GeoAPI.Geometries;
+using NPack.Interfaces;
 using SharpMap.Data;
 using SharpMap.Expressions;
 using SharpMap.Layers;
 using SharpMap.Presentation.Views;
 using SharpMap.Rendering;
-using SharpMap.Rendering.Rendering2D;
-using SharpMap.Styles;
+using SharpMap.Symbology;
 using SharpMap.Tools;
 using IMatrixD = NPack.Interfaces.IMatrix<NPack.DoubleComponent>;
 using IVectorD = NPack.Interfaces.IVector<NPack.DoubleComponent>;
@@ -38,7 +38,10 @@ namespace SharpMap.Presentation.Presenters
     /// <summary>
     /// Provides the input-handling and view-updating logic for a 2D map view.
     /// </summary>
-    public abstract class MapPresenter2D : FeatureLayersListenerPresenter<IMapView2D>
+    public abstract class MapPresenter<TCoordinate> : FeatureLayersListenerPresenter<IMapView<TCoordinate>>
+        where TCoordinate : ICoordinate<TCoordinate>, IEquatable<TCoordinate>,
+                            IComparable<TCoordinate>, IConvertible,
+                            IComputable<Double, TCoordinate>
     {
         internal struct RendererKey
         {
@@ -84,9 +87,9 @@ namespace SharpMap.Presentation.Presenters
         #endregion
 
         #region Private instance fields
-        private readonly ViewSelection2D _selection;
+        private readonly ViewSelection<TCoordinate> _selection;
         private StyleColor _backgroundColor;
-        private Size2D _oldViewSize = Size2D.Empty;
+        private Size<TCoordinate> _oldViewSize = Size<TCoordinate>.Empty;
         private Double _maximumWorldWidth = Double.PositiveInfinity;
         private Double _minimumWorldWidth;
         private Boolean _viewIsEmpty = true;
@@ -95,7 +98,7 @@ namespace SharpMap.Presentation.Presenters
         // The origin projection matrix reflects the coordinate system along
         // the x-axis, and translates the lower left corner of Map.Extents
         // to the view coordinate (0, ViewSize.Height)
-        private readonly Matrix2D _originProjectionTransform = new Matrix2D();
+        private readonly IMatrixD _originProjectionTransform = new Matrix2D();
 
         // The rotation matrix rotates world coordinates relative to view coordinates
         private readonly Matrix2D _rotationTransform = new Matrix2D();
@@ -132,16 +135,16 @@ namespace SharpMap.Presentation.Presenters
         #region Object construction / disposal
 
         /// <summary>
-        /// Creates a new MapPresenter2D.
+        /// Creates a new MapPresenter.
         /// </summary>
         /// <param name="map">The map to present.</param>
         /// <param name="mapView">The view to present the map on.</param>
-        protected MapPresenter2D(Map map, IMapView2D mapView)
+        protected MapPresenter(Map map, IMapView<TCoordinate> mapView)
             : base(map, mapView)
         {
             createRenderers();
 
-            _selection = new ViewSelection2D();
+            _selection = new ViewSelection<TCoordinate>();
 
             View.Hover += handleViewHover;
             View.BeginAction += handleViewBeginAction;
@@ -362,7 +365,7 @@ namespace SharpMap.Presentation.Presenters
         /// <summary>
         /// A selection on a view.
         /// </summary>
-        protected ViewSelection2D SelectionInternal
+        protected ViewSelection<TCoordinate> SelectionInternal
         {
             get { return _selection; }
             //private set { _selection = value; }
@@ -444,14 +447,14 @@ namespace SharpMap.Presentation.Presenters
             }
         }
 
-        protected ITextRenderer2D TextRenderer
+        protected ITextRenderer<TCoordinate> TextRenderer
         {
             get
             {
                 IRenderer r;
 
                 Type renderObjectType = GetRenderObjectType();
-                Type tRenderer = typeof(ITextRenderer2D);
+                Type tRenderer = typeof(ITextRenderer<TCoordinate>);
                 RendererKey key = new RendererKey(renderObjectType, tRenderer);
                 if (!_rendererRegistry.TryGetValue(key, out r))
                 {
@@ -465,7 +468,7 @@ namespace SharpMap.Presentation.Presenters
                     }
                 }
 
-                return r as ITextRenderer2D;
+                return r as ITextRenderer<TCoordinate>;
 
                 //if (Thread.VolatileRead(ref _textRenderer) == null)
                 //{
@@ -496,8 +499,8 @@ namespace SharpMap.Presentation.Presenters
                     return null;
                 }
 
-                Point2D lowerLeft = ToWorldTransformInternal.TransformVector(0, View.ViewSize.Height);
-                Point2D upperRight = ToWorldTransformInternal.TransformVector(View.ViewSize.Width, 0);
+                TCoordinate lowerLeft = ToWorldTransformInternal.TransformVector(0, View.ViewSize.Height);
+                TCoordinate upperRight = ToWorldTransformInternal.TransformVector(View.ViewSize.Width, 0);
                 return Map.GeometryFactory.CreateExtents(convertCoordinate(lowerLeft),
                                                          convertCoordinate(upperRight)) as IExtents2D;
             }
@@ -600,24 +603,24 @@ namespace SharpMap.Presentation.Presenters
         protected virtual void SetViewLocationInformation(String text) { }
         protected virtual void SetViewMaximumWorldWidth(Double fromMaxWidth, Double toMaxWidth) { }
         protected virtual void SetViewMinimumWorldWidth(Double fromMinWidth, Double toMinWidth) { }
-        //protected virtual void SetViewSize(Size2D fromSize, Size2D toSize) { }
+        //protected virtual void SetViewSize(Size<TCoordinate> fromSize, Size<TCoordinate> toSize) { }
         protected virtual void SetViewWorldAspectRatio(Double fromRatio, Double toRatio) { }
 
-        protected Point2D ToViewInternal(ICoordinate point)
+        protected TCoordinate ToViewInternal(ICoordinate point)
         {
             checkViewState();
 
             return worldToView(point);
         }
 
-        protected Point2D ToViewInternal(Double x, Double y)
+        protected TCoordinate ToViewInternal(Double x, Double y)
         {
             checkViewState();
 
             return ToViewTransformInternal.TransformVector(x, y);
         }
 
-        protected ICoordinate ToWorldInternal(Point2D point)
+        protected ICoordinate ToWorldInternal(TCoordinate point)
         {
             checkViewState();
 
@@ -628,11 +631,11 @@ namespace SharpMap.Presentation.Presenters
         {
             checkViewState();
 
-            Point2D point = ToWorldTransformInternal.TransformVector(x, y);
+            TCoordinate point = ToWorldTransformInternal.TransformVector(x, y);
             return convertCoordinate(point);
         }
 
-        protected IExtents2D ToWorldInternal(Rectangle2D bounds)
+        protected IExtents2D ToWorldInternal(Rectangle<TCoordinate> bounds)
         {
             checkViewState();
 
@@ -642,9 +645,9 @@ namespace SharpMap.Presentation.Presenters
                 return null;
             }
 
-            Point2D lowerRight = ToWorldTransformInternal.TransformVector(bounds.Left,
+            TCoordinate lowerRight = ToWorldTransformInternal.TransformVector(bounds.Left,
                                                                           bounds.Bottom);
-            Point2D upperLeft = ToWorldTransformInternal.TransformVector(bounds.Right,
+            TCoordinate upperLeft = ToWorldTransformInternal.TransformVector(bounds.Right,
                                                                          bounds.Top);
             return Map.GeometryFactory.CreateExtents(
                        convertCoordinate(lowerRight),
@@ -674,7 +677,7 @@ namespace SharpMap.Presentation.Presenters
         /// The view bounds, translated into world bounds,
         /// to set the zoom to.
         /// </param>
-        protected void ZoomToViewBoundsInternal(Rectangle2D viewBounds)
+        protected void ZoomToViewBoundsInternal(Rectangle<TCoordinate> viewBounds)
         {
             checkViewState();
 
@@ -982,16 +985,16 @@ namespace SharpMap.Presentation.Presenters
                 {
                     RenderFeatureLayer(layer as IFeatureLayer, phase);
                 }
-                else if (layer is IRasterLayer)
+                else if (layer is ICoverageLayer)
                 {
-                    RenderRasterLayer(layer as IRasterLayer, phase);
+                    RenderRasterLayer(layer as ICoverageLayer, phase);
                 }
             }
 
             OnRenderedLayerPhase(layer, phase);
         }
 
-        protected void RenderSelection(ViewSelection2D selection)
+        protected void RenderSelection(ViewSelection<TCoordinate> selection)
         {
             OnRenderingSelection();
 
@@ -1078,7 +1081,7 @@ namespace SharpMap.Presentation.Presenters
             renderer.CleanUp();
         }
 
-        protected virtual void RenderRasterLayer(IRasterLayer layer, RenderPhase phase)
+        protected virtual void RenderRasterLayer(ICoverageLayer layer, RenderPhase phase)
         {
             throw new NotImplementedException();
         }
@@ -1121,10 +1124,10 @@ namespace SharpMap.Presentation.Presenters
 
         // Handles the offset request from the view
         private void handleViewOffsetChangeRequested(Object sender,
-                                                     MapViewPropertyChangeEventArgs<Point2D> e)
+                                                     MapViewPropertyChangeEventArgs<TCoordinate> e)
         {
-            Size2D viewSize = View.ViewSize;
-            Point2D newViewCenter = new Point2D(viewSize.Width / 2, viewSize.Height / 2) + e.RequestedValue;
+            Size<TCoordinate> viewSize = View.ViewSize;
+            TCoordinate newViewCenter = new TCoordinate(viewSize.Width / 2, viewSize.Height / 2) + e.RequestedValue;
             ICoordinate newCenter = ToWorldInternal(newViewCenter);
             GeoCenterInternal = newCenter;
         }
@@ -1135,54 +1138,54 @@ namespace SharpMap.Presentation.Presenters
             setViewMetricsInternal(View.ViewSize, getGeoCenter(), WorldWidthInternal);
         }
 
-        private Point2D _previousActionPoint = Point2D.Empty;
+        private TCoordinate _previousActionPoint = TCoordinate.Empty;
 
         // Handles the hover request from the view
-        private void handleViewHover(Object sender, MapActionEventArgs<Point2D> e)
+        private void handleViewHover(Object sender, MapActionEventArgs<TCoordinate> e)
         {
-            ActionContext<IMapView2D, Point2D> context
-                = new ActionContext<IMapView2D, Point2D>(Map,
+            ActionContext<IMapView<TCoordinate>, TCoordinate> context
+                = new ActionContext<IMapView<TCoordinate>, TCoordinate>(Map,
                                                          View,
                                                          _previousActionPoint,
                                                          e.ActionPoint);
-            Map.GetActiveTool<IMapView2D, Point2D>().QueryAction(context);
+            Map.GetActiveTool<IMapView<TCoordinate>, TCoordinate>().QueryAction(context);
             _previousActionPoint = e.ActionPoint;
         }
 
         // Handles the begin action request from the view
-        private void handleViewBeginAction(Object sender, MapActionEventArgs<Point2D> e)
+        private void handleViewBeginAction(Object sender, MapActionEventArgs<TCoordinate> e)
         {
-            ActionContext<IMapView2D, Point2D> context
-                = new ActionContext<IMapView2D, Point2D>(Map,
+            ActionContext<IMapView<TCoordinate>, TCoordinate> context
+                = new ActionContext<IMapView<TCoordinate>, TCoordinate>(Map,
                                                          View,
                                                          _previousActionPoint,
                                                          e.ActionPoint);
-            Map.GetActiveTool<IMapView2D, Point2D>().BeginAction(context);
+            Map.GetActiveTool<IMapView<TCoordinate>, TCoordinate>().BeginAction(context);
             _previousActionPoint = e.ActionPoint;
         }
 
         // Handles the move-to request from the view
-        private void handleViewMoveTo(Object sender, MapActionEventArgs<Point2D> e)
+        private void handleViewMoveTo(Object sender, MapActionEventArgs<TCoordinate> e)
         {
-            ActionContext<IMapView2D, Point2D> context
-                = new ActionContext<IMapView2D, Point2D>(Map,
+            ActionContext<IMapView<TCoordinate>, TCoordinate> context
+                = new ActionContext<IMapView<TCoordinate>, TCoordinate>(Map,
                                                          View,
                                                          _previousActionPoint,
                                                          e.ActionPoint);
-            Map.GetActiveTool<IMapView2D, Point2D>().ExtendAction(context);
+            Map.GetActiveTool<IMapView<TCoordinate>, TCoordinate>().ExtendAction(context);
             _previousActionPoint = e.ActionPoint;
         }
 
         // Handles the end action request from the view
-        private void handleViewEndAction(Object sender, MapActionEventArgs<Point2D> e)
+        private void handleViewEndAction(Object sender, MapActionEventArgs<TCoordinate> e)
         {
-            ActionContext<IMapView2D, Point2D> context
-                = new ActionContext<IMapView2D, Point2D>(Map,
+            ActionContext<IMapView<TCoordinate>, TCoordinate> context
+                = new ActionContext<IMapView<TCoordinate>, TCoordinate>(Map,
                                                          View,
                                                          _previousActionPoint,
                                                          e.ActionPoint);
-            Map.GetActiveTool<IMapView2D, Point2D>().EndAction(context);
-            _previousActionPoint = Point2D.Empty;
+            Map.GetActiveTool<IMapView<TCoordinate>, TCoordinate>().EndAction(context);
+            _previousActionPoint = TCoordinate.Empty;
         }
 
         // Handles the background color change request from the view
@@ -1245,7 +1248,7 @@ namespace SharpMap.Presentation.Presenters
 
         // Handles the view zoom to specified view bounds request from the view
         private void handleViewZoomToViewBoundsRequested(Object sender,
-                                                         MapViewPropertyChangeEventArgs<Rectangle2D> e)
+                                                         MapViewPropertyChangeEventArgs<Rectangle<TCoordinate>> e)
         {
             ZoomToViewBoundsInternal(e.RequestedValue);
         }
@@ -1414,7 +1417,7 @@ namespace SharpMap.Presentation.Presenters
         // Performs computations to set the view metrics given the parameters
         // of the view size, the geographic center of the view, and how much
         // of the world to show in the view by width.
-        private void setViewMetricsInternal(Size2D newViewSize,
+        private void setViewMetricsInternal(Size<TCoordinate> newViewSize,
                                             ICoordinate newCenter,
                                             Double newWorldWidth)
         {
@@ -1504,7 +1507,7 @@ namespace SharpMap.Presentation.Presenters
             }
         }
 
-        private void setViewCenter(Size2D size)
+        private void setViewCenter(Size<TCoordinate> size)
         {
             _viewCenterTransform.OffsetX = size.Width / 2;
             _viewCenterTransform.OffsetY = -size.Height / 2;
@@ -1532,16 +1535,16 @@ namespace SharpMap.Presentation.Presenters
         }
 
         // Computes the view space coordinates of a point in world space
-        private Point2D worldToView(ICoordinate worldPoint)
+        private TCoordinate worldToView(ICoordinate worldPoint)
         {
             return ToViewTransformInternal == null
-                       ? Point2D.Empty
+                       ? TCoordinate.Empty
                        : ToViewTransformInternal.TransformVector(
                              worldPoint[Ordinates.X], worldPoint[Ordinates.Y]);
         }
 
         // Computes the world space coordinates of a point in view space
-        private ICoordinate viewToWorld(Point2D viewPoint)
+        private ICoordinate viewToWorld(TCoordinate viewPoint)
         {
             if (ToWorldTransformInternal == null)
             {
@@ -1549,11 +1552,11 @@ namespace SharpMap.Presentation.Presenters
                 return null;
             }
 
-            Point2D point = ToWorldTransformInternal.TransformVector(viewPoint.X, viewPoint.Y);
+            TCoordinate point = ToWorldTransformInternal.TransformVector(viewPoint.X, viewPoint.Y);
             return convertCoordinate(point);
         }
 
-        private ICoordinate convertCoordinate(Point2D point)
+        private ICoordinate convertCoordinate(TCoordinate point)
         {
             return Map.GeometryFactory.CoordinateFactory.Create(point.X, point.Y);
         }

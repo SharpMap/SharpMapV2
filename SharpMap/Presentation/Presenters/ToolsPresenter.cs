@@ -16,7 +16,8 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System;
-using SharpMap.Presentation.Presenters;
+using GeoAPI.Coordinates;
+using NPack.Interfaces;
 using SharpMap.Presentation.Views;
 using SharpMap.Tools;
 
@@ -26,16 +27,19 @@ namespace SharpMap.Presentation.Presenters
     /// The presenter for managing a <see cref="MapTool">view</see> of 
     /// <see cref="IToolsView"/> instances.
     /// </summary>
-    public class ToolsPresenter : BasePresenter<IToolsView>
+    public class ToolsPresenter<TCoordinate> : BasePresenter<TCoordinate, IToolsView>
+        where TCoordinate : ICoordinate<TCoordinate>, IEquatable<TCoordinate>,
+                            IComparable<TCoordinate>, IConvertible,
+                            IComputable<Double, TCoordinate>
     {
         /// <summary>
-        /// Creates a new instance of a <see cref="ToolsPresenter"/> with the given model and view.
+        /// Creates a new instance of a <see cref="ToolsPresenter{TCoordinate}"/> with the given model and view.
         /// </summary>
         /// <param name="map">The map model to present.</param>
         /// <param name="toolsView">
         /// The view to accept input from and keep synchronized with the model.
         /// </param>
-        public ToolsPresenter(Map map, IToolsView toolsView)
+        public ToolsPresenter(Map<TCoordinate> map, IToolsView toolsView)
             : base(map, toolsView)
         {
             View.Tools = map.Tools;
@@ -43,7 +47,7 @@ namespace SharpMap.Presentation.Presenters
 
         protected override void OnMapPropertyChanged(String propertyName)
         {
-            if (propertyName == Map.ActiveToolProperty.Name)
+            if (propertyName == Map<TCoordinate>.ActiveToolProperty.Name)
             {
                 View.SelectedTool = Map.ActiveTool;
             }

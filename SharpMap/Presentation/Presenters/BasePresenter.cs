@@ -18,6 +18,8 @@
 using System;
 using System.ComponentModel;
 using System.Diagnostics;
+using GeoAPI.Coordinates;
+using NPack.Interfaces;
 
 namespace SharpMap.Presentation.Presenters
 {
@@ -25,10 +27,13 @@ namespace SharpMap.Presentation.Presenters
     /// The base presenter for map views.
     /// </summary>
     /// <typeparam name="TView">Type of view to manage.</typeparam>
-    public abstract class BasePresenter<TView> : IDisposable
+    public abstract class BasePresenter<TCoordinate, TView> : IDisposable
+        where TCoordinate : ICoordinate<TCoordinate>, IEquatable<TCoordinate>,
+                            IComparable<TCoordinate>, IConvertible,
+                            IComputable<Double, TCoordinate>
         where TView : class
     {
-        private readonly Map _map;
+        private readonly Map<TCoordinate> _map;
         private readonly TView _view;
         private Boolean _disposed;
 
@@ -39,7 +44,7 @@ namespace SharpMap.Presentation.Presenters
         /// </summary>
         /// <param name="map">The map model.</param>
         /// <param name="view">The view to keep synchronized with the model and to accept input from.</param>
-        protected BasePresenter(Map map, TView view)
+        protected BasePresenter(Map<TCoordinate> map, TView view)
         {
             _map = map;
             Map.PropertyChanged += handleMapPropertyChanged;
@@ -135,7 +140,7 @@ namespace SharpMap.Presentation.Presenters
         /// This is the model which is kept synchronized to the view, 
         /// and which input on the view modifies through this presenter.
         /// </remarks>
-        public Map Map
+        public Map<TCoordinate> Map
         {
             [DebuggerStepThrough]
             get

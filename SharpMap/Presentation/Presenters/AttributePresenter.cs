@@ -20,7 +20,9 @@ using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
+using GeoAPI.Coordinates;
 using GeoAPI.Diagnostics;
+using NPack.Interfaces;
 using SharpMap.Data;
 using SharpMap.Diagnostics;
 using SharpMap.Layers;
@@ -33,7 +35,10 @@ namespace SharpMap.Presentation.Presenters
     /// <summary>
     /// Manages views of attribute data and coordinates layer attribute interaction.
     /// </summary>
-    public class AttributePresenter : FeatureLayersListenerPresenter<IAttributeView>
+    public class AttributePresenter<TCoordinate> : FeatureLayersListenerPresenter<TCoordinate, IAttributeView>
+        where TCoordinate : ICoordinate<TCoordinate>, IEquatable<TCoordinate>,
+                            IComparable<TCoordinate>, IConvertible,
+                            IComputable<Double, TCoordinate>
     {
         #region Private instance fields
         private Boolean _highlightUpdating;
@@ -41,11 +46,11 @@ namespace SharpMap.Presentation.Presenters
 
         #region Object construction / disposal
         /// <summary>
-        /// Creates a new <see cref="AttributePresenter"/> with the given map and view.
+        /// Creates a new <see cref="AttributePresenter{TCoordinate}"/> with the given map and view.
         /// </summary>
         /// <param name="map">The map model to observe and control.</param>
         /// <param name="view">The view to use to display attribute data.</param>
-        public AttributePresenter(Map map, IAttributeView view)
+        public AttributePresenter(Map<TCoordinate> map, IAttributeView view)
             : base(map, view)
         {
             Trace.Info(TraceCategories.Presentation, "Creating AttributePresenter");
@@ -167,7 +172,7 @@ namespace SharpMap.Presentation.Presenters
             }
             else
             {
-                ProjectionExpression projection = viewDefinition.Projection;
+                SelectExpression projection = viewDefinition.Projection;
 
                 if (viewDefinition.SpatialPredicate == null)
                 {
@@ -175,7 +180,7 @@ namespace SharpMap.Presentation.Presenters
                 }
                 else
                 {
-                    PredicateExpression predicate = new BinaryLogicExpression(viewDefinition.SpatialPredicate,
+                    LogicExpression predicate = new BinaryLogicExpression(viewDefinition.SpatialPredicate,
                                                                          BinaryLogicOperator.And,
                                                                          oidExpression);
                     viewDefinition = new FeatureQueryExpression(projection, predicate);

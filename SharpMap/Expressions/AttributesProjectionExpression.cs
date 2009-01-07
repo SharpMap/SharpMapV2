@@ -21,7 +21,7 @@ using GeoAPI.DataStructures;
 
 namespace SharpMap.Expressions
 {
-    public class AttributesProjectionExpression : ProjectionExpression
+    public class AttributesProjectionExpression : SelectExpression
     {
         private readonly CollectionExpression<PropertyNameExpression> _attributes;
 

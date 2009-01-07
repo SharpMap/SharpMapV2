@@ -259,8 +259,8 @@ namespace SharpMap.Data.Providers.Db
                 VisitProviderPropertiesExpression(builder, (ProviderPropertiesExpression)exp);
             else if (exp is ProviderPropertyExpression)
                 VisitProviderPropertyExpression(builder, (ProviderPropertyExpression)exp);
-            else if (exp is ProjectionExpression)
-                VisitProjectionExpression((ProjectionExpression)exp);
+            else if (exp is SelectExpression)
+                VisitProjectionExpression((SelectExpression)exp);
             else if (exp is SpatialBinaryExpression)
                 VisitSpatialBinaryExpression(builder, (SpatialBinaryExpression)exp);
             else if (exp is QueryExpression)
@@ -277,13 +277,13 @@ namespace SharpMap.Data.Providers.Db
                 VisitAttributeExpression(builder, (PropertyNameExpression)exp);
             else if (exp is CollectionExpression)
                 VisitCollectionExpression(builder, (CollectionExpression)exp);
-            else if (exp is OidExpression)
-                VisitOidExpression(builder, (OidExpression)exp);
+            else if (exp is OidPropertyExpression)
+                VisitOidExpression(builder, (OidPropertyExpression)exp);
             else
                 throw new NotImplementedException(string.Format("Unknown Expression Type {0}", exp.GetType()));
         }
 
-        private void VisitOidExpression(StringBuilder builder, OidExpression oidExpression)
+        private void VisitOidExpression(StringBuilder builder, OidPropertyExpression oidExpression)
         {
             builder.AppendFormat(" {0} ", Provider.OidColumn);
         }
@@ -318,7 +318,7 @@ namespace SharpMap.Data.Providers.Db
             builder.Append(")");
         }
 
-        protected virtual void VisitProjectionExpression(ProjectionExpression exp)
+        protected virtual void VisitProjectionExpression(SelectExpression exp)
         {
             if (exp == null)
                 return;

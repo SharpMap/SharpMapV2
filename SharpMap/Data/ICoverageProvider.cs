@@ -1,4 +1,4 @@
-// Copyright 2006 - 2008: Rory Plaire (codekaizen@gmail.com)
+﻿// Copyright 2006 - 2008: Rory Plaire (codekaizen@gmail.com)
 //
 // This file is part of SharpMap.
 // SharpMap is free software; you can redistribute it and/or modify
@@ -15,20 +15,22 @@
 // along with SharpMap; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
-using System;
 using System.IO;
-using GeoAPI.Coordinates;
-using NPack.Interfaces;
-using IMatrixD = NPack.Interfaces.IMatrix<NPack.DoubleComponent>;
-using IVectorD = NPack.Interfaces.IVector<NPack.DoubleComponent>;
+using SharpMap.Expressions;
 
-namespace SharpMap.Rendering
+namespace SharpMap.Data
 {
-    public interface IRasterRenderer<TCoordinate> : IRenderer
-        where TCoordinate : ICoordinate<TCoordinate>, IEquatable<TCoordinate>,
-                            IComparable<TCoordinate>, IConvertible,
-                            IComputable<Double, TCoordinate>
+    /// <summary>
+    /// Defines the interface to a provider of raster data.
+    /// </summary>
+    public interface ICoverageProvider : IProvider
     {
-        void RenderRaster(IScene scene, Stream rasterData, Rectangle<TCoordinate> rasterBounds);
+        /// <summary>
+        /// Retrieves a <see cref="Stream"/> for the raster data that 
+        /// are selected by <paramref name="query"/>.
+        /// </summary>
+        /// <param name="query">Query select with.</param>
+        /// <returns>A Stream to access the raster data of the result.</returns>
+        Stream ExecuteCoverageQuery(CoverageQueryExpression query);
     }
 }

@@ -43,13 +43,16 @@ namespace SharpMap
     /// of <see cref="IMapTool"/>s for interacting with them.
     /// </summary>
     [DesignTimeVisible(false)]
-    public class Map : INotifyPropertyChanged, IDisposable
+    public class Map<TCoordinate> : INotifyPropertyChanged, IDisposable
+        where TCoordinate : ICoordinate<TCoordinate>, IEquatable<TCoordinate>,
+                            IComparable<TCoordinate>, IConvertible,
+                            IComputable<Double, TCoordinate>
     {
         private static readonly PropertyDescriptorCollection _properties;
 
         static Map()
         {
-            _properties = TypeDescriptor.GetProperties(typeof(Map));
+            _properties = TypeDescriptor.GetProperties(typeof(Map<TCoordinate>));
         }
 
         #region PropertyDescriptors
@@ -98,21 +101,22 @@ namespace SharpMap
 
         #region Fields
 
-        private IGeometryFactory _geoFactory;
-        private readonly LayerCollection _layers;
+        private IGeometryFactory<TCoordinate> _geoFactory;
+        private ICoordinateTransformationFactory<TCoordinate> _coordTransformFactory;
+        private ICoordinateSystemFactory<TCoordinate> _coordSysFactory;
+        private readonly LayerCollection<TCoordinate> _layers;
         private readonly FeatureDataSet _featureDataSet;
         private readonly List<ILayer> _selectedLayers = new List<ILayer>();
-        private IExtents _extents;
-        private readonly IPoint _emptyPoint;
+        private IExtents<TCoordinate> _extents;
+        private readonly IPoint<TCoordinate> _emptyPoint;
         // 3D_UNSAFE: - change this initialization
-        private IMapTool _activeTool = StandardMapView2DMapTools.None;
+        private IMapTool _activeTool = StandardMapViewMapTools<TCoordinate>.None;
 
         // I18N_UNSAFE
         private IMapToolSet _mapTools = new MapToolSet("All Tools");
-        private ICoordinateSystem _spatialReference;
+        private ICoordinateSystem<TCoordinate> _spatialReference;
         private Boolean _disposed;
         private readonly String _defaultName;
-        private ICoordinateTransformationFactory _coordTransformFactory;
 
         #endregion
 
@@ -122,9 +126,11 @@ namespace SharpMap
         /// Creates a new instance of a Map with a title describing 
         /// when the map was created.
         /// </summary>
-        public Map(IGeometryFactory geoFactory, ICoordinateTransformationFactory coordTransformFactory)
+        public Map(IGeometryFactory<TCoordinate> geoFactory, 
+                   ICoordinateSystemFactory<TCoordinate> coordSysFactory, 
+                   ICoordinateTransformationFactory<TCoordinate> coordTransformFactory)
             // I18N_UNSAFE
-            : this("Map created " + DateTime.Now.ToShortDateString(), geoFactory, coordTransformFactory)
+            : this("Map created " + DateTime.Now.ToShortDateString(), geoFactory, coordSysFactory, coordTransformFactory)
         {
             _defaultName = _featureDataSet.DataSetName;
         }
@@ -132,22 +138,26 @@ namespace SharpMap
         /// <summary>
         /// Creates a new instance of a Map with the given title.
         /// </summary>
-        public Map(String title, IGeometryFactory geoFactory, ICoordinateTransformationFactory coordTransformFactory)
+        public Map(String title, 
+                   IGeometryFactory<TCoordinate> geoFactory,
+                   ICoordinateSystemFactory<TCoordinate> coordSysFactory,
+                   ICoordinateTransformationFactory<TCoordinate> coordTransformFactory)
         {
             _geoFactory = geoFactory;
+            _coordSysFactory = coordSysFactory;
             _coordTransformFactory = coordTransformFactory;
             _emptyPoint = _geoFactory.CreatePoint();
-            _layers = new LayerCollection(this);
+            _layers = new LayerCollection<TCoordinate>(this);
             _layers.ListChanged += handleLayersChanged;
             _featureDataSet = new FeatureDataSet(title, geoFactory);
 
             // TODO: tool configuration should come from a config file and / or reflection
             IMapTool[] mapTools = new IMapTool[]
                     {
-                        StandardMapView2DMapTools.Pan, 
-                        StandardMapView2DMapTools.Query, 
-                        StandardMapView2DMapTools.ZoomIn,
-                        StandardMapView2DMapTools.ZoomOut
+                        StandardMapViewMapTools<TCoordinate>.Pan, 
+                        StandardMapViewMapTools<TCoordinate>.Query, 
+                        StandardMapViewMapTools<TCoordinate>.ZoomIn,
+                        StandardMapViewMapTools<TCoordinate>.ZoomOut
                     };
 
             // I18N_UNSAFE
@@ -240,6 +250,7 @@ namespace SharpMap
 
         public void AddLayer(IProvider provider)
         {
+            // I18N_UNSAFE
             throw new NotImplementedException("Possible future method...");
         }
 
@@ -280,8 +291,10 @@ namespace SharpMap
             {
                 if (layer == null)
                 {
+                    // I18N_UNSAFE
                     throw new ArgumentException("One of the layers is null.");
                 }
+
                 checkForDuplicateLayerName(layer);
                 layerNames.Add(layer.LayerName);
             }
@@ -292,6 +305,7 @@ namespace SharpMap
                 {
                     if (String.Compare(layerNames[i], layerNames[j], StringComparison.CurrentCultureIgnoreCase) == 0)
                     {
+                        // I18N_UNSAFE
                         throw new ArgumentException("Layers to be added contain a duplicate name: " + layerNames[i]);
                     }
                 }
@@ -898,17 +912,17 @@ namespace SharpMap
         /// <summary>
         /// Gets center of map in world coordinates.
         /// </summary>
-        public ICoordinate Center
+        public TCoordinate Center
         {
             get { return _extents == null ? _emptyPoint.Coordinate : _extents.Center; }
         }
 
-        public IGeometryFactory GeometryFactory
+        public IGeometryFactory<TCoordinate> GeometryFactory
         {
             get { return _geoFactory; }
         }
 
-        public ICoordinateTransformationFactory CoordinateTransformFactory
+        public ICoordinateTransformationFactory<TCoordinate> CoordinateTransformFactory
         {
             get { return _coordTransformFactory; }
             set { _coordTransformFactory = value; }
@@ -920,7 +934,7 @@ namespace SharpMap
         /// <remarks>
         /// The first layer in the list is drawn first, the last one on top.
         /// </remarks>
-        public LayerCollection Layers
+        public LayerCollection<TCoordinate> Layers
         {
             get { return _layers; }
         }
@@ -988,7 +1002,7 @@ namespace SharpMap
         /// <summary>
         /// Gets or sets the spatial reference for the entire map.
         /// </summary>
-        public ICoordinateSystem SpatialReference
+        public ICoordinateSystem<TCoordinate> SpatialReference
         {
             get { return _spatialReference; }
             set
@@ -1043,7 +1057,7 @@ namespace SharpMap
 
         private void onSpatialReferenceChanged()
         {
-            _geoFactory = _geoFactory.Clone();
+            _geoFactory = (IGeometryFactory<TCoordinate>)_geoFactory.Clone();
             _geoFactory.SpatialReference = SpatialReference;
 
             foreach (ILayer layer in _layers)
@@ -1185,7 +1199,7 @@ namespace SharpMap
                 }
             }
 
-            _extents = extents;
+            _extents = (IExtents<TCoordinate>)extents;
         }
 
         private static void changeLayerEnabled(ILayer layer, Boolean enabled)

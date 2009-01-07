@@ -790,7 +790,7 @@ namespace SharpMap.Data
 
         #region Protected members
 
-        protected ProjectionExpression GetAttributesExpression()
+        protected SelectExpression GetAttributesExpression()
         {
             // TODO: compute correct attribute expression
             return new AllAttributesExpression();

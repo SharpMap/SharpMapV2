@@ -21,12 +21,12 @@ using NPack.Interfaces;
 
 namespace SharpMap.Tools
 {
-	public interface IMapTool<TMapView, TPoint> : IMapTool
-		where TPoint : IVector<DoubleComponent>
+    public interface IMapTool<TMapView, TCoordinate> : IMapTool
+        where TCoordinate : IVector<DoubleComponent>
 	{
-		Action<ActionContext<TMapView, TPoint>> QueryAction { get; }
-		Action<ActionContext<TMapView, TPoint>> BeginAction { get; }
-		Action<ActionContext<TMapView, TPoint>> ExtendAction { get; }
-		Action<ActionContext<TMapView, TPoint>> EndAction { get; }
+        Action<ActionContext<TMapView, TCoordinate>> QueryAction { get; }
+        Action<ActionContext<TMapView, TCoordinate>> BeginAction { get; }
+        Action<ActionContext<TMapView, TCoordinate>> ExtendAction { get; }
+        Action<ActionContext<TMapView, TCoordinate>> EndAction { get; }
 	}
 }

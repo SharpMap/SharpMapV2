@@ -22,6 +22,11 @@ namespace SharpMap.Expressions
 {
     public class LiteralExpression<TValue> : LiteralExpression
     {
+        public static implicit operator LiteralExpression<TValue>(TValue value)
+        {
+            return new LiteralExpression<TValue>(value);
+        }
+
         private readonly TValue _value;
         private readonly IEqualityComparer<TValue> _comparer;
 

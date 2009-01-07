@@ -20,30 +20,30 @@ namespace SharpMap.Data.Providers.Db
             if (expr1 is QueryExpression && expr2 is QueryExpression)
                 return MergeQueryExpressions((QueryExpression)expr1, (QueryExpression)expr2);
 
-            if (expr1 is FeatureQueryExpression && expr2 is PredicateExpression)
-                return MergeFeatureQueryAndPredicateExpression((FeatureQueryExpression)expr1, (PredicateExpression)expr2);
+            if (expr1 is FeatureQueryExpression && expr2 is LogicExpression)
+                return MergeFeatureQueryAndPredicateExpression((FeatureQueryExpression)expr1, (LogicExpression)expr2);
 
-            if (expr1 is PredicateExpression && expr2 is FeatureQueryExpression)
-                return MergeFeatureQueryAndPredicateExpression((FeatureQueryExpression)expr2, (PredicateExpression)expr1);
+            if (expr1 is LogicExpression && expr2 is FeatureQueryExpression)
+                return MergeFeatureQueryAndPredicateExpression((FeatureQueryExpression)expr2, (LogicExpression)expr1);
 
-            if (expr1 is ProviderQueryExpression && expr2 is PredicateExpression)
+            if (expr1 is ProviderQueryExpression && expr2 is LogicExpression)
                 return MergeProviderQueryExpressionAndSpatialBinaryExpression((ProviderQueryExpression)expr1,
-                                                                              (PredicateExpression)expr2);
+                                                                              (LogicExpression)expr2);
 
 
             throw GetMergeException(expr1, expr2);
         }
 
-        private static Expression MergeProviderQueryExpressionAndSpatialBinaryExpression(ProviderQueryExpression expression, PredicateExpression binaryExpression)
+        private static Expression MergeProviderQueryExpressionAndSpatialBinaryExpression(ProviderQueryExpression expression, LogicExpression binaryExpression)
         {
             return new ProviderQueryExpression(expression.ProviderProperties, expression.Projection,
                                                MergePredicateExpressions(expression.Predicate, binaryExpression));
         }
 
-        private static Expression MergeFeatureQueryAndPredicateExpression(FeatureQueryExpression expression, PredicateExpression predicateExpression)
+        private static Expression MergeFeatureQueryAndPredicateExpression(FeatureQueryExpression expression, LogicExpression predicateExpression)
         {
-            return new FeatureQueryExpression((ProjectionExpression)expression.Projection,
-                                              (PredicateExpression)MergePredicateExpressions(expression.Predicate, predicateExpression));
+            return new FeatureQueryExpression((SelectExpression)expression.Projection,
+                                              (LogicExpression)MergePredicateExpressions(expression.Predicate, predicateExpression));
         }
 
         private static Exception GetMergeException(Expression expr1, Expression expr2)
@@ -53,7 +53,7 @@ namespace SharpMap.Data.Providers.Db
                                                             expr2.GetType()));
         }
 
-        private static PredicateExpression MergePredicateExpressions(PredicateExpression expression, PredicateExpression binaryExpression)
+        private static LogicExpression MergePredicateExpressions(LogicExpression expression, LogicExpression binaryExpression)
         {
             return new BinaryExpression(expression, BinaryLogicOperator.And, binaryExpression);
         }
@@ -64,7 +64,7 @@ namespace SharpMap.Data.Providers.Db
             return new QueryExpression(MergeProjectionExpressions(expr1.Projection, expr2.Projection), MergePredicateExpressions(expr1.Predicate, expr2.Predicate));
         }
 
-        private static ProjectionExpression MergeProjectionExpressions(ProjectionExpression projection, ProjectionExpression expression)
+        private static SelectExpression MergeProjectionExpressions(SelectExpression projection, SelectExpression expression)
         {
             if (projection is AttributesProjectionExpression && expression is AttributesProjectionExpression)
             {

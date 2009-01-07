@@ -16,7 +16,8 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System;
-
+using GeoAPI.Coordinates;
+using NPack.Interfaces;
 using SharpMap.Rendering;
 using IMatrixD = NPack.Interfaces.IMatrix<NPack.DoubleComponent>;
 using IVectorD = NPack.Interfaces.IVector<NPack.DoubleComponent>;
@@ -26,52 +27,49 @@ namespace SharpMap.Presentation
     /// <summary>
     /// Represents a selection on a map view.
     /// </summary>
-    /// <typeparam name="TPoint">The type of point in this selection.</typeparam>
-    /// <typeparam name="TSize">The type of size structure in this selection.</typeparam>
-    /// <typeparam name="TViewRegion">The type of region this selection covers.</typeparam>
-    public interface IViewSelection<TPoint, TSize, TViewRegion>
-        where TPoint : IVectorD
-        where TSize : IVectorD
-        where TViewRegion : IMatrixD, IEquatable<TViewRegion>
+    public interface IViewSelection<TCoordinate>
+        where TCoordinate : ICoordinate<TCoordinate>, IEquatable<TCoordinate>,
+                            IComparable<TCoordinate>, IConvertible,
+                            IComputable<Double, TCoordinate>
     {
         /// <summary>
         /// Adds a point to the selection.
         /// </summary>
         /// <param name="point">A point to add.</param>
-        void AddPoint(TPoint point);
+        void AddPoint(TCoordinate point);
 
         /// <summary>
         /// Expands the selection by given size. If the size is negative, it contracts the selection.
         /// </summary>
         /// <param name="size">Amount to expand the selection by.</param>
-        void Expand(TSize size);
+        void Expand(Size<TCoordinate> size);
 
         /// <summary>
         /// Moves the selection by the given offset.
         /// </summary>
         /// <param name="offset">Point vector to move selection by.</param>
-        void MoveBy(TPoint offset);
+        void MoveBy(TCoordinate offset);
 
         /// <summary>
         /// Removes a point from the selection.
         /// </summary>
         /// <param name="point">Point to remove.</param>
-        void RemovePoint(TPoint point);
+        void RemovePoint(TCoordinate point);
 
         /// <summary>
         /// Path which represents the outline of the selection on the view surface.
         /// </summary>
-        Path<TPoint, TViewRegion> Path { get; }
+        Path<TCoordinate> Path { get; }
 
         /// <summary>
         /// Point around which selection is transformed.
         /// </summary>
-        TPoint AnchorPoint { get; set; }
+        TCoordinate AnchorPoint { get; set; }
 
         /// <summary>
         /// A minimum bounding box for the selection.
         /// </summary>
-        TViewRegion BoundingRegion { get; }
+        Rectangle<TCoordinate> BoundingRegion { get; }
 
         void Close();
         void Clear();

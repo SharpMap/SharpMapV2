@@ -19,11 +19,11 @@ using System;
 
 namespace SharpMap.Expressions
 {
-    public abstract class BinaryExpressionBase<TOperator> : PredicateExpression
+    public abstract class BinaryExpressionBase<TOperator> : LogicExpression
     {
-        private readonly Expression _left;
+        private Expression _left;
         private readonly TOperator _op;
-        private readonly Expression _right;
+        private Expression _right;
 
         protected BinaryExpressionBase(Expression left, TOperator op, Expression right)
         {
@@ -32,9 +32,10 @@ namespace SharpMap.Expressions
             _right = right;
         }
 
-        protected Expression Left
+        public Expression Left
         {
             get { return _left; }
+            set { _left = value; }
         }
 
         public TOperator Op
@@ -42,9 +43,10 @@ namespace SharpMap.Expressions
             get { return _op; }
         }
 
-        protected Expression Right
+        public Expression Right
         {
             get { return _right; }
+            protected set { _right = value; }
         }
 
         public override Boolean Contains(Expression other)
@@ -66,7 +68,7 @@ namespace SharpMap.Expressions
             return clone;
         }
 
-        protected abstract BinaryExpressionBase<TOperator> Create(Expression left, 
+        protected abstract BinaryExpressionBase<TOperator> Create(Expression left,
                                                                   TOperator op,
                                                                   Expression right);
     }

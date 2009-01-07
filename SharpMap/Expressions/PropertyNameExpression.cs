@@ -49,6 +49,11 @@ namespace SharpMap.Expressions
             }
         }
 
+        public override ExpressionType ExpressionType
+        {
+            get { return ExpressionType.PropertyName; }
+        }
+
         public override Boolean Contains(Expression other)
         {
             return Equals(other);

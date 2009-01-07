@@ -16,7 +16,9 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System;
+using System.Collections.Generic;
 using System.Xml.Serialization;
+using GeoAPI.DataStructures;
 
 namespace SharpMap.Symbology
 {
@@ -32,12 +34,27 @@ namespace SharpMap.Symbology
         private AnchorPoint _anchorPoint;
         private Displacement _displacement;
 
+        /// <summary>
+        /// Used by the XML serializer.
+        /// </summary>
         [XmlElement("ExternalGraphic", typeof (ExternalGraphic))]
         [XmlElement("Mark", typeof (Mark))]
         public Object[] Items
         {
             get { return _items; }
             set { _items = value; }
+        }
+
+        [XmlIgnore]
+        public IEnumerable<Mark> Marks
+        {
+            get { return Caster.CastNoNulls<Mark>(_items); }
+        }
+
+        [XmlIgnore]
+        public IEnumerable<ExternalGraphic> ExternalGraphics
+        {
+            get { return Caster.CastNoNulls<ExternalGraphic>(_items); }
         }
 
         public ParameterValue Opacity

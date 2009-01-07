@@ -24,7 +24,7 @@ using IVectorD = NPack.Interfaces.IVector<NPack.DoubleComponent>;
 
 namespace SharpMap.Rendering
 {
-    public abstract class RasterRenderer<TCoordinate> : Renderer, IRasterRenderer<TCoordinate>
+    public abstract class RasterRenderer<TCoordinate> : Renderer, ICoverageRenderer<TCoordinate>
         where TCoordinate : ICoordinate<TCoordinate>, IEquatable<TCoordinate>,
                             IComparable<TCoordinate>, IConvertible,
                             IComputable<Double, TCoordinate>

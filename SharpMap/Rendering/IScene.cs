@@ -16,15 +16,26 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System;
+using System.IO;
+using GeoAPI.Coordinates;
+using NPack.Interfaces;
 using SharpMap.Symbology;
 
 namespace SharpMap.Rendering
 {
-    public interface IScene
+    public interface IScene<TCoordinate>
+        where TCoordinate : ICoordinate<TCoordinate>, IEquatable<TCoordinate>,
+                            IComparable<TCoordinate>, IConvertible,
+                            IComputable<Double, TCoordinate> 
     {
         IPen CreatePen(StyleColor color, Single width, Single opacity, 
                        LineJoin lineJoin, LineCap lineCap, Single[] dashArray, 
                        Single dashOffset);
         IBrush CreateBrush(StyleColor color, Single opacity);
+        IPath<TCoordinate> CreatePath(ICoordinateSequence<TCoordinate> coordinates);
+        IFont CreateFont(String family, FontStyle style, FontWeight weight);
+        IHalo CreateHalo(Double radius, StyleColor color);
+        IBitmap CreateBitmap(Stream bitmapData, Size<TCoordinate> size);
+        ISymbol<TCoordinate> CreateSymbol(Size<TCoordinate> size, Double opacity, Double rotation, TCoordinate anchorPoint, TCoordinate displacement);
     }
 }

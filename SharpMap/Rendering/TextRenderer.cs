@@ -45,11 +45,11 @@ namespace SharpMap.Rendering
             set { _textRenderingHint = value; }
         }
 
-        public abstract Size<TCoordinate> MeasureString(String text, StyleFont font);
-        public abstract void RenderText(IScene scene, string text, StyleFont font, TCoordinate location, Fill fill);
-        public abstract void RenderText(IScene scene, string text, StyleFont font, Rectangle<TCoordinate> layoutRectangle, Path<TCoordinate> flowPath, Fill fill, IMatrix<DoubleComponent> transform);
+        public abstract Size<TCoordinate> MeasureString(String text, Font font);
+        public abstract void RenderText(IScene scene, string text, Font font, TCoordinate location, Fill fill);
+        public abstract void RenderText(IScene scene, string text, Font font, Rectangle<TCoordinate> layoutRectangle, Path<TCoordinate> flowPath, Fill fill, IMatrix<DoubleComponent> transform);
 
-        public void RenderText(IScene scene, String text, StyleFont font, TCoordinate location, IBrush fontBrush)
+        public void RenderText(IScene scene, String text, Font font, TCoordinate location, IBrush fontBrush)
         {
             Rectangle<TCoordinate> layoutRectangle = new Rectangle<TCoordinate>(location, MeasureString(text, font));
             RenderText(scene, text, font, layoutRectangle, null, fontBrush, null);

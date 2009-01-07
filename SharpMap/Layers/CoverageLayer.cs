@@ -22,6 +22,7 @@ using GeoAPI.Geometries;
 using SharpMap.Data.Providers;
 using SharpMap.Expressions;
 using SharpMap.Styles;
+using SharpMap.Symbology;
 
 namespace SharpMap.Layers
 {
@@ -29,11 +30,11 @@ namespace SharpMap.Layers
 	/// A map layer of raster data.
 	/// </summary>
 	/// <example>
-	/// Adding a <see cref="RasterLayer"/> to a map:
+    /// Adding a <see cref="CoverageLayer"/> to a map:
 	/// </example>
-	public class RasterLayer : Layer, IRasterLayer
+	public class CoverageLayer : Layer, ICoverageLayer
 	{
-		public RasterLayer(IProvider dataSource)
+		public CoverageLayer(IProvider dataSource)
 			: base(dataSource)
 		{
 		}
@@ -43,9 +44,9 @@ namespace SharpMap.Layers
 			throw new NotImplementedException();
         }
 
-        protected override IStyle CreateStyle()
+        protected override Style CreateStyle()
         {
-            return new RasterStyle();
+            return new CoverageStyle();
         }
 
 	    protected override void ProcessLoadResults(object results)
@@ -60,7 +61,7 @@ namespace SharpMap.Layers
 
 	    #region IRasterLayer Members
 
-	    public new IRasterProvider DataSource
+	    public new ICoverageProvider DataSource
         {
             get { throw new NotImplementedException(); }
         }
@@ -69,12 +70,12 @@ namespace SharpMap.Layers
 
 	    protected override IAsyncProvider CreateAsyncProvider(IProvider dataSource)
 	    {
-	        return new AsyncRasterProviderAdapter(dataSource as IRasterProvider);
+	        return new AsyncRasterProviderAdapter(dataSource as ICoverageProvider);
 	    }
 
         protected override QueryExpression GetQueryFromSpatialBinaryExpression(SpatialBinaryExpression exp)
         {
-            return new RasterQueryExpression(exp);
+            return new CoverageQueryExpression(exp);
         }
 	}
 }

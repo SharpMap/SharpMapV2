@@ -21,7 +21,7 @@ using IMatrix2D = NPack.Interfaces.IMatrix<NPack.DoubleComponent>;
 namespace SharpMap.Rendering
 {
     /// <summary>
-    /// Interface to a graphical renderer.
+    /// Interface to an output renderer.
     /// </summary>
     public interface IRenderer : IDisposable
     {

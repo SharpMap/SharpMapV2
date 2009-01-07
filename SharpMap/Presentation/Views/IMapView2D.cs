@@ -19,33 +19,38 @@ using System;
 using System.Collections;
 using GeoAPI.Coordinates;
 using GeoAPI.Geometries;
+using NPack;
+using NPack.Interfaces;
 using SharpMap.Presentation.Presenters;
-using SharpMap.Rendering.Rendering2D;
-using SharpMap.Styles;
+using SharpMap.Rendering;
+using SharpMap.Symbology;
 
 namespace SharpMap.Presentation.Views
 {
     /// <summary>
-    /// Provides the interface definition for a 2 dimensional graphics surface
-    /// on which to render features and rasters.
+    /// Provides the interface definition for an output
+    /// for which to render features and rasters.
     /// </summary>
-    public interface IMapView2D : IView
+    public interface IMapView<TCoordinate> : IView
+        where TCoordinate : ICoordinate<TCoordinate>, IEquatable<TCoordinate>,
+                            IComparable<TCoordinate>, IConvertible,
+                            IComputable<Double, TCoordinate>
     {
-        event EventHandler<MapActionEventArgs<Point2D>> Hover;
-        event EventHandler<MapActionEventArgs<Point2D>> BeginAction;
-        event EventHandler<MapActionEventArgs<Point2D>> MoveTo;
-        event EventHandler<MapActionEventArgs<Point2D>> EndAction;
+        event EventHandler<MapActionEventArgs<TCoordinate>> Hover;
+        event EventHandler<MapActionEventArgs<TCoordinate>> BeginAction;
+        event EventHandler<MapActionEventArgs<TCoordinate>> MoveTo;
+        event EventHandler<MapActionEventArgs<TCoordinate>> EndAction;
         event EventHandler<MapViewPropertyChangeEventArgs<StyleColor>> BackgroundColorChangeRequested;
         event EventHandler<MapViewPropertyChangeEventArgs<ICoordinate>> GeoCenterChangeRequested;
         event EventHandler<MapViewPropertyChangeEventArgs<Double>> MaximumWorldWidthChangeRequested;
         event EventHandler<MapViewPropertyChangeEventArgs<Double>> MinimumWorldWidthChangeRequested;
         event EventHandler<LocationEventArgs> IdentifyLocationRequested;
-        event EventHandler<MapViewPropertyChangeEventArgs<Point2D>> OffsetChangeRequested;
+        event EventHandler<MapViewPropertyChangeEventArgs<TCoordinate>> OffsetChangeRequested;
         event EventHandler SizeChanged;
         event EventHandler<MapViewPropertyChangeEventArgs<IExtents2D>> ViewEnvelopeChangeRequested;
         event EventHandler<MapViewPropertyChangeEventArgs<Double>> WorldAspectRatioChangeRequested;
         event EventHandler ZoomToExtentsRequested;
-        event EventHandler<MapViewPropertyChangeEventArgs<Rectangle2D>> ZoomToViewBoundsRequested;
+        event EventHandler<MapViewPropertyChangeEventArgs<Rectangle<TCoordinate>>> ZoomToViewBoundsRequested;
         event EventHandler<MapViewPropertyChangeEventArgs<IExtents2D>> ZoomToWorldBoundsRequested;
         event EventHandler<MapViewPropertyChangeEventArgs<Double>> ZoomToWorldWidthRequested;
 
@@ -80,7 +85,7 @@ namespace SharpMap.Presentation.Views
         /// Moves the view by the given vector.
         /// </summary>
         /// <param name="offsetVector">Amount and direction of the offset.</param>
-        void Offset(Point2D offsetVector);
+        void Offset(TCoordinate offsetVector);
 
         /// <summary>
         /// Gets the height of a pixel in world coordinate units.
@@ -102,27 +107,26 @@ namespace SharpMap.Presentation.Views
         /// <summary>
         /// Gets the selection on a view, if one exists.
         /// </summary>
-        ViewSelection2D Selection { get; }
+        ViewSelection<TCoordinate> Selection { get; }
 
         /// <summary>
-        /// Draws the rendered object to the view.
+        /// Gets or sets the <see cref="IScene"/> which the view shows.
         /// </summary>
-        /// <param name="renderedObjects">The rendered objects to draw.</param>
-        void ShowRenderedObjects(IEnumerable renderedObjects);
+        IScene Scene { get; set; }
 
         /// <summary>
-        /// Gets a <see cref="Matrix2D"/> used to project the world
+        /// Gets an <see cref="IMatrix{DoubleComponent}"/> used to project the world
         /// coordinate system into the view coordinate system. 
         /// The inverse of the <see cref="ToWorldTransform"/> matrix.
         /// </summary>
-        Matrix2D ToViewTransform { get; }
+        IMatrix<DoubleComponent> ToViewTransform { get; }
 
         /// <summary>
         /// Gets a <see cref="Matrix2D"/> used to reverse the view projection
         /// transform to get world coordinates.
         /// The inverse of the <see cref="ToViewTransform"/> matrix.
         /// </summary>
-        Matrix2D ToWorldTransform { get; }
+        IMatrix<DoubleComponent> ToWorldTransform { get; }
 
         /// <summary>
         /// Creates a <see cref="Point2D"/> in view space from a
@@ -133,7 +137,7 @@ namespace SharpMap.Presentation.Views
         /// A <see cref="Point2D"/> in view space coordinates which 
         /// corresponds to the given <paramref name="point"/> in map world space.
         /// </returns>
-        Point2D ToView(ICoordinate point);
+        TCoordinate ToView(ICoordinate point);
 
         /// <summary>
         /// Creates a <see cref="Point2D"/> in view space from X and Y
@@ -146,7 +150,7 @@ namespace SharpMap.Presentation.Views
         /// corresponds to the given (<paramref name="x"/>, <paramref name="y"/>) coordinate
         /// pair in map world space.
         /// </returns>
-        Point2D ToView(Double x, Double y);
+        TCoordinate ToView(Double x, Double y);
 
         /// <summary>
         /// Creates a <see cref="IPoint"/> in the map's world space from a
@@ -157,7 +161,7 @@ namespace SharpMap.Presentation.Views
         /// A <see cref="IPoint"/> in the map's world space coordinates which 
         /// corresponds to the given <paramref name="point"/> in view space.
         /// </returns>
-        ICoordinate ToWorld(Point2D point);
+        ICoordinate ToWorld(TCoordinate point);
 
         /// <summary>
         /// Creates a <see cref="IPoint"/> in map world space from X and Y
@@ -180,7 +184,7 @@ namespace SharpMap.Presentation.Views
         /// <summary>
         /// Gets or sets the size of the view.
         /// </summary>
-        Size2D ViewSize { get; set; }
+        Size<TCoordinate> ViewSize { get; set; }
 
         /// <summary>
         /// Gets or sets the aspect ratio of the <see cref="WorldHeight"/> 
@@ -241,7 +245,7 @@ namespace SharpMap.Presentation.Views
         /// The view bounds, translated into world bounds,
         /// to set the zoom to.
         /// </param>
-        void ZoomToViewBounds(Rectangle2D viewBounds);
+        void ZoomToViewBounds(Rectangle<TCoordinate> viewBounds);
 
         /// <summary>
         /// Zooms the map to fit a world bounding box.

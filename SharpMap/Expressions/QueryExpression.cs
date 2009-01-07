@@ -4,21 +4,21 @@ namespace SharpMap.Expressions
 {
     public class QueryExpression : Expression
     {
-        private readonly ProjectionExpression _projection;
-        private readonly PredicateExpression _predicate;
+        private readonly SelectExpression _projection;
+        private readonly LogicExpression _predicate;
 
-        public QueryExpression(ProjectionExpression projection, PredicateExpression predicate)
+        public QueryExpression(SelectExpression projection, LogicExpression predicate)
         {
             _projection = projection;
             _predicate = predicate;
         }
 
-        public ProjectionExpression Projection
+        public SelectExpression Projection
         {
             get { return _projection; }
         }
 
-        public PredicateExpression Predicate
+        public LogicExpression Predicate
         {
             get { return _predicate; }
         }
@@ -34,8 +34,8 @@ namespace SharpMap.Expressions
 
         public override Expression Clone()
         {
-            return new QueryExpression((ProjectionExpression)_projection.Clone(), 
-                                       (PredicateExpression)_predicate.Clone());
+            return new QueryExpression((SelectExpression)_projection.Clone(), 
+                                       (LogicExpression)_predicate.Clone());
         }
 
         public override Boolean Equals(Expression other)

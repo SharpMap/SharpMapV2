@@ -15,28 +15,25 @@
 // along with SharpMap; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
-using SharpMap.Data;
-using SharpMap.Layers;
-using SharpMap.Symbology;
+using System;
+using GeoAPI.Coordinates;
+using NPack.Interfaces;
 
 namespace SharpMap.Rendering
 {
     /// <summary>
     /// Interface to a graphical renderer of feature data.
     /// </summary>
-    public interface IFeatureRenderer : IRenderer
+    public interface IFeatureRenderer<TCoordinate> : IRenderer
+        where TCoordinate : ICoordinate<TCoordinate>, IEquatable<TCoordinate>,
+                            IComparable<TCoordinate>, IConvertible,
+                            IComputable<Double, TCoordinate> 
     {
-        /// <summary>
-        /// Gets or sets the default style if no style or theme information is provided.
-        /// </summary>
-        FeatureStyle DefaultStyle { get; set; }
-
-        /// <summary>
-        /// Renders the attributes and/or spatial data in the <paramref name="feature"/>.
-        /// </summary>
-        /// <param name="feature">
-        /// A <see cref="IFeatureDataRecord"/> instance with formattable and renderable data.
-        /// </param>
-        void RenderFeature(IScene scene, ILayer layer, IFeatureDataRecord feature, FeatureStyle style, RenderState renderState);
+        void RenderStroke(IScene<TCoordinate> scene, IRenderLayer layer, IPath<TCoordinate> path, IPen pen, Double perpendicularOffset, RenderState renderState);
+        void RenderFill(IScene<TCoordinate> scene, IRenderLayer layer, IPath<TCoordinate> path, IBrush fill, TCoordinate displacement, RenderState renderState);
+        void RenderPoints(IScene<TCoordinate> scene, IRenderLayer layer, IPath<TCoordinate> path, ISymbol<TCoordinate> graphic, RenderState renderState);
+        void RenderPoint(IScene<TCoordinate> scene, IRenderLayer layer, TCoordinate point, ISymbol<TCoordinate> graphic, RenderState renderState);
+        void RenderTextOnLine(IScene<TCoordinate> scene, IRenderLayer layer, IPath<TCoordinate> path, String text, IFont font, IHalo halo, IBrush fill, Double perpendicularOffset, Boolean isRepeated, Double initialGap, Double gap, Boolean fitToPath);
+        void RenderTextOnPoints(IScene<TCoordinate> scene, IRenderLayer layer, IPath<TCoordinate> path, String text, IFont font, IHalo halo, IBrush fill, TCoordinate anchorPoint, TCoordinate displacement);
     }
 }

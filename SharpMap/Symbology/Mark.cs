@@ -21,6 +21,27 @@ using System.Xml.Serialization;
 namespace SharpMap.Symbology
 {
     [Serializable]
+    [XmlType(Namespace = "http://www.opengis.net/se", IncludeInSchema = false)]
+    public enum MarkType
+    {
+        Format,
+        InlineContent,
+        MarkIndex,
+        OnlineResource,
+        WellKnownName,
+    }
+
+    public enum WellKnownMarkName
+    {
+        Square,
+        Circle,
+        Triangle,
+        Star,
+        Cross,
+        X
+    }
+
+    [Serializable]
     [XmlType(Namespace = "http://www.opengis.net/se")]
     [XmlRoot("Mark", Namespace = "http://www.opengis.net/se", IsNullable = false)]
     public class Mark
@@ -61,20 +82,5 @@ namespace SharpMap.Symbology
             get { return _stroke; }
             set { _stroke = value; }
         }
-    }
-
-    [Serializable]
-    [XmlType(Namespace = "http://www.opengis.net/se", IncludeInSchema = false)]
-    public enum MarkType
-    {
-        Format,
-
-        InlineContent,
-
-        MarkIndex,
-
-        OnlineResource,
-
-        WellKnownName,
     }
 }

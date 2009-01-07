@@ -19,104 +19,108 @@ using System;
 using System.Collections.Generic;
 using GeoAPI.Coordinates;
 using GeoAPI.Geometries;
+using NPack.Interfaces;
 using SharpMap.Expressions;
 using SharpMap.Layers;
 using SharpMap.Presentation.Views;
-using SharpMap.Rendering.Rendering2D;
+using SharpMap.Rendering;
 
 namespace SharpMap.Tools
 {
     /// <summary>
-    /// Provides a set of standard tools to use on an <see cref="IMapView2D"/>.
+    /// Provides a set of standard tools to use on an <see cref="IMapView{TCoordinate}"/>.
     /// </summary>
-    public static class StandardMapView2DMapTools
+    public static class StandardMapViewMapTools<TCoordinate>
+        where TCoordinate : ICoordinate<TCoordinate>, IEquatable<TCoordinate>,
+                            IComparable<TCoordinate>, IConvertible,
+                            IComputable<Double, TCoordinate>
     {
         /// <summary>
         /// No active tool
         /// </summary>
-        public static readonly MapTool<IMapView2D, Point2D> None;
+        public static readonly MapTool<IMapView<TCoordinate>, TCoordinate> None;
 
         /// <summary>
         /// Pan
         /// </summary>
-        public static readonly MapTool<IMapView2D, Point2D> Pan;
+        public static readonly MapTool<IMapView<TCoordinate>, TCoordinate> Pan;
 
         /// <summary>
         /// Zoom in
         /// </summary>
-        public static readonly MapTool<IMapView2D, Point2D> ZoomIn;
+        public static readonly MapTool<IMapView<TCoordinate>, TCoordinate> ZoomIn;
 
         /// <summary>
         /// Zoom out
         /// </summary>
-        public static readonly MapTool<IMapView2D, Point2D> ZoomOut;
+        public static readonly MapTool<IMapView<TCoordinate>, TCoordinate> ZoomOut;
 
         /// <summary>
         /// Query tool
         /// </summary>
-        public static readonly MapTool<IMapView2D, Point2D> Query;
+        public static readonly MapTool<IMapView<TCoordinate>, TCoordinate> Query;
 
         /// <summary>
         /// QueryAdd tool
         /// </summary>
-        public static readonly MapTool<IMapView2D, Point2D> QueryAdd;
+        public static readonly MapTool<IMapView<TCoordinate>, TCoordinate> QueryAdd;
 
         /// <summary>
         /// QueryRemove tool
         /// </summary>
-        public static readonly MapTool<IMapView2D, Point2D> QueryRemove;
+        public static readonly MapTool<IMapView<TCoordinate>, TCoordinate> QueryRemove;
 
         /// <summary>
         /// Add feature tool
         /// </summary>
-        public static readonly MapTool<IMapView2D, Point2D> FeatureAdd;
+        public static readonly MapTool<IMapView<TCoordinate>, TCoordinate> FeatureAdd;
 
         /// <summary>
         /// Remove feature tool
         /// </summary>
-        public static readonly MapTool<IMapView2D, Point2D> FeatureRemove;
+        public static readonly MapTool<IMapView<TCoordinate>, TCoordinate> FeatureRemove;
 
 
-        static StandardMapView2DMapTools()
+        static StandardMapViewMapTools()
         {
-            None = new MapTool<IMapView2D, Point2D>(String.Empty, DoNothing, DoNothing, DoNothing, DoNothing);
-            Pan = new MapTool<IMapView2D, Point2D>("Pan", QueryPan, BeginPan, ContinuePan, EndPan);
-            ZoomIn = new MapTool<IMapView2D, Point2D>("ZoomIn", QueryZoomIn, BeginZoomIn, ContinueZoomIn, EndZoomIn);
-            ZoomOut = new MapTool<IMapView2D, Point2D>("ZoomOut", 
+            None = new MapTool<IMapView<TCoordinate>, TCoordinate>(String.Empty, DoNothing, DoNothing, DoNothing, DoNothing);
+            Pan = new MapTool<IMapView<TCoordinate>, TCoordinate>("Pan", QueryPan, BeginPan, ContinuePan, EndPan);
+            ZoomIn = new MapTool<IMapView<TCoordinate>, TCoordinate>("ZoomIn", QueryZoomIn, BeginZoomIn, ContinueZoomIn, EndZoomIn);
+            ZoomOut = new MapTool<IMapView<TCoordinate>, TCoordinate>("ZoomOut", 
                                                        QueryZoomOut, 
                                                        BeginZoomOut, 
                                                        ContinueZoomOut, 
                                                        EndZoomOut);
-            Query = new MapTool<IMapView2D, Point2D>("Query", QueryQuery, BeginQuery, ContinueQuery, EndQuery);
-            QueryAdd = new MapTool<IMapView2D, Point2D>("QueryAdd", 
+            Query = new MapTool<IMapView<TCoordinate>, TCoordinate>("Query", QueryQuery, BeginQuery, ContinueQuery, EndQuery);
+            QueryAdd = new MapTool<IMapView<TCoordinate>, TCoordinate>("QueryAdd", 
                                                         QueryQueryAdd, 
                                                         BeginQueryAdd, 
                                                         ContinueQueryAdd, 
                                                         EndQueryAdd);
-            QueryRemove = new MapTool<IMapView2D, Point2D>("QueryRemove", 
+            QueryRemove = new MapTool<IMapView<TCoordinate>, TCoordinate>("QueryRemove", 
                                                            QueryQueryRemove, 
                                                            BeginQueryRemove, 
                                                            ContinueQueryRemove,
                                                            EndQueryRemove);
-            FeatureAdd = new MapTool<IMapView2D, Point2D>("FeatureAdd", 
+            FeatureAdd = new MapTool<IMapView<TCoordinate>, TCoordinate>("FeatureAdd", 
                                                           QueryFeatureAdd, 
                                                           BeginFeatureAdd, 
                                                           ContinueFeatureAdd,
                                                           EndFeatureAdd);
-            FeatureRemove = new MapTool<IMapView2D, Point2D>("FeatureRemove", 
+            FeatureRemove = new MapTool<IMapView<TCoordinate>, TCoordinate>("FeatureRemove", 
                                                              QueryFeatureRemove, 
                                                              BeginFeatureRemove,
                                                              ContinueFeatureRemove, 
                                                              EndFeatureRemove);
         }
 
-        private static void DoNothing(ActionContext<IMapView2D, Point2D> context) { }
+        private static void DoNothing(ActionContext<IMapView<TCoordinate>, TCoordinate> context) { }
 
         #region Panning
 
-        private static void QueryPan(ActionContext<IMapView2D, Point2D> context) { }
+        private static void QueryPan(ActionContext<IMapView<TCoordinate>, TCoordinate> context) { }
 
-        private static void BeginPan(ActionContext<IMapView2D, Point2D> context)
+        private static void BeginPan(ActionContext<IMapView<TCoordinate>, TCoordinate> context)
         {
             // NOTE: changed Point.Empty to null
             if (context.MapView.GeoCenter == null)
@@ -125,16 +129,16 @@ namespace SharpMap.Tools
             }
         }
 
-        private static void ContinuePan(ActionContext<IMapView2D, Point2D> context)
+        private static void ContinuePan(ActionContext<IMapView<TCoordinate>, TCoordinate> context)
         {
-            IMapView2D view = context.MapView;
-            Point2D previousPoint = context.PreviousPoint;
-            Point2D currentPoint = context.CurrentPoint;
-            Point2D difference = previousPoint - currentPoint;
+            IMapView<TCoordinate> view = context.MapView;
+            TCoordinate previousPoint = context.PreviousPoint;
+            TCoordinate currentPoint = context.CurrentPoint;
+            TCoordinate difference = previousPoint.Subtract(currentPoint);
             view.Offset(difference);
         }
 
-        private static void EndPan(ActionContext<IMapView2D, Point2D> context)
+        private static void EndPan(ActionContext<IMapView<TCoordinate>, TCoordinate> context)
         {
         }
 
@@ -142,23 +146,23 @@ namespace SharpMap.Tools
 
         #region Zoom in
 
-        private static void QueryZoomIn(ActionContext<IMapView2D, Point2D> context) { }
+        private static void QueryZoomIn(ActionContext<IMapView<TCoordinate>, TCoordinate> context) { }
 
-        private static void BeginZoomIn(ActionContext<IMapView2D, Point2D> context)
+        private static void BeginZoomIn(ActionContext<IMapView<TCoordinate>, TCoordinate> context)
         {
             beginSelection(context);
         }
 
-        private static void ContinueZoomIn(ActionContext<IMapView2D, Point2D> context)
+        private static void ContinueZoomIn(ActionContext<IMapView<TCoordinate>, TCoordinate> context)
         {
             continueSelection(context);
         }
 
-        private static void EndZoomIn(ActionContext<IMapView2D, Point2D> context)
+        private static void EndZoomIn(ActionContext<IMapView<TCoordinate>, TCoordinate> context)
         {
             if (context.MapView.Selection.Path.Points.Count > 1)
             {
-                Rectangle2D viewBounds = endSelection(context);
+                Rectangle<TCoordinate> viewBounds = endSelection(context);
 
                 context.MapView.ZoomToViewBounds(viewBounds);
             }
@@ -173,9 +177,9 @@ namespace SharpMap.Tools
 
         #region Zoom out
 
-        private static void QueryZoomOut(ActionContext<IMapView2D, Point2D> context) { }
+        private static void QueryZoomOut(ActionContext<IMapView<TCoordinate>, TCoordinate> context) { }
 
-        private static void BeginZoomOut(ActionContext<IMapView2D, Point2D> context)
+        private static void BeginZoomOut(ActionContext<IMapView<TCoordinate>, TCoordinate> context)
         {
             // NOTE: changed Point.Empty to null
             if (context.MapView.GeoCenter == null)
@@ -184,9 +188,9 @@ namespace SharpMap.Tools
             }
         }
 
-        private static void ContinueZoomOut(ActionContext<IMapView2D, Point2D> context) { }
+        private static void ContinueZoomOut(ActionContext<IMapView<TCoordinate>, TCoordinate> context) { }
 
-        private static void EndZoomOut(ActionContext<IMapView2D, Point2D> context)
+        private static void EndZoomOut(ActionContext<IMapView<TCoordinate>, TCoordinate> context)
         {
             // Zoom out
             zoomByFactor(context, 0.833333333333333);
@@ -196,9 +200,9 @@ namespace SharpMap.Tools
 
         #region Query
 
-        private static void QueryQuery(ActionContext<IMapView2D, Point2D> context)
+        private static void QueryQuery(ActionContext<IMapView<TCoordinate>, TCoordinate> context)
         {
-            Point2D point = context.CurrentPoint;
+            TCoordinate point = context.CurrentPoint;
             ICoordinate worldPoint = context.MapView.ToWorld(point);
             context.MapView.IdentifyLocation(worldPoint);
         }
@@ -207,10 +211,10 @@ namespace SharpMap.Tools
         /// Clear the view's current selection before starting a new one.
         /// </summary>
         /// <param name="context">
-        /// An <see cref="ActionContext{IMapView2D, Point2D}"/> which provides 
+        /// An <see cref="ActionContext{IMapView{TCoordinate}, TCoordinate}"/> which provides 
         /// information about where, and on which view, the action occurred.
         /// </param>
-        private static void BeginQuery(ActionContext<IMapView2D, Point2D> context)
+        private static void BeginQuery(ActionContext<IMapView<TCoordinate>, TCoordinate> context)
         {
             beginSelection(context);
         }
@@ -219,10 +223,10 @@ namespace SharpMap.Tools
         /// Add the current point to the view's selection.
         /// </summary>
         /// <param name="context">
-        /// An <see cref="ActionContext{IMapView2D, Point2D}"/> which provides 
+        /// An <see cref="ActionContext{IMapView<TCoordinate>, TCoordinate}"/> which provides 
         /// information about where, and on which view, the action occurred.
         /// </param>
-        private static void ContinueQuery(ActionContext<IMapView2D, Point2D> context)
+        private static void ContinueQuery(ActionContext<IMapView<TCoordinate>, TCoordinate> context)
         {
             continueSelection(context);
         }
@@ -231,14 +235,14 @@ namespace SharpMap.Tools
         /// Close the view's selection and set the map's GeometryFilter.
         /// </summary>
         /// <param name="context">
-        /// An <see cref="ActionContext{IMapView2D, Point2D}"/> which provides 
+        /// An <see cref="ActionContext{IMapView<TCoordinate>, TCoordinate}"/> which provides 
         /// information about where, and on which view, the action occurred.
         /// </param>
-        private static void EndQuery(ActionContext<IMapView2D, Point2D> context)
+        private static void EndQuery(ActionContext<IMapView<TCoordinate>, TCoordinate> context)
         {
-            IMapView2D view = context.MapView;
+            IMapView<TCoordinate> view = context.MapView;
 
-            Rectangle2D viewBounds = endSelection(context);
+            Rectangle<TCoordinate> viewBounds = endSelection(context);
 
             // Create a BoundingBox for the view's selection using the map's world space
             IExtents worldBounds = context.Map.GeometryFactory.CreateExtents(
@@ -252,7 +256,7 @@ namespace SharpMap.Tools
             }
         }
 
-		private static void filterSelected(ILayer layer, IMapView2D view, IExtents worldBounds)
+		private static void filterSelected(ILayer layer, IMapView<TCoordinate> view, IExtents worldBounds)
 		{
 			if (layer == null)
 			{
@@ -291,9 +295,9 @@ namespace SharpMap.Tools
 
         #region Query add
 
-        private static void QueryQueryAdd(ActionContext<IMapView2D, Point2D> context) { }
+        private static void QueryQueryAdd(ActionContext<IMapView<TCoordinate>, TCoordinate> context) { }
 
-        private static void BeginQueryAdd(ActionContext<IMapView2D, Point2D> context)
+        private static void BeginQueryAdd(ActionContext<IMapView<TCoordinate>, TCoordinate> context)
         {
             // NOTE: changed Point.Empty to null
             if (context.MapView.GeoCenter == null)
@@ -302,17 +306,17 @@ namespace SharpMap.Tools
             }
         }
 
-        private static void ContinueQueryAdd(ActionContext<IMapView2D, Point2D> context) { }
+        private static void ContinueQueryAdd(ActionContext<IMapView<TCoordinate>, TCoordinate> context) { }
 
-        private static void EndQueryAdd(ActionContext<IMapView2D, Point2D> context) { }
+        private static void EndQueryAdd(ActionContext<IMapView<TCoordinate>, TCoordinate> context) { }
 
         #endregion
 
         #region Query remove
 
-        private static void QueryQueryRemove(ActionContext<IMapView2D, Point2D> context) { }
+        private static void QueryQueryRemove(ActionContext<IMapView<TCoordinate>, TCoordinate> context) { }
 
-        private static void BeginQueryRemove(ActionContext<IMapView2D, Point2D> context)
+        private static void BeginQueryRemove(ActionContext<IMapView<TCoordinate>, TCoordinate> context)
         {
             // NOTE: changed Point.Empty to null
             if (context.MapView.GeoCenter == null)
@@ -321,17 +325,17 @@ namespace SharpMap.Tools
             }
         }
 
-        private static void ContinueQueryRemove(ActionContext<IMapView2D, Point2D> context) { }
+        private static void ContinueQueryRemove(ActionContext<IMapView<TCoordinate>, TCoordinate> context) { }
 
-        private static void EndQueryRemove(ActionContext<IMapView2D, Point2D> context) { }
+        private static void EndQueryRemove(ActionContext<IMapView<TCoordinate>, TCoordinate> context) { }
 
         #endregion
 
         #region Feature add
 
-        private static void QueryFeatureAdd(ActionContext<IMapView2D, Point2D> context) { }
+        private static void QueryFeatureAdd(ActionContext<IMapView<TCoordinate>, TCoordinate> context) { }
 
-        private static void BeginFeatureAdd(ActionContext<IMapView2D, Point2D> context)
+        private static void BeginFeatureAdd(ActionContext<IMapView<TCoordinate>, TCoordinate> context)
         {
             // NOTE: changed Point.Empty to null
             if (context.MapView.GeoCenter == null)
@@ -340,17 +344,17 @@ namespace SharpMap.Tools
             }
         }
 
-        private static void ContinueFeatureAdd(ActionContext<IMapView2D, Point2D> context) { }
+        private static void ContinueFeatureAdd(ActionContext<IMapView<TCoordinate>, TCoordinate> context) { }
 
-        private static void EndFeatureAdd(ActionContext<IMapView2D, Point2D> context) { }
+        private static void EndFeatureAdd(ActionContext<IMapView<TCoordinate>, TCoordinate> context) { }
 
         #endregion
 
         #region Feature remove
 
-        private static void QueryFeatureRemove(ActionContext<IMapView2D, Point2D> context) { }
+        private static void QueryFeatureRemove(ActionContext<IMapView<TCoordinate>, TCoordinate> context) { }
 
-        private static void BeginFeatureRemove(ActionContext<IMapView2D, Point2D> context)
+        private static void BeginFeatureRemove(ActionContext<IMapView<TCoordinate>, TCoordinate> context)
         {
             // NOTE: changed Point.Empty to null
             if (context.MapView.GeoCenter == null)
@@ -359,9 +363,9 @@ namespace SharpMap.Tools
             }
         }
 
-        private static void ContinueFeatureRemove(ActionContext<IMapView2D, Point2D> context) { }
+        private static void ContinueFeatureRemove(ActionContext<IMapView<TCoordinate>, TCoordinate> context) { }
 
-        private static void EndFeatureRemove(ActionContext<IMapView2D, Point2D> context) { }
+        private static void EndFeatureRemove(ActionContext<IMapView<TCoordinate>, TCoordinate> context) { }
 
         #endregion
 
@@ -375,9 +379,9 @@ namespace SharpMap.Tools
         }
 
         #region Private Helper Methods
-        private static void beginSelection(ActionContext<IMapView2D, Point2D> context)
+        private static void beginSelection(ActionContext<IMapView<TCoordinate>, TCoordinate> context)
         {
-            IMapView2D view = context.MapView;
+            IMapView<TCoordinate> view = context.MapView;
 
             // NOTE: changed Point.Empty to null
             if (view.GeoCenter == null)
@@ -389,32 +393,32 @@ namespace SharpMap.Tools
             view.Selection.AddPoint(context.CurrentPoint);
         }
 
-        private static void continueSelection(ActionContext<IMapView2D, Point2D> context)
+        private static void continueSelection(ActionContext<IMapView<TCoordinate>, TCoordinate> context)
         {
             context.MapView.Selection.AddPoint(context.CurrentPoint);
         }
 
-        private static Rectangle2D endSelection(ActionContext<IMapView2D, Point2D> context)
+        private static Rectangle<TCoordinate> endSelection(ActionContext<IMapView<TCoordinate>, TCoordinate> context)
         {
-            IMapView2D view = context.MapView;
+            IMapView<TCoordinate> view = context.MapView;
 
             view.Selection.Close();
 
             return view.Selection.Path.Bounds;
         }
 
-        private static void zoomByFactor(ActionContext<IMapView2D, Point2D> context, Double zoomFactor)
+        private static void zoomByFactor(ActionContext<IMapView<TCoordinate>, TCoordinate> context, Double zoomFactor)
         {
-            IMapView2D view = context.MapView;
+            IMapView<TCoordinate> view = context.MapView;
             zoomFactor = 1 / zoomFactor;
 
-            Size2D viewSize = view.ViewSize;
-            Point2D viewCenter = new Point2D((viewSize.Width / 2), (viewSize.Height / 2));
-            Point2D viewDifference = context.CurrentPoint - viewCenter;
+            Size<TCoordinate> viewSize = view.ViewSize;
+            TCoordinate viewCenter = new TCoordinate((viewSize.Width / 2), (viewSize.Height / 2));
+            TCoordinate viewDifference = context.CurrentPoint.Subtract(viewCenter);
 
-            Point2D zoomUpperLeft = new Point2D(viewDifference.X * zoomFactor, viewDifference.Y * zoomFactor);
-            Size2D zoomBoundsSize = new Size2D(viewSize.Width * zoomFactor, viewSize.Height * zoomFactor);
-            Rectangle2D zoomViewBounds = new Rectangle2D(zoomUpperLeft, zoomBoundsSize);
+            TCoordinate zoomUpperLeft = new TCoordinate(viewDifference[Ordinates.X] * zoomFactor, viewDifference[Ordinates.Y] * zoomFactor);
+            Size<TCoordinate> zoomBoundsSize = new Size<TCoordinate>(viewSize.Width * zoomFactor, viewSize.Height * zoomFactor);
+            Rectangle<TCoordinate> zoomViewBounds = new Rectangle<TCoordinate>(zoomUpperLeft, zoomBoundsSize);
 
             view.ZoomToViewBounds(zoomViewBounds);
         }

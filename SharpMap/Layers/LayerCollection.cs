@@ -20,6 +20,8 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using GeoAPI.Algorithms;
+using GeoAPI.Coordinates;
+using NPack.Interfaces;
 
 namespace SharpMap.Layers
 {
@@ -27,9 +29,12 @@ namespace SharpMap.Layers
     /// Represents an ordered collection of layers of geospatial features
     /// which are composed into a map.
     /// </summary>
-    public class LayerCollection : BindingList<ILayer>, ITypedList
+    public class LayerCollection<TCoordinate> : BindingList<ILayer>, ITypedList
+        where TCoordinate : ICoordinate<TCoordinate>, IEquatable<TCoordinate>,
+                            IComparable<TCoordinate>, IConvertible,
+                            IComputable<Double, TCoordinate>
     {
-        private readonly Map _map;
+        private readonly Map<TCoordinate> _map;
         private Boolean? _sortedAscending;
         private readonly Object _collectionChangeSync = new Object();
         private PropertyDescriptor _sortProperty;
@@ -45,7 +50,7 @@ namespace SharpMap.Layers
             _layerProperties = new PropertyDescriptorCollection(propsArray, true);
         }
 
-        internal LayerCollection(Map map)
+        internal LayerCollection(Map<TCoordinate> map)
         {
             _map = map;
             base.AllowNew = false;

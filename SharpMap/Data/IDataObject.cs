@@ -22,6 +22,6 @@ namespace SharpMap.Data
 {
     public interface IDataObject : ICustomTypeDescriptor
     {
-        TValue EvaluateFor<TValue>(Expression expression);
+        //TValue EvaluateFor<TValue>(Expression expression);
     }
 }

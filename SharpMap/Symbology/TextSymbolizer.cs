@@ -27,7 +27,7 @@ namespace SharpMap.Symbology
     {
         private GeometryPropertyNameExpression _geometry;
         private ParameterValue _label;
-        private SvgParameter[] _font;
+        private Font _font;
         private LabelPlacement _labelPlacement;
         private Halo _halo;
         private Fill _fill;
@@ -44,8 +44,11 @@ namespace SharpMap.Symbology
             set { _label = value; }
         }
         
-        [XmlArrayItem("SvgParameter", IsNullable = false)]
-        public SvgParameter[] Font
+        // ck - xsd.exe appears to have generated this, but Symbolizer.xsd calls for 
+        //      a "Font" element of type "FontType". Don't know exactly why xsd.exe gen'd 
+        //      this... but I changed it to Font.
+        //[XmlArrayItem("SvgParameter", IsNullable = false)]
+        public Font Font
         {
             get { return _font; }
             set { _font = value; }

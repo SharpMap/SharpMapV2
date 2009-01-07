@@ -24,6 +24,8 @@ namespace SharpMap.Expressions
     [XmlType(Namespace = "http://www.opengis.net/ogc", IncludeInSchema = false)]
     public enum ExpressionType
     {
+        [XmlIgnore]
+        Other,
         Add,
         Div,
         Function,
@@ -50,5 +52,7 @@ namespace SharpMap.Expressions
         ComparisonExpression,
         [XmlEnum(Name = "logicOps")]
         LogicExpression,
+        [XmlIgnore]
+        SpatialExpression,
     }
 }

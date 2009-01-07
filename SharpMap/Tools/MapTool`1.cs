@@ -21,19 +21,19 @@ using NPack.Interfaces;
 
 namespace SharpMap.Tools
 {
-	public class MapTool<TMapView, TPoint> : MapTool, IMapTool<TMapView, TPoint>
-		where TPoint : IVector<DoubleComponent>
+    public class MapTool<TMapView, TCoordinate> : MapTool, IMapTool<TMapView, TCoordinate>
+        where TCoordinate : IVector<DoubleComponent>
 	{
-		private readonly Action<ActionContext<TMapView, TPoint>> _queryAction;
-		private readonly Action<ActionContext<TMapView, TPoint>> _beginAction;
-		private readonly Action<ActionContext<TMapView, TPoint>> _extendAction;
-		private readonly Action<ActionContext<TMapView, TPoint>> _endAction;
+		private readonly Action<ActionContext<TMapView, TCoordinate>> _queryAction;
+		private readonly Action<ActionContext<TMapView, TCoordinate>> _beginAction;
+		private readonly Action<ActionContext<TMapView, TCoordinate>> _extendAction;
+		private readonly Action<ActionContext<TMapView, TCoordinate>> _endAction;
 
 		public MapTool(String name, 
-                       Action<ActionContext<TMapView, TPoint>> queryAction,
-			           Action<ActionContext<TMapView, TPoint>> beginAction,
-			           Action<ActionContext<TMapView, TPoint>> extendAction,
-			           Action<ActionContext<TMapView, TPoint>> endAction)
+                       Action<ActionContext<TMapView, TCoordinate>> queryAction,
+			           Action<ActionContext<TMapView, TCoordinate>> beginAction,
+			           Action<ActionContext<TMapView, TCoordinate>> extendAction,
+			           Action<ActionContext<TMapView, TCoordinate>> endAction)
 			: base(name)
 		{
 			_queryAction = queryAction;
@@ -49,22 +49,22 @@ namespace SharpMap.Tools
 
 		#region IMapTool Members
 
-		public Action<ActionContext<TMapView, TPoint>> QueryAction
+		public Action<ActionContext<TMapView, TCoordinate>> QueryAction
 		{
 			get { return _queryAction; }
 		}
 
-		public Action<ActionContext<TMapView, TPoint>> BeginAction
+		public Action<ActionContext<TMapView, TCoordinate>> BeginAction
 		{
 			get { return _beginAction; }
 		}
 
-		public Action<ActionContext<TMapView, TPoint>> ExtendAction
+		public Action<ActionContext<TMapView, TCoordinate>> ExtendAction
 		{
 			get { return _extendAction; }
 		}
 
-		public Action<ActionContext<TMapView, TPoint>> EndAction
+		public Action<ActionContext<TMapView, TCoordinate>> EndAction
 		{
 			get { return _endAction; }
 		}

@@ -20,6 +20,15 @@ using System.Xml.Serialization;
 
 namespace SharpMap.Symbology
 {
+    /// <summary>
+    /// Gives the X and Y displacements from the <see cref="AnchorPoint"/>. 
+    /// </summary>
+    /// <remarks>
+    /// This element may be used to avoid over-plotting of multiple graphic symbols used as part of the same point symbol. 
+    /// The displacements are in units of measure above and to the right of the point. The default displacement is X=0, Y=0. 
+    /// If <see cref="Displacement"/> is used in conjunction with Size and/or Rotation then the graphic symbol whall be scaled 
+    /// and/or rotated before it is displaced.
+    /// </remarks>
     [Serializable]
     [XmlType(Namespace = "http://www.opengis.net/se", TypeName = "DisplacementType")]
     [XmlRoot("Displacement", Namespace = "http://www.opengis.net/se", IsNullable = false)]

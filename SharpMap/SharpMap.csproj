@@ -126,6 +126,7 @@
     <Compile Include="Data\Caching\IQueryCache.cs" />
     <Compile Include="Data\Caching\NullQueryCache.cs" />
     <Compile Include="Data\DataSourcePassThroughPropertyDescriptor.cs" />
+    <Compile Include="Data\Filter.cs" />
     <Compile Include="Data\IDataObject.cs" />
     <Compile Include="Data\Providers\FeatureProviderBase.cs" />
     <Compile Include="Data\Providers\ProviderBase.cs" />
@@ -133,7 +134,7 @@
     <Compile Include="Data\FeatureUniqueConstraint.cs" />
     <Compile Include="Data\IAsyncProvider.cs" />
     <Compile Include="Data\IFeatureAdapter.cs" />
-    <Compile Include="Data\IRasterProvider.cs" />
+    <Compile Include="Data\ICoverageProvider.cs" />
     <Compile Include="Data\FeatureQueryExecutionOptions.cs" />
     <Compile Include="Data\Providers\AsyncFeatureProviderAdapter.cs" />
     <Compile Include="Data\Providers\AsyncProviderAdapter.cs" />
@@ -161,7 +162,6 @@
     </Compile>
     <Compile Include="Diagnostics\EnumerablePrinter.cs" />
     <Compile Include="Diagnostics\TraceCategories.cs" />
-    <Compile Include="Expressions\AbstractIdExpression.cs" />
     <Compile Include="Expressions\AllAttributesExpression.cs" />
     <Compile Include="Expressions\AllBandsExpression.cs" />
     <Compile Include="Expressions\AttributeBinaryExpression.cs" />
@@ -180,9 +180,16 @@
     <Compile Include="Expressions\ComparisonOperator.cs" />
     <Compile Include="Expressions\ExcludedOidCollectionExpression.cs" />
     <Compile Include="Expressions\Expression.cs" />
+    <Compile Include="Expressions\IdExpression.cs" />
+    <Compile Include="Rendering\IBitmap.cs" />
+    <Compile Include="Rendering\IFont.cs" />
+    <Compile Include="Rendering\IHalo.cs" />
+    <Compile Include="Rendering\IPath`1.cs" />
+    <Compile Include="Rendering\IRenderLayer.cs" />
+    <Compile Include="Symbology\NameMappedParameterObject.cs" />
+    <Compile Include="Expressions\Evaluator.cs" />
     <Compile Include="Expressions\ExpressionParseException.cs" />
     <Compile Include="Expressions\ExpressionType.cs" />
-    <Compile Include="Expressions\FilterExpression.cs" />
     <Compile Include="Expressions\FunctionExpression.cs" />
     <Compile Include="Expressions\LowerBoundaryExpression.cs" />
     <Compile Include="Expressions\ObjectReadonlyException.cs" />
@@ -197,17 +204,17 @@
     <Compile Include="Expressions\FeaturesCollectionExpression.cs" />
     <Compile Include="Expressions\GeometryExpression.cs" />
     <Compile Include="Data\IHasDynamicProperties.cs" />
-    <Compile Include="Expressions\PredicateExpression.cs" />
+    <Compile Include="Expressions\LogicExpression.cs" />
     <Compile Include="Expressions\LayerExpression.cs" />
     <Compile Include="Expressions\NumericExpression`1.cs" />
     <Compile Include="Expressions\OidCollectionExpression.cs" />
-    <Compile Include="Expressions\OidExpression.cs" />
-    <Compile Include="Expressions\ProjectionExpression.cs" />
+    <Compile Include="Expressions\OidPropertyExpression.cs" />
+    <Compile Include="Expressions\SelectExpression.cs" />
     <Compile Include="Expressions\PropertyNameExpression.cs" />
     <Compile Include="Expressions\ProviderExpression.cs" />
     <Compile Include="Expressions\ProviderPropertyExpression.cs" />
     <Compile Include="Expressions\QueryExpression.cs" />
-    <Compile Include="Expressions\RasterQueryExpression.cs" />
+    <Compile Include="Expressions\CoverageQueryExpression.cs" />
     <Compile Include="Expressions\SpatialBinaryExpression.cs" />
     <Compile Include="Expressions\SpatialExpression.cs" />
     <Compile Include="Expressions\SpatialOperation.cs" />
@@ -215,9 +222,7 @@
     <Compile Include="Expressions\StringCollectionExpression.cs" />
     <Compile Include="Expressions\StringExpression.cs" />
     <Compile Include="Expressions\ThisExpression.cs" />
-    <Compile Include="Expressions\UnaryExpression.cs" />
-    <Compile Include="Expressions\UnaryLogicExpression.cs" />
-    <Compile Include="Expressions\UnaryLogicOperator.cs" />
+    <Compile Include="Expressions\NotExpression.cs" />
     <Compile Include="Expressions\LiteralExpression.cs" />
     <Compile Include="Expressions\LiteralExpression`1.cs" />
     <Compile Include="Expressions\UpperBoundaryExpression.cs" />
@@ -265,7 +270,7 @@
     <Compile Include="Layers\FeatureLayer.cs" />
     <Compile Include="Layers\IFeatureLayer.cs" />
     <Compile Include="Layers\ILayer.cs" />
-    <Compile Include="Layers\IRasterLayer.cs" />
+    <Compile Include="Layers\ICoverageLayer.cs" />
     <Compile Include="Layers\LabelLayer.cs">
     </Compile>
     <Compile Include="Layers\Layer.cs">
@@ -274,8 +279,7 @@
     <Compile Include="Layers\LayerDataLoadedEventArgs.cs" />
     <Compile Include="Layers\LayerGroup.cs">
     </Compile>
-    <Compile Include="Layers\MultipartGeometryLabelingBehavor.cs" />
-    <Compile Include="Layers\RasterLayer.cs">
+    <Compile Include="Layers\CoverageLayer.cs">
     </Compile>
     <Compile Include="Layers\GeometryLayer.cs">
     </Compile>
@@ -301,35 +305,21 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="Rendering\BasicGeometryRenderer.cs" />
-    <Compile Include="Rendering\BasicLabelRenderer.cs" />
-    <Compile Include="Rendering\FeatureRenderer.cs" />
     <Compile Include="Rendering\IBitmapTransform.cs" />
     <Compile Include="Rendering\IBrush.cs" />
     <Compile Include="Rendering\IFeatureRenderer.cs" />
     <Compile Include="Rendering\IPen.cs" />
     <Compile Include="Rendering\IScene.cs" />
     <Compile Include="Rendering\ISymbol.cs" />
-    <Compile Include="Rendering\ITextRenderer`1.cs" />
-    <Compile Include="Rendering\IVectorRenderer`1.cs" />
-    <Compile Include="Rendering\Point`1.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Rendering\RasterRenderer`1.cs" />
     <Compile Include="Rendering\Rectangle`1.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Rendering\Renderer.cs" />
-    <Compile Include="Rendering\ISceneExtent`1.cs" />
-    <Compile Include="Rendering\IGeometryRenderer.cs" />
     <Compile Include="Rendering\RenderState.cs" />
     <Compile Include="Rendering\RenderingMode.cs" />
     <Compile Include="Rendering\Size`1.cs" />
-    <Compile Include="Rendering\Symbol`1.cs" />
-    <Compile Include="Rendering\TextRenderer.cs" />
     <Compile Include="Rendering\TextRenderingHint.cs" />
     <Compile Include="Expressions\FeatureIdExpression.cs" />
-    <Compile Include="Rendering\VectorRenderer.cs" />
     <Compile Include="Symbology\AnchorPoint.cs" />
     <Compile Include="Symbology\BaseSymbolizer.cs" />
     <Compile Include="Symbology\Capabilities\ComparisonOperatorCapabilities.cs" />
@@ -359,7 +349,7 @@
     <Compile Include="Symbology\LineJoin.cs" />
     <Compile Include="Symbology\Style.cs" />
     <Compile Include="Symbology\StyleColor.cs" />
-    <Compile Include="Symbology\StyleFont.cs" />
+    <Compile Include="Symbology\Font.cs" />
     <Compile Include="Symbology\FormatDateExpression.cs" />
     <Compile Include="Symbology\FormatNumberExpression.cs" />
     <Compile Include="Symbology\GeometryPropertyNameExpression.cs" />
@@ -402,23 +392,21 @@
     <Compile Include="Symbology\SymbologyFunctionExpression.cs" />
     <Compile Include="Symbology\TextSymbolizer.cs" />
     <Compile Include="Symbology\TrimExpression.cs" />
-    <Compile Include="Tools\ActionContext`1.cs" />
+    <Compile Include="Tools\ActionContext`2.cs" />
     <Compile Include="Map.cs">
     </Compile>
     <Compile Include="Presentation\Presenters\LayersPresenter.cs" />
     <Compile Include="Presentation\Presenters\LayerStylePresenter.cs" />
     <Compile Include="Presentation\Presenters\ToolsPresenter.cs" />
     <Compile Include="Presentation\FeaturesSelectionChangedEventArgs.cs" />
-    <Compile Include="Rendering\Figure`1.cs" />
     <Compile Include="Presentation\IViewSelection`3.cs" />
     <Compile Include="Presentation\Views\IAttributeView.cs" />
     <Compile Include="Presentation\Views\ILayerStyleView.cs" />
     <Compile Include="Presentation\Views\ILayersView.cs" />
-    <Compile Include="Rendering\IRasterRenderer`1.cs" />
+    <Compile Include="Rendering\ICoverageRenderer`1.cs" />
     <Compile Include="Presentation\Views\IToolsView.cs" />
     <Compile Include="Presentation\Presenters\MapPresenter2D.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Rendering\Path`1.cs" />
     <Compile Include="Rendering\IRenderer.cs" />
     <Compile Include="Presentation\Views\IMapView2D.cs" />
     <Compile Include="Presentation\MapViewPropertyChangeEventArgs`1.cs" />
@@ -432,7 +420,7 @@
     <Compile Include="Tools\MapTool`1.cs" />
     <Compile Include="Rendering\RenderExceptions.cs" />
     <Compile Include="Presentation\ViewSelection`3.cs" />
-    <Compile Include="Tools\StandardMapTools2D.cs" />
+    <Compile Include="Tools\StandardMapViewMapTools.cs" />
     <Compile Include="Indexing\BinaryTree\BinaryTree.cs" />
     <Compile Include="Indexing\RTree\GuttmanQuadraticInsert.cs" />
     <Compile Include="Indexing\RTree\GuttmanQuadraticSplit.cs" />

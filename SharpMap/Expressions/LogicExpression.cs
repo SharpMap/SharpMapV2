@@ -15,25 +15,14 @@
 // along with SharpMap; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
-using System;
 
 namespace SharpMap.Expressions
 {
-    public class AllAttributesExpression : SelectExpression
+    public abstract class LogicExpression : Expression
     {
-        public override Boolean Contains(Expression other)
+        public override ExpressionType ExpressionType
         {
-            return Equals(other);
-        }
-
-        public override Expression Clone()
-        {
-            return new AllAttributesExpression();
-        }
-
-        public override Boolean Equals(Expression other)
-        {
-            return other is AllAttributesExpression;
+            get { return ExpressionType.LogicExpression; }
         }
     }
 }

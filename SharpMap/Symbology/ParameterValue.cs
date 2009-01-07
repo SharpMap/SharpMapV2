@@ -17,7 +17,6 @@
 
 using System;
 using System.Xml.Serialization;
-using SharpMap.Data;
 using SharpMap.Expressions;
 
 namespace SharpMap.Symbology
@@ -35,7 +34,7 @@ namespace SharpMap.Symbology
     //    [XmlEnum("http://www.opengis.net/ogc:Sub")] Sub,
     //}
 
-    [XmlInclude(typeof (SvgParameter))]
+    [XmlInclude(typeof(SvgParameter))]
     [Serializable]
     [XmlType(Namespace = "http://www.opengis.net/se", TypeName = "ParameterValueType")]
     // [XmlRoot("InitialGap", Namespace = "http://www.opengis.net/se", IsNullable = false)]
@@ -44,17 +43,25 @@ namespace SharpMap.Symbology
         private Expression[] _expressions;
         private ExpressionType[] _expressionElementTypes;
         private String[] _text;
-        
+        private readonly Object _value;
+
+        public ParameterValue() { }
+
+        public ParameterValue(Object defaultValue)
+        {
+            _value = defaultValue;
+        }
+
         /// <summary>
         /// Used by the XML serializer.
         /// </summary>
-        [XmlElement("Add", typeof (BinaryOperationExpression), Namespace = "http://www.opengis.net/ogc")]
-        [XmlElement("Div", typeof (BinaryOperationExpression), Namespace = "http://www.opengis.net/ogc")]
-        [XmlElement("Function", typeof (FunctionExpression), Namespace = "http://www.opengis.net/ogc")]
-        [XmlElement("Literal", typeof (LiteralExpression), Namespace = "http://www.opengis.net/ogc")]
-        [XmlElement("Mul", typeof (BinaryOperationExpression), Namespace = "http://www.opengis.net/ogc")]
-        [XmlElement("PropertyName", typeof (PropertyNameExpression), Namespace = "http://www.opengis.net/ogc")]
-        [XmlElement("Sub", typeof (BinaryOperationExpression), Namespace = "http://www.opengis.net/ogc")]
+        [XmlElement("Add", typeof(BinaryOperationExpression), Namespace = "http://www.opengis.net/ogc")]
+        [XmlElement("Div", typeof(BinaryOperationExpression), Namespace = "http://www.opengis.net/ogc")]
+        [XmlElement("Function", typeof(FunctionExpression), Namespace = "http://www.opengis.net/ogc")]
+        [XmlElement("Literal", typeof(LiteralExpression), Namespace = "http://www.opengis.net/ogc")]
+        [XmlElement("Mul", typeof(BinaryOperationExpression), Namespace = "http://www.opengis.net/ogc")]
+        [XmlElement("PropertyName", typeof(PropertyNameExpression), Namespace = "http://www.opengis.net/ogc")]
+        [XmlElement("Sub", typeof(BinaryOperationExpression), Namespace = "http://www.opengis.net/ogc")]
         [XmlChoiceIdentifier("ExpressionElementTypes")]
         public Expression[] Expressions
         {
@@ -62,6 +69,9 @@ namespace SharpMap.Symbology
             set { _expressions = value; }
         }
 
+        /// <summary>
+        /// Used by the XML serializer.
+        /// </summary>
         [XmlElement("ExpressionElementTypes")]
         [XmlIgnore]
         public ExpressionType[] ExpressionElementTypes
@@ -70,6 +80,9 @@ namespace SharpMap.Symbology
             set { _expressionElementTypes = value; }
         }
 
+        /// <summary>
+        /// Used by the XML serializer.
+        /// </summary>
         [XmlText]
         public String[] Text
         {
@@ -77,9 +90,24 @@ namespace SharpMap.Symbology
             set { _text = value; }
         }
 
-        public TValue GetValue<TValue>(IDataObject dataObject)
+        public static explicit operator Expression(ParameterValue value)
         {
-            
+            Expression valueExpression = (value.Expressions == null || value.Expressions.Length == 0)
+                                                 ? null
+                                                 : value.Expressions[0];
+
+            if (valueExpression == null && value.Text != null)
+            {
+                LiteralExpression<String> literal = String.Join(" ", value.Text).Trim();
+                valueExpression = literal;
+            }
+
+            if (valueExpression != null && value._value != null)
+            {
+                return new LiteralExpression<Object>(value._value);
+            }
+
+            return valueExpression;
         }
     }
 }

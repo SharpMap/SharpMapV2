@@ -36,7 +36,7 @@ namespace SharpMap.Expressions
             return new FeatureQueryExpression(geometry, SpatialOperation.Intersects);
         }
 
-        public static FeatureQueryExpression Intersects(ProjectionExpression projection, IExtents extents)
+        public static FeatureQueryExpression Intersects(SelectExpression projection, IExtents extents)
         {
             return new FeatureQueryExpression(projection,
                                               null,
@@ -44,7 +44,7 @@ namespace SharpMap.Expressions
                                               null);
         }
 
-        public static FeatureQueryExpression Intersects(ProjectionExpression projection, IGeometry geometry)
+        public static FeatureQueryExpression Intersects(SelectExpression projection, IGeometry geometry)
         {
             return new FeatureQueryExpression(projection,
                                               null,
@@ -137,7 +137,7 @@ namespace SharpMap.Expressions
                                       OidCollectionExpression oidFilter)
             : this(new AllAttributesExpression(), attributeFilter, spatialFilter, oidFilter) { }
 
-        public FeatureQueryExpression(ProjectionExpression projectionExpression,
+        public FeatureQueryExpression(SelectExpression projectionExpression,
                                       BinaryLogicExpression attributeFilter,
                                       SpatialBinaryExpression spatialFilter,
                                       OidCollectionExpression oidFilter)
@@ -147,7 +147,7 @@ namespace SharpMap.Expressions
                         ? spatialFilter == null
                                 ? oidFilter
                                 : oidFilter == null
-                                    ? (PredicateExpression)spatialFilter
+                                    ? (LogicExpression)spatialFilter
                                     : new BinaryLogicExpression(spatialFilter, BinaryLogicOperator.And, oidFilter)
                         : spatialFilter == null
                                 ? oidFilter == null
@@ -168,8 +168,8 @@ namespace SharpMap.Expressions
                    replacementSpatialExpression,
                    expressionToCopy.OidPredicate) { }
 
-        public FeatureQueryExpression(ProjectionExpression projection,
-                                                  PredicateExpression predicate)//jd: made public
+        public FeatureQueryExpression(SelectExpression projection,
+                                                  LogicExpression predicate)//jd: made public
             : base(projection, predicate) { }
 
         public SpatialBinaryExpression SpatialPredicate

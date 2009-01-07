@@ -23,14 +23,14 @@ using SharpMap.Expressions;
 
 namespace SharpMap.Data.Providers
 {
-    public class AsyncRasterProviderAdapter : AsyncProviderAdapter, IRasterProvider
+    public class AsyncRasterProviderAdapter : AsyncProviderAdapter, ICoverageProvider
     {
-        protected IRasterProvider InnerRasterProvider
+        protected ICoverageProvider InnerRasterProvider
         {
-            get { return _innerProvider as IRasterProvider; }
+            get { return _innerProvider as ICoverageProvider; }
         }
 
-        public AsyncRasterProviderAdapter(IRasterProvider provider)
+        public AsyncRasterProviderAdapter(ICoverageProvider provider)
             : base(provider)
         {
         }
@@ -39,7 +39,7 @@ namespace SharpMap.Data.Providers
 
         public override IAsyncResult BeginExecuteQuery(Expression query, AsyncCallback callback)
         {
-            RasterQueryExpression rasterQuery = query as RasterQueryExpression;
+            CoverageQueryExpression rasterQuery = query as CoverageQueryExpression;
             if (rasterQuery == null)
             {
                 throw new ArgumentException("query must be non-null and of type RasterQueryExpression.", "query");
@@ -64,11 +64,11 @@ namespace SharpMap.Data.Providers
         private void QueueableBeginQuery(Object asyncResult)
         {
             AsyncResult<Stream> typedAsyncResult = asyncResult as AsyncResult<Stream>;
-            RasterQueryExpression query = typedAsyncResult.AsyncState as RasterQueryExpression;
+            CoverageQueryExpression query = typedAsyncResult.AsyncState as CoverageQueryExpression;
 
             try
             {
-                typedAsyncResult.SetComplete(InnerRasterProvider.ExecuteRasterQuery(query), false);
+                typedAsyncResult.SetComplete(InnerRasterProvider.ExecuteCoverageQuery(query), false);
             }
             catch (Exception terminatingException)
             {
@@ -89,9 +89,9 @@ namespace SharpMap.Data.Providers
 
         #region wrapped IRasterProvider methods
 
-        public Stream ExecuteRasterQuery(RasterQueryExpression query)
+        public Stream ExecuteCoverageQuery(CoverageQueryExpression query)
         {
-            return InnerRasterProvider.ExecuteRasterQuery(query);
+            return InnerRasterProvider.ExecuteCoverageQuery(query);
         }
 
         #endregion

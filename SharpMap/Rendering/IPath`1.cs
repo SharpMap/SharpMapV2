@@ -16,22 +16,15 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System;
-using System.Xml.Serialization;
+using GeoAPI.Coordinates;
+using NPack.Interfaces;
 
-namespace SharpMap.Symbology
+namespace SharpMap.Rendering
 {
-    [Serializable]
-    [XmlType(Namespace = "http://www.opengis.net/se", TypeName = "Font")]
-    [XmlRoot("Font", Namespace = "http://www.opengis.net/se", IsNullable = false)]
-    public class StyleFont
+    public interface IPath<TCoordinate>
+        where TCoordinate : ICoordinate<TCoordinate>, IEquatable<TCoordinate>,
+                            IComparable<TCoordinate>, IConvertible,
+                            IComputable<Double, TCoordinate> 
     {
-        private SvgParameter[] _svgParameter;
-
-        [XmlElement("SvgParameter")]
-        public SvgParameter[] SvgParameter
-        {
-            get { return _svgParameter; }
-            set { _svgParameter = value; }
-        }
     }
 }

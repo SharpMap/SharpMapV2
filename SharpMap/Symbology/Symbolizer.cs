@@ -60,7 +60,7 @@ namespace SharpMap.Symbology
             get { return _version; }
             set { _version = value; }
         }
-
+        
         [XmlIgnore]
         public Boolean VersionSpecified
         {

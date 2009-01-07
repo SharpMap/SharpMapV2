@@ -15,20 +15,23 @@
 // along with SharpMap; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
-using NPack;
+using System;
+using GeoAPI.Coordinates;
 using NPack.Interfaces;
 
 namespace SharpMap.Tools
 {
-	public struct ActionContext<TMapView, TPoint>
-		where TPoint : IVector<DoubleComponent>
+	public struct ActionContext<TMapView, TCoordinate>
+        where TCoordinate : ICoordinate<TCoordinate>, IEquatable<TCoordinate>,
+                            IComparable<TCoordinate>, IConvertible,
+                            IComputable<Double, TCoordinate>
 	{
-		private readonly Map _map;
+		private readonly Map<TCoordinate> _map;
         private readonly TMapView _view;
-        private readonly TPoint _previousPoint;
-	    private readonly TPoint _currentPoint;
+        private readonly TCoordinate _previousPoint;
+        private readonly TCoordinate _currentPoint;
 
-		public ActionContext(Map map, TMapView view, TPoint previousPoint, TPoint currentPoint)
+        public ActionContext(Map<TCoordinate> map, TMapView view, TCoordinate previousPoint, TCoordinate currentPoint)
 		{
 			_map = map;
 			_view = view;
@@ -36,7 +39,7 @@ namespace SharpMap.Tools
 		    _currentPoint = currentPoint;
 		}
 
-		public Map Map
+        public Map<TCoordinate> Map
 		{
 			get { return _map; }
 		}
@@ -46,12 +49,12 @@ namespace SharpMap.Tools
 			get { return _view; }
 		}
 
-	    public TPoint PreviousPoint
+        public TCoordinate PreviousPoint
 	    {
 	        get { return _previousPoint; }
 	    }
 
-	    public TPoint CurrentPoint
+        public TCoordinate CurrentPoint
 	    {
 	        get { return _currentPoint; }
 	    }

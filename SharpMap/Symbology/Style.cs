@@ -37,6 +37,7 @@ namespace SharpMap.Symbology
         /// <summary>
         /// Gets the set of <see cref="Rule"/>s contained by this <see cref="Style"/>.
         /// </summary>
+        [XmlIgnore]
         public IEnumerable<Rule> Rules
         {
             get
@@ -59,6 +60,7 @@ namespace SharpMap.Symbology
         /// <summary>
         /// Gets the set of <see cref="OnlineResource"/>s contained by this <see cref="Style"/>.
         /// </summary>
+        [XmlIgnore]
         public IEnumerable<OnlineResource> OnlineResources
         {
             get

@@ -25,8 +25,8 @@ namespace SharpMap.Symbology
     [XmlRoot("Halo", Namespace = "http://www.opengis.net/se", IsNullable = false)]
     public class Halo
     {
-        private ParameterValue _radius;
-        private Fill _fill;
+        private ParameterValue _radius = new ParameterValue(1.0);
+        private Fill _fill = new Fill(StyleColor.White);
 
         public ParameterValue Radius
         {

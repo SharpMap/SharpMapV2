@@ -32,6 +32,9 @@ namespace SharpMap.Expressions
     [XmlType(Namespace = "http://www.opengis.net/ogc", TypeName = "ExpressionType")]
     public abstract class Expression : IEquatable<Expression>
     {
+        [XmlIgnore]
+        public abstract ExpressionType ExpressionType { get; }
+        
         /// <summary>
         /// Determines if <see cref="Expression"/> <paramref name="a"/> contains
         /// <see cref="Expression"/> <paramref name="b"/>. "Contains" means that

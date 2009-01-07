@@ -1,4 +1,4 @@
-﻿// Copyright 2006 - 2008: Rory Plaire (codekaizen@gmail.com)
+// Copyright 2006 - 2008: Rory Plaire (codekaizen@gmail.com)
 //
 // This file is part of SharpMap.
 // SharpMap is free software; you can redistribute it and/or modify
@@ -16,12 +16,18 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System;
-using System.Xml.Serialization;
+using GeoAPI.Coordinates;
+using NPack.Interfaces;
+using IMatrixD = NPack.Interfaces.IMatrix<NPack.DoubleComponent>;
+using IVectorD = NPack.Interfaces.IVector<NPack.DoubleComponent>;
 
-namespace SharpMap.Expressions
+namespace SharpMap.Rendering
 {
-    [Serializable]
-    [XmlInclude(typeof (FeatureIdExpression))]
-    [XmlType(Namespace = "http://www.opengis.net/ogc", TypeName = "AbstractIdType")]
-    public abstract class AbstractIdExpression : Expression {}
+    public interface ICoverageRenderer<TCoordinate> : IRenderer
+        where TCoordinate : ICoordinate<TCoordinate>, IEquatable<TCoordinate>,
+                            IComparable<TCoordinate>, IConvertible,
+                            IComputable<Double, TCoordinate>
+    {
+        void RenderBitmap(IScene<TCoordinate> scene, IBitmap bitmap, Rectangle<TCoordinate> bounds);
+    }
 }

@@ -17,7 +17,7 @@
 
 using System;
 using System.Xml.Serialization;
-using SharpMap.Expressions;
+using SharpMap.Data;
 
 namespace SharpMap.Symbology
 {
@@ -69,23 +69,31 @@ namespace SharpMap.Symbology
             set { _legendGraphic = value; }
         }
 
-        [XmlElement("Filter", typeof (FilterExpression), Namespace = "http://www.opengis.net/ogc")]
+        /// <summary>
+        /// Used by the XML serializer.
+        /// </summary>
+        [XmlElement("Filter", typeof (Filter), Namespace = "http://www.opengis.net/ogc")]
         [XmlElement("ElseFilter", typeof (ElseFilter))]
-        public Object Item
+        public Object Content
         {
             get { return _item; }
             set { _item = value; }
         }
 
+        /// <summary>
+        /// Gets a value which indicates that this rule is an "ElseFilter" rule (see: 
+        /// OGC Symbology Encoding 05-077r4 sec. 10.3) and will be applied only if 
+        /// a styled feature isn't matched by any other rule in the style.
+        /// </summary>
         public Boolean IsElseFilterRule
         {
-            get { return Item is ElseFilter; }
+            get { return Content is ElseFilter; }
         }
 
-        public FilterExpression Filter
+        public Filter Filter
         {
-            get { return Item as FilterExpression; }
-            set { Item = value; }
+            get { return Content as Filter; }
+            set { Content = value; }
         }
 
         /// <summary>

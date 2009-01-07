@@ -16,22 +16,26 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System;
+using GeoAPI.Coordinates;
+using NPack.Interfaces;
 using IMatrixD = NPack.Interfaces.IMatrix<NPack.DoubleComponent>;
 using IVectorD = NPack.Interfaces.IVector<NPack.DoubleComponent>;
 
 namespace SharpMap.Presentation
 {
-	public class MapActionEventArgs<TPoint> : EventArgs
-		where TPoint : IVectorD
+    public class MapActionEventArgs<TCoordinate> : EventArgs
+        where TCoordinate : ICoordinate<TCoordinate>, IEquatable<TCoordinate>,
+                            IComparable<TCoordinate>, IConvertible,
+                            IComputable<Double, TCoordinate>
 	{
-		private TPoint _actionPoint;
+        private TCoordinate _actionPoint;
 
-		public MapActionEventArgs(TPoint actionPoint)
+        public MapActionEventArgs(TCoordinate actionPoint)
 		{
 			_actionPoint = actionPoint;
 		}
 
-		public TPoint ActionPoint
+        public TCoordinate ActionPoint
 		{
 			get { return _actionPoint; }
 			protected set { _actionPoint = value; }

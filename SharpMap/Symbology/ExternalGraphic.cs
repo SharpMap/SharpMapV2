@@ -29,6 +29,9 @@ namespace SharpMap.Symbology
         private String _format;
         private ColorReplacementExpression[] _colorReplacement;
 
+        /// <summary>
+        /// Used by the XML serializer.
+        /// </summary>
         [XmlElement("InlineContent", typeof (InlineContent))]
         [XmlElement("OnlineResource", typeof (OnlineResource))]
         public Object Item
@@ -37,6 +40,27 @@ namespace SharpMap.Symbology
             set { _item = value; }
         }
 
+        [XmlIgnore]
+        public InlineContent InlineContent
+        {
+            get { return _item as InlineContent; }
+        }
+
+        [XmlIgnore]
+        public OnlineResource OnlineResource
+        {
+            get { return _item as OnlineResource; }
+        }
+
+        /// <summary>
+        /// Gets or sets a value which identifies the expected 
+        /// document MIME type of the <see cref="ExternalGraphic"/>.
+        /// </summary>
+        /// <remarks>
+        /// Knowing the MIME type in advance allows the styler to select 
+        /// the best-supported format from the list of URLs with 
+        /// equivalent content.
+        /// </remarks>
         public String Format
         {
             get { return _format; }

@@ -33,7 +33,8 @@ namespace SharpMap.Rendering
                                       IComparable<Size<TCoordinate>>, 
                                       IComputable<Double, Size<TCoordinate>>
     {
-        private DoubleComponent _width, _height;
+        //private DoubleComponent _width, _height;
+        private TCoordinate _sizeVector;
         private Boolean _hasValue;
 
         public static readonly Size<TCoordinate> Empty = new Size<TCoordinate>();

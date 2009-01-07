@@ -20,6 +20,21 @@ using System.Xml.Serialization;
 
 namespace SharpMap.Symbology
 {
+    /// <summary>
+    /// Gets the location inside of a graphic or label text to use for anchoring 
+    /// the it to the main-geometry point.
+    /// </summary>
+    /// <remarks>
+    /// The coordinates are given as two floating-point numbers in the 
+    /// <see cref="SharpMap.Symbology.AnchorPoint.AnchorPointX"/> and 
+    /// <see cref="SharpMap.Symbology.AnchorPoint.AnchorPointY"/> properties 
+    /// each with values between 0.0 and 1.0 inclusive. 
+    /// The bounding box of the graphic or label text to be rendered is considered to be in 
+    /// a coordinate space from 0.0 (lower-left corner) to 1.0 (upper-right corner), 
+    /// and the anchor position is specified as a point in this space. 
+    /// The default point is X=0.5, Y=0.5, which is at the middle height 
+    /// and middle length of the graphic or label text.
+    /// </remarks>
     [Serializable]
     [XmlType(Namespace = "http://www.opengis.net/se", TypeName = "AnchorPoint")]
     [XmlRoot("AnchorPoint", Namespace = "http://www.opengis.net/se", IsNullable = false)]

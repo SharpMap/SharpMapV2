@@ -41,7 +41,7 @@ namespace SharpMap.Rendering
         /// <param name="text">The String to measure.</param>
         /// <param name="font">The font to use to draw the String.</param>
         /// <returns>A measurement of the String.</returns>
-        Size<TCoordinate> MeasureString(String text, StyleFont font);
+        Size<TCoordinate> MeasureString(String text, Font font);
 
         /// <summary>
         /// Renders a text String.
@@ -53,7 +53,7 @@ namespace SharpMap.Rendering
         /// <returns>
         /// A set of object instances representing the rendered text.
         /// </returns>
-        void RenderText(IScene scene, String text, StyleFont font, TCoordinate location, Fill fill);
+        void RenderText(IScene scene, String text, Font font, TCoordinate location, Fill fill);
 
         /// <summary>
         /// Renders a text String.
@@ -75,7 +75,7 @@ namespace SharpMap.Rendering
         /// <returns>
         /// A set of object instances representing the rendered text.
         /// </returns>
-        void RenderText(IScene scene, String text, StyleFont font, 
+        void RenderText(IScene scene, String text, Font font, 
                         Rectangle<TCoordinate> layoutRectangle,
                         Path<TCoordinate> flowPath, 
                         Fill fill, 

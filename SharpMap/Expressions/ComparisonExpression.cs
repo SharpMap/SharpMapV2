@@ -39,5 +39,14 @@ namespace SharpMap.Expressions
         }
 
         #endregion
+
+        #region Overrides of Expression
+
+        public override ExpressionType ExpressionType
+        {
+            get { return ExpressionType.ComparisonExpression; }
+        }
+
+        #endregion
     }
 }

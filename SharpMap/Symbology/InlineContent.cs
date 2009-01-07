@@ -22,19 +22,76 @@ using System.Xml.Serialization;
 namespace SharpMap.Symbology
 {
     [Serializable]
+    [XmlType(AnonymousType = true, Namespace = "http://www.opengis.net/se")]
+    public enum InlineContentEncoding
+    {
+        [XmlEnum("xml")]
+        Xml,
+        [XmlEnum("base64")]
+        Base64,
+    }
+
+    [Serializable]
     [XmlType(Namespace = "http://www.opengis.net/se", TypeName = "InlineContentType")]
     [XmlRoot("InlineContent", Namespace = "http://www.opengis.net/se", IsNullable = false)]
-    internal class InlineContent
+    public class InlineContent
     {
-        private XmlNode[] _any;
+        private XmlNode[] _content;
         private InlineContentEncoding _encoding;
 
+        /// <summary>
+        /// Used by the XML serializer.
+        /// </summary>
         [XmlText]
         [XmlAnyElement]
-        public XmlNode[] Any
+        public XmlNode[] Content
         {
-            get { return _any; }
-            set { _any = value; }
+            get { return _content; }
+            set { _content = value; }
+        }
+
+        [XmlIgnore]
+        public Byte[] Data
+        {
+            get
+            {
+                if (Encoding != InlineContentEncoding.Base64 || Content == null || Content.Length == 0)
+                {
+                    return null;
+                }
+
+                XmlNode dataNode = Content[0];
+
+                String data;
+
+                switch (dataNode.NodeType)
+                {
+                    case XmlNodeType.CDATA:
+                    case XmlNodeType.Element:
+                    case XmlNodeType.Text:
+                        data = dataNode.InnerText;
+                        break;
+                    default:
+                        throw new NotSupportedException("Element type not supported for Base64 encoded content: " +
+                                                        dataNode.NodeType);
+                }
+
+                return Convert.FromBase64String(data);
+            }
+        }
+
+        [XmlIgnore]
+        public XmlDocument InlineXml
+        {
+            get
+            {
+                if (Encoding != InlineContentEncoding.Xml || Content == null || Content.Length == 0)
+                {
+                    return null;
+                }
+
+                throw new NotImplementedException();
+            }
         }
 
         [XmlAttribute(AttributeName = "encoding")]
@@ -43,15 +100,5 @@ namespace SharpMap.Symbology
             get { return _encoding; }
             set { _encoding = value; }
         }
-    }
-
-    [Serializable]
-    [XmlType(AnonymousType = true, Namespace = "http://www.opengis.net/se")]
-    public enum InlineContentEncoding
-    {
-        [XmlEnum("xml")]
-        Xml,
-        [XmlEnum("base64")]
-        Base64,
     }
 }

@@ -23,7 +23,7 @@ namespace SharpMap.Expressions
     [Serializable]
     [XmlType(Namespace = "http://www.opengis.net/ogc", TypeName = "FeatureIdType")]
     [XmlRoot("FeatureId", Namespace = "http://www.opengis.net/ogc", IsNullable = false)]
-    public class FeatureIdExpression : AbstractIdExpression
+    public class FeatureIdExpression : IdExpression
     {
         private String _fid;
 

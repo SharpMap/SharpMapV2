@@ -16,9 +16,10 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System;
+using GeoAPI.Coordinates;
 using NPack;
+using NPack.Interfaces;
 using SharpMap.Rendering;
-using SharpMap.Styles;
 using IMatrixD = NPack.Interfaces.IMatrix<NPack.DoubleComponent>;
 using IVectorD = NPack.Interfaces.IVector<NPack.DoubleComponent>;
 
@@ -27,50 +28,19 @@ namespace SharpMap.Presentation
     /// <summary>
     /// Represents a selection on a map view.
     /// </summary>
-    /// <typeparam name="TPoint">The type of point in this selection.</typeparam>
-    /// <typeparam name="TSize">The type of size structure in this selection.</typeparam>
-    /// <typeparam name="TViewRegion">The type of region this selection covers.</typeparam>
     /// <remarks>
     /// The type parameters allows this class to be customized for to accomodate structures
     /// which represent points and areas in various dimensions.
     /// </remarks>
-    public abstract class ViewSelection<TPoint, TSize, TViewRegion> : IViewSelection<TPoint, TSize, TViewRegion>
-        where TPoint : IVectorD, IHasEmpty
-        where TSize : IVectorD, IHasEmpty
-        where TViewRegion : IMatrixD, IEquatable<TViewRegion>, new()
+    public abstract class ViewSelection<TCoordinate> : IViewSelection<TCoordinate>
+        where TCoordinate : ICoordinate<TCoordinate>, IEquatable<TCoordinate>,
+                            IComparable<TCoordinate>, IConvertible,
+                            IComputable<Double, TCoordinate>
     {
-        private Path<TPoint, TViewRegion> _path;
-        private StylePen _outline;
-        private StyleBrush _fill;
-        private TPoint _anchorPoint;
-
-        /// <summary>
-        /// The default style of the selection outline.
-        /// </summary>
-        public static readonly StylePen DefaultOutline;
-
-        /// <summary>
-        /// The default fill of the selection.
-        /// </summary>
-        public static readonly StyleBrush DefaultFill = new SolidStyleBrush(new StyleColor(255, 32, 32, 32));
-
-        static ViewSelection()
-        {
-            DefaultOutline = new StylePen(StyleColor.Black, 1.0f);
-            DefaultOutline.DashStyle = LineDashStyle.Dash;
-            DefaultOutline.DashBrushes = new StyleBrush[] { new SolidStyleBrush(StyleColor.White) };
-            DefaultOutline.DashPattern = new Single[] { 4, 4 };
-        }
-
-        /// <summary>
-        /// Creates a new selection using the <see cref="DefaultOutline"/> and <see cref="DefaultFill"/>
-        /// for the <see cref="OutlineStyle"/> and <see cref="FillBrush"/> respectively.
-        /// </summary>
-        public ViewSelection()
-        {
-            _outline = DefaultOutline;
-            _fill = DefaultFill;
-        }
+        private Path<TCoordinate> _path;
+        private IPen _outline;
+        private IBrush _fill;
+        private TCoordinate _anchorPoint;
 
         #region Public Events
         public event EventHandler SelectionChanged;
@@ -80,11 +50,11 @@ namespace SharpMap.Presentation
         /// Creates a new path for the selection, but doesn't add it to the selection.
         /// </summary>
         /// <returns>A Path instance representing a new selection path.</returns>
-        protected abstract Path<TPoint, TViewRegion> CreatePath();
+        protected abstract Path<TCoordinate> CreatePath();
 
         #region IViewSelection<TPoint,TSize,TViewRegion> Members
 
-        public void AddPoint(TPoint point)
+        public void AddPoint(TCoordinate point)
         {
             if (Path.Points.Count == 0 && AnchorPoint.IsEmpty)
             {
@@ -122,7 +92,7 @@ namespace SharpMap.Presentation
             OnSelectionChanged();
         }
 
-        public void Expand(TSize size)
+        public void Expand(Size<TCoordinate> size)
         {
             for (Int32 pointIndex = 0; pointIndex < PathInternal.Points.Count; pointIndex++)
             {
@@ -134,32 +104,32 @@ namespace SharpMap.Presentation
             OnSelectionChanged();
         }
 
-        public void MoveBy(TPoint location)
+        public void MoveBy(TCoordinate location)
         {
             throw new NotImplementedException("implement this");
 
             OnSelectionChanged();
         }
 
-        public void RemovePoint(TPoint point)
+        public void RemovePoint(TCoordinate point)
         {
             PathInternal.Points.Remove(point);
 
             OnSelectionChanged();
         }
 
-        public Path<TPoint, TViewRegion> Path
+        public Path<TCoordinate> Path
         {
             get { return PathInternal.Clone(); }
         }
 
-        public TPoint AnchorPoint
+        public TCoordinate AnchorPoint
         {
             get { return _anchorPoint; }
             set { _anchorPoint = value; }
         }
 
-        public TViewRegion BoundingRegion
+        public Rectangle<TCoordinate> BoundingRegion
         {
             get { return PathInternal.Bounds; }
         }
@@ -179,28 +149,20 @@ namespace SharpMap.Presentation
         #endregion
 
         /// <summary>
-        /// Gets or sets the <see cref="StylePen"/> used to display
+        /// Gets or sets the <see cref="IPen"/> used to display
         /// the outline of the selection.
         /// </summary>
-        public StylePen OutlineStyle
+        public IPen OutlineStyle
         {
             get { return _outline; }
-            set
-            {
-                if (value == null)
-                {
-                    value = DefaultOutline;
-                }
-
-                _outline = value;
-            }
+            set { _outline = value; }
         }
 
         /// <summary>
-        /// Gets or sets the <see cref="StyleBrush"/> used to display
+        /// Gets or sets the <see cref="IBrush"/> used to display
         /// the inside of the selection.
         /// </summary>
-        public StyleBrush FillBrush
+        public IBrush FillBrush
         {
             get { return _fill; }
             set { _fill = value; }
@@ -217,7 +179,7 @@ namespace SharpMap.Presentation
             }
         }
 
-        protected Path<TPoint, TViewRegion> PathInternal
+        protected Path<TCoordinate> PathInternal
         {
             get
             {
@@ -246,7 +208,7 @@ namespace SharpMap.Presentation
 
             Boolean recorded = false;
 
-            foreach (TPoint point in Path.Points)
+            foreach (TCoordinate point in Path.Points)
             {
                 DoubleComponent[] components = point.Components;
 

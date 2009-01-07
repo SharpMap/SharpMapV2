@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using GeoAPI.Coordinates;
+using NPack.Interfaces;
 using SharpMap.Layers;
 
 namespace SharpMap.Presentation.Presenters
@@ -10,7 +12,10 @@ namespace SharpMap.Presentation.Presenters
     /// events from <see cref="FeatureLayer.SelectedFeatures"/> and <see cref="FeatureLayer.HighlightedFeatures"/>.
     /// </summary>
     /// <typeparam name="TView">Type of view to manage.</typeparam>
-    public abstract class FeatureLayersListenerPresenter<TView> : MapLayersListenerPresenter<TView>
+    public abstract class FeatureLayersListenerPresenter<TCoordinate, TView> : MapLayersListenerPresenter<TCoordinate, TView>
+        where TCoordinate : ICoordinate<TCoordinate>, IEquatable<TCoordinate>,
+                            IComparable<TCoordinate>, IConvertible,
+                            IComputable<Double, TCoordinate>
         where TView : class
     {
         #region Nested types
@@ -50,7 +55,7 @@ namespace SharpMap.Presentation.Presenters
         #endregion
 
         #region Object construction / disposal
-        protected FeatureLayersListenerPresenter(Map map, TView view)
+        protected FeatureLayersListenerPresenter(Map<TCoordinate> map, TView view)
             : base(map, view)
         {
             wireupExistingLayers(map.Layers);

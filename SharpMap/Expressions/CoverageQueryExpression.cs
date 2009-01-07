@@ -5,19 +5,19 @@ using SharpMap.Layers;
 
 namespace SharpMap.Expressions
 {
-    public class RasterQueryExpression : QueryExpression, IEquatable<RasterQueryExpression>
+    public class CoverageQueryExpression : QueryExpression, IEquatable<CoverageQueryExpression>
     {
-        public static RasterQueryExpression Intersects(IExtents extents)
+        public static CoverageQueryExpression Intersects(IExtents extents)
         {
-            return new RasterQueryExpression(extents, SpatialOperation.Intersects);
+            return new CoverageQueryExpression(extents, SpatialOperation.Intersects);
         }
 
-        public static RasterQueryExpression Intersects(IGeometry geometry)
+        public static CoverageQueryExpression Intersects(IGeometry geometry)
         {
-            return new RasterQueryExpression(geometry, SpatialOperation.Intersects);
+            return new CoverageQueryExpression(geometry, SpatialOperation.Intersects);
         }
 
-        public RasterQueryExpression(IExtents extents, SpatialOperation op)
+        public CoverageQueryExpression(IExtents extents, SpatialOperation op)
             : base(new AllBandsExpression(), new SpatialBinaryExpression(new ExtentsExpression(extents),
                                                                          op,
                                                                          new ThisExpression()))
@@ -25,7 +25,7 @@ namespace SharpMap.Expressions
             checkOp(op);
         }
 
-        public RasterQueryExpression(IGeometry geometry, SpatialOperation op)
+        public CoverageQueryExpression(IGeometry geometry, SpatialOperation op)
             : base(new AllBandsExpression(), new SpatialBinaryExpression(new GeometryExpression(geometry),
                                                                          op,
                                                                          new ThisExpression()))
@@ -33,7 +33,7 @@ namespace SharpMap.Expressions
             checkOp(op);
         }
 
-        public RasterQueryExpression(IGeometry geometry, SpatialOperation op, ILayer layer)
+        public CoverageQueryExpression(IGeometry geometry, SpatialOperation op, ILayer layer)
             : base(new AllBandsExpression(), new SpatialBinaryExpression(new GeometryExpression(geometry),
                                                                          op,
                                                                          new LayerExpression(layer)))
@@ -41,7 +41,7 @@ namespace SharpMap.Expressions
             checkOp(op);
         }
 
-        public RasterQueryExpression(IGeometry geometry, SpatialOperation op, IRasterProvider provider)
+        public CoverageQueryExpression(IGeometry geometry, SpatialOperation op, ICoverageProvider provider)
             : base(new AllBandsExpression(), new SpatialBinaryExpression(new GeometryExpression(geometry),
                                                                          op,
                                                                          new ProviderExpression(provider)))
@@ -49,11 +49,11 @@ namespace SharpMap.Expressions
             checkOp(op);
         }
 
-        public RasterQueryExpression(SpatialBinaryExpression spatialFilter)
+        public CoverageQueryExpression(SpatialBinaryExpression spatialFilter)
             : base(new AllBandsExpression(), spatialFilter) { }
 
-        protected internal RasterQueryExpression(ProjectionExpression projection,
-                                                 PredicateExpression predicate)
+        protected internal CoverageQueryExpression(SelectExpression projection,
+                                                 LogicExpression predicate)
             : base(projection, predicate) { }
 
         public SpatialBinaryExpression SpatialPredicate
@@ -88,14 +88,14 @@ namespace SharpMap.Expressions
             }
         }
 
-        public Boolean Equals(RasterQueryExpression other)
+        public Boolean Equals(CoverageQueryExpression other)
         {
             return !ReferenceEquals(other, null) && base.Equals(other);
         }
 
         public override Boolean Equals(Object obj)
         {
-            return ReferenceEquals(this, obj) || Equals(obj as RasterQueryExpression);
+            return ReferenceEquals(this, obj) || Equals(obj as CoverageQueryExpression);
         }
 
         public override Int32 GetHashCode()

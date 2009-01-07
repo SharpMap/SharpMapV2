@@ -15,16 +15,22 @@
 // along with SharpMap; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
+using System;
+using GeoAPI.Coordinates;
+using NPack.Interfaces;
 using SharpMap.Presentation.Views;
 using SharpMap.Tools;
 
 namespace SharpMap.Presentation.Presenters
 {
-    public class MapToolPresenter : BasePresenter<IMapToolView>
+    public class MapToolPresenter<TCoordinate> : BasePresenter<TCoordinate, IMapToolView>
+        where TCoordinate : ICoordinate<TCoordinate>, IEquatable<TCoordinate>,
+                            IComparable<TCoordinate>, IConvertible,
+                            IComputable<Double, TCoordinate>
     {
         private readonly IMapTool _mapTool;
 
-        public MapToolPresenter(Map map, IMapTool mapTool, IMapToolView view)
+        public MapToolPresenter(Map<TCoordinate> map, IMapTool mapTool, IMapToolView view)
             : base(map, view)
         {
             _mapTool = mapTool;

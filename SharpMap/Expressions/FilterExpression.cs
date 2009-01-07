@@ -3,43 +3,30 @@ using System.Xml.Serialization;
 
 namespace SharpMap.Expressions
 {
-    [Serializable]
-    [XmlType(Namespace = "http://www.opengis.net/ogc", TypeName = "FilterType")]
-    [XmlRoot("Filter", Namespace = "http://www.opengis.net/ogc", IsNullable = false)]
-    public class FilterExpression
+    public class FilterExpression : Expression
     {
-        private Expression[] _expressions;
-        private ExpressionType[] _expressionElementTypes;
+        #region Overrides of Expression
 
-        [XmlElement("And", typeof (BinaryLogicExpression))]
-        [XmlElement("Not", typeof (UnaryLogicExpression))]
-        [XmlElement("Or", typeof (BinaryLogicExpression))]
-        [XmlElement("PropertyIsBetween", typeof (PropertyIsBetweenExpression))]
-        [XmlElement("PropertyIsEqualTo", typeof (BinaryComparisonExpression))]
-        [XmlElement("PropertyIsGreaterThan", typeof (BinaryComparisonExpression))]
-        [XmlElement("PropertyIsGreaterThanOrEqualTo", typeof (BinaryComparisonExpression))]
-        [XmlElement("PropertyIsLessThan", typeof (BinaryComparisonExpression))]
-        [XmlElement("PropertyIsLessThanOrEqualTo", typeof (BinaryComparisonExpression))]
-        [XmlElement("PropertyIsLike", typeof (PropertyIsLikeExpression))]
-        [XmlElement("PropertyIsNotEqualTo", typeof (BinaryComparisonExpression))]
-        [XmlElement("PropertyIsNull", typeof(PropertyIsNullExpression))]
-        [XmlElement("FeatureId", typeof(FeatureIdExpression))]
-        [XmlElement("_Id", typeof (AbstractIdExpression))]
-        [XmlElement("comparisonOps", typeof (ComparisonExpression))]
-        //[XmlElement("logicOps", typeof (LogicExpression))]
-        [XmlChoiceIdentifier("ExpressionElementTypes")]
-        public Expression[] Expressions
+        public override ExpressionType ExpressionType
         {
-            get { return _expressions; }
-            set { _expressions = value; }
+            get { throw new System.NotImplementedException(); }
         }
 
-        [XmlElement("ExpressionElementTypes")]
-        [XmlIgnore]
-        public ExpressionType[] ExpressionElementTypes
+        public override bool Contains(Expression other)
         {
-            get { return _expressionElementTypes; }
-            set { _expressionElementTypes = value; }
+            throw new System.NotImplementedException();
         }
+
+        public override Expression Clone()
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public override bool Equals(Expression other)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        #endregion
     }
 }

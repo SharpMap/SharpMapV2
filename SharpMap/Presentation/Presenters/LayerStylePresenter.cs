@@ -15,25 +15,31 @@
 // along with SharpMap; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
+using System;
+using GeoAPI.Coordinates;
+using NPack.Interfaces;
 using SharpMap.Layers;
-using SharpMap.Presentation.Presenters;
 using SharpMap.Presentation.Views;
-using SharpMap.Styles;
+using SharpMap.Symbology;
 
 namespace SharpMap.Presentation.Presenters
 {
     /// <summary>
     /// Provides a presenter for the <see cref="Style"/> of an <see cref="ILayer"/>.
     /// </summary>
-    public class LayerStylePresenter : BasePresenter<ILayerStyleView>
+    public class LayerStylePresenter<TCoordinate> : BasePresenter<TCoordinate, ILayerStyleView>
+        where TCoordinate : ICoordinate<TCoordinate>, IEquatable<TCoordinate>,
+                            IComparable<TCoordinate>, IConvertible,
+                            IComputable<Double, TCoordinate>
     {
         /// <summary>
-        /// Creates a new instance of a <see cref="LayerStylePresenter"/> with the given <see cref="Map"/>
-        /// instance and the given concrete <see cref="ILayersView"/> implementation.
+        /// Creates a new instance of a <see cref="LayerStylePresenter{TCoordinate}"/> with the given 
+        /// <see cref="Map{TCoordinate}"/> instance and the given 
+        /// concrete <see cref="ILayersView"/> implementation.
         /// </summary>
-        /// <param name="map"><see cref="Map"/> instance to present.</param>
+        /// <param name="map"><see cref="Map{TCoordinate}"/> instance to present.</param>
         /// <param name="view"><see cref="ILayerStyleView"/> to present to.</param>
-        public LayerStylePresenter(Map map, ILayerStyleView view)
+        public LayerStylePresenter(Map<TCoordinate> map, ILayerStyleView view)
             :base(map, view) { }
     }
 }

@@ -27,22 +27,24 @@ using SharpMap.Layers;
 namespace SharpMap.Rendering
 {
     /// <summary>
-    /// The base class for feature renderers.
+    /// A base class for feature renderers.
     /// </summary>
-    public abstract class FeatureRenderer<TCoordinate> : Renderer, IFeatureRenderer
+    public abstract class FeatureRenderer<TCoordinate> : Renderer, IFeatureRenderer<TCoordinate>
         where TCoordinate : ICoordinate<TCoordinate>, IEquatable<TCoordinate>,
                             IComparable<TCoordinate>, IConvertible,
                             IComputable<Double, TCoordinate>
     {
-        private readonly VectorRenderer<TCoordinate> _vectorRenderer;
-        private FeatureStyle _defaultStyle;
+        //private readonly IVectorRenderer<TCoordinate> _vectorRenderer;
+        //private readonly ITextRenderer<TCoordinate> _textRenderer;
+        //private FeatureStyle _defaultStyle;
 
         #region Object construction and disposal
 
-        protected FeatureRenderer(VectorRenderer<TCoordinate> vectorRenderer)
-        {
-            _vectorRenderer = vectorRenderer;
-        }
+        //protected FeatureRenderer(IVectorRenderer<TCoordinate> vectorRenderer, ITextRenderer<TCoordinate> textRenderer)
+        //{
+        //    _vectorRenderer = vectorRenderer;
+        //    _textRenderer = textRenderer;
+        //}
 
         protected override void Dispose(Boolean disposing)
         {
@@ -51,24 +53,33 @@ namespace SharpMap.Rendering
                 return;
             }
 
-            if(_vectorRenderer != null)
-            {
-                _vectorRenderer.Dispose();
-            }
+            //if(_vectorRenderer != null)
+            //{
+            //    _vectorRenderer.Dispose();
+            //}
 
             base.Dispose(disposing);
         }
 
         #endregion
 
-        /// <summary>
-        /// Gets the <see cref="VectorRenderer{TCoordinate}"/> which the featurer renderer 
-        /// uses to render graphics primitives.
-        /// </summary>
-        protected VectorRenderer<TCoordinate> VectorRenderer
-        {
-            get { return _vectorRenderer; }
-        }
+        ///// <summary>
+        ///// Gets the <see cref="IVectorRenderer{TCoordinate}"/> which the featurer renderer 
+        ///// uses to render vector primitives.
+        ///// </summary>
+        //protected IVectorRenderer<TCoordinate> VectorRenderer
+        //{
+        //    get { return _vectorRenderer; }
+        //}
+
+        ///// <summary>
+        ///// Gets the <see cref="IVectorRenderer{TCoordinate}"/> which the featurer renderer 
+        ///// uses to render text primitives.
+        ///// </summary>
+        //protected ITextRenderer<TCoordinate> TextRenderer
+        //{
+        //    get { return _textRenderer; }
+        //}
 
         #region Events
 
@@ -84,63 +95,97 @@ namespace SharpMap.Rendering
 
         #endregion
 
-        #region IFeatureRenderer Members
+        #region Implementation of IFeatureRenderer<TCoordinate>
 
-        /// <summary>
-        /// Renders a feature into displayable render objects.
-        /// </summary>
-        /// <param name="feature">The feature to render.</param>
-        /// <param name="style">The style to use to render the feature.</param>
-        /// <returns>An enumeration of positioned render objects for display.</returns>
-        public void RenderFeature(IScene scene, ILayer layer, IFeatureDataRecord feature, 
-                                  FeatureStyle style, RenderState renderState)
+        public void RenderStroke(IScene scene, IRenderLayer layer, ICoordinateSequence<TCoordinate> coordinates, IPen pen, double perpendicularOffset, RenderState renderState)
         {
-            Boolean cancel = false;
+            throw new System.NotImplementedException();
+        }
 
-            OnFeatureRendering(ref cancel);
+        public void RenderFill(IScene scene, IRenderLayer layer, ICoordinateSequence<TCoordinate> coordinates, IBrush fill, TCoordinate displacement, RenderState renderState)
+        {
+            throw new System.NotImplementedException();
+        }
 
-            if (cancel)
-            {
-                return;
-            }
-            
-            if (style == null)
-            {
-                throw new InvalidOperationException("Cannot render feature without a style.");
-            }
+        public void RenderPoints(IScene scene, IRenderLayer layer, ICoordinateSequence<TCoordinate> coordinates, ISymbol<TCoordinate> graphic, RenderState renderState)
+        {
+            throw new System.NotImplementedException();
+        }
 
-            DoRenderFeature(scene, layer, feature, style, renderState);
+        public void RenderPoint(IScene scene, IRenderLayer layer, TCoordinate coordinate, ISymbol<TCoordinate> graphic, RenderState renderState)
+        {
+            throw new System.NotImplementedException();
+        }
 
-            OnFeatureRendered();
+        public void RenderTextOnLine(IScene scene, IRenderLayer layer, ICoordinateSequence<TCoordinate> coordinates, string text, IFont font, IHalo halo, IBrush fill, double perpendicularOffset, bool isRepeated, double initialGap, double gap, bool fitToPath)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public void RenderTextOnPoints(IScene scene, IRenderLayer layer, ICoordinateSequence<TCoordinate> coordinates, string text, IFont font, IHalo halo, IBrush fill, TCoordinate anchorPoint, TCoordinate displacement)
+        {
+            throw new System.NotImplementedException();
         }
 
         #endregion
 
-        /// <summary>
-        /// Gets or sets the default style if no style or theme information is provided.
-        /// </summary>
-        public FeatureStyle DefaultStyle
-        {
-            get { return _defaultStyle; }
-            set
-            {
-                if (value == null) throw new ArgumentNullException("value");
+        //#region IFeatureRenderer Members
 
-                _defaultStyle = value;
-            }
-        }
+        ///// <summary>
+        ///// Renders a feature into displayable render objects.
+        ///// </summary>
+        ///// <param name="feature">The feature to render.</param>
+        ///// <param name="style">The style to use to render the feature.</param>
+        ///// <returns>An enumeration of positioned render objects for display.</returns>
+        //public void RenderFeature(IScene scene, ILayer layer, IFeatureDataRecord feature, 
+        //                          FeatureStyle style, RenderState renderState)
+        //{
+        //    Boolean cancel = false;
 
-        /// <summary>
-        /// Template method to perform the actual geometry rendering.
-        /// </summary>
-        /// <param name="feature">Feature to render.</param>
-        /// <param name="style">Style to use in rendering geometry.</param>
-        /// <param name="state">
-        /// A <see cref="RenderState"/> value to indicate how to render the feature.
-        /// </param>
-        /// <returns></returns>
-        /// <param name="layer"></param>
-        protected abstract void DoRenderFeature(IScene scene, ILayer layer, IFeatureDataRecord feature, FeatureStyle style, RenderState state);
+        //    OnFeatureRendering(ref cancel);
+
+        //    if (cancel)
+        //    {
+        //        return;
+        //    }
+            
+        //    if (style == null)
+        //    {
+        //        throw new InvalidOperationException("Cannot render feature without a style.");
+        //    }
+
+        //    DoRenderFeature(scene, layer, feature, style, renderState);
+
+        //    OnFeatureRendered();
+        //}
+
+        //#endregion
+
+        ///// <summary>
+        ///// Gets or sets the default style if no style or theme information is provided.
+        ///// </summary>
+        //public FeatureStyle DefaultStyle
+        //{
+        //    get { return _defaultStyle; }
+        //    set
+        //    {
+        //        if (value == null) throw new ArgumentNullException("value");
+
+        //        _defaultStyle = value;
+        //    }
+        //}
+
+        ///// <summary>
+        ///// Template method to perform the actual geometry rendering.
+        ///// </summary>
+        ///// <param name="feature">Feature to render.</param>
+        ///// <param name="style">Style to use in rendering geometry.</param>
+        ///// <param name="state">
+        ///// A <see cref="RenderState"/> value to indicate how to render the feature.
+        ///// </param>
+        ///// <returns></returns>
+        ///// <param name="layer"></param>
+        //protected abstract void DoRenderFeature(IScene scene, ILayer layer, IFeatureDataRecord feature, FeatureStyle style, RenderState state);
 
         #region Protected virtual methods
 

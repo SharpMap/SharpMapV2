@@ -25,7 +25,7 @@ namespace SharpMap.Expressions
             : this(collection, CollectionOperator.In) { }
 
         protected OidCollectionExpression(IEnumerable collection, CollectionOperator op)
-            : base(new OidExpression(), op, new CollectionExpression(collection)) { }
+            : base(new OidPropertyExpression(), op, new CollectionExpression(collection)) { }
 
         public IEnumerable OidValues
         {

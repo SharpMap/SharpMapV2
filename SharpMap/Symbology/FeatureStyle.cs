@@ -27,11 +27,19 @@ namespace SharpMap.Symbology
     public class FeatureStyle : Style
     {
         private XmlQualifiedName _featureTypeName;
+        private Boolean _areFeaturesSelectable;
 
         public XmlQualifiedName FeatureTypeName
         {
             get { return _featureTypeName; }
             set { _featureTypeName = value; }
+        }
+
+        [XmlIgnore]
+        public Boolean AreFeaturesSelectable
+        {
+            get { return _areFeaturesSelectable; }
+            set { _areFeaturesSelectable = value; }
         }
     }
 }
