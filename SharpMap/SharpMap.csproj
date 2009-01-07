@@ -281,8 +281,6 @@
     </Compile>
     <Compile Include="Layers\CoverageLayer.cs">
     </Compile>
-    <Compile Include="Layers\GeometryLayer.cs">
-    </Compile>
     <Compile Include="Presentation\FeatureChangeRequestEventArgs.cs" />
     <Compile Include="Presentation\LayerActionEventArgs.cs">
       <SubType>Code</SubType>
@@ -307,7 +305,7 @@
     </Compile>
     <Compile Include="Rendering\IBitmapTransform.cs" />
     <Compile Include="Rendering\IBrush.cs" />
-    <Compile Include="Rendering\IFeatureRenderer.cs" />
+    <Compile Include="Rendering\IVectorRenderer.cs" />
     <Compile Include="Rendering\IPen.cs" />
     <Compile Include="Rendering\IScene.cs" />
     <Compile Include="Rendering\ISymbol.cs" />
@@ -403,9 +401,9 @@
     <Compile Include="Presentation\Views\IAttributeView.cs" />
     <Compile Include="Presentation\Views\ILayerStyleView.cs" />
     <Compile Include="Presentation\Views\ILayersView.cs" />
-    <Compile Include="Rendering\ICoverageRenderer`1.cs" />
+    <Compile Include="Rendering\IRasterRenderer`1.cs" />
     <Compile Include="Presentation\Views\IToolsView.cs" />
-    <Compile Include="Presentation\Presenters\MapPresenter2D.cs" />
+    <Compile Include="Presentation\Presenters\MapPresenter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Rendering\IRenderer.cs" />
     <Compile Include="Presentation\Views\IMapView2D.cs" />
@@ -419,7 +417,6 @@
     <Compile Include="Tools\MapToolSetChangedEventArgs.cs" />
     <Compile Include="Tools\MapTool`1.cs" />
     <Compile Include="Rendering\RenderExceptions.cs" />
-    <Compile Include="Presentation\ViewSelection`3.cs" />
     <Compile Include="Tools\StandardMapViewMapTools.cs" />
     <Compile Include="Indexing\BinaryTree\BinaryTree.cs" />
     <Compile Include="Indexing\RTree\GuttmanQuadraticInsert.cs" />

@@ -23,7 +23,7 @@ using System.ComponentModel;
 using GeoAPI.CoordinateSystems.Transformations;
 using SharpMap.Data;
 using SharpMap.Expressions;
-using SharpMap.Styles;
+using SharpMap.Symbology;
 
 namespace SharpMap.Layers
 {
@@ -351,7 +351,7 @@ namespace SharpMap.Layers
             }
         }
 
-        public override IStyle Style
+        public override Style Style
         {
             get
             {

@@ -22,9 +22,9 @@ using NPack.Interfaces;
 namespace SharpMap.Rendering
 {
     /// <summary>
-    /// Interface to a graphical renderer of feature data.
+    /// Interface to a graphical renderer of vector data.
     /// </summary>
-    public interface IFeatureRenderer<TCoordinate> : IRenderer
+    public interface IVectorRenderer<TCoordinate> : IRenderer
         where TCoordinate : ICoordinate<TCoordinate>, IEquatable<TCoordinate>,
                             IComparable<TCoordinate>, IConvertible,
                             IComputable<Double, TCoordinate> 

@@ -107,12 +107,12 @@ namespace SharpMap.Presentation.Views
         /// <summary>
         /// Gets the selection on a view, if one exists.
         /// </summary>
-        ViewSelection<TCoordinate> Selection { get; }
+        IViewSelection<TCoordinate> Selection { get; }
 
         /// <summary>
         /// Gets or sets the <see cref="IScene"/> which the view shows.
         /// </summary>
-        IScene Scene { get; set; }
+        IScene<TCoordinate> Scene { get; set; }
 
         /// <summary>
         /// Gets an <see cref="IMatrix{DoubleComponent}"/> used to project the world
@@ -228,7 +228,7 @@ namespace SharpMap.Presentation.Views
         Double WorldUnitsPerPixel { get; }
 
         /// <summary>
-        /// Zooms to the extents of all visible layers in the current <see cref="Map"/>.
+        /// Zooms to the extents of all visible layers in the current <see cref="Map{TCoordinate}"/>.
         /// </summary>
         void ZoomToExtents();
 

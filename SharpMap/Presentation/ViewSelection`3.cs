@@ -37,7 +37,7 @@ namespace SharpMap.Presentation
                             IComparable<TCoordinate>, IConvertible,
                             IComputable<Double, TCoordinate>
     {
-        private Path<TCoordinate> _path;
+        private IPath<TCoordinate> _path;
         private IPen _outline;
         private IBrush _fill;
         private TCoordinate _anchorPoint;
@@ -50,7 +50,7 @@ namespace SharpMap.Presentation
         /// Creates a new path for the selection, but doesn't add it to the selection.
         /// </summary>
         /// <returns>A Path instance representing a new selection path.</returns>
-        protected abstract Path<TCoordinate> CreatePath();
+        protected abstract IPath<TCoordinate> CreatePath();
 
         #region IViewSelection<TPoint,TSize,TViewRegion> Members
 

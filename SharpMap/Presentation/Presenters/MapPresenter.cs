@@ -38,7 +38,7 @@ namespace SharpMap.Presentation.Presenters
     /// <summary>
     /// Provides the input-handling and view-updating logic for a 2D map view.
     /// </summary>
-    public abstract class MapPresenter<TCoordinate> : FeatureLayersListenerPresenter<IMapView<TCoordinate>>
+    public abstract class MapPresenter<TCoordinate> : FeatureLayersListenerPresenter<TCoordinate, IMapView<TCoordinate>>
         where TCoordinate : ICoordinate<TCoordinate>, IEquatable<TCoordinate>,
                             IComparable<TCoordinate>, IConvertible,
                             IComputable<Double, TCoordinate>
@@ -87,7 +87,7 @@ namespace SharpMap.Presentation.Presenters
         #endregion
 
         #region Private instance fields
-        private readonly ViewSelection<TCoordinate> _selection;
+        private readonly IViewSelection<TCoordinate> _selection;
         private StyleColor _backgroundColor;
         private Size<TCoordinate> _oldViewSize = Size<TCoordinate>.Empty;
         private Double _maximumWorldWidth = Double.PositiveInfinity;
@@ -139,12 +139,12 @@ namespace SharpMap.Presentation.Presenters
         /// </summary>
         /// <param name="map">The map to present.</param>
         /// <param name="mapView">The view to present the map on.</param>
-        protected MapPresenter(Map map, IMapView<TCoordinate> mapView)
+        protected MapPresenter(Map<TCoordinate> map, IMapView<TCoordinate> mapView)
             : base(map, mapView)
         {
             createRenderers();
 
-            _selection = new ViewSelection<TCoordinate>();
+            //_selection = new ViewSelection<TCoordinate>();
 
             View.Hover += handleViewHover;
             View.BeginAction += handleViewBeginAction;
@@ -172,10 +172,10 @@ namespace SharpMap.Presentation.Presenters
 
         #region Abstract methods
 
-        protected abstract IRasterRenderer2D CreateRasterRenderer();
-        protected abstract ITextRenderer2D CreateTextRenderer();
-        protected abstract IVectorRenderer2D CreateVectorRenderer();
-        protected abstract Type GetRenderObjectType();
+        protected abstract IRasterRenderer<TCoordinate> CreateRasterRenderer();
+        protected abstract IVectorRenderer<TCoordinate> CreateVectorRenderer();
+        //protected abstract ITextRenderer<TCoordinate> CreateTextRenderer();
+        //protected abstract Type GetRenderObjectType();
 
         #endregion
 
@@ -307,46 +307,15 @@ namespace SharpMap.Presentation.Presenters
 
         /// <summary>
         /// Gets the instance of the concrete
-        /// <see cref="RasterRenderer2D{TRenderObject}"/> used
+        /// <see cref="IRasterRenderer{TCoordinate}"/> used
         /// for the specific display technology which a base class
         /// is created to support.
         /// </summary>
-        protected IRasterRenderer2D RasterRenderer
+        protected IRasterRenderer<TCoordinate> RasterRenderer
         {
             get
             {
-                IRenderer r;
-
-                Type renderObjectType = GetRenderObjectType();
-                Type tRenderer = typeof(IRasterRenderer2D);
-                RendererKey key = new RendererKey(renderObjectType, tRenderer);
-                if (!_rendererRegistry.TryGetValue(key, out r))
-                {
-                    lock (_rendererInitSync)
-                    {
-                        if (!_rendererRegistry.TryGetValue(key, out r))
-                        {
-                            r = CreateRasterRenderer();
-                            _rendererRegistry.Add(key, r);
-                        }
-                    }
-                }
-
-                return r as IRasterRenderer2D;
-
-                //if (Thread.VolatileRead(ref _rasterRenderer) == null)
-                //{
-                //    lock (_rendererInitSync)
-                //    {
-                //        if (Thread.VolatileRead(ref _rasterRenderer) == null)
-                //        {
-                //            IRenderer rasterRenderer = CreateRasterRenderer();
-                //            Thread.VolatileWrite(ref _rasterRenderer, rasterRenderer);
-                //        }
-                //    }
-                //}
-
-                //return _rasterRenderer as IRasterRenderer2D;
+                throw new NotImplementedException();
             }
         }
 
@@ -365,7 +334,7 @@ namespace SharpMap.Presentation.Presenters
         /// <summary>
         /// A selection on a view.
         /// </summary>
-        protected ViewSelection<TCoordinate> SelectionInternal
+        protected IViewSelection<TCoordinate> SelectionInternal
         {
             get { return _selection; }
             //private set { _selection = value; }
@@ -407,84 +376,52 @@ namespace SharpMap.Presentation.Presenters
         /// for the specific display technology which a base class
         /// is created to support.
         /// </summary>
-        protected IVectorRenderer2D VectorRenderer
+        protected IVectorRenderer<TCoordinate> VectorRenderer
         {
             get
             {
-
-                IRenderer r;
-
-                Type renderObjectType = GetRenderObjectType();
-                Type tRenderer = typeof(IVectorRenderer2D);
-                RendererKey key = new RendererKey(renderObjectType, tRenderer);
-                if (!_rendererRegistry.TryGetValue(key, out r))
-                {
-                    lock (_rendererInitSync)
-                    {
-                        if (!_rendererRegistry.TryGetValue(key, out r))
-                        {
-                            r = CreateVectorRenderer();
-                            _rendererRegistry.Add(key, r);
-                        }
-                    }
-                }
-
-                return r as IVectorRenderer2D;
-
-                //if (Thread.VolatileRead(ref _vectorRenderer) == null)
-                //{
-                //    lock (_rendererInitSync)
-                //    {
-                //        if (Thread.VolatileRead(ref _vectorRenderer) == null)
-                //        {
-                //            IRenderer vectorRenderer = CreateVectorRenderer();
-                //            Thread.VolatileWrite(ref _vectorRenderer, vectorRenderer);
-                //        }
-                //    }
-                //}
-
-                //return _vectorRenderer as IVectorRenderer2D;
+                throw new NotImplementedException();
             }
         }
 
-        protected ITextRenderer<TCoordinate> TextRenderer
-        {
-            get
-            {
-                IRenderer r;
+        //protected ITextRenderer<TCoordinate> TextRenderer
+        //{
+        //    get
+        //    {
+        //        IRenderer r;
 
-                Type renderObjectType = GetRenderObjectType();
-                Type tRenderer = typeof(ITextRenderer<TCoordinate>);
-                RendererKey key = new RendererKey(renderObjectType, tRenderer);
-                if (!_rendererRegistry.TryGetValue(key, out r))
-                {
-                    lock (_rendererInitSync)
-                    {
-                        if (!_rendererRegistry.TryGetValue(key, out r))
-                        {
-                            r = CreateTextRenderer();
-                            _rendererRegistry.Add(key, r);
-                        }
-                    }
-                }
+        //        Type renderObjectType = GetRenderObjectType();
+        //        Type tRenderer = typeof(ITextRenderer<TCoordinate>);
+        //        RendererKey key = new RendererKey(renderObjectType, tRenderer);
+        //        if (!_rendererRegistry.TryGetValue(key, out r))
+        //        {
+        //            lock (_rendererInitSync)
+        //            {
+        //                if (!_rendererRegistry.TryGetValue(key, out r))
+        //                {
+        //                    r = CreateTextRenderer();
+        //                    _rendererRegistry.Add(key, r);
+        //                }
+        //            }
+        //        }
 
-                return r as ITextRenderer<TCoordinate>;
+        //        return r as ITextRenderer<TCoordinate>;
 
-                //if (Thread.VolatileRead(ref _textRenderer) == null)
-                //{
-                //    lock (_rendererInitSync)
-                //    {
-                //        if (Thread.VolatileRead(ref _textRenderer) == null)
-                //        {
-                //            IRenderer textRenderer = CreateTextRenderer();
-                //            Thread.VolatileWrite(ref _textRenderer, textRenderer);
-                //        }
-                //    }
-                //}
+        //        //if (Thread.VolatileRead(ref _textRenderer) == null)
+        //        //{
+        //        //    lock (_rendererInitSync)
+        //        //    {
+        //        //        if (Thread.VolatileRead(ref _textRenderer) == null)
+        //        //        {
+        //        //            IRenderer textRenderer = CreateTextRenderer();
+        //        //            Thread.VolatileWrite(ref _textRenderer, textRenderer);
+        //        //        }
+        //        //    }
+        //        //}
 
-                //return _textRenderer as ITextRenderer2D;
-            }
-        }
+        //        //return _textRenderer as ITextRenderer2D;
+        //    }
+        //}
 
         /// <summary>
         /// Gets or sets the extents of the current view in world units.
@@ -728,22 +665,22 @@ namespace SharpMap.Presentation.Presenters
 
         protected override void OnMapPropertyChanged(string propertyName)
         {
-            if (propertyName == Map.SpatialReferenceProperty.Name)
+            if (propertyName == Map<TCoordinate>.SpatialReferenceProperty.Name)
             {
                 //throw new NotImplementedException();
             }
 
-            if (propertyName == Map.SelectedLayersProperty.Name)
+            if (propertyName == Map<TCoordinate>.SelectedLayersProperty.Name)
             {
                 //throw new NotImplementedException();
             }
 
-            if (propertyName == Map.ActiveToolProperty.Name)
+            if (propertyName == Map<TCoordinate>.ActiveToolProperty.Name)
             {
                 //throw new NotImplementedException();
             }
 
-            if (propertyName == Map.ExtentsProperty.Name)
+            if (propertyName == Map<TCoordinate>.ExtentsProperty.Name)
             {
                 IExtents2D extents = Map.Extents as IExtents2D;
                 projectOrigin(extents);
@@ -806,94 +743,94 @@ namespace SharpMap.Presentation.Presenters
         #region Protected members
 
 
-        protected virtual Type GeometryRendererType
-        {
-            get { return typeof(BasicGeometryRenderer2D<>); }
-        }
+        //protected virtual Type GeometryRendererType
+        //{
+        //    get { return typeof(BasicGeometryRenderer2D<>); }
+        //}
 
-        protected virtual Type LabelRendererType
-        {
-            get { return typeof(BasicLabelRenderer2D<>); }
-        }
+        //protected virtual Type LabelRendererType
+        //{
+        //    get { return typeof(BasicLabelRenderer2D<>); }
+        //}
 
-        protected virtual void CreateGeometryRenderer(Type renderObjectType)
-        {
-            Type layerType = typeof(GeometryLayer);
+        //protected virtual void CreateGeometryRenderer(Type renderObjectType)
+        //{
+        //    Type layerType = typeof(GeometryLayer);
 
-            CreateRendererForLayerType(GeometryRendererType,
-                                       renderObjectType,
-                                       layerType,
-                                       VectorRenderer);
-        }
+        //    CreateRendererForLayerType(GeometryRendererType,
+        //                               renderObjectType,
+        //                               layerType,
+        //                               VectorRenderer);
+        //}
 
-        private void CreateLabelRenderer(Type renderObjectType)
-        {
-            Type layerType = typeof(LabelLayer);
+        //private void CreateLabelRenderer(Type renderObjectType)
+        //{
+        //    Type layerType = typeof(LabelLayer);
 
-            CreateRendererForLayerType(LabelRendererType,
-                                       renderObjectType,
-                                       layerType,
-                                       TextRenderer,
-                                       VectorRenderer);
-        }
+        //    CreateRendererForLayerType(LabelRendererType,
+        //                               renderObjectType,
+        //                               layerType,
+        //                               TextRenderer,
+        //                               VectorRenderer);
+        //}
 
-        protected void CreateRendererForLayerType(Type rendererType,
-                                                  Type renderObjectType,
-                                                  Type layerType,
-                                                  params Object[] constructorParams)
-        {
-            Type constructedType = rendererType.MakeGenericType(renderObjectType);
-            IRenderer renderer
-                = Activator.CreateInstance(constructedType, constructorParams) as IRenderer;
-            Debug.Assert(renderer != null);
-            RegisterRendererForLayerType(layerType, renderer);
-        }
+        //protected void CreateRendererForLayerType(Type rendererType,
+        //                                          Type renderObjectType,
+        //                                          Type layerType,
+        //                                          params Object[] constructorParams)
+        //{
+        //    Type constructedType = rendererType.MakeGenericType(renderObjectType);
+        //    IRenderer renderer
+        //        = Activator.CreateInstance(constructedType, constructorParams) as IRenderer;
+        //    Debug.Assert(renderer != null);
+        //    RegisterRendererForLayerType(layerType, renderer);
+        //}
 
-        /// <summary>
-        /// Gets the registered renderer for the given layer type.
-        /// </summary>
-        /// <typeparam name="TRenderer">The type to return the renderer as.</typeparam>
-        /// <typeparam name="TLayer">The type of the layer to retrieve the layer for.</typeparam>
-        /// <returns>
-        /// The renderer registered for the layer type <typeparamref name="TLayer"/>.
-        /// </returns>
-        protected static TRenderer GetRenderer<TRenderer, TLayer>()
-            where TRenderer : class, IRenderer
-        {
-            return LayerRendererRegistry.Instance.Get<TRenderer, TLayer>();
-        }
+        ///// <summary>
+        ///// Gets the registered renderer for the given layer type.
+        ///// </summary>
+        ///// <typeparam name="TRenderer">The type to return the renderer as.</typeparam>
+        ///// <typeparam name="TLayer">The type of the layer to retrieve the layer for.</typeparam>
+        ///// <returns>
+        ///// The renderer registered for the layer type <typeparamref name="TLayer"/>.
+        ///// </returns>
+        //protected static TRenderer GetRenderer<TRenderer, TLayer>()
+        //    where TRenderer : class, IRenderer
+        //{
+        //    return LayerRendererRegistry.Instance.Get<TRenderer, TLayer>();
+        //}
 
-        /// <summary>
-        /// Gets the registered renderer for the given <paramref name="name"/>.
-        /// </summary>
-        /// <param name="name">
-        /// The name under which the desired renderer has previously been registered.
-        /// </param>
-        /// <typeparam name="TRenderer">The type to return the renderer as.</typeparam>
-        /// <returns>
-        /// The renderer registered by <paramref name="name"/>.
-        /// </returns>
-        protected static TRenderer GetRenderer<TRenderer>(String name)
-            where TRenderer : class, IRenderer
-        {
-            return LayerRendererRegistry.Instance.Get<TRenderer>(name);
-        }
+        ///// <summary>
+        ///// Gets the registered renderer for the given <paramref name="name"/>.
+        ///// </summary>
+        ///// <param name="name">
+        ///// The name under which the desired renderer has previously been registered.
+        ///// </param>
+        ///// <typeparam name="TRenderer">The type to return the renderer as.</typeparam>
+        ///// <returns>
+        ///// The renderer registered by <paramref name="name"/>.
+        ///// </returns>
+        //protected static TRenderer GetRenderer<TRenderer>(String name)
+        //    where TRenderer : class, IRenderer
+        //{
+        //    return LayerRendererRegistry.Instance.Get<TRenderer>(name);
+        //}
 
-        /// <summary>
-        /// Gets the registered renderer for the given <paramref name="layer"/>.
-        /// </summary>
-        /// <param name="layer">
-        /// The specific layer instance for which the desired renderer has previously been registered.
-        /// </param>
-        /// <typeparam name="TRenderer">The type to return the renderer as.</typeparam>
-        /// <returns>
-        /// The renderer registered for <paramref name="layer"/>.
-        /// </returns>
-        protected static TRenderer GetRenderer<TRenderer>(ILayer layer)
-            where TRenderer : class, IRenderer
-        {
-            return LayerRendererRegistry.Instance.Get<TRenderer>(layer);
-        }
+        ///// <summary>
+        ///// Gets the registered renderer for the given <paramref name="layer"/>.
+        ///// </summary>
+        ///// <param name="layer">
+        ///// The specific layer instance for which the desired renderer has previously been registered.
+        ///// </param>
+        ///// <typeparam name="TRenderer">The type to return the renderer as.</typeparam>
+        ///// <returns>
+        ///// The renderer registered for <paramref name="layer"/>.
+        ///// </returns>
+        //protected static TRenderer GetRenderer<TRenderer>(ILayer layer)
+        //    where TRenderer : class, IRenderer
+        //{
+        //    return LayerRendererRegistry.Instance.Get<TRenderer>(layer);
+        //}
 
         /// <summary>
         /// Gets a value indicating if all the parameters needed to compute a view
@@ -911,15 +848,15 @@ namespace SharpMap.Presentation.Presenters
 
         protected virtual void OnViewMatrixChanged() { }
 
-        /// <summary>
-        /// Registers a renderer for a given layer type.
-        /// </summary>
-        /// <param name="layerType">Type of the layer to register a renderer for.</param>
-        /// <param name="renderer">The <see cref="IRenderer"/> instance to register.</param>
-        protected void RegisterRendererForLayerType(Type layerType, IRenderer renderer)
-        {
-            LayerRendererRegistry.Instance.Register(layerType, renderer);
-        }
+        ///// <summary>
+        ///// Registers a renderer for a given layer type.
+        ///// </summary>
+        ///// <param name="layerType">Type of the layer to register a renderer for.</param>
+        ///// <param name="renderer">The <see cref="IRenderer"/> instance to register.</param>
+        //protected void RegisterRendererForLayerType(Type layerType, IRenderer renderer)
+        //{
+        //    LayerRendererRegistry.Instance.Register(layerType, renderer);
+        //}
 
         /// <summary>
         /// Renders all layers and displays the result on the view.
@@ -994,18 +931,18 @@ namespace SharpMap.Presentation.Presenters
             OnRenderedLayerPhase(layer, phase);
         }
 
-        protected void RenderSelection(ViewSelection<TCoordinate> selection)
+        protected void RenderSelection(IViewSelection<TCoordinate> selection)
         {
             OnRenderingSelection();
 
-            IVectorRenderer2D renderer = VectorRenderer;
+            IVectorRenderer<TCoordinate> renderer = VectorRenderer;
 
             Debug.Assert(renderer != null);
 
-            Path2D path = selection.Path.Clone() as Path2D;
+            IPath<TCoordinate> path = selection.Path.Clone() as IPath<TCoordinate>;
             Debug.Assert(path != null);
             path.TransformPoints(ToWorldTransformInternal);
-            IEnumerable<Path2D> paths = new Path2D[] { path };
+            IEnumerable<IPath<TCoordinate>> paths = new IPath<TCoordinate>[] { path };
 
             IEnumerable renderedSelection = renderer.RenderPaths(paths,
                                                                  selection.FillBrush,

@@ -18,8 +18,6 @@
 
 using System;
 using SharpMap.Data;
-using SharpMap.Expressions;
-using SharpMap.Styles;
 
 namespace SharpMap.Layers
 {

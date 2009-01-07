@@ -29,7 +29,7 @@ namespace SharpMap.Rendering
 	/// Represents an axis-aligned extent in scene coordinates.
 	/// </summary>
     [Serializable]
-    public struct Rectangle<TCoordinate> : ISceneExtent<TCoordinate>, 
+    public struct Rectangle<TCoordinate> : IAffineTransformMatrix<DoubleComponent>,
                                            IEquatable<Rectangle<TCoordinate>>, 
                                            IComparable<Rectangle<TCoordinate>>, 
                                            //IHasEmpty, 
@@ -72,15 +72,6 @@ namespace SharpMap.Rendering
             _max = coordinateFactory.Create(right, bottom);
             _hasValue = true;
         }
-
-		/// <summary>
-        /// Creates a new <see cref="Rectangle{TCoordinate}"/> with the upper-left at
-		/// <paramref name="location"/>, and the given <paramref name="size"/>.
-		/// </summary>
-        /// <param name="location">The upper-left point of the <see cref="Rectangle{TCoordinate}"/>.</param>
-        /// <param name="size">The size of the <see cref="Rectangle{TCoordinate}"/>.</param>
-        public Rectangle(Point<TCoordinate> location, Size<TCoordinate> size)
-            : this(location.Coordinate, size) { }
 
         /// <summary>
         /// Creates a new <see cref="Rectangle{TCoordinate}"/> with the upper-left at
@@ -449,19 +440,16 @@ namespace SharpMap.Rendering
 			get { return _max; }
         }
 
-        #region ISceneExtent<Point<TCoordinate>> Members
-
-        TCoordinate ISceneExtent<TCoordinate>.GetLowerBound(IVector<DoubleComponent> axis)
+        TCoordinate GetLowerBound(IVector<DoubleComponent> axis)
         {
-			return UpperLeft;
+            return UpperLeft;
         }
 
-        TCoordinate ISceneExtent<TCoordinate>.GetUpperBound(IVector<DoubleComponent> axis)
+        TCoordinate GetUpperBound(IVector<DoubleComponent> axis)
         {
-			return LowerRight;
+            return LowerRight;
         }
 
-        #endregion
 
         #region IAddable<IMatrix<DoubleComponent>> Members
 
