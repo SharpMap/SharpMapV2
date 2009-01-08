@@ -64,7 +64,7 @@ namespace SharpMap.Layers
 
         IGeometryFactory GeometryFactory { get; set; }
 
-        Boolean AreFeaturesSelectable { get; set; }
+        Boolean IsInteractive { get; set; }
 
         IEnumerable<FeatureDataRow> Select(FeatureQueryExpression query);
     }

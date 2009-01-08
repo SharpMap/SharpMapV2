@@ -268,7 +268,7 @@ namespace SharpMap.Tools
 			if (filterLayer != null)
 			{
 				if (layer.Enabled && 
-                    filterLayer.AreFeaturesSelectable && 
+                    filterLayer.IsInteractive && 
                     layer.IsVisibleWhen(isInView(view.WorldWidth)))
 				{
                     SpatialBinaryExpression spatialExpression 

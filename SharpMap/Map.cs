@@ -836,7 +836,7 @@ namespace SharpMap
 
             foreach (IFeatureLayer layer in _layers)
             {
-                if (layer == null || !layer.Enabled || !layer.AreFeaturesSelectable)
+                if (layer == null || !layer.Enabled || !layer.IsInteractive)
                 {
                     continue;
                 }

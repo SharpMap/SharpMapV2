@@ -245,7 +245,7 @@ namespace SharpMap.Layers
         /// Gets or sets a value which allows features in the layer to be selected
         /// or not.
         /// </summary>
-        public Boolean AreFeaturesSelectable
+        public Boolean IsInteractive
         {
             get
             {
@@ -254,7 +254,7 @@ namespace SharpMap.Layers
             }
             set
             {
-                if (value == AreFeaturesSelectable)
+                if (value == IsInteractive)
                 {
                     return;
                 }

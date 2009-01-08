@@ -36,43 +36,43 @@ using IVectorD = NPack.Interfaces.IVector<NPack.DoubleComponent>;
 namespace SharpMap.Presentation.Presenters
 {
     /// <summary>
-    /// Provides the input-handling and view-updating logic for a 2D map view.
+    /// Provides the input-handling and view-updating logic for a map view.
     /// </summary>
     public abstract class MapPresenter<TCoordinate> : FeatureLayersListenerPresenter<TCoordinate, IMapView<TCoordinate>>
         where TCoordinate : ICoordinate<TCoordinate>, IEquatable<TCoordinate>,
                             IComparable<TCoordinate>, IConvertible,
                             IComputable<Double, TCoordinate>
     {
-        internal struct RendererKey
-        {
-            private Type renderObjectType;
-            public Type RenderObjectType
-            {
-                get { return renderObjectType; }
-                private set { renderObjectType = value; }
-            }
+        //internal struct RendererKey
+        //{
+        //    private Type renderObjectType;
+        //    public Type RenderObjectType
+        //    {
+        //        get { return renderObjectType; }
+        //        private set { renderObjectType = value; }
+        //    }
 
-            private Type rendererType;
-            public Type RendererType
-            {
-                get { return rendererType; }
-                private set { rendererType = value; }
-            }
+        //    private Type rendererType;
+        //    public Type RendererType
+        //    {
+        //        get { return rendererType; }
+        //        private set { rendererType = value; }
+        //    }
 
-            public RendererKey(Type renderObject, Type renderType)
-                : this()
-            {
-                RenderObjectType = renderObject;
-                RendererType = renderType;
-            }
-            public override int GetHashCode()
-            {
-                return renderObjectType.GetHashCode() ^ rendererType.GetHashCode();
-            }
-        }
+        //    public RendererKey(Type renderObject, Type renderType)
+        //        : this()
+        //    {
+        //        RenderObjectType = renderObject;
+        //        RendererType = renderType;
+        //    }
+        //    public override int GetHashCode()
+        //    {
+        //        return renderObjectType.GetHashCode() ^ rendererType.GetHashCode();
+        //    }
+        //}
 
         #region Private static fields
-        private static readonly Object _rendererInitSync = new Object();
+        //private static readonly Object _rendererInitSync = new Object();
 
         ////jd : following as it causes issues with the web where there may 
         //// be multiple renderer types in the same app e.g gdi and geojson
@@ -81,7 +81,7 @@ namespace SharpMap.Presentation.Presenters
         //private static Object _rasterRenderer;
         //private static Object _textRenderer;
 
-        private static readonly Dictionary<RendererKey, IRenderer> _rendererRegistry = new Dictionary<RendererKey, IRenderer>();
+        //private static readonly Dictionary<RendererKey, IRenderer> _rendererRegistry = new Dictionary<RendererKey, IRenderer>();
 
 
         #endregion
@@ -319,60 +319,9 @@ namespace SharpMap.Presentation.Presenters
             }
         }
 
-
-
-        protected virtual Double RenderMaximumWorldWidth
-        {
-            get { return Double.PositiveInfinity; }
-        }
-
-        protected virtual Double RenderMinimumWorldWidth
-        {
-            get { return Double.Epsilon; }
-        }
-
-        /// <summary>
-        /// A selection on a view.
-        /// </summary>
-        protected IViewSelection<TCoordinate> SelectionInternal
-        {
-            get { return _selection; }
-            //private set { _selection = value; }
-        }
-
-        /// <summary>
-        /// Gets a <see cref="Matrix2D"/> used to project the world
-        /// coordinate system into the view coordinate system. 
-        /// The inverse of the <see cref="ToWorldTransformInternal"/> matrix.
-        /// </summary>
-        protected Matrix2D ToViewTransformInternal
-        {
-            get
-            {
-                return !IsViewMatrixInitialized
-                           ? null
-                           : _toViewTransform;
-            }
-            private set
-            {
-                _toViewTransform = value;
-            }
-        }
-
-        /// <summary>
-        /// Gets a <see cref="Matrix2D"/> used to reverse the view projection
-        /// transform to get world coordinates.
-        /// The inverse of the <see cref="ToViewTransformInternal"/> matrix.
-        /// </summary>
-        protected Matrix2D ToWorldTransformInternal
-        {
-            get { return _toWorldTransform; }
-            private set { _toWorldTransform = value; }
-        }
-
         /// <summary>
         /// Gets the instance of the concrete
-        /// <see cref="VectorRenderer2D{TRenderObject}"/> used
+        /// <see cref="IVectorRenderer{TRenderObject}"/> used
         /// for the specific display technology which a base class
         /// is created to support.
         /// </summary>
@@ -422,6 +371,55 @@ namespace SharpMap.Presentation.Presenters
         //        //return _textRenderer as ITextRenderer2D;
         //    }
         //}
+
+        protected virtual Double RenderMaximumWorldWidth
+        {
+            get { return Double.PositiveInfinity; }
+        }
+
+        protected virtual Double RenderMinimumWorldWidth
+        {
+            get { return Double.Epsilon; }
+        }
+
+        /// <summary>
+        /// A selection on a view.
+        /// </summary>
+        protected IViewSelection<TCoordinate> SelectionInternal
+        {
+            get { return _selection; }
+            //private set { _selection = value; }
+        }
+
+        /// <summary>
+        /// Gets a <see cref="Matrix2D"/> used to project the world
+        /// coordinate system into the view coordinate system. 
+        /// The inverse of the <see cref="ToWorldTransformInternal"/> matrix.
+        /// </summary>
+        protected Matrix2D ToViewTransformInternal
+        {
+            get
+            {
+                return !IsViewMatrixInitialized
+                           ? null
+                           : _toViewTransform;
+            }
+            private set
+            {
+                _toViewTransform = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets a <see cref="Matrix2D"/> used to reverse the view projection
+        /// transform to get world coordinates.
+        /// The inverse of the <see cref="ToViewTransformInternal"/> matrix.
+        /// </summary>
+        protected Matrix2D ToWorldTransformInternal
+        {
+            get { return _toWorldTransform; }
+            private set { _toWorldTransform = value; }
+        }
 
         /// <summary>
         /// Gets or sets the extents of the current view in world units.
@@ -592,11 +590,11 @@ namespace SharpMap.Presentation.Presenters
         }
 
         /// <summary>
-        /// Zooms to the extents of all visible layers in the current <see cref="Map"/>.
+        /// Zooms to the extents of all visible layers in the current <see cref="Map{TCoordinate}"/>.
         /// </summary>
         protected void ZoomToExtentsInternal()
         {
-            ZoomToWorldBoundsInternal(Map.Extents as IExtents2D);
+            ZoomToWorldBoundsInternal(Map.Extents);
         }
 
         /// <summary>
@@ -640,7 +638,7 @@ namespace SharpMap.Presentation.Presenters
         /// <param name="zoomBox">
         /// <see cref="IExtents2D"/> to set zoom to.
         /// </param>
-        protected void ZoomToWorldBoundsInternal(IExtents2D zoomBox)
+        protected void ZoomToWorldBoundsInternal(IExtents<TCoordinate> zoomBox)
         {
             setViewEnvelopeInternal(zoomBox);
         }
@@ -663,7 +661,7 @@ namespace SharpMap.Presentation.Presenters
 
         #region Protected Overrides
 
-        protected override void OnMapPropertyChanged(string propertyName)
+        protected override void OnMapPropertyChanged(String propertyName)
         {
             if (propertyName == Map<TCoordinate>.SpatialReferenceProperty.Name)
             {
