@@ -46,7 +46,7 @@ namespace SharpMap.Layers
         /// </summary>
 		FeatureDataView HighlightedFeatures { get; }
 
-        FeatureQueryExpression HighlightedFilter { get; set; }
+        LogicExpression HighlightedFilter { get; set; }
 
         /// <summary>
         /// Gets the <see cref="CultureInfo"/> used to encode text
@@ -60,7 +60,7 @@ namespace SharpMap.Layers
         /// </summary>
         FeatureDataView SelectedFeatures { get; }
 
-        FeatureQueryExpression SelectedFilter { get; set; }
+        SelectExpression SelectedFilter { get; set; }
 
         IGeometryFactory GeometryFactory { get; set; }
 
