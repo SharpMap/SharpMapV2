@@ -122,16 +122,14 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
-    <Compile Include="Data\AdoNetInternalTypes.cs" />
     <Compile Include="Data\Caching\IQueryCache.cs" />
     <Compile Include="Data\Caching\NullQueryCache.cs" />
     <Compile Include="Data\DataSourcePassThroughPropertyDescriptor.cs" />
-    <Compile Include="Data\Filter.cs" />
-    <Compile Include="Data\IDataObject.cs" />
+    <Compile Include="Data\IEvaluable.cs" />
+    <Compile Include="Data\IFeaturesView.cs" />
     <Compile Include="Data\Providers\FeatureProviderBase.cs" />
     <Compile Include="Data\Providers\ProviderBase.cs" />
     <Compile Include="Data\SelectRequestedEventArgs.cs" />
-    <Compile Include="Data\FeatureUniqueConstraint.cs" />
     <Compile Include="Data\IAsyncProvider.cs" />
     <Compile Include="Data\IFeatureAdapter.cs" />
     <Compile Include="Data\ICoverageProvider.cs" />
@@ -150,16 +148,9 @@
     <Compile Include="Data\IFeatureProvider.cs" />
     <Compile Include="Data\LayerDataLoadException.cs" />
     <Compile Include="Data\Providers\ColumnPropertyComputationDelegates.cs" />
-    <Compile Include="Data\Providers\FeatureProvider\FeatureDataReader.cs" />
-    <Compile Include="Data\Providers\FeatureProvider\FeatureProvider.cs" />
     <Compile Include="Data\Providers\GeometryProvider\GeometryDataReader.cs" />
     <Compile Include="Data\Providers\ProviderSchemaHelper.cs" />
     <Compile Include="Data\IFeatureDataRecord.cs" />
-    <Compile Include="Data\FeatureDataTableReader.cs" />
-    <Compile Include="Data\FeatureMerger.cs" />
-    <Compile Include="Data\LoadFeaturesAdapter.cs">
-      <SubType>Component</SubType>
-    </Compile>
     <Compile Include="Diagnostics\EnumerablePrinter.cs" />
     <Compile Include="Diagnostics\TraceCategories.cs" />
     <Compile Include="Expressions\AllAttributesExpression.cs" />
@@ -203,7 +194,7 @@
     <Compile Include="Expressions\CollectionOperator.cs" />
     <Compile Include="Expressions\FeaturesCollectionExpression.cs" />
     <Compile Include="Expressions\GeometryExpression.cs" />
-    <Compile Include="Data\IHasDynamicProperties.cs" />
+    <Compile Include="Data\IDynamicPropertyObject.cs" />
     <Compile Include="Expressions\LogicExpression.cs" />
     <Compile Include="Expressions\LayerExpression.cs" />
     <Compile Include="Expressions\NumericExpression`1.cs" />
@@ -231,13 +222,6 @@
     <Compile Include="Indexing\RTree\RestructuringHeuristic.cs" />
     <Compile Include="Indexing\RTree\RTreeNode.cs" />
     <Compile Include="Layers\DuplicateLayerException.cs" />
-    <Compile Include="Data\FeatureDataRow.cs" />
-    <Compile Include="Data\FeatureDataRowChangeEventArgs.cs" />
-    <Compile Include="Data\FeatureDataRowChangeEventHandler.cs" />
-    <Compile Include="Data\FeatureDataRow`1.cs" />
-    <Compile Include="Data\FeatureDataSet.cs">
-      <SubType>Component</SubType>
-    </Compile>
     <Compile Include="Data\Providers\GeometryProvider\GeometryProvider.cs" />
     <Compile Include="Data\IProvider.cs" />
     <Compile Include="Data\IFeatureProvider`1.cs" />
@@ -254,25 +238,10 @@
     <Compile Include="Indexing\ObsoleteIndexFileFormatException.cs" />
     <Compile Include="Indexing\QuadTree\QuadTree.cs" />
     <Compile Include="Indexing\RTree\DynamicRTreeBalanceHeuristic.cs" />
-    <Compile Include="Data\FeatureDataTable.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Data\FeatureDataTable`1.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Data\FeatureDataView.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Data\FeatureDataViewManager.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Data\FeatureTableCollection.cs" />
     <Compile Include="Layers\FeatureLayer.cs" />
     <Compile Include="Layers\IFeatureLayer.cs" />
     <Compile Include="Layers\ILayer.cs" />
     <Compile Include="Layers\ICoverageLayer.cs" />
-    <Compile Include="Layers\LabelLayer.cs">
-    </Compile>
     <Compile Include="Layers\Layer.cs">
     </Compile>
     <Compile Include="Layers\LayerCollection.cs" />
@@ -281,7 +250,6 @@
     </Compile>
     <Compile Include="Layers\CoverageLayer.cs">
     </Compile>
-    <Compile Include="Presentation\FeatureChangeRequestEventArgs.cs" />
     <Compile Include="Presentation\LayerActionEventArgs.cs">
       <SubType>Code</SubType>
     </Compile>

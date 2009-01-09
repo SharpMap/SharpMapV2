@@ -16,7 +16,6 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System;
-using System.Collections.Generic;
 using GeoAPI.Geometries;
 using SharpMap.Data;
 using System.Globalization;
@@ -25,7 +24,7 @@ using SharpMap.Expressions;
 namespace SharpMap.Layers
 {
     /// <summary>
-    /// Interface to a layer of features in a <see cref="Map"/>.
+    /// Interface to a layer of features in a <see cref="Map{TCoordinate}"/>.
     /// </summary>
 	public interface IFeatureLayer : ILayer
 	{
@@ -36,15 +35,15 @@ namespace SharpMap.Layers
 		new IFeatureProvider DataSource { get; }
 
         /// <summary>
-        /// Gets a <see cref="FeatureDataTable"/> of cached features for the layer.
+        /// Gets an <see cref="IFeaturesView"/> of cached features for the layer.
         /// </summary>
-		FeatureDataTable Features { get; }
+        IFeaturesView Features { get; }
 
         /// <summary>
-        /// Gets a <see cref="FeatureDataView"/> of features which have been 
+        /// Gets an <see cref="IFeaturesView"/> of features which have been 
         /// highlighted.
         /// </summary>
-		FeatureDataView HighlightedFeatures { get; }
+		IFeaturesView HighlightedFeatures { get; }
 
         LogicExpression HighlightedFilter { get; set; }
 
@@ -55,17 +54,17 @@ namespace SharpMap.Layers
         CultureInfo Locale { get; }
 
         /// <summary>
-        /// Gets a <see cref="FeatureDataView"/> of features which have been 
+        /// Gets an <see cref="IFeaturesView"/> of features which have been 
         /// selected.
         /// </summary>
-        FeatureDataView SelectedFeatures { get; }
+        IFeaturesView SelectedFeatures { get; }
 
-        SelectExpression SelectedFilter { get; set; }
+        LogicExpression SelectedFilter { get; set; }
 
         IGeometryFactory GeometryFactory { get; set; }
 
         Boolean IsInteractive { get; set; }
 
-        IEnumerable<FeatureDataRow> Select(FeatureQueryExpression query);
+        IFeaturesView Select(FeatureQueryExpression query);
     }
 }

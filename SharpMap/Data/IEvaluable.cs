@@ -1,4 +1,4 @@
-// Copyright 2006 - 2008: Rory Plaire (codekaizen@gmail.com)
+﻿// Copyright 2006 - 2008: Rory Plaire (codekaizen@gmail.com)
 //
 // This file is part of SharpMap.
 // SharpMap is free software; you can redistribute it and/or modify
@@ -16,23 +16,13 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System;
-using System.Collections.Generic;
-using SharpMap.Data;
+using System.ComponentModel;
+using SharpMap.Expressions;
 
-namespace SharpMap.Presentation
+namespace SharpMap.Data
 {
-    public class FeatureChangeRequestEventArgs : EventArgs
+    public interface IEvaluable : ICustomTypeDescriptor
     {
-        private readonly IEnumerable<IFeatureDataRecord> _features;
-
-        public FeatureChangeRequestEventArgs(IEnumerable<IFeatureDataRecord> features)
-        {
-            _features = features;
-        }
-
-        public IEnumerable<IFeatureDataRecord> Features
-        {
-            get { return _features; }
-        }
+        Object EvaluateFor(Expression expression);
     }
 }

@@ -17,6 +17,7 @@
 
 using System;
 using System.Collections.Generic;
+using SharpMap.Data;
 using SharpMap.Presentation.Views;
 
 namespace SharpMap.Presentation
@@ -26,7 +27,7 @@ namespace SharpMap.Presentation
     /// </summary>
     public class FeaturesHighlightedChangedEventArgs : EventArgs
     {
-        private readonly IEnumerable<Int32> _highlightedFeatures;
+        private readonly IEnumerable<IFeatureDataRecord> _highlightedFeatures;
 		private readonly String _layerName;
 
         /// <summary>
@@ -34,8 +35,8 @@ namespace SharpMap.Presentation
         /// </summary>
         /// <param name="layerName">The layer which the features are being highlighted on.</param>
         /// <param name="highlightedFeatures">The highlighted features.</param>
-        public FeaturesHighlightedChangedEventArgs(String layerName, 
-                                                   IEnumerable<Int32> highlightedFeatures)
+        public FeaturesHighlightedChangedEventArgs(String layerName,
+                                                   IEnumerable<IFeatureDataRecord> highlightedFeatures)
         {
 			_layerName = layerName;
             _highlightedFeatures = highlightedFeatures;
@@ -52,7 +53,7 @@ namespace SharpMap.Presentation
         /// <summary>
         /// Gets the features which have been highlighted.
         /// </summary>
-        public IEnumerable<Int32> HighlightedFeatures
+        public IEnumerable<IFeatureDataRecord> HighlightedFeatures
         {
             get { return _highlightedFeatures; }
         }

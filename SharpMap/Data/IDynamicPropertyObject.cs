@@ -20,7 +20,7 @@ using System.ComponentModel;
 
 namespace SharpMap.Data
 {
-    public interface IHasDynamicProperties : INotifyPropertyChanged, IDataObject
+    public interface IDynamicPropertyObject : INotifyPropertyChanged, IEvaluable
     {
         /// <summary>
         /// Adds a dynamic property.

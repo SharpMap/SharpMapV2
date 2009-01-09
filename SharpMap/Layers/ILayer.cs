@@ -31,7 +31,7 @@ namespace SharpMap.Layers
     /// <summary>
     /// Interface for map layers.
     /// </summary>
-    public interface ILayer : IHasDynamicProperties, IDisposable
+    public interface ILayer : IDynamicPropertyObject, IDisposable
 	{
 		/// <summary>
 		/// Gets or sets a value indicating that data is obtained asynchronously.

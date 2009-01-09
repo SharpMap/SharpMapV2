@@ -30,14 +30,14 @@ namespace SharpMap.Data
     public interface IFeatureProvider : IProvider
     {
         /// <summary>
-        /// Creates a new <see cref="FeatureDataTable"/> from the data source's 
+        /// Creates a new <see cref="IFeaturesView"/> from the data source's 
         /// schema.
         /// </summary>
         /// <returns>
-        /// A <see cref="FeatureDataTable"/> which is configured for the 
+        /// A <see cref="IFeaturesView"/> which is configured for the 
         /// data source's schema.
         /// </returns>
-        FeatureDataTable CreateNewTable();
+        IFeaturesView CreateNewFeaturesView();
 
         /// <summary>
         /// Retrieves a <see cref="IFeatureDataReader"/> for the features that 
@@ -82,10 +82,10 @@ namespace SharpMap.Data
         CultureInfo Locale { get; }
 
         /// <summary>
-        /// Configures a <see cref="FeatureDataTable{TOid}"/> with the schema 
-        /// present in the IProvider with the given connection.
+        /// Configures a <see cref="IFeaturesView"/> with the schema 
+        /// present in the <see cref="IProvider"/> with the given connection.
         /// </summary>
-        /// <param name="table">The FeatureDataTable to configure the schema of.</param>
-        void SetTableSchema(FeatureDataTable table);
+        /// <param name="table">The <see cref="IFeaturesView"/> to configure the schema of.</param>
+        void SetViewSchema(IFeaturesView table);
     }
 }

@@ -26,7 +26,7 @@ namespace SharpMap.Data
 	/// Encapsulates both the <see cref="Geometry"/> and
     /// attribute values for a feature.
 	/// </summary>
-	public interface IFeatureDataRecord : IDataRecord, IDataObject
+	public interface IFeatureDataRecord : IDataRecord, IEvaluable
 	{
 		/// <summary>
 		/// Gets the geometry for the current position in the reader.

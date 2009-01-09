@@ -30,7 +30,7 @@ namespace SharpMap.Data.Providers
 
         #region IFeatureProvider Members
 
-        public abstract FeatureDataTable CreateNewTable();
+        public abstract IFeaturesView CreateNewFeaturesView();
 
         public IFeatureDataReader ExecuteFeatureQuery(FeatureQueryExpression query)
         {
@@ -71,7 +71,7 @@ namespace SharpMap.Data.Providers
 
         public abstract CultureInfo Locale { get; }
 
-        public abstract void SetTableSchema(FeatureDataTable table);
+        public abstract void SetViewSchema(IFeaturesView table);
 
         #endregion
 
