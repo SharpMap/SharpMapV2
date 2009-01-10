@@ -2286,6 +2286,10 @@ namespace SharpMap.Data.Providers.ShapeFile
                     //and those that are CounterClockWise are holes in the previous 'new' polygon
                     //hence storage should not be null here as there should have been an outer shell before any holes. 
                     //BUT Sometimes in common public domain data I have found it is - hole follows hole but with no outer shell.. argggghhhh!
+
+                    //jd: NOTE: perhaps the holes and shells can appear in any order.
+                    //jd: TODO: investigate further building all the rings then intersect holes with rings before building final polygons
+
                     if (storage != null)
                         storage.Add(r);
                     else
