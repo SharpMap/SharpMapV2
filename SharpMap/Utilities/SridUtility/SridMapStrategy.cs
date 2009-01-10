@@ -109,14 +109,14 @@ namespace SharpMap.Utilities.SridUtility
         }
 
 
-        protected readonly IEnumerable<ICoordinateSystem> _coordinateSystems;
+        //protected readonly IEnumerable<ICoordinateSystem> _coordinateSystems;
         protected readonly IDictionary<IKey, ICoordinateSystem> _map = new Dictionary<IKey, ICoordinateSystem>();
         protected readonly IDictionary<int, IKey> _hashMap = new Dictionary<int, IKey>();
 
         public SridMapStrategy(int priority, ICoordinateSystemFactory csFactory, IEnumerable<ICoordinateSystem> systems)
             : base(priority, csFactory)
         {
-            _coordinateSystems = systems;
+            //_coordinateSystems = systems;
             foreach (ICoordinateSystem cs in systems)
             {
                 IKey key;
