@@ -19,7 +19,7 @@ using System;
 
 namespace SharpMap.Expressions
 {
-    public class CollectionBinaryExpression : BinaryExpressionBase<CollectionOperator>
+    public class CollectionBinaryExpression : BinaryLogicExpressionBase<CollectionOperator>
     {
         public CollectionBinaryExpression(Expression left, CollectionOperator op, CollectionExpression right)
             : base(left, op, right) {}
@@ -34,7 +34,7 @@ namespace SharpMap.Expressions
             get { return base.Right as CollectionExpression; }
         }
 
-        protected override BinaryExpressionBase<CollectionOperator> Create(Expression left,
+        protected override BinaryLogicExpressionBase<CollectionOperator> Create(Expression left,
                                                                            CollectionOperator op,
                                                                            Expression right)
         {

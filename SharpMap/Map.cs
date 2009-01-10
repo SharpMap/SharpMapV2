@@ -101,11 +101,11 @@ namespace SharpMap
 
         #region Fields
 
+        private String _title;
         private IGeometryFactory<TCoordinate> _geoFactory;
         private ICoordinateTransformationFactory<TCoordinate> _coordTransformFactory;
         private ICoordinateSystemFactory<TCoordinate> _coordSysFactory;
         private readonly LayerCollection<TCoordinate> _layers;
-        private readonly FeatureDataSet _featureDataSet;
         private readonly List<ILayer> _selectedLayers = new List<ILayer>();
         private IExtents<TCoordinate> _extents;
         private readonly IPoint<TCoordinate> _emptyPoint;
@@ -132,7 +132,6 @@ namespace SharpMap
             // I18N_UNSAFE
             : this("Map created " + DateTime.Now.ToShortDateString(), geoFactory, coordSysFactory, coordTransformFactory)
         {
-            _defaultName = _featureDataSet.DataSetName;
         }
 
         /// <summary>
@@ -149,7 +148,6 @@ namespace SharpMap
             _emptyPoint = _geoFactory.CreatePoint();
             _layers = new LayerCollection<TCoordinate>(this);
             _layers.ListChanged += handleLayersChanged;
-            _featureDataSet = new FeatureDataSet(title, geoFactory);
 
             // TODO: tool configuration should come from a config file and / or reflection
             IMapTool[] mapTools = new IMapTool[]
@@ -944,15 +942,15 @@ namespace SharpMap
         /// </summary>
         public String Title
         {
-            get { return _featureDataSet.DataSetName; }
+            get { return _title; }
             set
             {
-                if (value == _featureDataSet.DataSetName)
+                if (value == _title)
                 {
                     return;
                 }
 
-                _featureDataSet.DataSetName = value ?? _defaultName;
+                _title = value;
 
                 onNameChanged();
             }
@@ -1020,15 +1018,6 @@ namespace SharpMap
                 _spatialReference = value;
                 onSpatialReferenceChanged();
             }
-        }
-
-        /// <summary>
-        /// Gets a <see cref="FeatureDataSet"/> containing all the loaded 
-        /// features in all the enabled layers in the map.
-        /// </summary>
-        public FeatureDataSet Features
-        {
-            get { throw new NotImplementedException(); }
         }
 
         #endregion

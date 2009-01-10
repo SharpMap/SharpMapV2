@@ -20,7 +20,7 @@ using GeoAPI.Geometries;
 
 namespace SharpMap.Expressions
 {
-    public class SpatialBinaryExpression : BinaryExpressionBase<SpatialOperation>,
+    public class SpatialBinaryExpression : BinaryLogicExpressionBase<SpatialOperation>,
                                            IEquatable<SpatialBinaryExpression>
     {
         public static SpatialBinaryExpression Intersects(IGeometry geometry)
@@ -185,7 +185,7 @@ namespace SharpMap.Expressions
             }
         }
 
-        protected override BinaryExpressionBase<SpatialOperation> Create(Expression left,
+        protected override BinaryLogicExpressionBase<SpatialOperation> Create(Expression left,
                                                                          SpatialOperation op,
                                                                          Expression right)
         {

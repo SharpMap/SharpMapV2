@@ -15,28 +15,30 @@
 // along with SharpMap; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
-namespace SharpMap.Expressions
+using System;
+using System.ComponentModel;
+using System.Data;
+
+namespace SharpMap.Data
 {
-    public class BinaryLogicExpression : BinaryLogicExpressionBase<BinaryLogicOperator>
+    public interface IFeatureAttribute
     {
-        public BinaryLogicExpression(Expression left, BinaryLogicOperator op, Expression right)
-            : base(left, op, right) { }
-
-        protected override BinaryLogicExpressionBase<BinaryLogicOperator> Create(Expression left,
-                                                                            BinaryLogicOperator op,
-                                                                            Expression right)
-        {
-            return new BinaryLogicExpression(left, op, right);
-        }
-
-        public new Expression Left
-        {
-            get { return base.Left; }
-        }
-
-        public new Expression Right
-        {
-            get { return base.Right; }
-        }
+        PropertyDescriptor AsPropertyDescriptor();
+        String Name { get; }
+        DbType DataType { get; }
+        Int32? Size { get; }
+        Int32? NumericScale { get; }
+        Int32? NumericPrecision { get; }
+        Int32 Ordinal { get; }
+        Boolean AllowNull { get; }
+        Boolean IsLong { get; }
+        Boolean IsReadOnly { get; }
+        Boolean IsKey { get; }
+        Boolean IsAutoIncrement { get; }
+        Boolean IsUnique { get; }
+        String BaseSchemaName { get; }
+        String BaseCatalogName { get; }
+        String BaseTableName { get; }
+        String BaseColumnName { get; }
     }
 }

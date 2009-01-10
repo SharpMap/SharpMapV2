@@ -272,7 +272,7 @@ namespace SharpMap.Tools
                     layer.IsVisibleWhen(isInView(view.WorldWidth)))
 				{
                     SpatialBinaryExpression spatialExpression 
-                        = SpatialBinaryExpression.Intersects(new FeaturesCollectionExpression(filterLayer.Features),
+                        = SpatialBinaryExpression.Intersects(new FeaturesCollectionExpression(filterLayer.FeaturesCache),
 				                                             new ExtentsExpression(worldBounds));
 					filterLayer.SelectedFilter = filterLayer.SelectedFilter == null 
                         ? new FeatureQueryExpression(new AllAttributesExpression(), spatialExpression)

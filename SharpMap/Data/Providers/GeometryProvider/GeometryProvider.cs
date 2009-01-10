@@ -116,7 +116,7 @@ namespace SharpMap.Data.Providers.GeometryProvider
         /// <param name="feature">
         /// Feature which has geometry to be used in this data source.
         /// </param>
-        public GeometryProvider(FeatureDataRow feature)
+        public GeometryProvider(IFeatureDataRecord feature)
         {
             if (feature == null) throw new ArgumentNullException("feature");
 
@@ -137,9 +137,9 @@ namespace SharpMap.Data.Providers.GeometryProvider
         /// <param name="features">
         /// Features which have geometry to be used in this data source.
         /// </param>
-        public GeometryProvider(IEnumerable<FeatureDataRow> features)
+        public GeometryProvider(IEnumerable<IFeatureDataRecord> features)
         {
-            foreach (FeatureDataRow row in features)
+            foreach (IFeatureDataRecord row in features)
             {
                 if (row.Geometry == null)
                 {

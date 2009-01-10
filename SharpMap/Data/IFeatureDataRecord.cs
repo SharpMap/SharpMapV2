@@ -15,10 +15,10 @@
 // along with SharpMap; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
+using System;
 using System.Data;
 using GeoAPI.CoordinateSystems.Transformations;
 using GeoAPI.Geometries;
-using System;
 
 namespace SharpMap.Data
 {
@@ -29,17 +29,17 @@ namespace SharpMap.Data
 	public interface IFeatureDataRecord : IDataRecord, IEvaluable
 	{
 		/// <summary>
-		/// Gets the geometry for the current position in the reader.
+		/// Gets the geometry for the feature.
 		/// </summary>
         IGeometry Geometry { get; }
 
         /// <summary>
-        /// Gets the extents for the current position in the reader.
+        /// Gets the extents for the feature.
         /// </summary>
         IExtents Extents { get; }
 
         /// <summary>
-        /// Gets the object ID for the record.
+        /// Gets the object ID for the feature.
         /// </summary>
         /// <returns>
         /// The object ID for the record, or <see langword="null"/> 
@@ -77,5 +77,15 @@ namespace SharpMap.Data
         /// <see cref="Geometry"/> property of this feature.
         /// </summary>
         ICoordinateTransformation CoordinateTransformation { get; set; }
+
+        /// <summary>
+        /// Gets the <see cref="IFeatureAttribute"/> of the specified field.
+        /// </summary>
+        /// <param name="i">The index of the field to find.</param>
+        /// <returns>The <see cref="IFeatureAttribute"/> of the specified field.</returns>
+	    IFeatureAttribute GetAttribute(Int32 i);
+
+        DataRowState FeatureState { get; }
+        DataRowVersion FeatureVersion { get; }
 	}
 }

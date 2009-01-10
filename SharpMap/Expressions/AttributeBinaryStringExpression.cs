@@ -16,7 +16,7 @@ using System;
 
 namespace SharpMap.Expressions
 {
-    public class AttributeBinaryStringExpression : BinaryExpressionBase<BinaryStringOperator>
+    public class AttributeBinaryStringExpression : BinaryLogicExpressionBase<BinaryStringOperator>
     {
         protected AttributeBinaryStringExpression(PropertyNameExpression left,
                                                   BinaryStringOperator op,
@@ -42,7 +42,7 @@ namespace SharpMap.Expressions
             : this(left, op, new StringExpression(value, comparison)) {}
 
 
-        protected override BinaryExpressionBase<BinaryStringOperator> Create(Expression left,
+        protected override BinaryLogicExpressionBase<BinaryStringOperator> Create(Expression left,
                                                                              BinaryStringOperator op,
                                                                              Expression right)
         {

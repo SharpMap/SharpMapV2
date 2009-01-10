@@ -66,36 +66,36 @@ namespace SharpMap.Data
         /// Inserts a feature into the data source.
         /// </summary>
         /// <param name="feature">The feature to insert.</param>
-        void Insert(FeatureDataRow<TOid> feature);
+        void Insert(IFeatureDataRecord feature);
 
         /// <summary>
         /// Inserts a set of features into the data source.
         /// </summary>
         /// <param name="features">The features to insert.</param>
-        void Insert(IEnumerable<FeatureDataRow<TOid>> features);
+        void Insert(IEnumerable<IFeatureDataRecord> features);
 
         /// <summary>
         /// Updates an existing feature in the data source.
         /// </summary>
         /// <param name="feature">The feature to update.</param>
-        void Update(FeatureDataRow<TOid> feature);
+        void Update(IFeatureDataRecord feature);
 
         /// <summary>
         /// Updates a set of existing features in the data source.
         /// </summary>
         /// <param name="features">The features to update.</param>
-        void Update(IEnumerable<FeatureDataRow<TOid>> features);
+        void Update(IEnumerable<IFeatureDataRecord> features);
 
         /// <summary>
         /// Deletes a feature from the data source.
         /// </summary>
         /// <param name="feature">The feature to delete.</param>
-        void Delete(FeatureDataRow<TOid> feature);
+        void Delete(IFeatureDataRecord feature);
 
         /// <summary>
         /// Deletes a set of features from the data source.
         /// </summary>
         /// <param name="features">The features to delete.</param>
-        void Delete(IEnumerable<FeatureDataRow<TOid>> features);
+        void Delete(IEnumerable<IFeatureDataRecord> features);
     }
 }

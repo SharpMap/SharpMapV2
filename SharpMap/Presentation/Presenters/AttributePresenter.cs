@@ -66,7 +66,7 @@ namespace SharpMap.Presentation.Presenters
         {
             foreach (Int32 index in indexes)
             {
-                FeatureDataRow feature = layer.SelectedFeatures[index].Row as FeatureDataRow;
+                IFeatureDataRecord feature = layer.SelectedFeatures[index] as IFeatureDataRecord;
                 Debug.Assert(feature != null);
 
                 if (!feature.HasOid)
@@ -80,10 +80,10 @@ namespace SharpMap.Presentation.Presenters
         }
 
         private static IEnumerable<Int32> getSelectedFeatureIndexesFromHighlighedFeatures(
-                                                                    FeatureDataView selectedFeatures,
-                                                                    FeatureDataView highlightedFeatures)
+                                                                    IFeaturesView selectedFeatures,
+                                                                    IFeaturesView highlightedFeatures)
         {
-            foreach (FeatureDataRow feature in highlightedFeatures)
+            foreach (IFeatureDataRecord feature in highlightedFeatures)
             {
                 yield return selectedFeatures.Find(feature);
             }

@@ -40,7 +40,7 @@ namespace SharpMap.Expressions
                                                      Right.Clone() as AttributeBinaryExpression);
         }
 
-        protected override BinaryExpressionBase<BinaryLogicOperator> Create(Expression left,
+        protected override BinaryLogicExpressionBase<BinaryLogicOperator> Create(Expression left,
                                                                             BinaryLogicOperator op,
                                                                             Expression right)
         {

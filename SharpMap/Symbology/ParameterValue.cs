@@ -55,13 +55,13 @@ namespace SharpMap.Symbology
         /// <summary>
         /// Used by the XML serializer.
         /// </summary>
-        [XmlElement("Add", typeof(BinaryOperationExpression), Namespace = "http://www.opengis.net/ogc")]
-        [XmlElement("Div", typeof(BinaryOperationExpression), Namespace = "http://www.opengis.net/ogc")]
+        [XmlElement("Add", typeof(BinaryOperatorExpression), Namespace = "http://www.opengis.net/ogc")]
+        [XmlElement("Div", typeof(BinaryOperatorExpression), Namespace = "http://www.opengis.net/ogc")]
         [XmlElement("Function", typeof(FunctionExpression), Namespace = "http://www.opengis.net/ogc")]
         [XmlElement("Literal", typeof(LiteralExpression), Namespace = "http://www.opengis.net/ogc")]
-        [XmlElement("Mul", typeof(BinaryOperationExpression), Namespace = "http://www.opengis.net/ogc")]
+        [XmlElement("Mul", typeof(BinaryOperatorExpression), Namespace = "http://www.opengis.net/ogc")]
         [XmlElement("PropertyName", typeof(PropertyNameExpression), Namespace = "http://www.opengis.net/ogc")]
-        [XmlElement("Sub", typeof(BinaryOperationExpression), Namespace = "http://www.opengis.net/ogc")]
+        [XmlElement("Sub", typeof(BinaryOperatorExpression), Namespace = "http://www.opengis.net/ogc")]
         [XmlChoiceIdentifier("ExpressionElementTypes")]
         public Expression[] Expressions
         {

@@ -1513,7 +1513,7 @@ namespace SharpMap.Presentation.Presenters
         }
 
         protected static FeatureStyle getStyleForFeature(IFeatureLayer layer,
-                                                       FeatureDataRow feature,
+                                                       IFeatureDataRecord feature,
                                                        FeatureStyle layerStyle)
         {
             FeatureStyle style = layer.Theme == null

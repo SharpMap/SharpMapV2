@@ -15,12 +15,25 @@
 // along with SharpMap; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using GeoAPI.Geometries;
+using SharpMap.Expressions;
 
 namespace SharpMap.Data
 {
     public interface IFeaturesView : IBindingListView, ISupportInitializeNotification, ITypedList, IEnumerable<IFeatureDataRecord>
     {
+        IFeatureDataReader AsReader();
+        SpatialBinaryExpression SpatialFilter { get; }
+        OidCollectionExpression OidFilter { get; }
+        AttributeBinaryExpression AttributeFilter { get; }
+        IExtents Extents { get; }
+        FeatureQueryExpression ViewDefinition { get; }
+        Boolean AutoIndexingEnabled { get; set; }
+        void RebuildIndex();
+        void SuspendIndexEvents();
+        void RestoreIndexEvents(Boolean rebuild);
     }
 }

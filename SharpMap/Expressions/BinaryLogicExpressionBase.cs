@@ -19,13 +19,13 @@ using System;
 
 namespace SharpMap.Expressions
 {
-    public abstract class BinaryExpressionBase<TOperator> : LogicExpression
+    public abstract class BinaryLogicExpressionBase<TOperator> : LogicExpression
     {
         private Expression _left;
         private readonly TOperator _op;
         private Expression _right;
 
-        protected BinaryExpressionBase(Expression left, TOperator op, Expression right)
+        protected BinaryLogicExpressionBase(Expression left, TOperator op, Expression right)
         {
             _left = left;
             _op = op;
@@ -35,7 +35,7 @@ namespace SharpMap.Expressions
         public Expression Left
         {
             get { return _left; }
-            set { _left = value; }
+            protected set { _left = value; }
         }
 
         public TOperator Op
@@ -68,7 +68,7 @@ namespace SharpMap.Expressions
             return clone;
         }
 
-        protected abstract BinaryExpressionBase<TOperator> Create(Expression left,
+        protected abstract BinaryLogicExpressionBase<TOperator> Create(Expression left,
                                                                   TOperator op,
                                                                   Expression right);
     }

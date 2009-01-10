@@ -30,16 +30,6 @@ namespace SharpMap.Data
     public interface IFeatureProvider : IProvider
     {
         /// <summary>
-        /// Creates a new <see cref="IFeaturesView"/> from the data source's 
-        /// schema.
-        /// </summary>
-        /// <returns>
-        /// A <see cref="IFeaturesView"/> which is configured for the 
-        /// data source's schema.
-        /// </returns>
-        IFeaturesView CreateNewFeaturesView();
-
-        /// <summary>
         /// Retrieves a <see cref="IFeatureDataReader"/> for the features that 
         /// match the given <paramref name="query"/>.
         /// </summary>
@@ -67,25 +57,26 @@ namespace SharpMap.Data
         /// <returns>Count of the features in the entire data source.</returns>
         Int32 GetFeatureCount();
 
-        /// <summary>
-        /// Returns a <see cref="DataTable"/> with rows describing the columns in the schema
-        /// for the configured provider. Provides the same result as 
-        /// <see cref="IDataReader.GetSchemaTable"/>.
-        /// </summary>
-        /// <seealso cref="IDataReader.GetSchemaTable"/>
-        /// <returns>A DataTable that describes the column metadata.</returns>
-        DataTable GetSchemaTable();
+        IFeaturesSchema GetSchema();
 
         /// <summary>
-        /// Gets the locale of the data as a CultureInfo.
+        /// Gets the locale of the data as a <see cref="CultureInfo"/>.
         /// </summary>
         CultureInfo Locale { get; }
 
         /// <summary>
-        /// Configures a <see cref="IFeaturesView"/> with the schema 
+        /// Configures a <see cref="IFeaturesCache"/> with the schema 
         /// present in the <see cref="IProvider"/> with the given connection.
         /// </summary>
-        /// <param name="table">The <see cref="IFeaturesView"/> to configure the schema of.</param>
-        void SetViewSchema(IFeaturesView table);
+        /// <param name="cache">The <see cref="IFeaturesCache"/> to configure the schema of.</param>
+        void SetCacheSchema(IFeaturesCache cache);
+
+        /// <summary>
+        /// Configures a <see cref="IFeaturesCache"/> with the schema 
+        /// present in the <see cref="IProvider"/> with the given connection.
+        /// </summary>
+        /// <param name="cache">The <see cref="IFeaturesCache"/> to configure the schema of.</param>
+        /// <param name="schemaAction">Indicates how to merge schema information.</param>
+        void SetCacheSchema(IFeaturesCache cache, SchemaMergeAction schemaAction);
     }
 }

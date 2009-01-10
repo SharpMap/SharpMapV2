@@ -53,9 +53,9 @@ namespace SharpMap.Layers
         }
 
         #region Instance fields
-        private readonly FeatureDataTable _features;
-        private readonly FeatureDataView _selectedFeatures;
-        private readonly FeatureDataView _highlightedFeatures;
+        private readonly IFeaturesCache _featureCache;
+        private readonly IFeaturesView _selectedFeatures;
+        private readonly IFeaturesView _highlightedFeatures;
         #endregion
 
         ///// <summary>
@@ -93,25 +93,25 @@ namespace SharpMap.Layers
 
             // We need to get the schema of the feature table.
             DataSource.Open();
-            _features = DataSource.CreateNewTable()
+            _featureCache = DataSource.CreateNewTable()
                         ?? new FeatureDataTable(dataSource.GeometryFactory);
             GeometryFactory = dataSource.GeometryFactory;
             DataSource.Close();
 
             // We generally want spatial indexing on the feature table...
-            _features.IsSpatiallyIndexed = true;
+            _featureCache.IsSpatiallyIndexed = true;
 
             // handle the request on the feature data table for features
-            _features.SelectRequested += handleFeaturesSelectRequested;
+            _featureCache.SelectRequested += handleFeaturesSelectRequested;
 
             // setup selected and highlighted views
-            _selectedFeatures = new FeatureDataView(_features,
+            _selectedFeatures = new FeatureDataView(_featureCache,
                                                     (FeatureQueryExpression)null,
                                                     "",
                                                     DataViewRowState.CurrentRows);
             _selectedFeatures.IsViewDefinitionExclusive = true;
 
-            _highlightedFeatures = new FeatureDataView(_features,
+            _highlightedFeatures = new FeatureDataView(_featureCache,
                                                        (FeatureQueryExpression)null,
                                                        "",
                                                        DataViewRowState.CurrentRows);
@@ -152,23 +152,23 @@ namespace SharpMap.Layers
         }
 
         /// <summary>
-        /// Gets a <see cref="FeatureDataTable"/> of cached features for the layer.
+        /// Gets an <see cref="IFeaturesCache"/> of cached features for the layer.
         /// </summary>
-        public FeatureDataTable Features
+        public IFeaturesCache FeaturesCache
         {
-            get { return _features; }
+            get { return _featureCache; }
         }
 
         /// <summary>
-        /// Gets a <see cref="FeatureDataView"/> of features which have been 
+        /// Gets an <see cref="IFeaturesView"/> of features which have been 
         /// highlighted.
         /// </summary>
-        public FeatureDataView HighlightedFeatures
+        public IFeaturesView HighlightedFeatures
         {
             get { return _highlightedFeatures; }
         }
 
-        public FeatureQueryExpression HighlightedFilter
+        public LogicExpression HighlightedFilter
         {
             get { return _highlightedFeatures.ViewDefinition; }
             set
@@ -200,15 +200,15 @@ namespace SharpMap.Layers
         }
 
         /// <summary>
-        /// Gets a <see cref="FeatureDataView"/> of features which have been 
+        /// Gets a <see cref="IFeaturesView"/> of features which have been 
         /// selected.
         /// </summary>
-        public FeatureDataView SelectedFeatures
+        public IFeaturesView SelectedFeatures
         {
             get { return _selectedFeatures; }
         }
 
-        public FeatureQueryExpression SelectedFilter
+        public LogicExpression SelectedFilter
         {
             get { return _selectedFeatures.ViewDefinition; }
             set
@@ -268,11 +268,11 @@ namespace SharpMap.Layers
             }
         }
 
-        public IEnumerable<FeatureDataRow> Select(FeatureQueryExpression query)
+        public IFeaturesView Select(FeatureQueryExpression query)
         {
             if (query == null) throw new ArgumentNullException("query");
 
-            return Features.Select(query.SpatialPredicate);
+            return FeaturesCache.Select(query.SpatialPredicate);
         }
 
         #endregion
@@ -291,18 +291,18 @@ namespace SharpMap.Layers
 
         protected override void ProcessLoadResults(Object results)
         {
-            _features.SuspendIndexEvents();
+            _featureCache.SuspendIndexEvents();
 
             IEnumerable<IFeatureDataRecord> features = results as IEnumerable<IFeatureDataRecord>;
             MergeFeatures(features);
 
-            _features.RestoreIndexEvents(true);
+            _featureCache.RestoreIndexEvents(true);
         }
         #endregion
 
         protected void MergeFeatures(IEnumerable<IFeatureDataRecord> features)
         {
-            _features.Merge(features, CoordinateTransformation, GeometryFactory);
+            _featureCache.Merge(features, CoordinateTransformation, GeometryFactory);
         }
 
         protected override IAsyncProvider CreateAsyncProvider(IProvider dataSource)

@@ -26,14 +26,14 @@ namespace SharpMap.Expressions
     [XmlInclude(typeof(PropertyIsLikeExpression))]
     [XmlInclude(typeof(BinaryComparisonExpression))]
     [XmlType(Namespace = "http://www.opengis.net/ogc", TypeName = "ComparisonOpsType")]
-    public class ComparisonExpression : BinaryExpressionBase<ComparisonOperator>
+    public class ComparisonExpression : BinaryLogicExpressionBase<ComparisonOperator>
     {
         public ComparisonExpression(Expression left, ComparisonOperator op, Expression right)
             : base(left, op, right) { }
 
         #region Overrides of BinaryExpressionBase<ComparisonOperator>
 
-        protected override BinaryExpressionBase<ComparisonOperator> Create(Expression left, ComparisonOperator op, Expression right)
+        protected override BinaryLogicExpressionBase<ComparisonOperator> Create(Expression left, ComparisonOperator op, Expression right)
         {
             throw new System.NotImplementedException();
         }

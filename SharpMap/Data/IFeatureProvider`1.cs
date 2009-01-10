@@ -50,30 +50,5 @@ namespace SharpMap.Data
         /// The feature corresponding to <paramref name="oid" />, or null if no feature is found.
         /// </returns>
         IFeatureDataRecord GetFeatureByOid(TOid oid);
-
-        ///// <summary>
-        ///// Returns a <see cref="IFeatureDataReader"/> for obtaining features
-        ///// from a set of feature object identifiers (oids).
-        ///// </summary>
-        ///// <param name="oids">A set of object ids (OIDs) of the features.</param>
-        ///// <returns>
-        ///// A set of features corresponding one-to-one to the given <paramref name="oids"/>.
-        ///// </returns>
-        //IEnumerable<IFeatureDataRecord> GetFeatures(IEnumerable<TOid> oids);
-
-        /// <summary>
-        /// Configures a <see cref="FeatureDataTable{TOid}"/> with the schema 
-        /// present in the IProvider with the given connection.
-        /// </summary>
-        /// <param name="table">The FeatureDataTable to configure the schema of.</param>
-        void SetTableSchema(FeatureDataTable<TOid> table);
-
-		/// <summary>
-		/// Configures a <see cref="FeatureDataTable{TOid}"/> with the schema 
-		/// present in the IProvider with the given connection.
-		/// </summary>
-		/// <param name="table">The FeatureDataTable to configure the schema of.</param>
-		/// <param name="schemaAction">Indicates how to merge schema information.</param>
-		void SetTableSchema(FeatureDataTable<TOid> table, SchemaMergeAction schemaAction);
 	}
 }

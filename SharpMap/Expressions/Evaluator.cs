@@ -49,19 +49,19 @@ namespace SharpMap.Expressions
             switch (value.ExpressionType)
             {
                 case ExpressionType.Add:
-                    return Add((value as BinaryOperationExpression).Left, (value as BinaryOperationExpression).Right);
+                    return Add((value as BinaryOperatorExpression).Left, (value as BinaryOperatorExpression).Right);
                 case ExpressionType.Div:
-                    return Div((value as BinaryOperationExpression).Left, (value as BinaryOperationExpression).Right);
+                    return Div((value as BinaryOperatorExpression).Left, (value as BinaryOperatorExpression).Right);
                 case ExpressionType.Function:
                     break;
                 case ExpressionType.Literal:
                     return (value as LiteralExpression).Value;
                 case ExpressionType.Mul:
-                    return Mul((value as BinaryOperationExpression).Left, (value as BinaryOperationExpression).Right);
+                    return Mul((value as BinaryOperatorExpression).Left, (value as BinaryOperatorExpression).Right);
                 case ExpressionType.PropertyName:
                     return CurrentRecord[(value as PropertyNameExpression).PropertyName];
                 case ExpressionType.Sub:
-                    return Sub((value as BinaryOperationExpression).Left, (value as BinaryOperationExpression).Right);
+                    return Sub((value as BinaryOperatorExpression).Left, (value as BinaryOperatorExpression).Right);
                 case ExpressionType.And:
                     return And((value as BinaryLogicExpression).Left, (value as BinaryLogicExpression).Right);
                 case ExpressionType.Not:

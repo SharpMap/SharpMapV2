@@ -26,7 +26,7 @@ namespace SharpMap.Expressions
     [XmlInclude(typeof(LiteralExpression))]
     [XmlInclude(typeof(FunctionExpression))]
     [XmlInclude(typeof(PropertyNameExpression))]
-    [XmlInclude(typeof(BinaryOperationExpression))]
+    [XmlInclude(typeof(BinaryOperatorExpression))]
     [XmlInclude(typeof(Expression))]
     [Serializable]
     [XmlType(Namespace = "http://www.opengis.net/ogc", TypeName = "ExpressionType")]
