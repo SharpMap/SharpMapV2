@@ -117,6 +117,7 @@
     <Compile Include="ShapeType.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="reference\shapefile.pdf" />
     <None Include="SharpMap.snk" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

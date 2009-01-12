@@ -1489,9 +1489,9 @@ namespace SharpMap.Data.Providers.ShapeFile
                 Int32 pointCount = (geometry as IPolygon).ExteriorRing.Coordinates.Count;
                 ILineString exring = (geometry as IPolygon).ExteriorRing;
 
-                 /* need to account for cases where the polygon is not closed. */
-                    if (exring.Coordinates[0] != exring.Coordinates[exring.Coordinates.Count - 1])
-                        pointCount++;
+                /* need to account for cases where the polygon is not closed. */
+                if (exring.Coordinates[0] != exring.Coordinates[exring.Coordinates.Count - 1])
+                    pointCount++;
 
                 foreach (ILinearRing ring in (geometry as IPolygon).InteriorRings)
                 {
@@ -2237,145 +2237,48 @@ namespace SharpMap.Data.Providers.ShapeFile
                 rings[ringId] = ring;
             }
 
-            Boolean[] counterClockWiseFlags = new Boolean[parts];
             Int32 polygonCount = 0;
+
+            List<ILinearRing> shells = new List<ILinearRing>();
+            List<ILinearRing> holes = new List<ILinearRing>();
 
             for (Int32 i = 0; i < parts; i++)
             {
-                counterClockWiseFlags[i] = rings[i].IsCcw;
-
-                if (!counterClockWiseFlags[i])
+                if (!rings[i].IsCcw)
                 {
                     polygonCount++;
+                    shells.Add(rings[i]);
+                }
+                else
+                {
+                    holes.Add(rings[i]);
                 }
             }
 
             Assert.IsNotEquals(polygonCount, 0);
 
+            List<IPolygon> polygons = new List<IPolygon>();
 
-            Func<IEnumerable<ILinearRing>, IPolygon> dlgt = rngs => Enumerable.Count(rngs) == 1
-                                                      ? GeometryFactory.CreatePolygon(
-                                                            Enumerable.First(rngs))
-                                                      : GeometryFactory.CreatePolygon(
-                                                            Enumerable.First(rngs),
-                                                            Enumerable.Skip(rngs, 1));
-
-
-            // We only have one polygon
-            if (polygonCount == 1)
+            foreach (ILinearRing ring in shells)
             {
-                return dlgt(rings);
+                List<ILinearRing> localHoles = new List<ILinearRing>();
+                for (int i = holes.Count - 1; i > -1; i--)
+                {
+                    if (ring.Contains(holes[i]))
+                    {
+                        localHoles.Add(holes[i]);
+                        holes.RemoveAt(i);
+                    }
+                }
+                polygons.Add(GeometryFactory.CreatePolygon(ring, localHoles));
             }
 
+            Debug.Assert(holes.Count == 0);
 
-            IMultiPolygon mpoly = GeometryFactory.CreateMultiPolygon();
-            List<ILinearRing> storage = null; //stores all the rings required to make one constituent polygon
+            return GeometryFactory.CreateMultiPolygon(polygons);
 
-            int j = 0;
-            foreach (ILinearRing r in rings)
-            {
-                if (!counterClockWiseFlags[j])
-                {
-                    if (storage != null)
-                        mpoly.Add(dlgt(storage));// build the currently active polygon and add to the multipolygon;
-                    storage = new List<ILinearRing>(new[] { r });//start a new polygon
-                }
-                else
-                {
-                    //jd: My understanding is that the ILinearRings which are ClockWise are new Polygons 
-                    //and those that are CounterClockWise are holes in the previous 'new' polygon
-                    //hence storage should not be null here as there should have been an outer shell before any holes. 
-                    //BUT Sometimes in common public domain data I have found it is - hole follows hole but with no outer shell.. argggghhhh!
-
-                    //jd: NOTE: perhaps the holes and shells can appear in any order.
-                    //jd: TODO: investigate further building all the rings then intersect holes with rings before building final polygons
-
-                    if (storage != null)
-                        storage.Add(r);
-                    else
-                        Trace.Warning("Data", "Invalid ShapeData: a polygon with holes but no outer shell was parsed and has been ignored.");
-                }
-                j++;
-            }
-            mpoly.Add(dlgt(storage)); //add the last constituent polygon to th multipolygon
-
-            //List<int> startIndexes = new List<int>();
-            //for (int i = 0; i < counterClockWiseFlags.Length; i++)
-            //{
-            //    if (!counterClockWiseFlags[i])
-            //        startIndexes.Add(i);
-            //}
-
-
-
-            //for (int i = 0; i < startIndexes.Count; i++)
-            //{
-            //    int startIndex = startIndexes[i];
-            //    int endIndex = i == startIndexes.Count - 1 ? rings.Length : startIndexes[i + 1];
-            //    int prings = (endIndex - startIndex) + 1;
-            //    int pholes = prings - 1;
-
-
-            //    List<ILinearRing> pr = new List<ILinearRing>(Enumerable.Take(Enumerable.Skip(rings, startIndex), prings));
-
-            //    mpoly.Add(prings > 1
-            //        ? GeometryFactory.CreatePolygon(Enumerable.First(pr), Enumerable.Skip(pr, 1))
-            //        : GeometryFactory.CreatePolygon(Enumerable.First(pr)));
-
-            //}
-
-
-
-
-
-            //Int32 ringIndex;
-            //int ringsProcessed = 0;
-
-            //for (ringIndex = 0; ringIndex < parts; ringIndex++)
-            //{
-            //    List<ILinearRing> polyRings = getPolyRings(rings, counterClockWiseFlags, ref ringIndex);
-
-            //    IPolygon poly = polyRings.Count == 1
-            //                        ? GeometryFactory.CreatePolygon(Enumerable.First(polyRings))
-            //                        : GeometryFactory.CreatePolygon(Enumerable.First(polyRings),
-            //                                                        Enumerable.Skip(polyRings, 1));
-            //    ringsProcessed += polyRings.Count;
-            //    ringIndex += polyRings.Count;
-
-            //    mpoly.Add(poly);
-            //}
-
-#if DEBUG
-            //Assert.IsEquals(ringsProcessed, parts);
-            Assert.IsEquals(polygonCount, mpoly.Count);
-#endif
-            return mpoly;
         }
 
-        private static List<ILinearRing> getPolyRings(IList<ILinearRing> rings, Boolean[] isCounterClockWise, ref Int32 i)
-        {
-            List<ILinearRing> singlePoly = new List<ILinearRing>();
-
-            // make sure the first ring is an exterior ring
-            //Debug.Assert(isCounterClockWise[i] == false); //jd: this line fails for the second outer shell of a multipolygon
-            if (!isCounterClockWise[i]) // we have reached the next outer shell
-            {
-                singlePoly.Add(rings[i]);
-
-                i++;
-            }
-
-            while (i < isCounterClockWise.Length && isCounterClockWise[i])
-            {
-                singlePoly.Add(rings[i]);
-                i++;
-            }
-
-            if (i < isCounterClockWise.Length)
-                i--; //we need to create a new polyon so rewind to the outer shell
-
-            return singlePoly;
-        }
 
         #endregion
 
@@ -2576,7 +2479,7 @@ namespace SharpMap.Data.Providers.ShapeFile
 
         /*jd: Contains Modifications from Lee Keel www.trimble.com to cope with unclosed polygons  */
         private void writePolygon(IPolygon polygon)
-        {   
+        {
             Int32[] parts = new Int32[polygon.InteriorRingsCount + 1];
             List<ICoordinate> allPoints = new List<ICoordinate>();
             Int32 currentPartsIndex = 0;
