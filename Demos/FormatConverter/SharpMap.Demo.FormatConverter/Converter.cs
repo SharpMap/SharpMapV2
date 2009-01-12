@@ -190,50 +190,47 @@ namespace SharpMap.Demo.FormatConverter
 
                 //jd NOTE: for the time being we are assuming that the processors didn't change the shape of the original table
 
-                //jd TODO: insert in batches so that we dont need to load the entire source dataset into memory
-
                 FeatureDataTable fdt = psource.CreateNewTable();
-                foreach (IFeatureDataRecord fdr in sourceRecords)
-                {
-                    FeatureDataRow dfrs = fdt.NewRow();
-                    dfrs.Geometry = fdr.Geometry;
-                    object[] vals = new object[fdr.FieldCount];
-                    fdr.GetValues(vals);
-                    dfrs.ItemArray = vals;
-                    fdt.AddRow(dfrs);
-                }
 
-                if (fdt.Rows.Count > 0)
+
+                using (
+                    IConfigureFeatureTarget ctarget =
+                        (IConfigureFeatureTarget)Activator.CreateInstance(output.Builder))
                 {
-                    using (
-                        IConfigureFeatureTarget ctarget =
-                            (IConfigureFeatureTarget)Activator.CreateInstance(output.Builder))
+                    Type oidType =
+                        GetTypeParamsOfBaseClass(fdt.GetType(), typeof(FeatureDataTable<>))[0];
+
+                    using (IWritableFeatureProvider ptarget =
+                         ctarget.ConstructTargetProvider(oidType, psource.GeometryFactory,
+                                                                   _geometryServices.CoordinateSystemFactory,
+                                                                   fdt))
                     {
-                        Type oidType =
-                            GetTypeParamsOfBaseClass(fdt.GetType(), typeof(FeatureDataTable<>))[0];
+                        if (!ptarget.IsOpen)
+                            ptarget.Open();
 
-                        using (IWritableFeatureProvider ptarget =
-                             ctarget.ConstructTargetProvider(oidType, ((FeatureDataRow)fdt.Rows[0]).Geometry.Factory,
-                                                                       _geometryServices.CoordinateSystemFactory,
-                                                                       fdt))
+                        //jd: TODO: sort out FeatureDataTable type clashes 
+                        //e.g ShapeFileProvider (FeatureDataTable<UInt32>) and MsSqlServer2008Provider<Int32> (FeatureDataTable<Int32>)
+
+                        Console.WriteLine("Beginning Import.");
+                        int count = 0;
+                        foreach (IFeatureDataRecord fdr in sourceRecords)
                         {
-                            if (!ptarget.IsOpen)
-                                ptarget.Open();
-
-                            //jd: TODO: sort out FeatureDataTable type clashes 
-                            //e.g ShapeFileProvider (FeatureDataTable<UInt32>) and MsSqlServer2008Provider<Int32> (FeatureDataTable<Int32>)
-
-                            Console.WriteLine("Beginning Import.");
-                            ptarget.Insert(fdt);
-                            ptarget.Close();
-                            Console.WriteLine(string.Format("{0} records processed", fdt.Rows.Count));
-
-                            ctarget.PostImport();
+                            FeatureDataRow dfrs = fdt.NewRow();
+                            dfrs.Geometry = fdr.Geometry;
+                            object[] vals = new object[fdr.FieldCount];
+                            fdr.GetValues(vals);
+                            dfrs.ItemArray = vals;
+                            ptarget.Insert(dfrs);
+                            count++;
                         }
+
+                        ptarget.Close();
+                        Console.WriteLine(string.Format("{0} records processed", count));
+
+                        ctarget.PostImport();
                     }
                 }
-                else
-                    Console.WriteLine("No records to process.");
+
             }
 
             Console.WriteLine("Finished");

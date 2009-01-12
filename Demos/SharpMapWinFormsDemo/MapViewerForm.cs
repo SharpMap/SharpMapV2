@@ -117,8 +117,6 @@ namespace MapViewer
                 Caster.Cast<IFeatureLayer>(
                     Processor.Where(Map.SelectedLayers, o => o as IFeatureLayer != null)));
 
-
-
             if (l != null)
             {
                 var dv = new FeatureDataView(l.SelectedFeatures.Table);
