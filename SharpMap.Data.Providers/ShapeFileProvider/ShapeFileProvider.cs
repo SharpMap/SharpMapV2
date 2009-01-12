@@ -2262,9 +2262,12 @@ namespace SharpMap.Data.Providers.ShapeFile
             foreach (ILinearRing ring in shells)
             {
                 List<ILinearRing> localHoles = new List<ILinearRing>();
+
+                IPolygon bounds = GeometryFactory.CreatePolygon(ring); //unfortunately we need to build a temp shell to test contains will add processing overhead
+
                 for (int i = holes.Count - 1; i > -1; i--)
                 {
-                    if (ring.Contains(holes[i]))
+                    if (bounds.Contains(holes[i]))
                     {
                         localHoles.Add(holes[i]);
                         holes.RemoveAt(i);
