@@ -66,7 +66,7 @@ namespace SharpMap.Data.Providers
     /// <summary>
     /// Enumeration of spatial indices valid for SQLite
     /// </summary>
-    public enum SpatiaLite2_IndexType
+    public enum SpatiaLite2IndexType
     {
         /// <summary>
         /// No valid spatial Index
@@ -155,8 +155,8 @@ namespace SharpMap.Data.Providers
         /// Default SpatiaLiteIndexType. Used in SpatialLite constructor
         /// if not spatial index type is specified.
         /// </summary>
-        public static SpatiaLite2_IndexType DefaultSpatiaLiteIndexType = SpatiaLite2_IndexType.RTree;
-        private SpatiaLite2_IndexType _spatialLiteIndexType;
+        public static SpatiaLite2IndexType DefaultSpatiaLiteIndexType = SpatiaLite2IndexType.RTree;
+        private SpatiaLite2IndexType _spatialLiteIndexType;
 
         /// <summary>
         /// Spatialite tables only accept geometries specified for the geometry column
@@ -342,13 +342,13 @@ WHERE type='table' AND NOT( name like 'cache_%' ) AND NOT( name like 'sqlite%' )
                         {
                             case 0:
                                 throw new SpatiaLite2Exception("Spatial index type must not be 'None'");
-                                //_spatialLiteIndexType = SpatiaLite2_IndexType.None;
+                                //_spatialLiteIndexType = SpatiaLite2IndexType.None;
                                 //break;
                             case 1:
-                                _spatialLiteIndexType = SpatiaLite2_IndexType.RTree;
+                                _spatialLiteIndexType = SpatiaLite2IndexType.RTree;
                                 break;
                             case 2:
-                                _spatialLiteIndexType = SpatiaLite2_IndexType.MBRCache;
+                                _spatialLiteIndexType = SpatiaLite2IndexType.MBRCache;
                                 break;
                             default:
                                 throw new SpatiaLite2Exception("Unknown SpatiaLite index type.");
@@ -394,7 +394,7 @@ WHERE type='table' AND NOT( name like 'cache_%' ) AND NOT( name like 'sqlite%' )
         public override IExtents GetExtents()
         {
             //ensure spatial index
-            if (SpatiaLiteIndexType == SpatiaLite2_IndexType.None)
+            if (SpatiaLiteIndexType == SpatiaLite2IndexType.None)
                 SpatiaLiteIndexType = DefaultSpatiaLiteIndexType;
 
             using (IDbConnection conn = DbUtility.CreateConnection(ConnectionString))
@@ -403,14 +403,14 @@ WHERE type='table' AND NOT( name like 'cache_%' ) AND NOT( name like 'sqlite%' )
                 cmd.Connection = conn;
                 switch (SpatiaLiteIndexType)
                 {
-                    case SpatiaLite2_IndexType.RTree:
+                    case SpatiaLite2IndexType.RTree:
                         cmd.CommandText =
                         string.Format(
                             "SELECT MIN(xmin) as xmin, MIN(ymin) as ymin, MAX(xmax) as xmax, MAX(ymax) as ymax FROM idx_{0}_{1}",
                             Table, GeometryColumn);
                         break;
 
-                    case SpatiaLite2_IndexType.MBRCache:
+                    case SpatiaLite2IndexType.MBRCache:
                         cmd.CommandText = string.Format(
                             "SELECT MIN(MbrMinX({0})) as xmin, MIN(MbrMinY({0})) as ymin, MAX(MbrMaxX({0})) as xmax, MAX(MbrMaxY({0})) as maxy from {1};",
                             GeometryColumn, QualifiedTableName);
@@ -437,7 +437,7 @@ WHERE type='table' AND NOT( name like 'cache_%' ) AND NOT( name like 'sqlite%' )
             }
         }
 
-        public SpatiaLite2_IndexType SpatiaLiteIndexType
+        public SpatiaLite2IndexType SpatiaLiteIndexType
         {
             get
             {
@@ -451,16 +451,16 @@ WHERE type='table' AND NOT( name like 'cache_%' ) AND NOT( name like 'sqlite%' )
                 //}
                 //switch(retVal)
                 //{
-                //    case 0: return SpatiaLite2_IndexType.None;
-                //    case 1: return SpatiaLite2_IndexType.RTree;
-                //    case 2: return SpatiaLite2_IndexType.MBRCache;
+                //    case 0: return SpatiaLite2IndexType.None;
+                //    case 1: return SpatiaLite2IndexType.RTree;
+                //    case 2: return SpatiaLite2IndexType.MBRCache;
                 //    default:
                 //        throw new SpatiaLite2Exception("Unknown spatial index type");
                 //}
             }
             set
             {
-                if (value == SpatiaLite2_IndexType.None) return;
+                if (value == SpatiaLite2IndexType.None) return;
 
                 Object ret = 0;
                 long retVal = 0;
@@ -471,9 +471,9 @@ WHERE type='table' AND NOT( name like 'cache_%' ) AND NOT( name like 'sqlite%' )
                         //First disable current spatial index
                         ret = new SQLiteCommand(string.Format("SELECT DisableSpatialIndex( '{0}', '{1}' )", Table, GeometryColumn), cn).ExecuteScalar();
 
-                        if (value == SpatiaLite2_IndexType.RTree)
+                        if (value == SpatiaLite2IndexType.RTree)
                             ret = new SQLiteCommand(string.Format("SELECT CreateSpatialIndex( '{0}', '{1}' );", Table, GeometryColumn), cn).ExecuteScalar();
-                        if (value == SpatiaLite2_IndexType.MBRCache)
+                        if (value == SpatiaLite2IndexType.MBRCache)
                             ret = new SQLiteCommand(string.Format("SELECT CreateMBRCache( '{0}', '{1}' );", Table, GeometryColumn), cn).ExecuteScalar();
 
                         System.Diagnostics.Debug.Assert(ret != null);
@@ -613,9 +613,9 @@ WHERE type='table' AND NOT( name like 'cache_%' ) AND NOT( name like 'sqlite%' )
             String tableName,
             String connectionString,
             String geometryColumnName,
-            SpatiaLite2_IndexType spatialIndexType)
+            SpatiaLite2IndexType spatialIndexType)
         {
-            if (spatialIndexType == SpatiaLite2_IndexType.None)
+            if (spatialIndexType == SpatiaLite2IndexType.None)
                 spatialIndexType = DefaultSpatiaLiteIndexType;
 
             OgcGeometryType geometryType;
@@ -644,12 +644,12 @@ WHERE type='table' AND NOT( name like 'cache_%' ) AND NOT( name like 'sqlite%' )
 
                 switch (spatialIndexType)
                 {
-                    case SpatiaLite2_IndexType.RTree:
+                    case SpatiaLite2IndexType.RTree:
                         if (new SQLiteCommand(String.Format("SELECT CreateSpatialIndex('{0}','{1}');",
                             tableName, geometryColumnName), conn).ExecuteScalar() == (object)0) throw new SpatiaLite2Exception("Could not create RTree index");
                         break;
 
-                    case SpatiaLite2_IndexType.MBRCache:
+                    case SpatiaLite2IndexType.MBRCache:
                         if (new SQLiteCommand(String.Format("SELECT CreateMbrCache('{0}','{1}');",
                             tableName, geometryColumnName), conn).ExecuteScalar() == (object)0) throw new SpatiaLite2Exception("Could not create MbrCache");
                         break;

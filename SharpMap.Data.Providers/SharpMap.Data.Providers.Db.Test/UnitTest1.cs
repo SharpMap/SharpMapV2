@@ -192,7 +192,7 @@ namespace SharpMap.Data.Providers.Db.Test
             var search = new SpatiaLite2Provider(services.DefaultGeometryFactory,
                                                   ConfigurationManager.ConnectionStrings["sqLite"].ConnectionString, "main",
                                                   "regions", "OID", "XGeometryX");
-            search.SpatiaLiteIndexType = SpatiaLite2_IndexType.MBRCache;
+            search.SpatiaLiteIndexType = SpatiaLite2IndexType.MBRCache;
 
             var binaryExpression =
                 new BinaryExpression(new PropertyNameExpression("VHG5"),

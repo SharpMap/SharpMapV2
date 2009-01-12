@@ -46,18 +46,18 @@ namespace SharpMap.Data.Providers.SpatiaLite2
         : ExpressionTreeToSqlCompilerBase<long>
     {
 
-        private SpatiaLite2_IndexType _spatialIndexType;
+        private SpatiaLite2IndexType _spatialIndexType;
 
         public SpatiaLite2ExpressionTreeToSqlCompiler(SpatialDbProviderBase<long> provider,
                                                        Expression query,
-                                                       SpatiaLite2_IndexType indexType)
+                                                       SpatiaLite2IndexType indexType)
 
             : base(provider, query)
         {
 
             switch (indexType)
             {
-                case SpatiaLite2_IndexType.None:
+                case SpatiaLite2IndexType.None:
                     throw new SpatiaLite2Exception("indexType must not be 'None'");
                 default:
                     break;
@@ -92,7 +92,7 @@ namespace SharpMap.Data.Providers.SpatiaLite2
 
             switch (_spatialIndexType)
             {
-                case SpatiaLite2_IndexType.RTree:
+                case SpatiaLite2IndexType.RTree:
                     switch (spatialOperation)
                     {
                         case SpatialOperation.Within:
@@ -117,7 +117,7 @@ namespace SharpMap.Data.Providers.SpatiaLite2
                     whereClause = string.Format("[{0}].ROWID in (SELECT pkid FROM idx_{0}_{1} WHERE {2})", Provider.Table, Provider.GeometryColumn, criteriaClause);
                     break;
 
-                case SpatiaLite2_IndexType.MBRCache:
+                case SpatiaLite2IndexType.MBRCache:
 
                     switch (spatialOperation)
                     {
