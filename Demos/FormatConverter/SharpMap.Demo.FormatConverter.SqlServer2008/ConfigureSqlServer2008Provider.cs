@@ -166,6 +166,9 @@ namespace SharpMap.Demo.FormatConverter.SqlServer2008
         public void PostImport()
         {
 
+            _specializedType.GetMethod("FixGeometries", BindingFlags.Public | BindingFlags.Instance, null,
+                                          CallingConventions.HasThis, Type.EmptyTypes, null).Invoke(_targetProvider, new object[] { });
+
             Console.WriteLine("Create Envelope Columns? Y to create otherwise any other key.");
             if (string.Compare(Console.ReadLine(), "Y", StringComparison.CurrentCultureIgnoreCase) == 0)
                 _specializedType.GetMethod("CreateEnvelopeColumns", BindingFlags.Public | BindingFlags.Instance, null,

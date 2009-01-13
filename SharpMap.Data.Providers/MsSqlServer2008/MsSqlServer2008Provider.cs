@@ -403,6 +403,22 @@ END
             }
         }
 
+        public void FixGeometries()
+        {
+            using (IDbConnection conn = DbUtility.CreateConnection(ConnectionString))
+            {
+                string sql = string.Format("UPDATE {0} Set {1} = {1}.MakeValid()", QualifiedTableName, GeometryColumn);
+                conn.Open();
+                using (IDbCommand cmd = DbUtility.CreateCommand())
+                {
+                    cmd.CommandText = sql;
+                    cmd.Connection = conn;
+                    cmd.CommandType = CommandType.Text;
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
+
         protected internal void CreateIndex(IDbConnection conn, string indexName, IEnumerable<string> columnNames)
         {
             StringBuilder sb = new StringBuilder();
