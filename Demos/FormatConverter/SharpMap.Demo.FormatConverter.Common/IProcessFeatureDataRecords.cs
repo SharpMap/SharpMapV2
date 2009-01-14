@@ -32,7 +32,14 @@ namespace SharpMap.Demo.FormatConverter.Common
         /// Processes each item in the input enumerable and returns an enumerable of the processed or filtered items
         /// </summary>
         /// <param name="input"></param>
+        /// <param name="oidFieldIndex"></param>
         /// <returns></returns>
-        IEnumerable<IFeatureDataRecord> Process(IEnumerable<IFeatureDataRecord> input);
+        //IEnumerable<IFeatureDataRecord> Process(IEnumerable<IFeatureDataRecord> input, ref int oidFieldIndex);
+
+        FeatureDataRecordProcessor Processor { get; set; }
+
     }
+
+    public delegate IEnumerable<IFeatureDataRecord> FeatureDataRecordProcessor(
+        IEnumerable<IFeatureDataRecord> input, ref int resultingOidFieldIndex);
 }

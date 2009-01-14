@@ -71,7 +71,9 @@ namespace SharpMap.Demo.FormatConverter.ShapeFile
         #endregion
 
         #region IConfigureFeatureTarget Members
-
+        /// <remarks>
+        /// Note <paramref name="oidType"/> Is ignored for shapefile provider.
+        /// </remarks>
         public IWritableFeatureProvider ConstructTargetProvider(Type oidType, IGeometryFactory geometryFactory, ICoordinateSystemFactory csFactory, FeatureDataTable schemaTable)
         {
             

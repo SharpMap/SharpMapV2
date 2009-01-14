@@ -169,29 +169,27 @@ namespace SharpMap.Demo.FormatConverter
                 foreach (ProcessorItem pi in processors)
                     realProcessors.Add((IProcessFeatureDataRecords)Activator.CreateInstance(pi.ProcessorType));
 
-                Func<IEnumerable<IFeatureDataRecord>, IEnumerable<IFeatureDataRecord>> processChain = null;
+                FeatureDataRecordProcessor processChain = null;
 
                 foreach (IProcessFeatureDataRecords processor in realProcessors)
                 {
                     processChain = Equals(processChain, null)
-                                       ? processor.Process
-                                       : new Func<IEnumerable<IFeatureDataRecord>, IEnumerable<IFeatureDataRecord>>(
-                                             o => processor.Process(processChain(o)));
+                                       ? processor.Processor
+                                       : ((IEnumerable<IFeatureDataRecord> o, ref int i) => processor.Processor(processChain(o, ref i), ref i));
                 }
 
                 processChain = processChain ??
-                               new Func<IEnumerable<IFeatureDataRecord>, IEnumerable<IFeatureDataRecord>>(o => o);
+                               new FeatureDataRecordProcessor((IEnumerable<IFeatureDataRecord> o, ref int i) => o);
 
                 if (!psource.IsOpen)
                     psource.Open();
 
                 FeatureQueryExpression exp = csource.ConstructSourceQueryExpression();
-                IEnumerable<IFeatureDataRecord> sourceRecords = processChain(psource.ExecuteFeatureQuery(exp));
-
-                //jd NOTE: for the time being we are assuming that the processors didn't change the shape of the original table
-
                 FeatureDataTable fdt = psource.CreateNewTable();
+                int index = fdt.Columns.IndexOf(fdt.PrimaryKey[0]);
+                IEnumerable<IFeatureDataRecord> sourceRecords = processChain(psource.ExecuteFeatureQuery(exp), ref index);
 
+                //jd: TODO: need to test what happens if the IFeatureDataRecord shape is changed by the processor chain
 
                 using (
                     IConfigureFeatureTarget ctarget =
@@ -208,19 +206,21 @@ namespace SharpMap.Demo.FormatConverter
                         if (!ptarget.IsOpen)
                             ptarget.Open();
 
-                        //jd: TODO: sort out FeatureDataTable type clashes 
-                        //e.g ShapeFileProvider (FeatureDataTable<UInt32>) and MsSqlServer2008Provider<Int32> (FeatureDataTable<Int32>)
+                        IConvertData converter = null;/* Some Data Providers do not respect the oidType param passed in. 
+                                                       * For instance Shapefile will always be IWritableFeatureProvider<UInt32> 
+                                                       * so we need to make sure we can coerce OID values  */
 
                         Console.WriteLine("Beginning Import.");
                         int count = 0;
                         foreach (IFeatureDataRecord fdr in sourceRecords)
                         {
-                            FeatureDataRow dfrs = fdt.NewRow();
-                            dfrs.Geometry = fdr.Geometry;
-                            object[] vals = new object[fdr.FieldCount];
-                            fdr.GetValues(vals);
-                            dfrs.ItemArray = vals;
-                            ptarget.Insert(dfrs);
+                            if (converter == null)
+                                converter = GetConverter(fdr.OidType,
+                                         GetTypeParamsOfBaseClass(ptarget.CreateNewTable().GetType(),
+                                                                  typeof(FeatureDataTable<>))[0], fdr, index);
+
+
+                            ptarget.Insert(converter.ConvertRecord(fdr));/* coerce values if necessary */
                             count++;
                         }
 
@@ -234,6 +234,14 @@ namespace SharpMap.Demo.FormatConverter
             }
 
             Console.WriteLine("Finished");
+        }
+
+        private IConvertData GetConverter(Type tsource, Type ttarget, IFeatureDataRecord sourcetable, int index)
+        {
+            Type t = typeof(ConvertData<,>);
+            Type g = t.MakeGenericType(tsource, ttarget);
+
+            return (IConvertData)Activator.CreateInstance(g, sourcetable, index);
         }
 
         private FeatureDataTable GetTypedFeatureDataTable(Type oidType, string oidColumnName, IGeometryFactory geometryFactory)
@@ -287,7 +295,7 @@ namespace SharpMap.Demo.FormatConverter
 
             while (true)
             {
-                Console.WriteLine("\nPlease enter the number for the source provider you wish to use");
+                Console.WriteLine("\nPlease enter the number for the target provider you wish to use");
                 int i;
                 if (int.TryParse(Console.ReadLine(), out i))
                 {
