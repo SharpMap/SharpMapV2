@@ -27,7 +27,12 @@ namespace SharpMap.Data
     /// attribute values for a feature.
 	/// </summary>
 	public interface IFeatureDataRecord : IDataRecord, IEvaluable
-	{
+    {
+        /// <summary>
+        /// Gets the <see cref="IFeaturesSchema"/> for the record.
+        /// </summary>
+        IFeaturesSchema Schema { get; }
+
 		/// <summary>
 		/// Gets the geometry for the feature.
 		/// </summary>
@@ -79,13 +84,20 @@ namespace SharpMap.Data
         ICoordinateTransformation CoordinateTransformation { get; set; }
 
         /// <summary>
-        /// Gets the <see cref="IFeatureAttribute"/> of the specified field.
+        /// Gets the <see cref="IFeatureProperty"/> at the specified <paramref name="index"/>.
         /// </summary>
-        /// <param name="i">The index of the field to find.</param>
-        /// <returns>The <see cref="IFeatureAttribute"/> of the specified field.</returns>
-	    IFeatureAttribute GetAttribute(Int32 i);
+        /// <param name="index">The index of the field to find.</param>
+        /// <returns>The <see cref="IFeatureProperty"/> of the specified field.</returns>
+        IFeatureProperty GetProperty(Int32 index);
 
+        /// <summary>
+        /// Gets the <see cref="DataRowState"/> of the feature record.
+        /// </summary>
         DataRowState FeatureState { get; }
+
+        /// <summary>
+        /// Gets the <see cref="DataRowVersion"/> of the feature record.
+        /// </summary>
         DataRowVersion FeatureVersion { get; }
 	}
 }

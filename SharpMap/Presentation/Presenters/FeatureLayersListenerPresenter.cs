@@ -89,9 +89,9 @@ namespace SharpMap.Presentation.Presenters
         }
 
         protected override void NotifyLayersChanged(ListChangedType listChangedType,
-                                                   Int32 oldIndex,
-                                                   Int32 newIndex,
-                                                   PropertyDescriptor propertyDescriptor)
+                                                    Int32 oldIndex,
+                                                    Int32 newIndex,
+                                                    PropertyDescriptor propertyDescriptor)
         {
             switch (listChangedType)
             {

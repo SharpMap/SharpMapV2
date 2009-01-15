@@ -36,7 +36,7 @@ namespace SharpMap.Data.Providers.GeometryProvider
     /// <summary>
     /// Data source for storing a set of geometries in memory.
     /// </summary>
-    public class GeometryProvider : ProviderBase, IFeatureProvider<UInt32>
+    public class GeometryProvider : ProviderBase, IFeatureProvider
     {
         private static readonly PropertyDescriptorCollection _geometryProviderTypeProperties;
 
@@ -75,6 +75,7 @@ namespace SharpMap.Data.Providers.GeometryProvider
         private IGeometryFactory _geoFactory;
         private readonly List<IGeometry> _geometries = new List<IGeometry>();
         private IExtents _extents;
+        private readonly IFeaturesSchema _geometryProviderSchema;
 
         #region Object Construction / Disposal
 
@@ -308,11 +309,6 @@ namespace SharpMap.Data.Providers.GeometryProvider
 
         #region IFeatureProvider Members
 
-        public FeatureDataTable CreateNewTable()
-        {
-            return null;
-        }
-
         /// <summary>
         /// Throws an NotSupportedException. 
         /// </summary>
@@ -344,6 +340,11 @@ namespace SharpMap.Data.Providers.GeometryProvider
             return _geometries.Count;
         }
 
+        public IFeaturesSchema GetSchema()
+        {
+            return null;
+        }
+
         public DataTable GetSchemaTable()
         {
             throw new NotSupportedException("Attribute data is not supported by the GeometryProvider.");
@@ -352,6 +353,18 @@ namespace SharpMap.Data.Providers.GeometryProvider
         public CultureInfo Locale
         {
             get { return CultureInfo.InvariantCulture; }
+        }
+
+        public void SetCacheSchema(IFeaturesCache cache)
+        {
+            SetCacheSchema(cache, SchemaMergeAction.AddWithKey);
+        }
+
+        public void SetCacheSchema(IFeaturesCache cache, SchemaMergeAction schemaAction)
+        {
+            if (cache == null) throw new ArgumentNullException("cache");
+
+            cache.Clear();
         }
 
         #endregion
@@ -447,26 +460,6 @@ namespace SharpMap.Data.Providers.GeometryProvider
         public IGeometry GetGeometryByOid(UInt32 oid)
         {
             return _geometries[(Int32)oid];
-        }
-
-        public void SetTableSchema(FeatureDataTable<UInt32> table)
-        {
-            SetTableSchema(table, SchemaMergeAction.AddWithKey);
-        }
-
-        public void SetTableSchema(FeatureDataTable<UInt32> table, SchemaMergeAction schemaMergeAction)
-        {
-            if (table == null) throw new ArgumentNullException("table");
-
-            table.Columns.Clear();
-        }
-
-        #endregion
-
-        #region IFeatureProvider Explicit Members
-        void IFeatureProvider.SetTableSchema(FeatureDataTable table)
-        {
-            table.Clear();
         }
         #endregion
 

@@ -62,7 +62,6 @@
     <Compile Include="FeatureMerger.cs" />
     <Compile Include="FeatureTableCollection.cs" />
     <Compile Include="FeatureUniqueConstraint.cs" />
-    <Compile Include="Filter.cs" />
     <Compile Include="IFeatureAdapter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Providers\FeatureProvider\FeatureDataReader.cs" />

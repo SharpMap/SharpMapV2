@@ -101,7 +101,7 @@ namespace SharpMap.Layers
         /// <summary>
         /// Event fired when layer data is loaded.
         /// </summary>
-        event EventHandler<LayerDataLoadedEventArgs> DataLoaded;
+        event EventHandler<LayerDataLoadCompleteEventArgs> DataLoadComplete;
 
         /// <summary>
         /// Loads the data contained in the layer where it intersects <paramref name="region"/>.

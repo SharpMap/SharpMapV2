@@ -15,23 +15,37 @@
 // along with SharpMap; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
-using System;
-using System.Collections.Generic;
-
 namespace SharpMap.Data
 {
-    public interface IFeaturesSchema : IEquatable<IFeaturesSchema>
+    public enum FeaturePropertyDataType
     {
-        Int32 PropertyCount { get; }
-        void SetCacheSchema(IFeaturesCache cache);
-        IList<IFeatureProperty> Properties { get; }
-        IFeatureProperty IdProperty { get; }
-        Boolean HasIdProperty { get; }
-        IFeatureProperty GeometryProperty { get; }
-        Boolean HasGeometryProperty { get; }
-        IFeatureProperty this[Int32 index] { get; }
-        IFeatureProperty this[String name] { get; }
-        Int32 GetIndex(IFeatureProperty property);
-        Int32 GetIndex(String name);
+        AnsiString = 0,
+        AnsiStringFixedLength = 0x16,
+        Binary = 1,
+        Boolean = 3,
+        Byte = 2,
+        Currency = 4,
+        Date = 5,
+        DateTime = 6,
+        DateTime2 = 0x1a,
+        DateTimeOffset = 0x1b,
+        Decimal = 7,
+        Double = 8,
+        Geometry = 0xff,
+        Guid = 9,
+        Int16 = 10,
+        Int32 = 11,
+        Int64 = 12,
+        Object = 13,
+        SByte = 14,
+        Single = 15,
+        String = 0x10,
+        StringFixedLength = 0x17,
+        Time = 0x11,
+        UInt16 = 0x12,
+        UInt32 = 0x13,
+        UInt64 = 20,
+        VarNumeric = 0x15,
+        Xml = 0x19
     }
 }

@@ -27,9 +27,10 @@ namespace SharpMap.Data
     public interface IFeaturesCache
     {
         Boolean IsSpatiallyIndexed { get; set; }
-        void AddRecord(IFeatureDataRecord row);
+        void AddRecord(IFeatureDataRecord record);
         IFeatureDataRecord this[Int32 index] { get; }
         Int32 FeatureCount { get; }
+        void Clear();
         IFeaturesCache Clone();
         void CloneTo(IFeaturesCache cache);
         IFeatureDataRecord Find(Object key);

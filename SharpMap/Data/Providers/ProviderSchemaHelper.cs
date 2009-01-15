@@ -202,44 +202,44 @@ namespace SharpMap.Data.Providers
         }
 
 
-        public static DataTable DeriveSchemaTable(FeatureDataTable table,
-            ColumnLengthComputationDelegate lengthComputationDelegate,
-            ColumnPrecisionComputationDelegate precisionComputationDelegate,
-            ColumnScaleComputationDelegate scaleComputationDelegate)
-        {
-            DataTable schema = CreateSchemaTable();
-            foreach (DataColumn column in table.Columns)
-            {
-                DataColumn[] keyColumns = table.PrimaryKey ?? new DataColumn[] { };
+        //public static DataTable DeriveSchemaTable(FeatureDataTable table,
+        //    ColumnLengthComputationDelegate lengthComputationDelegate,
+        //    ColumnPrecisionComputationDelegate precisionComputationDelegate,
+        //    ColumnScaleComputationDelegate scaleComputationDelegate)
+        //{
+        //    DataTable schema = CreateSchemaTable();
+        //    foreach (DataColumn column in table.Columns)
+        //    {
+        //        DataColumn[] keyColumns = table.PrimaryKey ?? new DataColumn[] { };
 
-                Int32 length = column.ExtendedProperties.ContainsKey(LengthExtendedProperty)
-                    ? Convert.ToInt32(column.ExtendedProperties[LengthExtendedProperty])
-                    : (lengthComputationDelegate == null) ? 0 : lengthComputationDelegate(column);
+        //        Int32 length = column.ExtendedProperties.ContainsKey(LengthExtendedProperty)
+        //            ? Convert.ToInt32(column.ExtendedProperties[LengthExtendedProperty])
+        //            : (lengthComputationDelegate == null) ? 0 : lengthComputationDelegate(column);
 
-                Int16 precision = column.ExtendedProperties.ContainsKey(NumericPrecisionExtendedProperty)
-                    ? Convert.ToInt16(column.ExtendedProperties[NumericPrecisionExtendedProperty])
-                    : (precisionComputationDelegate == null) ? (Int16)0 : precisionComputationDelegate(column);
+        //        Int16 precision = column.ExtendedProperties.ContainsKey(NumericPrecisionExtendedProperty)
+        //            ? Convert.ToInt16(column.ExtendedProperties[NumericPrecisionExtendedProperty])
+        //            : (precisionComputationDelegate == null) ? (Int16)0 : precisionComputationDelegate(column);
 
-                Int16 scale = column.ExtendedProperties.ContainsKey(NumericScaleExtendedProperty)
-                    ? Convert.ToInt16(column.ExtendedProperties[NumericScaleExtendedProperty])
-                    : (scaleComputationDelegate == null) ? (Int16)0 : scaleComputationDelegate(column);
+        //        Int16 scale = column.ExtendedProperties.ContainsKey(NumericScaleExtendedProperty)
+        //            ? Convert.ToInt16(column.ExtendedProperties[NumericScaleExtendedProperty])
+        //            : (scaleComputationDelegate == null) ? (Int16)0 : scaleComputationDelegate(column);
 
-                schema.Rows.Add(
-                    column.ColumnName,
-                    length,
-                    column.Ordinal,
-                    precision,
-                    scale,
-                    column.DataType,
-                    column.AllowDBNull,
-                    column.ReadOnly,
-                    column.Unique,
-                    Array.Exists(keyColumns, delegate(DataColumn col) { return col == column; }),
-                    column.AutoIncrement,
-                    false);
-            }
+        //        schema.Rows.Add(
+        //            column.ColumnName,
+        //            length,
+        //            column.Ordinal,
+        //            precision,
+        //            scale,
+        //            column.DataType,
+        //            column.AllowDBNull,
+        //            column.ReadOnly,
+        //            column.Unique,
+        //            Array.Exists(keyColumns, delegate(DataColumn col) { return col == column; }),
+        //            column.AutoIncrement,
+        //            false);
+        //    }
 
-            return schema;
-        }
+        //    return schema;
+        //}
     }
 }

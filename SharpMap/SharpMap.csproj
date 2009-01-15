@@ -125,9 +125,16 @@
     <Compile Include="Data\Caching\IQueryCache.cs" />
     <Compile Include="Data\Caching\NullQueryCache.cs" />
     <Compile Include="Data\DataSourcePassThroughPropertyDescriptor.cs" />
+    <Compile Include="Data\DefaultFeatureCache.cs" />
+    <Compile Include="Data\DefaultFeatureRecord.cs" />
+    <Compile Include="Data\DefaultFeatureSchema.cs" />
+    <Compile Include="Data\DefaultFeatureSchemaFactory.cs" />
+    <Compile Include="Data\FeaturePropertyDataType.cs" />
+    <Compile Include="Data\Filter.cs" />
     <Compile Include="Data\IEvaluable.cs" />
-    <Compile Include="Data\IFeatureAttribute.cs" />
+    <Compile Include="Data\IFeatureProperty.cs" />
     <Compile Include="Data\IFeaturesCache.cs" />
+    <Compile Include="Data\IFeaturesSchemaFactory.cs" />
     <Compile Include="Data\IFeaturesSchema.cs" />
     <Compile Include="Data\IFeaturesView.cs" />
     <Compile Include="Data\Providers\FeatureProviderBase.cs" />
@@ -226,7 +233,6 @@
     <Compile Include="Layers\DuplicateLayerException.cs" />
     <Compile Include="Data\Providers\GeometryProvider\GeometryProvider.cs" />
     <Compile Include="Data\IProvider.cs" />
-    <Compile Include="Data\IFeatureProvider`1.cs" />
     <Compile Include="Data\IWritableFeatureProvider`1.cs" />
     <Compile Include="Data\Providers\OgcEnumerations.cs" />
     <Compile Include="Indexing\BinaryTree\BinaryTreeNode.cs" />
@@ -247,7 +253,7 @@
     <Compile Include="Layers\Layer.cs">
     </Compile>
     <Compile Include="Layers\LayerCollection.cs" />
-    <Compile Include="Layers\LayerDataLoadedEventArgs.cs" />
+    <Compile Include="Layers\LayerDataLoadCompleteEventArgs.cs" />
     <Compile Include="Layers\LayerGroup.cs">
     </Compile>
     <Compile Include="Layers\CoverageLayer.cs">

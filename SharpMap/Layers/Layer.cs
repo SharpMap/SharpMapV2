@@ -420,7 +420,7 @@ namespace SharpMap.Layers
             }
         }
 
-        public event EventHandler<LayerDataLoadedEventArgs> DataLoaded;
+        public event EventHandler<LayerDataLoadCompleteEventArgs> DataLoadComplete;
 
         /// <summary>
         /// Gets the data source used to create this layer.
@@ -700,11 +700,11 @@ namespace SharpMap.Layers
 
         protected virtual void OnLayerDataLoaded(Expression expression, Object result)
         {
-            EventHandler<LayerDataLoadedEventArgs> e = DataLoaded;
+            EventHandler<LayerDataLoadCompleteEventArgs> e = DataLoadComplete;
 
             if (e != null)
             {
-                e(this, new LayerDataLoadedEventArgs(this, expression, result));
+                e(this, new LayerDataLoadCompleteEventArgs(this, expression, result));
             }
         }
 

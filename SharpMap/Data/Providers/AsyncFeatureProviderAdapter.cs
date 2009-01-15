@@ -110,11 +110,6 @@ namespace SharpMap.Data.Providers
 
         #region wrapped IFeatureProvider methods and properties
 
-        public FeatureDataTable CreateNewTable()
-        {
-            return InnerFeatureProvider.CreateNewTable();
-        }
-
         public IFeatureDataReader ExecuteFeatureQuery(FeatureQueryExpression query, FeatureQueryExecutionOptions options)
         {
             return InnerFeatureProvider.ExecuteFeatureQuery(query, options);
@@ -136,9 +131,9 @@ namespace SharpMap.Data.Providers
             return InnerFeatureProvider.GetFeatureCount();
         }
 
-        public DataTable GetSchemaTable()
+        public IFeaturesSchema GetSchema()
         {
-            return InnerFeatureProvider.GetSchemaTable();
+            return InnerFeatureProvider.GetSchema();
         }
 
         public CultureInfo Locale
@@ -146,11 +141,15 @@ namespace SharpMap.Data.Providers
             get { return InnerFeatureProvider.Locale; }
         }
 
-        public void SetTableSchema(FeatureDataTable table)
+        public void SetCacheSchema(IFeaturesCache cache)
         {
-            InnerFeatureProvider.SetTableSchema(table);
+            InnerFeatureProvider.SetCacheSchema(cache);
         }
 
+        public void SetCacheSchema(IFeaturesCache cache, SchemaMergeAction schemaAction)
+        {
+            InnerFeatureProvider.SetCacheSchema(cache, schemaAction);
+        }
         #endregion
     }
 }

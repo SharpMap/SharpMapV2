@@ -16,22 +16,28 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System;
-using System.Collections.Generic;
+using System.ComponentModel;
 
 namespace SharpMap.Data
 {
-    public interface IFeaturesSchema : IEquatable<IFeaturesSchema>
+    public interface IFeatureProperty : IEquatable<IFeatureProperty>
     {
-        Int32 PropertyCount { get; }
-        void SetCacheSchema(IFeaturesCache cache);
-        IList<IFeatureProperty> Properties { get; }
-        IFeatureProperty IdProperty { get; }
-        Boolean HasIdProperty { get; }
-        IFeatureProperty GeometryProperty { get; }
-        Boolean HasGeometryProperty { get; }
-        IFeatureProperty this[Int32 index] { get; }
-        IFeatureProperty this[String name] { get; }
-        Int32 GetIndex(IFeatureProperty property);
-        Int32 GetIndex(String name);
+        PropertyDescriptor AsPropertyDescriptor();
+        String Name { get; }
+        FeaturePropertyDataType DataType { get; }
+        Int32? Size { get; }
+        Int32? NumericScale { get; }
+        Int32? NumericPrecision { get; }
+        Int32 Ordinal { get; }
+        Boolean AllowNull { get; }
+        Boolean IsLong { get; }
+        Boolean IsReadOnly { get; }
+        Boolean IsKey { get; }
+        Boolean IsAutoIncrement { get; }
+        Boolean IsUnique { get; }
+        String BaseSchemaName { get; }
+        String BaseCatalogName { get; }
+        String BaseTableName { get; }
+        String BaseColumnName { get; }
     }
 }

@@ -16,29 +16,36 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System;
-using System.ComponentModel;
-using System.Data;
+using SharpMap.Expressions;
 
-namespace SharpMap.Data
+namespace SharpMap.Layers
 {
-    public interface IFeatureAttribute
+    public class LayerDataLoadCompleteEventArgs : EventArgs
     {
-        PropertyDescriptor AsPropertyDescriptor();
-        String Name { get; }
-        DbType DataType { get; }
-        Int32? Size { get; }
-        Int32? NumericScale { get; }
-        Int32? NumericPrecision { get; }
-        Int32 Ordinal { get; }
-        Boolean AllowNull { get; }
-        Boolean IsLong { get; }
-        Boolean IsReadOnly { get; }
-        Boolean IsKey { get; }
-        Boolean IsAutoIncrement { get; }
-        Boolean IsUnique { get; }
-        String BaseSchemaName { get; }
-        String BaseCatalogName { get; }
-        String BaseTableName { get; }
-        String BaseColumnName { get; }
+        private readonly Expression _expression;
+        private readonly Object _result;
+        private readonly ILayer _layer;
+
+        public LayerDataLoadCompleteEventArgs(ILayer layer, Expression expression, Object result)
+        {
+            _expression = expression;
+            _layer = layer;
+            _result = result;
+        }
+
+        public ILayer Layer
+        {
+            get { return _layer; }
+        }
+
+        public Expression Expression
+        {
+            get { return _expression; }
+        }
+
+        public Object Result
+        {
+            get { return _result; }
+        }
     }
 }

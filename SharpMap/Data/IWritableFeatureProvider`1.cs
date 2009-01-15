@@ -22,9 +22,6 @@ namespace SharpMap.Data
     /// <summary>
     /// Provides an interface for writable data providers.
     /// </summary>
-    /// <typeparam name="TOid">
-    /// Type of the value used for feature object identifiers.
-    /// </typeparam>
     /// <remarks>
     /// <para>
     /// NOTICE: The writeable interface is not stable yet.
@@ -60,7 +57,7 @@ namespace SharpMap.Data
     /// and predictable state based on the success or failure of the operation.
     /// </para>
     /// </remarks>
-    public interface IWritableFeatureProvider<TOid> : IFeatureProvider<TOid>
+    public interface IWritableFeatureProvider : IFeatureProvider
     {
         /// <summary>
         /// Inserts a feature into the data source.
