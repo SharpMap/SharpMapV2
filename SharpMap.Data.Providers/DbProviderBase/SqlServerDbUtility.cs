@@ -124,7 +124,9 @@ namespace SharpMap.Data.Providers.Db
             if (netType == typeof(byte[]))
                 return SqlDbType.VarBinary;
             if (netType == typeof(Boolean))
-                return SqlDbType.Bit; 
+                return SqlDbType.Bit;
+            if (netType == typeof(DateTime))
+                return SqlDbType.DateTime; 
 
             throw new NotImplementedException();
         }

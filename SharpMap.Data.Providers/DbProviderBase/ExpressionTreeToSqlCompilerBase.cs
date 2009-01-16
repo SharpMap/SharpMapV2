@@ -625,7 +625,7 @@ namespace SharpMap.Data.Providers.Db
 
         #region Nested type: NullValue
 
-        internal struct NullValue<T>
+        protected internal struct NullValue<T>
         {
         }
 

@@ -958,6 +958,21 @@ namespace SharpMap.Data.Providers.ShapeFile
             return result;
         }
 
+        /// <summary>
+        /// Return all Features within the shapefile
+        /// </summary>
+        /// <returns> collection of features </returns>
+        public IEnumerable<IFeatureDataRecord> GetAllFeatues()
+        {
+            IFeatureDataRecord result = null;
+            for (UInt32 i = 1; i <= this.FeatureCount; i++)
+            {
+                result =  getFeature(i, null);
+                if (result != null)
+                    yield return result;
+            }
+        }
+
         /// <exception cref="ShapeFileInvalidOperationException">
         /// Thrown if method is called and the shapefile is closed. Check <see cref="ProviderBase.IsOpen"/> 
         /// before calling.
@@ -966,6 +981,7 @@ namespace SharpMap.Data.Providers.ShapeFile
         {
             return getFeature(oid, null);
         }
+
 
         public IEnumerable<IFeatureDataRecord> GetFeatures(IEnumerable<UInt32> oids)
         {
@@ -2259,24 +2275,39 @@ namespace SharpMap.Data.Providers.ShapeFile
 
             List<IPolygon> polygons = new List<IPolygon>();
 
-            foreach (ILinearRing ring in shells)
+            if (shells.Count == 1)
             {
-                List<ILinearRing> localHoles = new List<ILinearRing>();
-
-                IPolygon bounds = GeometryFactory.CreatePolygon(ring); //unfortunately we need to build a temp shell to test contains will add processing overhead
-
-                for (int i = holes.Count - 1; i > -1; i--)
-                {
-                    if (bounds.Contains(holes[i]))
-                    {
-                        localHoles.Add(holes[i]);
-                        holes.RemoveAt(i);
-                    }
-                }
-                polygons.Add(GeometryFactory.CreatePolygon(ring, localHoles));
+                if (holes.Count == 0)
+                    polygons.Add(GeometryFactory.CreatePolygon(shells[0]));
+                else
+                    polygons.Add(GeometryFactory.CreatePolygon(shells[0], holes));
             }
+            else
+            {
+                foreach (ILinearRing ring in shells)
+                {
+                    if (holes.Count > 0)
+                    {
+                        List<ILinearRing> localHoles = new List<ILinearRing>();
 
-            Debug.Assert(holes.Count == 0);
+                        IPolygon bounds = GeometryFactory.CreatePolygon(ring); //unfortunately we need to build a temp shell to test contains will add processing overhead
+
+                        for (int i = holes.Count - 1; i > -1; i--)
+                        {
+                            if (bounds.Contains(holes[i]))
+                            {
+                                localHoles.Add(holes[i]);
+                                holes.RemoveAt(i);
+                            }
+                        }
+                        polygons.Add(GeometryFactory.CreatePolygon(ring, localHoles));
+                    }
+                    else
+                        polygons.Add(GeometryFactory.CreatePolygon(ring));
+                }
+
+                Debug.Assert(holes.Count == 0);
+            }
 
             return GeometryFactory.CreateMultiPolygon(polygons);
 
@@ -2480,74 +2511,124 @@ namespace SharpMap.Data.Providers.ShapeFile
             writePolySegments(multiLineString.Extents, parts, allPoints, allPoints.Count);
         }
 
-        /*jd: Contains Modifications from Lee Keel www.trimble.com to cope with unclosed polygons  */
+        /// <summary>
+        /// write the polygon to the shapefilewriter
+        /// </summary>
+        /// <param name="polygon">polygon to be written</param>
         private void writePolygon(IPolygon polygon)
         {
             Int32[] parts = new Int32[polygon.InteriorRingsCount + 1];
-            List<ICoordinate> allPoints = new List<ICoordinate>();
-            Int32 currentPartsIndex = 0;
+            Int32 currentPartsIndex = 0, pointCnt = 0;
             parts[currentPartsIndex++] = 0;
-            allPoints.AddRange((IEnumerable<ICoordinate>)polygon.ExteriorRing.Coordinates);
-            /* need to account for cases where the polygon is not closed. */
-            if (polygon.ExteriorRing.Coordinates[0] != polygon.ExteriorRing.Coordinates[polygon.ExteriorRing.Coordinates.Count - 1])
-                allPoints.Add(polygon.ExteriorRing.Coordinates[0]);
+
+            /* need to account for cases where the polygon shell is not closed. */
+            if (!polygon.ExteriorRing.Coordinates[0].Equals(polygon.ExteriorRing.Coordinates[polygon.ExteriorRing.Coordinates.Count - 1]))
+                polygon.ExteriorRing.Coordinates.Add(polygon.ExteriorRing.Coordinates[0]);
+            
+            pointCnt = polygon.ExteriorRing.Coordinates.Count;
 
             foreach (ILinearRing ring in polygon.InteriorRings)
             {
-                parts[currentPartsIndex++] = allPoints.Count;
-                allPoints.AddRange((IEnumerable<ICoordinate>)ring.Coordinates);
+                parts[currentPartsIndex++] = pointCnt;
 
-                /* need to account for cases where the polygon is not closed. */
-                if (ring.Coordinates[0] != ring.Coordinates[ring.Coordinates.Count - 1])
-                    allPoints.Add(ring.Coordinates[0]);
+                /* need to account for cases where the hole is not closed. */
+                if (!ring.Coordinates[0].Equals(ring.Coordinates[ring.Coordinates.Count - 1]))
+                    ring.Coordinates.Add(ring.Coordinates[0]);
 
+                pointCnt += ring.Coordinates.Count;
             }
 
-            _shapeFileWriter.Write(ByteEncoder.GetLittleEndian((Int32)ShapeType.Polygon));
-            writePolySegments(polygon.Extents, parts, allPoints, allPoints.Count);
+            //Write the extents, part count, part index information, and point count
+            writePolygonInformation(polygon.Extents, parts, pointCnt);
+            
+            //Now write the actual point data
+            writePolygonCoordinates(polygon);
         }
-        /*jd: Contains Modifications from Lee Keel www.trimble.com to cope with unclosed polygons  */
+
+        /// <summary>
+        /// write the multipolygon to the shapefilewriter
+        /// </summary>
+        /// <param name="mpoly">multipolygon to be written</param>
         private void writeMultiPolygon(IMultiPolygon mpoly)
         {
+            
             List<Int32> parts = new List<int>();
-            List<ICoordinate> points = new List<ICoordinate>();
             Int32 pointIndex = 0;
+
 
             foreach (IPolygon poly in (mpoly as IEnumerable<IPolygon>))
             {
-                parts.Add(pointIndex);  /* Add point index for exterior ring */
-                pointIndex += poly.ExteriorRing.Coordinates.Count;  /* increment point position by number of points in exterior ring */
-                points.AddRange((IEnumerable<ICoordinate>)poly.ExteriorRing.Coordinates);     /* Add points for exterior ring */
+                /* need to account for cases where the polygon shell is not closed. */
+                if (!poly.ExteriorRing.Coordinates[0].Equals(poly.ExteriorRing.Coordinates[poly.ExteriorRing.Coordinates.Count - 1]))
+                    poly.ExteriorRing.Coordinates.Add(poly.ExteriorRing.Coordinates[0]);
 
-                /* need to account for cases where the polygon is not closed. */
-                if (poly.ExteriorRing.Coordinates[0] != poly.ExteriorRing.Coordinates[poly.ExteriorRing.Coordinates.Count - 1])
-                {
-                    //Close ring
-                    pointIndex++;
-                    points.Add(poly.ExteriorRing.Coordinates[0]);
-                }
+                parts.Add(pointIndex);
+                pointIndex += poly.ExteriorRing.Coordinates.Count;
+
                 foreach (ILinearRing ring in poly.InteriorRings)
-                {
-                    parts.Add(pointIndex);  /* Add startint point for this interior ring */
-                    pointIndex += ring.Coordinates.Count;               /* increment point position by number of points in exterior ring */
-                    points.AddRange((IEnumerable<ICoordinate>)ring.Coordinates);     /* Add points for exterior ring */
-
+                {                    
                     /* need to account for cases where the polygon is not closed. */
-                    if (ring.Coordinates[0] != ring.Coordinates[ring.Coordinates.Count - 1])
-                    {
-                        //Close ring
-                        pointIndex++;
-                        points.Add(ring.Coordinates[0]);
-                    }
-                }
+                    if (!ring.Coordinates[0].Equals(ring.Coordinates[ring.Coordinates.Count - 1]))
+                        ring.Coordinates.Add(ring.Coordinates[0]);
 
+                    parts.Add(pointIndex);
+                    pointIndex += ring.Coordinates.Count;
+                }
             }
 
-            _shapeFileWriter.Write(ByteEncoder.GetLittleEndian((Int32)ShapeType.Polygon));
-            writePolySegments(mpoly.Extents, parts.ToArray(), points, points.Count);
+            //Write the extents, part count, part index information, and point count
+            writePolygonInformation(mpoly.Extents, parts.ToArray(), pointIndex);
 
+            //Now write the actual point data
+            foreach (IPolygon poly in (mpoly as IEnumerable<IPolygon>))
+                writePolygonCoordinates(poly);
         }
 
+        /// <summary>
+        /// write the coordinates of a polygon to the shapefilewriter
+        /// </summary>
+        /// <param name="polygon">polygon who's coordinates are to be written out</param>
+        private void writePolygonCoordinates(IPolygon polygon)
+        {
+            foreach (ICoordinate point in polygon.ExteriorRing.Coordinates)
+                writeCoordinate(point[Ordinates.X], point[Ordinates.Y]);
+
+            foreach (ILinearRing hole in polygon.InteriorRings)
+            {
+                if (hole.IsCcw)
+                {
+                    foreach (ICoordinate point in hole.Coordinates)
+                        writeCoordinate(point[Ordinates.X], point[Ordinates.Y]);
+                }
+                else
+                {                    
+                    ICoordinate pt = null;
+                    for (Int32 i = hole.Coordinates.Count - 1; i >= 0; i--)
+                    {
+                        pt = hole.Coordinates[i];
+                        writeCoordinate(pt[Ordinates.X], pt[Ordinates.Y]);
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Write the given information to the shapefilewriter
+        /// </summary>
+        /// <param name="extents">extents to be written</param>
+        /// <param name="parts">array of point indexes where the parts are to start</param>
+        /// <param name="pointCnt">total point count</param>
+        private void writePolygonInformation(IExtents extents, int[] parts, int pointCnt)
+        {
+            writeBoundingBox(extents);
+            _shapeFileWriter.Write(ByteEncoder.GetLittleEndian(parts.Length));
+            _shapeFileWriter.Write(ByteEncoder.GetLittleEndian(pointCnt));
+
+            foreach (Int32 partIndex in parts)
+            {
+                _shapeFileWriter.Write(ByteEncoder.GetLittleEndian(partIndex));
+            }
+        }
         #endregion
 
         #region IWritableFeatureProvider Members

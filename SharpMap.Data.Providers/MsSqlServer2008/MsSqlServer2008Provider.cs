@@ -374,7 +374,7 @@ END
 ",
                 ndxName, QualifiedTableName);
 
-            sb.AppendFormat(
+            sb.AppendFormat(System.Globalization.CultureInfo.InvariantCulture,
                 @"CREATE SPATIAL INDEX {0}
    ON {2}({1})
    USING GEOMETRY_GRID
@@ -488,7 +488,7 @@ END
 
             Action<string, int, string> dlgtCreate = delegate(string colName, int coordIndex, string selector)
                                                          {
-                                                             sb.AppendFormat(
+                                                             sb.AppendFormat(System.Globalization.CultureInfo.InvariantCulture,
                                                                  @"
      [{0}] AS {1}.STEnvelope().STPointN({2}).{3} PERSISTED
 ",
