@@ -568,5 +568,10 @@ LIMIT {5};",
         }
 
         #endregion
+
+        protected override void ReadSpatialReference(out GeoAPI.CoordinateSystems.ICoordinateSystem cs, out string srid)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

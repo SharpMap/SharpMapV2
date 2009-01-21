@@ -17,8 +17,10 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
+using System.Globalization;
 using System.Text;
 using GeoAPI.Coordinates;
+using GeoAPI.CoordinateSystems;
 using GeoAPI.DataStructures;
 using GeoAPI.Geometries;
 using SharpMap.Data.Providers.Db;
@@ -26,15 +28,14 @@ using SharpMap.Data.Providers.Db.Expressions;
 using SharpMap.Data.Providers.MsSqlServer2008;
 using SharpMap.Data.Providers.MsSqlServer2008.Expressions;
 using SharpMap.Expressions;
+using SharpMap.Utilities.SridUtility;
+
 #if DOTNET35
 using Processor = System.Linq.Enumerable;
 using Enumerable = System.Linq.Enumerable;
 using Caster = System.Linq.Enumerable;
 #else
-using SharpMap.Utilities.SridUtility;
-using Processor = GeoAPI.DataStructures.Processor;
-using Caster = GeoAPI.DataStructures.Caster;
-using Enumerable = GeoAPI.DataStructures.Enumerable;
+
 #endif
 
 namespace SharpMap.Data.Providers
@@ -60,7 +61,6 @@ namespace SharpMap.Data.Providers
     public class MsSqlServer2008Provider<TOid>
         : SpatialDbProviderBase<TOid>
     {
-
         public MsSqlServer2008Provider(IGeometryFactory geometryFactory,
                                        String connectionString,
                                        String tableName)
@@ -82,7 +82,6 @@ namespace SharpMap.Data.Providers
                    oidColumn,
                    geometryColumn)
         {
-
         }
 
         public override String GeometryColumnConversionFormatString
@@ -331,11 +330,15 @@ WHERE rownumber BETWEEN {9} AND {10} ",
 
         public void RebuildSpatialIndex()
         {
-            RebuildSpatialIndex(SqlServer2008SpatialIndexGridDensity.Low, SqlServer2008SpatialIndexGridDensity.Low, SqlServer2008SpatialIndexGridDensity.Medium,
+            RebuildSpatialIndex(SqlServer2008SpatialIndexGridDensity.Low, SqlServer2008SpatialIndexGridDensity.Low,
+                                SqlServer2008SpatialIndexGridDensity.Medium,
                                 SqlServer2008SpatialIndexGridDensity.High);
         }
 
-        public void RebuildSpatialIndex(SqlServer2008SpatialIndexGridDensity level1, SqlServer2008SpatialIndexGridDensity level2, SqlServer2008SpatialIndexGridDensity level3, SqlServer2008SpatialIndexGridDensity level4)
+        public void RebuildSpatialIndex(SqlServer2008SpatialIndexGridDensity level1,
+                                        SqlServer2008SpatialIndexGridDensity level2,
+                                        SqlServer2008SpatialIndexGridDensity level3,
+                                        SqlServer2008SpatialIndexGridDensity level4)
         {
             using (IDbConnection conn = DbUtility.CreateConnection(ConnectionString))
             {
@@ -344,7 +347,10 @@ WHERE rownumber BETWEEN {9} AND {10} ",
             }
         }
 
-        protected internal void RebuildSpatialIndex(IDbConnection conn, SqlServer2008SpatialIndexGridDensity level1, SqlServer2008SpatialIndexGridDensity level2, SqlServer2008SpatialIndexGridDensity level3, SqlServer2008SpatialIndexGridDensity level4)
+        protected internal void RebuildSpatialIndex(IDbConnection conn, SqlServer2008SpatialIndexGridDensity level1,
+                                                    SqlServer2008SpatialIndexGridDensity level2,
+                                                    SqlServer2008SpatialIndexGridDensity level3,
+                                                    SqlServer2008SpatialIndexGridDensity level4)
         {
             Func<SqlServer2008SpatialIndexGridDensity, string> dlgtName =
                 delegate(SqlServer2008SpatialIndexGridDensity o)
@@ -360,9 +366,9 @@ WHERE rownumber BETWEEN {9} AND {10} ",
                     }
                 };
 
-            IExtents2D ext = GetExtents() as IExtents2D;
+            var ext = GetExtents() as IExtents2D;
 
-            StringBuilder sb = new StringBuilder();
+            var sb = new StringBuilder();
 
             string ndxName = string.Format("[sidx_{0}_{1}]", Table, GeometryColumn);
 
@@ -374,17 +380,18 @@ END
 ",
                 ndxName, QualifiedTableName);
 
-            sb.AppendFormat(System.Globalization.CultureInfo.InvariantCulture,
-                @"CREATE SPATIAL INDEX {0}
+            sb.AppendFormat(CultureInfo.InvariantCulture,
+                            @"CREATE SPATIAL INDEX {0}
    ON {2}({1})
    USING GEOMETRY_GRID
    WITH (
     BOUNDING_BOX = ( xmin={3}, ymin={4}, xmax={5}, ymax={6} ),
     GRIDS = ({7}, {8}, {9}, {10}));
 ",
-                ndxName, GeometryColumn, QualifiedTableName, ext.Min[Ordinates.X], ext.Min[Ordinates.Y],
-                ext.Max[Ordinates.X], ext.Max[Ordinates.Y], dlgtName(level1), dlgtName(level2), dlgtName(level3),
-                dlgtName(level4));
+                            ndxName, GeometryColumn, QualifiedTableName, ext.Min[Ordinates.X], ext.Min[Ordinates.Y],
+                            ext.Max[Ordinates.X], ext.Max[Ordinates.Y], dlgtName(level1), dlgtName(level2),
+                            dlgtName(level3),
+                            dlgtName(level4));
 
             using (IDbCommand cmd = conn.CreateCommand())
             {
@@ -421,7 +428,7 @@ END
 
         protected internal void CreateIndex(IDbConnection conn, string indexName, IEnumerable<string> columnNames)
         {
-            StringBuilder sb = new StringBuilder();
+            var sb = new StringBuilder();
             sb.AppendFormat(
                 @"IF EXISTS (SELECT * FROM sys.indexes WHERE name = '{0}' and object_id = object_id('{1}'))
 BEGIN
@@ -441,8 +448,6 @@ END
                 cmd.CommandType = CommandType.Text;
                 cmd.ExecuteNonQuery();
             }
-
-
         }
 
         public void CreateEnvelopeColumns()
@@ -460,11 +465,11 @@ END
         protected internal void CreateEnvelopeColumns(IDbConnection conn)
         {
             string minX = string.Format("{0}_Envelope_MinX", GeometryColumn),
-                minY = string.Format("{0}_Envelope_MinY", GeometryColumn),
-                maxX = string.Format("{0}_Envelope_MaxX", GeometryColumn),
-                maxY = string.Format("{0}_Envelope_MaxY", GeometryColumn);
+                   minY = string.Format("{0}_Envelope_MinY", GeometryColumn),
+                   maxX = string.Format("{0}_Envelope_MaxX", GeometryColumn),
+                   maxY = string.Format("{0}_Envelope_MaxY", GeometryColumn);
 
-            StringBuilder sb = new StringBuilder();
+            var sb = new StringBuilder();
 
             Action<string> dlgtDrop = delegate(string colName)
                                           {
@@ -488,13 +493,13 @@ END
 
             Action<string, int, string> dlgtCreate = delegate(string colName, int coordIndex, string selector)
                                                          {
-                                                             sb.AppendFormat(System.Globalization.CultureInfo.InvariantCulture,
-                                                                 @"
+                                                             sb.AppendFormat(CultureInfo.InvariantCulture,
+                                                                             @"
      [{0}] AS {1}.STEnvelope().STPointN({2}).{3} PERSISTED
 ",
-                                                                 colName,
-                                                                 GeometryColumn, coordIndex,
-                                                                 selector);
+                                                                             colName,
+                                                                             GeometryColumn, coordIndex,
+                                                                             selector);
                                                          };
 
             dlgtCreate(minX, 1, "STX");
@@ -504,8 +509,6 @@ END
             dlgtCreate(maxX, 3, "STX");
             sb.AppendLine(",");
             dlgtCreate(maxY, 3, "STY");
-
-
 
 
             using (IDbCommand cmd = conn.CreateCommand())
@@ -526,6 +529,42 @@ END
                                                            string schema, string tableName, FeatureDataTable model)
         {
             return CreateTableHelper.Create<TOid>(connectionString, geometryFactory, schema, tableName, model);
+        }
+        /// <remarks> This is probably going to be slow - we could select top 1 instead of distinct or perhaps we should enforce a schema OGC style where we can look up in one place </remarks> 
+        protected override void ReadSpatialReference(out ICoordinateSystem cs, out string srid)
+        {
+            using (IDbConnection conn = DbUtility.CreateConnection(ConnectionString))
+            {
+                using (IDbCommand cmd = DbUtility.CreateCommand())
+                {
+                    cmd.Connection = conn;
+                    cmd.CommandType = CommandType.Text;
+                    cmd.CommandText =
+                        string.Format("SELECT DISTINCT [{0}].STSrid FROM [{1}].[{2}] ", GeometryColumn, TableSchema, Table);
+
+                    conn.Open();
+                    using (IDataReader reader = cmd.ExecuteReader(CommandBehavior.CloseConnection))
+                    {
+                        while (reader.Read())
+                        {
+                            if (reader.RecordsAffected > 1)
+                                throw new Exception(
+                                    string.Format(
+                                        "The Sql Server Table [{0}].[{1}] contains geometries in multiple Srids.",
+                                        TableSchema, Table));
+
+                            int isrid = reader.GetInt32(0);
+                            cs = SridMap.DefaultInstance.Process(isrid, default(ICoordinateSystem));
+                            srid = !Equals(cs, default(ICoordinateSystem)) ? SridMap.DefaultInstance.Process(cs, "") : "";
+
+                            return;
+                        }
+                    }
+
+                }
+            }
+            cs = default(ICoordinateSystem);
+            srid = "";
         }
 
         #region Nested type: SchemaTableBuildException
@@ -699,10 +738,10 @@ END
                 string oidColumn, geometryColumn;
                 CreateDatabaseObjects(conn, schema, tableName, model, out oidColumn, out geometryColumn);
 
-                MsSqlServer2008Provider<TOid> prov = new MsSqlServer2008Provider<TOid>(geometryFactory,
-                                                                                       connectionString, schema,
-                                                                                       tableName, oidColumn,
-                                                                                       geometryColumn);
+                var prov = new MsSqlServer2008Provider<TOid>(geometryFactory,
+                                                             connectionString, schema,
+                                                             tableName, oidColumn,
+                                                             geometryColumn);
 
 
                 //    tran.Commit();
@@ -721,13 +760,12 @@ END
                                                    FeatureDataTable model, out string oidColumn,
                                                    out string geometryColumn)
         {
-            SqlServerDbUtility util = new SqlServerDbUtility();
+            var util = new SqlServerDbUtility();
             string oidCol = model.PrimaryKey[0].ColumnName, geomCol = "Geom";
-            StringBuilder sb = new StringBuilder();
+            var sb = new StringBuilder();
             sb.AppendFormat("CREATE TABLE  [{0}].[{1}] (", schema, tableName);
             foreach (DataColumn column in model.Columns)
             {
-
                 sb.AppendFormat("[{0}] {1},\n", column.ColumnName, SqlServerDbUtility.GetFullTypeString(column.DataType));
             }
 

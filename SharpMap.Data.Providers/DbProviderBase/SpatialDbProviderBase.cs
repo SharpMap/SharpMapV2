@@ -26,6 +26,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Diagnostics;
 using System.Globalization;
+using GeoAPI.CoordinateSystems;
 using GeoAPI.Geometries;
 using SharpMap.Data.Providers.Db.Expressions;
 using SharpMap.Expressions;
@@ -43,7 +44,7 @@ using Enumerable = GeoAPI.DataStructures.Enumerable;
 namespace SharpMap.Data.Providers.Db
 {
     public abstract class SpatialDbProviderBase<TOid>
-        : ProviderBase, IWritableFeatureProvider<TOid>, ISpatialDbProvider
+        : FeatureProviderBase, IWritableFeatureProvider<TOid>, ISpatialDbProvider
     {
         private readonly int? _geometryFactorySridInt;
         protected int? SridInt
@@ -75,7 +76,7 @@ namespace SharpMap.Data.Providers.Db
                                         String geometryColumn)
         {
             DbUtility = dbUtility;
-            GeometryFactory = geometryFactory;
+            GeometryFactory = geometryFactory.Clone();
             OriginalSpatialReference = GeometryFactory.SpatialReference;
             OriginalSrid = GeometryFactory.Srid;
 
@@ -106,7 +107,19 @@ namespace SharpMap.Data.Providers.Db
             {
                 Table = tableName;
             }
+
+            ICoordinateSystem cs;
+            string srid;
+
+            ReadSpatialReference(out cs, out srid);
+
+            OriginalSpatialReference = cs;
+            OriginalSrid = srid;
+            GeometryFactory.SpatialReference = SpatialReference;
+            GeometryFactory.Srid = Srid;
         }
+
+        protected abstract void ReadSpatialReference(out ICoordinateSystem cs, out string srid);
 
         /// <summary>
         /// Gets a <see cref="PropertyDescriptor"/> for 
@@ -454,26 +467,24 @@ namespace SharpMap.Data.Providers.Db
             table.Merge(dt);
         }
 
-        public FeatureDataTable CreateNewTable()
+        public override FeatureDataTable CreateNewTable()
         {
             var tbl = new FeatureDataTable<TOid>(OidColumn, GeometryFactory);
             SetTableSchema(tbl, SchemaMergeAction.AddAll | SchemaMergeAction.Key);
             return tbl;
         }
 
-        public IFeatureDataReader ExecuteFeatureQuery(FeatureQueryExpression query)
+        protected override IFeatureDataReader InternalExecuteFeatureQuery(FeatureQueryExpression query)
         {
             return ExecuteFeatureQuery(query, FeatureQueryExecutionOptions.FullFeature);
         }
 
-        public IFeatureDataReader ExecuteFeatureQuery(FeatureQueryExpression query, FeatureQueryExecutionOptions options)
+        protected override IFeatureDataReader InternalExecuteFeatureQuery(FeatureQueryExpression query, FeatureQueryExecutionOptions options)
         {
             return ExecuteFeatureDataReader(PrepareSelectCommand(query));
         }
 
-        public IGeometryFactory GeometryFactory { get; set; }
-
-        public Int32 GetFeatureCount()
+        public override Int32 GetFeatureCount()
         {
             var attrs = new AttributesProjectionExpression(new[] { "Count(*)" });
 
@@ -492,18 +503,18 @@ namespace SharpMap.Data.Providers.Db
             }
         }
 
-        public DataTable GetSchemaTable()
+        public override DataTable GetSchemaTable()
         {
             return GetSchemaTable(false);
         }
 
 
-        public CultureInfo Locale
+        public override CultureInfo Locale
         {
             get { return CultureInfo.InvariantCulture; }
         }
 
-        public void SetTableSchema(FeatureDataTable table)
+        public override void SetTableSchema(FeatureDataTable table)
         {
             table.Merge(GetSchemaTable());
         }

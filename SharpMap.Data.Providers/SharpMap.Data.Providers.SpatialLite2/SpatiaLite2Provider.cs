@@ -885,5 +885,10 @@ WHERE type='table' AND NOT( name like 'cache_%' ) AND NOT( name like 'sqlite%' )
         }
 
         #endregion
+
+        protected override void ReadSpatialReference(out GeoAPI.CoordinateSystems.ICoordinateSystem cs, out string srid)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

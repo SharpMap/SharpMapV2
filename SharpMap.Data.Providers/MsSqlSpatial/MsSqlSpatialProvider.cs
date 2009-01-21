@@ -12,24 +12,26 @@
  *  Author: John Diss 2008
  * 
  */
+
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
+using GeoAPI.CoordinateSystems;
+using GeoAPI.DataStructures;
 using GeoAPI.Geometries;
 using SharpMap.Data.Providers.Db;
 using SharpMap.Data.Providers.Db.Expressions;
 using SharpMap.Data.Providers.MsSqlSpatial;
 using SharpMap.Expressions;
+using SharpMap.Utilities.SridUtility;
 
 #if DOTNET35
 using Processor = System.Linq.Enumerable;
 using Enumerable = System.Linq.Enumerable;
 using Caster = System.Linq.Enumerable;
 #else
-using Processor = GeoAPI.DataStructures.Processor;
-using Enumerable = GeoAPI.DataStructures.Enumerable;
-using Caster = GeoAPI.DataStructures.Caster;
+
 #endif
 
 namespace SharpMap.Data.Providers
@@ -89,7 +91,9 @@ namespace SharpMap.Data.Providers
                     string.Format(
                         "SELECT MIN({0}_Envelope_MinX), MIN({0}_Envelope_MinY), MAX({0}_Envelope_MaxX), MAX({0}_Envelope_MaxY) FROM {1}.{2} {3}",
                         GeometryColumn, TableSchema, Table,
-                        GetWithClause(DefaultProviderProperties == null ? null : DefaultProviderProperties.ProviderProperties.Collection));
+                        GetWithClause(DefaultProviderProperties == null
+                                          ? null
+                                          : DefaultProviderProperties.ProviderProperties.Collection));
                 cmd.CommandType = CommandType.Text;
                 conn.Open();
                 using (IDataReader r = cmd.ExecuteReader(CommandBehavior.CloseConnection))
@@ -144,7 +148,9 @@ namespace SharpMap.Data.Providers
                                                                         properties,
                                                                         new CollectionExpression<OrderByExpression>(
                                                                             new OrderByExpression[] { })),
-                                                                    o => "[" + o.PropertyNameExpression.PropertyName + "] " + (o.Direction == SortOrder.Ascending ? "ASC" : "DESC"))));
+                                                                    o =>
+                                                                    "[" + o.PropertyNameExpression.PropertyName + "] " +
+                                                                    (o.Direction == SortOrder.Ascending ? "ASC" : "DESC"))));
 
             string orderByClause = string.IsNullOrEmpty(orderByCols) ? "" : " ORDER BY " + orderByCols;
 
@@ -172,14 +178,16 @@ namespace SharpMap.Data.Providers
         {
             string orderByCols = String.Join(",",
                                              Enumerable.ToArray(
-                                                Processor.Select(
-                                                    GetProviderPropertyValue
-                                                        <OrderByCollectionExpression,
-                                                        CollectionExpression<OrderByExpression>>(
-                                                        properties,
-                                                        new CollectionExpression<OrderByExpression>(
-                                                            new[] { new OrderByExpression(OidColumn), })),
-                                                    o => "[" + o.PropertyNameExpression.PropertyName + "] " + (o.Direction == SortOrder.Ascending ? "ASC" : "DESC"))));
+                                                 Processor.Select(
+                                                     GetProviderPropertyValue
+                                                         <OrderByCollectionExpression,
+                                                         CollectionExpression<OrderByExpression>>(
+                                                         properties,
+                                                         new CollectionExpression<OrderByExpression>(
+                                                             new[] { new OrderByExpression(OidColumn), })),
+                                                     o =>
+                                                     "[" + o.PropertyNameExpression.PropertyName + "] " +
+                                                     (o.Direction == SortOrder.Ascending ? "ASC" : "DESC"))));
 
             orderByCols = string.IsNullOrEmpty(orderByCols) ? OidColumn : orderByCols;
 
@@ -226,10 +234,38 @@ WHERE rownumber BETWEEN {9} AND {10} ",
         }
 
 
-        public static MsSqlSpatialProvider Create(string connectionString, string schema, string tableName, FeatureDataTable model)
+        public static MsSqlSpatialProvider Create(string connectionString, string schema, string tableName,
+                                                  FeatureDataTable model)
         {
             throw new NotImplementedException();
         }
-    }
 
+        protected override void ReadSpatialReference(out ICoordinateSystem cs, out string srid)
+        {
+            using (IDbConnection conn = DbUtility.CreateConnection(ConnectionString))
+            {
+                using (IDbCommand cmd = DbUtility.CreateCommand())
+                {
+                    cmd.Connection = conn;
+                    cmd.CommandType = CommandType.Text;
+                    cmd.CommandText =
+                        "SELECT TOP 1 SRID from ST.GEOMETRY_COLUMNS WHERE F_TABLE_SCHEMA = @pschema and F_TABLE_NAME = @ptablename";
+
+                    cmd.Parameters.Add(DbUtility.CreateParameter("pschema", TableSchema, ParameterDirection.Input));
+                    cmd.Parameters.Add(DbUtility.CreateParameter("ptablename", Table, ParameterDirection.Input));
+                    conn.Open();
+                    object result = cmd.ExecuteScalar();
+                    if (result is int)
+                    {
+                        int isrid = (int)result;
+                        cs = SridMap.DefaultInstance.Process(isrid, (ICoordinateSystem)null);
+                        srid = !Equals(cs, default(ICoordinateSystem)) ? SridMap.DefaultInstance.Process(cs, "") : "";
+                        return;
+                    }
+                }
+            }
+            cs = default(ICoordinateSystem);
+            srid = "";
+        }
+    }
 }
