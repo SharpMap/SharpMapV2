@@ -68,7 +68,7 @@ namespace MapViewer.DataSource
                 string tableName = prts[1];
 
 
-                return new MsSqlSpatialProvider(new GeometryServices()[tbSRID.Text], conn, "ST", schema,
+                return new MsSqlSpatialProvider(new GeometryServices().DefaultGeometryFactory, conn, "ST", schema,
                                                 tableName, "oid", geomColumn);
             }
             return null;

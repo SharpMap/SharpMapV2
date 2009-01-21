@@ -248,6 +248,9 @@
     <EmbeddedResource Include="DataSource\SpatialLite.resx">
       <DependentUpon>SpatialLite.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="DataSource\SqlServer2008.resx">
+      <DependentUpon>SqlServer2008.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="MapViewerForm.resx">
       <DependentUpon>MapViewerForm.cs</DependentUpon>
       <SubType>Designer</SubType>

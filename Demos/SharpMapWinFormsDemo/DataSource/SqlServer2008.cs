@@ -47,7 +47,7 @@ namespace MapViewer.DataSource
             prts = prts[0].Split('.');
             schema = prts[0];
             tableName = prts[1];
-            IGeometryFactory f = new GeometryServices()[tbSRID.Text];
+            IGeometryFactory f = new GeometryServices().DefaultGeometryFactory;
 
             string conn = ServerConnectionString;
             conn += string.Format("initial catalog={0};", cbDataBases.SelectedItem);
