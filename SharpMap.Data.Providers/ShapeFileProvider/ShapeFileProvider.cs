@@ -1232,6 +1232,7 @@ namespace SharpMap.Data.Providers.ShapeFile
                 }
 
                 UInt32 id = _shapeFileIndex.GetNextId();
+                feature[ShapeFileConstants.IdColumnName] = id;
 
                 _shapeFileIndex.AddFeatureToIndex(feature);
 
