@@ -553,11 +553,17 @@ END
                                         "The Sql Server Table [{0}].[{1}] contains geometries in multiple Srids.",
                                         TableSchema, Table));
 
-                            int isrid = reader.GetInt32(0);
-                            cs = SridMap.DefaultInstance.Process(isrid, default(ICoordinateSystem));
-                            srid = !Equals(cs, default(ICoordinateSystem)) ? SridMap.DefaultInstance.Process(cs, "") : "";
+                            object v = reader[0];
+                            if (v is int)
+                            {
+                                int isrid = (int)v;
+                                cs = SridMap.DefaultInstance.Process(isrid, default(ICoordinateSystem));
+                                srid = !Equals(cs, default(ICoordinateSystem))
+                                           ? SridMap.DefaultInstance.Process(cs, "")
+                                           : "";
 
-                            return;
+                                return;
+                            }
                         }
                     }
 
