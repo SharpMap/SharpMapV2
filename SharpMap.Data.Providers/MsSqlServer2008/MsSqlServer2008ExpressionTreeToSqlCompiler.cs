@@ -29,7 +29,7 @@ namespace SharpMap.Data.Providers.MsSqlServer2008
         {
         }
 
-        protected override void WriteSpatialGeometryExpressionSql(StringBuilder builder,
+        protected override void WriteSpatialGeometryExpressionSqlInternal(StringBuilder builder,
                                                                   SpatialOperation op,
                                                                   IGeometry geom)
         {
@@ -60,12 +60,12 @@ namespace SharpMap.Data.Providers.MsSqlServer2008
             return string.Format("ST{0}", Enum.GetName(typeof(SpatialOperation), op));
         }
 
-        protected override void WriteSpatialExtentsExpressionSql(StringBuilder builder,
+        protected override void WriteSpatialExtentsExpressionSqlInternal(StringBuilder builder,
                                                                  SpatialOperation spatialOperation, IExtents ext)
         {
             /// seems faster to test the actual geometry and take advantage of spatial indexing
             /// than to test the envelope without spatial indexing.
-            WriteSpatialGeometryExpressionSql(builder, spatialOperation, ext.ToGeometry());
+            WriteSpatialGeometryExpressionSqlInternal(builder, spatialOperation, ext.ToGeometry());
         }
     }
 }

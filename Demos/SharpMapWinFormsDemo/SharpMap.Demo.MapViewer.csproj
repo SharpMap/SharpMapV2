@@ -250,6 +250,8 @@
     </EmbeddedResource>
     <EmbeddedResource Include="DataSource\SqlServer2008.resx">
       <DependentUpon>SqlServer2008.cs</DependentUpon>
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>SqlServer20081.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="MapViewerForm.resx">
       <DependentUpon>MapViewerForm.cs</DependentUpon>

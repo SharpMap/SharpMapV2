@@ -27,6 +27,7 @@ using System.Data;
 using System.Diagnostics;
 using System.Globalization;
 using GeoAPI.CoordinateSystems;
+using GeoAPI.CoordinateSystems.Transformations;
 using GeoAPI.Geometries;
 using SharpMap.Data.Providers.Db.Expressions;
 using SharpMap.Expressions;
@@ -55,6 +56,8 @@ namespace SharpMap.Data.Providers.Db
             }
         }
 
+        public ICoordinateTransformationFactory CoordinateTransformationFactory { get; set; }
+
         private static readonly Dictionary<TableCacheKey, DataTable> _cachedSchemas =
             new Dictionary<TableCacheKey, DataTable>();
 
@@ -68,12 +71,24 @@ namespace SharpMap.Data.Providers.Db
         }
 
         protected SpatialDbProviderBase(IDbUtility dbUtility,
+                                IGeometryFactory geometryFactory,
+                                String connectionString,
+                                String tableSchema,
+                                String tableName,
+                                String oidColumn,
+                                String geometryColumn)
+            : this(dbUtility, geometryFactory, connectionString, tableSchema, tableName, oidColumn, geometryColumn, null)
+        {
+
+        }
+
+        protected SpatialDbProviderBase(IDbUtility dbUtility,
                                         IGeometryFactory geometryFactory,
                                         String connectionString,
                                         String tableSchema,
                                         String tableName,
                                         String oidColumn,
-                                        String geometryColumn)
+                                        String geometryColumn, ICoordinateTransformationFactory coordinateTransformationFactory)
         {
             DbUtility = dbUtility;
             GeometryFactory = geometryFactory.Clone();
@@ -107,6 +122,8 @@ namespace SharpMap.Data.Providers.Db
             {
                 Table = tableName;
             }
+
+            CoordinateTransformationFactory = coordinateTransformationFactory;
 
             ICoordinateSystem cs;
             string srid;

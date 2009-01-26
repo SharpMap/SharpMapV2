@@ -26,6 +26,7 @@ using System.Collections.Generic;
 using System.Data;
 using GeoAPI.CoordinateSystems.Transformations;
 using GeoAPI.Geometries;
+using SharpMap.Utilities.SridUtility;
 
 namespace SharpMap.Data.Providers.Db
 {
@@ -289,11 +290,28 @@ namespace SharpMap.Data.Providers.Db
                 if (HasGeometry)
                 {
                     if (_currentGeometry == null)
-                        _currentGeometry = _geomFactory.WkbReader.Read((byte[])_internalReader[_geomColumnIndex]);
+                    {
+                        IGeometry geom = _geomFactory.WkbReader.Read((byte[])_internalReader[_geomColumnIndex]);
+
+                        if (CoordinateTransformation == null)
+                            _currentGeometry = geom;
+                        else
+                        {
+                            if (transFactory == null)
+                            {
+                                transFactory = Geometry.Factory.Clone();
+                                transFactory.SpatialReference = CoordinateTransformation.Target;
+                                transFactory.Srid = SridMap.DefaultInstance.Process(transFactory.SpatialReference, "");
+                            }
+                            _currentGeometry = CoordinateTransformation.Transform(geom, transFactory);
+                        }
+                    }
                 }
                 return _currentGeometry;
             }
         }
+
+        private IGeometryFactory transFactory;
 
         public object GetOid()
         {

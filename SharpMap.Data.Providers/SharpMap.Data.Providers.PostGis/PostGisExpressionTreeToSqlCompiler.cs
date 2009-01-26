@@ -46,7 +46,7 @@ namespace SharpMap.Data.Providers.PostGis
         {
         }
 
-        protected override void WriteSpatialGeometryExpressionSql(StringBuilder builder, SpatialOperation op,
+        protected override void WriteSpatialGeometryExpressionSqlInternal(StringBuilder builder, SpatialOperation op,
                                                                   IGeometry geom)
         {
             //int? srid = Provider.ParseSrid(geom.Srid);
@@ -63,11 +63,11 @@ namespace SharpMap.Data.Providers.PostGis
                                              Provider.QualifyColumnName(Provider.GeometryColumn)));
 
                 //builder.Append(" AND");
-                //WriteSpatialExtentsExpressionSql(builder, op, geom.Extents);
+                //WriteSpatialExtentsExpressionSqlInternal(builder, op, geom.Extents);
             }
         }
 
-        protected override void WriteSpatialExtentsExpressionSql(StringBuilder builder,
+        protected override void WriteSpatialExtentsExpressionSqlInternal(StringBuilder builder,
                                                                  SpatialOperation spatialOperation, IExtents ext)
         {
             var exts = (IExtents2D) ext;

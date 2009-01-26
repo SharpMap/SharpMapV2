@@ -102,6 +102,10 @@
     <Compile Include="SqlServerDbUtility.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\NPack\NPack\NPack.csproj">
+      <Project>{B139E1D5-091B-40D2-B7A2-7D7D82E13019}</Project>
+      <Name>NPack</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\SharpMap.Utilities\SharpMap.Utilities.csproj">
       <Project>{011439C1-A53D-4DA1-AF8E-18D9D61121F4}</Project>
       <Name>SharpMap.Utilities</Name>

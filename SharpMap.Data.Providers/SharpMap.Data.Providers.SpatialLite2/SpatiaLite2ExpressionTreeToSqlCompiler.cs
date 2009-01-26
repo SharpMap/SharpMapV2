@@ -66,7 +66,7 @@ namespace SharpMap.Data.Providers.SpatiaLite2
         }
 
 
-        protected override void WriteSpatialGeometryExpressionSql(StringBuilder builder, SpatialOperation op,
+        protected override void WriteSpatialGeometryExpressionSqlInternal(StringBuilder builder, SpatialOperation op,
                                                                   IGeometry geom)
         {
 
@@ -78,12 +78,12 @@ namespace SharpMap.Data.Providers.SpatiaLite2
                   CreateParameter(Provider.GeometryColumn).ParameterName));
 
                 builder.Append(" AND");
-                WriteSpatialExtentsExpressionSql(builder, op, geom.Extents);
+                WriteSpatialExtentsExpressionSqlInternal(builder, op, geom.Extents);
             }
 
         }
 
-        protected override void WriteSpatialExtentsExpressionSql(StringBuilder builder,
+        protected override void WriteSpatialExtentsExpressionSqlInternal(StringBuilder builder,
                                                                  SpatialOperation spatialOperation, IExtents ext)
         {
             IExtents2D exts = (IExtents2D)ext;

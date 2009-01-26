@@ -19,6 +19,8 @@ using System.Data;
 using System.Reflection;
 using System.Reflection.Emit;
 using System.Text;
+using GeoAPI.CoordinateSystems;
+using GeoAPI.CoordinateSystems.Transformations;
 using GeoAPI.Geometries;
 using SharpMap.Expressions;
 #if DOTNET35
@@ -43,6 +45,7 @@ namespace SharpMap.Data.Providers.Db
         private string _sqlParamDeclarations;
         private string _sqlWhereClause;
         private bool built;
+
 
         protected ExpressionTreeToSqlCompilerBase(
             SpatialDbProviderBase<TOid> provider,
@@ -617,10 +620,59 @@ namespace SharpMap.Data.Providers.Db
             }
         }
 
-        protected abstract void WriteSpatialExtentsExpressionSql(StringBuilder builder,
+
+        protected void WriteSpatialExtentsExpressionSql(StringBuilder builder, SpatialOperation spatialOperation, IExtents ext)
+        {
+            WriteSpatialExtentsExpressionSqlInternal(builder, spatialOperation, TransformExtents(ext));
+        }
+
+        private IExtents TransformExtents(IExtents ext)
+        {
+            if (!Provider.SpatialReference.Equals(ext.SpatialReference))
+            {
+                if (Provider.CoordinateTransformationFactory == null)
+                    throw new MissingCoordinateTransformationFactoryException(
+                        "Data requires transformation however no CoordinateTransformationFactory is set");
+
+                ICoordinateTransformation ct =
+                    Provider.CoordinateTransformationFactory.CreateFromCoordinateSystems(Provider.SpatialReference,
+                                                                                         ext.SpatialReference);
+                return ct.Transform(ext, Provider.GeometryFactory);
+            }
+            return ext;
+        }
+
+        private IGeometry TransformGeometry(IGeometry geom)
+        {
+            if (!Provider.SpatialReference.Equals(geom.SpatialReference))
+            {
+                if (Provider.CoordinateTransformationFactory == null)
+                    throw new MissingCoordinateTransformationFactoryException(
+                        "Data requires transformation however no CoordinateTransformationFactory is set");
+
+                ICoordinateTransformation ct =
+                    Provider.CoordinateTransformationFactory.CreateFromCoordinateSystems(Provider.SpatialReference,
+                                                                                         geom.SpatialReference);
+
+                return ct.Transform(geom, Provider.GeometryFactory);
+
+            }
+            return geom;
+        }
+
+        protected abstract void WriteSpatialExtentsExpressionSqlInternal(StringBuilder builder,
                                                                  SpatialOperation spatialOperation, IExtents ext);
 
-        protected abstract void WriteSpatialGeometryExpressionSql(StringBuilder builder, SpatialOperation op,
+
+        protected void WriteSpatialGeometryExpressionSql(StringBuilder builder, SpatialOperation op,
+                                                                  IGeometry geom)
+        {
+            WriteSpatialGeometryExpressionSqlInternal(builder, op, TransformGeometry(geom));
+        }
+
+
+
+        protected abstract void WriteSpatialGeometryExpressionSqlInternal(StringBuilder builder, SpatialOperation op,
                                                                   IGeometry geom);
 
         #region Nested type: NullValue
@@ -630,5 +682,14 @@ namespace SharpMap.Data.Providers.Db
         }
 
         #endregion
+    }
+
+    public class MissingCoordinateTransformationFactoryException : Exception
+    {
+        public MissingCoordinateTransformationFactoryException(string s)
+            : base(s)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

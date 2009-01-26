@@ -44,7 +44,7 @@ namespace SharpMap.Data.Providers
         {
         }
 
-        protected override void WriteSpatialGeometryExpressionSql(StringBuilder builder, SpatialOperation op,
+        protected override void WriteSpatialGeometryExpressionSqlInternal(StringBuilder builder, SpatialOperation op,
                                                                   IGeometry geom)
         {
             if (op != SpatialOperation.None)
@@ -66,7 +66,7 @@ namespace SharpMap.Data.Providers
             }
         }
 
-        protected override void WriteSpatialExtentsExpressionSql(StringBuilder builder,
+        protected override void WriteSpatialExtentsExpressionSqlInternal(StringBuilder builder,
                                                                  SpatialOperation spatialOperation, IExtents ext)
         {
             //IExtents2D exts = (IExtents2D)ext;

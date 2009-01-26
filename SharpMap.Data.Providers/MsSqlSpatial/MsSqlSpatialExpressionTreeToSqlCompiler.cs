@@ -52,12 +52,12 @@ namespace SharpMap.Data.Providers.MsSqlSpatial
         /// We are going to create an inner join using a TVF which doesn't require the input geometry to be parsed for each row.
         /// Much Much Much faster than the alternative...
         /// </remarks>
-        protected override void WriteSpatialGeometryExpressionSql(StringBuilder builder, SpatialOperation op,
+        protected override void WriteSpatialGeometryExpressionSqlInternal(StringBuilder builder, SpatialOperation op,
                                                                   IGeometry geom)
         {
             if (geom.IsRectangle)
             {
-                WriteSpatialExtentsExpressionSql(builder, op, geom.Extents);
+                WriteSpatialExtentsExpressionSqlInternal(builder, op, geom.Extents);
                 return;
             }
 
@@ -83,7 +83,7 @@ namespace SharpMap.Data.Providers.MsSqlSpatial
             TableJoinStrings.Add(join);
         }
 
-        protected override void WriteSpatialExtentsExpressionSql(StringBuilder builder,
+        protected override void WriteSpatialExtentsExpressionSqlInternal(StringBuilder builder,
                                                                  SpatialOperation spatialOperation, IExtents ext)
         {
             var exts = (IExtents2D)ext;
