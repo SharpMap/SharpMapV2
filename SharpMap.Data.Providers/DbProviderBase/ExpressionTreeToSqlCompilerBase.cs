@@ -635,8 +635,7 @@ namespace SharpMap.Data.Providers.Db
                         "Data requires transformation however no CoordinateTransformationFactory is set");
 
                 ICoordinateTransformation ct =
-                    Provider.CoordinateTransformationFactory.CreateFromCoordinateSystems(Provider.SpatialReference,
-                                                                                         ext.SpatialReference);
+                    Provider.CoordinateTransformationFactory.CreateFromCoordinateSystems(ext.SpatialReference, Provider.OriginalSpatialReference);
                 return ct.Transform(ext, Provider.GeometryFactory);
             }
             return ext;
@@ -651,8 +650,7 @@ namespace SharpMap.Data.Providers.Db
                         "Data requires transformation however no CoordinateTransformationFactory is set");
 
                 ICoordinateTransformation ct =
-                    Provider.CoordinateTransformationFactory.CreateFromCoordinateSystems(Provider.SpatialReference,
-                                                                                         geom.SpatialReference);
+                    Provider.CoordinateTransformationFactory.CreateFromCoordinateSystems(geom.SpatialReference, Provider.OriginalSpatialReference);
 
                 return ct.Transform(geom, Provider.GeometryFactory);
 
