@@ -486,7 +486,17 @@ namespace SharpMap.Data.Providers.Db
 
         public override FeatureDataTable CreateNewTable()
         {
-            var tbl = new FeatureDataTable<TOid>(OidColumn, GeometryFactory);
+            IGeometryFactory fact;
+            if (CoordinateTransformation == null)
+                fact = GeometryFactory;
+            else
+            {
+                fact = GeometryFactory.Clone();
+                fact.SpatialReference = CoordinateTransformation.Target;
+                fact.Srid = SridMap.DefaultInstance.Process(fact.SpatialReference, "");
+            }
+
+            var tbl = new FeatureDataTable<TOid>(OidColumn, fact);
             SetTableSchema(tbl, SchemaMergeAction.AddAll | SchemaMergeAction.Key);
             return tbl;
         }
