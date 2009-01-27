@@ -94,7 +94,11 @@ namespace SharpMap.Demo.FormatConverter
                 if (IsClrImage(f.Name))
                 {
                     AssemblyName name = AssemblyName.GetAssemblyName(f.Name);
-                    AppDomain.CurrentDomain.Load(name);
+                    try
+                    {
+                        AppDomain.CurrentDomain.Load(name);
+                    }
+                    catch { }
                 }
             }
 
@@ -102,7 +106,7 @@ namespace SharpMap.Demo.FormatConverter
             foreach (Assembly asm in AppDomain.CurrentDomain.GetAssemblies())
             {
                 ///search for 'plugins' these are types decorated with certain attributes
-                foreach (Type t in asm.GetTypes())
+                foreach (Type t in  asm.GetExportedTypes())
                 {
                     object[] attrs = t.GetCustomAttributes(typeof(ConfigureProviderAttribute), true);
                     if (attrs.Length == 1)
@@ -275,9 +279,9 @@ namespace SharpMap.Demo.FormatConverter
                             }
                         }
 
-                        if ( features.Count > 0 )
+                        if (features.Count > 0)
                             ptarget.Insert(features);
-                        
+
                         count += features.Count;
 
                         features = null;

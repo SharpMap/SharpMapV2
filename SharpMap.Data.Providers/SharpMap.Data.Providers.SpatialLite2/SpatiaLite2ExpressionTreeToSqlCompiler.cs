@@ -46,7 +46,7 @@ namespace SharpMap.Data.Providers.SpatiaLite2
         : ExpressionTreeToSqlCompilerBase<long>
     {
 
-        private SpatiaLite2IndexType _spatialIndexType;
+        private readonly SpatiaLite2IndexType _spatialIndexType;
 
         public SpatiaLite2ExpressionTreeToSqlCompiler(SpatialDbProviderBase<long> provider,
                                                        Expression query,
