@@ -42,6 +42,48 @@ namespace SharpMap.Demo.FormatConverter
         private static readonly IGeometryServices _geometryServices;
         private bool firstRun = true;
 
+        /* 
+         * http://groups.google.de/group/microsoft.public.de.german.entwickler.dotnet.framework/msg/1af0719168e45e84?dmode=source
+         * 
+         * Thomas Scheidegger - MVP .NET - 'NETMaster'
+         * http://www.cetus-links.org/oo_dotnet.html - http://dnetmaster.net/
+         * use at your own risk
+         */
+        private static bool IsClrImage(string fileName)
+        {
+            FileStream fs = null;
+            try
+            {
+                fs = new FileStream(fileName, FileMode.Open, FileAccess.Read, FileShare.Read);
+                byte[] dat = new byte[300];
+                fs.Read(dat, 0, 128);
+                if ((dat[0] != 0x4d) || (dat[1] != 0x5a)) // "MZ" DOS header
+                    return false;
+
+                int lfanew = BitConverter.ToInt32(dat, 0x3c);
+                fs.Seek(lfanew, SeekOrigin.Begin);
+                fs.Read(dat, 0, 24); // read signature & PE file header
+                if ((dat[0] != 0x50) || (dat[1] != 0x45)) // "PE" signature
+                    return false;
+
+                fs.Read(dat, 0, 96 + 128); // read PE optional header
+                if ((dat[0] != 0x0b) || (dat[1] != 0x01)) // magic
+                    return false;
+
+                int clihd = BitConverter.ToInt32(dat, 208); // get IMAGE_COR20_HEADER rva-address
+                return clihd != 0;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+            finally
+            {
+                if (fs != null)
+                    fs.Close();
+            }
+        }
+
         static Converter()
         {
             _geometryServices = new GeometryServices();
@@ -49,8 +91,11 @@ namespace SharpMap.Demo.FormatConverter
             ///ensure all the assemblies which may contain 'plugins' are loaded
             foreach (FileInfo f in new DirectoryInfo(Environment.CurrentDirectory).GetFiles("*.dll"))
             {
-                AssemblyName name = AssemblyName.GetAssemblyName(f.Name);
-                AppDomain.CurrentDomain.Load(name);
+                if (IsClrImage(f.Name))
+                {
+                    AssemblyName name = AssemblyName.GetAssemblyName(f.Name);
+                    AppDomain.CurrentDomain.Load(name);
+                }
             }
 
 
@@ -199,7 +244,7 @@ namespace SharpMap.Demo.FormatConverter
                         GetTypeParamsOfBaseClass(fdt.GetType(), typeof(FeatureDataTable<>))[0];
 
                     using (IWritableFeatureProvider ptarget =
-                         ctarget.ConstructTargetProvider(oidType, psource.GeometryFactory,
+                         ctarget.ConstructTargetProvider(oidType, fdt.GeometryFactory,
                                                                    _geometryServices.CoordinateSystemFactory,
                                                                    fdt))
                     {
@@ -211,6 +256,7 @@ namespace SharpMap.Demo.FormatConverter
                                                        * so we need to make sure we can coerce OID values  */
 
                         Console.WriteLine("Beginning Import.");
+                        List<FeatureDataRow> features = new List<FeatureDataRow>();
                         int count = 0;
                         foreach (IFeatureDataRecord fdr in sourceRecords)
                         {
@@ -219,10 +265,22 @@ namespace SharpMap.Demo.FormatConverter
                                          GetTypeParamsOfBaseClass(ptarget.CreateNewTable().GetType(),
                                                                   typeof(FeatureDataTable<>))[0], fdr, index);
 
+                            //ptarget.Insert(converter.ConvertRecord(fdr));/* coerce values if necessary */
 
-                            ptarget.Insert(converter.ConvertRecord(fdr));/* coerce values if necessary */
-                            count++;
+                            features.Add(converter.ConvertRecord(fdr));
+                            if (++count % 100 == 0)
+                            {
+                                ptarget.Insert(features);
+                                features.Clear();
+                            }
                         }
+
+                        if ( features.Count > 0 )
+                            ptarget.Insert(features);
+                        
+                        count += features.Count;
+
+                        features = null;
 
                         ptarget.Close();
                         Console.WriteLine(string.Format("{0} records processed", count));

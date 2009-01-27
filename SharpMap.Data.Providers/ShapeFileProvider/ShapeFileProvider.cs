@@ -1241,7 +1241,7 @@ namespace SharpMap.Data.Providers.ShapeFile
                     _spatialIndex.Insert(new IdBounds(id, featureExtents));
                 }
 
-                feature[ShapeFileConstants.IdColumnName] = id;
+                //feature[ShapeFileConstants.IdColumnName] = id;
 
                 Int32 offset = _shapeFileIndex[id].Offset;
                 Int32 length = _shapeFileIndex[id].Length;

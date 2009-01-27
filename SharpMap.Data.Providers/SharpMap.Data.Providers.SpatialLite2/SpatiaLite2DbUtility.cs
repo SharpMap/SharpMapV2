@@ -127,32 +127,30 @@ namespace SharpMap.Data.Providers.SpatiaLite2
 
         public static DbType GetDbType(Type netType)
         {
-            switch (netType.ToString())
-            {
-                case "System.Byte":
-                    return DbType.Int64;
-                case "System.Boolean":
-                    return DbType.Int64;
-                case "System.Single":
-                    return DbType.Double;
-                case "System.Double":
-                    return DbType.Double;
-                case "System.Int16":
-                    return DbType.Int64;
-                case "System.Int32":
-                    return DbType.Int64;
-                case "System.Int64":
-                    return DbType.Int64;
-                case "System.DateTime":
-                    return DbType.DateTime;
-                case "System.Byte[]":
-                    return DbType.Binary;
-                case "System.String":
-                    return DbType.String;
-                default:
-                    throw (new NotSupportedException("Unsupported datatype '" + netType.Name + "' found in datasource"));
-
-            }
+					switch ( netType.FullName )
+					{
+						case "System.Byte":
+						case "System.SByte":
+						case "System.Boolean":
+						case "System.Int16":
+						case "System.Int32":
+						case "System.Int64":
+						case "System.UInt16":
+						case "System.UInt32":
+						case "System.UInt64":
+							return DbType.Int64;
+						case "System.Single":
+						case "System.Double":
+							return DbType.Double;
+						case "System.DateTime":
+							return DbType.DateTime;
+						case "System.Byte[]":
+							return DbType.Binary;
+						case "System.String":
+							return DbType.String;
+						default:
+							throw ( new NotSupportedException( "Unsupported datatype '" + netType.Name + "' found in datasource" ) );
+					}
         }
 
         public String ParameterNameForQueries(String parameterName)
@@ -179,19 +177,18 @@ namespace SharpMap.Data.Providers.SpatiaLite2
             switch (netType.FullName)
             {
                 case "System.Byte":
-                    return "INTEGER";
-                case "System.Boolean":
+								case "System.SByte":
+								case "System.Boolean":
+                case "System.Int16":
+                case "System.Int32":
+                case "System.Int64":
+                case "System.UInt16":
+                case "System.UInt32":
+                case "System.UInt64":
                     return "INTEGER";
                 case "System.Single":
-                    return "REAL";
                 case "System.Double":
                     return "REAL";
-                case "System.Int16":
-                    return "INTEGER";
-                case "System.Int32":
-                    return "INTEGER";
-                case "System.Int64":
-                    return "INTEGER";
                 case "System.DateTime":
                     return "DATETIME";
                 case "System.Byte[]":

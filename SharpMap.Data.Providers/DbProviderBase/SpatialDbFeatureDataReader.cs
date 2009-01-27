@@ -41,6 +41,8 @@ namespace SharpMap.Data.Providers.Db
         private readonly int _oidColumnIndex = -1;
         private readonly Type _oidType;
 
+        private IGeometryFactory _transFactory;
+
         protected internal SpatialDbFeatureDataReader(IGeometryFactory geomFactory, IDataReader internalReader,
                                                       string geometryColumn, string oidColumn)
         {
@@ -297,21 +299,20 @@ namespace SharpMap.Data.Providers.Db
                             _currentGeometry = geom;
                         else
                         {
-                            if (transFactory == null)
+                            if (_transFactory == null)
                             {
-                                transFactory = Geometry.Factory.Clone();
-                                transFactory.SpatialReference = CoordinateTransformation.Target;
-                                transFactory.Srid = SridMap.DefaultInstance.Process(transFactory.SpatialReference, "");
+                                _transFactory = _geomFactory.Clone();
+                                _transFactory.SpatialReference = CoordinateTransformation.Target;
+                                _transFactory.Srid = SridMap.DefaultInstance.Process(_transFactory.SpatialReference, "");
                             }
-                            _currentGeometry = CoordinateTransformation.Transform(geom, transFactory);
+                            _currentGeometry = CoordinateTransformation.Transform(geom, _transFactory);
+                            //_currentGeometry.Centroid = CoordinateTransformation.Transform( geom.Centroid, _transFactory );
                         }
                     }
                 }
                 return _currentGeometry;
             }
         }
-
-        private IGeometryFactory transFactory;
 
         public object GetOid()
         {

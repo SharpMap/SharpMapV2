@@ -96,7 +96,12 @@ namespace ProjNet.CoordinateSystems.Transformations
 
         public override ICoordinateSequence<TCoordinate> Transform(ICoordinateSequence<TCoordinate> points)
         {
-            throw new System.NotImplementedException();
+            ICoordinateSequence<TCoordinate> ret = points.CoordinateSequenceFactory.Create( points.Dimension );
+
+            foreach ( TCoordinate c in points )
+                ret.Add( c );
+
+            return ret;
         }
 
         /// <summary>
@@ -160,7 +165,12 @@ namespace ProjNet.CoordinateSystems.Transformations
 
         public override ICoordinateSequence Transform(ICoordinateSequence points)
         {
-            throw new System.NotImplementedException();
+            ICoordinateSequence ret = points.CoordinateSequenceFactory.Create( points.Dimension );
+
+            foreach (ICoordinate c in points)
+                ret.Add(Transform(c));
+
+            return ret;
         }
 
         public override Boolean IsInverse
