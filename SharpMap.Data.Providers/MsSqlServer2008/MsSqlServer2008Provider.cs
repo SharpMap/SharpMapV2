@@ -530,6 +530,59 @@ END
         {
             return CreateTableHelper.Create<TOid>(connectionString, geometryFactory, schema, tableName, model);
         }
+
+        public static void CreateGeometryColumnsTable(IDbConnection conn, string schema)
+        {
+            CreateTableHelper.CreateGeometryColumnsTable(conn, schema);
+        }
+
+        public void RegisterInGeometryColumnsTable()
+        {
+            using (IDbConnection conn = DbUtility.CreateConnection(ConnectionString))
+            {
+                if (!DatabaseHasGeometryColumnsTable(conn, TableSchema))
+                    CreateGeometryColumnsTable(conn, TableSchema);
+                RegisterInGeometryColumnsTable(conn, DbUtility, TableSchema, Table, GeometryColumn, 2, SridInt.HasValue ? SridInt.Value : 0, "GEOMETRY");
+            }
+        }
+
+        public void DropSridConstraint()
+        {
+            using (IDbConnection conn = DbUtility.CreateConnection(ConnectionString))
+            {
+                DropSridConstraint(conn, TableSchema, Table, GeometryColumn);
+            }
+        }
+
+        public void CreateSridConstraint()
+        {
+            using (IDbConnection conn = DbUtility.CreateConnection(ConnectionString))
+            {
+                CreateSridConstraint(conn, TableSchema, Table, GeometryColumn, SridInt.HasValue ? SridInt.Value : 0);
+            }
+        }
+
+        public static void RegisterInGeometryColumnsTable(IDbConnection conn, IDbUtility dbUtility, string schema, string tableName, string geometryColumn, int coordDimension, int srid, string geometryType)
+        {
+            CreateTableHelper.RegisterInGeometryColumns(conn, dbUtility, schema, tableName, geometryColumn,
+                                                        coordDimension, srid, geometryType);
+        }
+
+        public static void CreateSridConstraint(IDbConnection conn, string schema, string tableName, string geometryColumn, int srid)
+        {
+            CreateTableHelper.CreateSridConstraint(conn, schema, tableName, geometryColumn, srid);
+        }
+
+        public static void DropSridConstraint(IDbConnection conn, string schema, string tableName, string geometryColumn)
+        {
+            CreateTableHelper.DropSridConstraint(conn, schema, tableName, geometryColumn);
+        }
+
+        public static bool DatabaseHasGeometryColumnsTable(IDbConnection conn, string schema)
+        {
+            return CreateTableHelper.CheckIfObjectExists(conn, schema, "Geometry_Columns");
+        }
+
         //TODO: add a set of strategies for reading srid
         protected override void ReadSpatialReference(out ICoordinateSystem cs, out string srid)
         {
@@ -541,14 +594,19 @@ END
                     cmd.CommandType = CommandType.Text;
                     cmd.CommandText =
                         string.Format(@"
-IF EXISTS(select * from sys.objects where object_id = object_id(@p1 + '.Geometry_Columns') AND EXISTS(SELECT * FROM [{1}].[Geometry_Columns] WHERE F_Table_Catalog= @p0 AND F_Table_Schema = @p1 AND F_Table_Name = @p2 AND F_Geometry_Column = @p3))
+DECLARE @found bit 
+set @found = 0; 
+IF EXISTS(select * from sys.objects where object_id = object_id(@p1 + '.Geometry_Columns'))
     BEGIN
-        SELECT DISTINCT SRID FROM [{1}].[Geometry_Columns] WHERE F_Table_Catalog = @p0 AND F_Table_Schema = @p1 AND F_Table_Name = @p2 AND F_Geometry_Column = @p3 
+    IF  EXISTS(SELECT * FROM [{1}].[Geometry_Columns] WHERE F_Table_Catalog = @p0 AND F_Table_Schema = @p1 AND F_Table_Name = @p2 AND F_Geometry_Column = @p3)
+        BEGIN
+            SELECT DISTINCT SRID FROM [{1}].[Geometry_Columns] WHERE F_Table_Catalog = @p0 AND F_Table_Schema = @p1 AND F_Table_Name = @p2 AND F_Geometry_Column = @p3 
+            SET @found = 1
+        END
     END
-ELSE
+IF @found = 0
     BEGIN
         SELECT DISTINCT [{0}].STSrid FROM [{1}].[{2}] 
-
     END", GeometryColumn, TableSchema, Table);
                     cmd.Parameters.Add(DbUtility.CreateParameter("p0", conn.Database, ParameterDirection.Input));
                     cmd.Parameters.Add(DbUtility.CreateParameter("p1", TableSchema, ParameterDirection.Input));
@@ -635,6 +693,7 @@ ELSE 1
 END
 	", schema, objectName);
             cmd.CommandType = CommandType.Text;
+            EnsureOpenConnection(cmd);
             return (int)cmd.ExecuteScalar() == 1;
         }
 
@@ -727,57 +786,14 @@ END
             return true;
         }
 
-        //jd: TODO: create / populate Geometry_Columns Table
-        //jd: TODO: consider adding constraints to Table to ensure only homogenous Srids occur
-
-        //Currently using Geometry_Columns schema below
-
-        /*
-        SET ANSI_NULLS ON
-        GO
-
-        SET QUOTED_IDENTIFIER ON
-        GO
-
-        SET ANSI_PADDING ON
-        GO
-
-        CREATE TABLE [dbo].[Geometry_Columns](
-            [F_Table_Catalog] [varchar](50) NOT NULL,
-            [F_Table_Schema] [varchar](10) NOT NULL,
-            [F_Table_Name] [varchar](50) NOT NULL,
-            [F_Geometry_Column] [varchar](50) NOT NULL,
-            [Coord_Dimension] [int] NOT NULL,
-            [SRID] [int] NOT NULL,
-            [Geometry_Type] [varchar](20) NULL,
-            [DataSourceValid]  AS (case when object_id(([F_Table_Schema]+'.')+[F_Table_Name]) IS NOT NULL then (1) else (0) end),
-         CONSTRAINT [PK_Geometry_Columns] PRIMARY KEY CLUSTERED 
-        (
-            [F_Table_Catalog] ASC,
-            [F_Table_Schema] ASC,
-            [F_Table_Name] ASC,
-            [F_Geometry_Column] ASC
-        )WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
-        ) ON [PRIMARY]
-
-        GO
-
-        SET ANSI_PADDING OFF
-        GO
-
-        ALTER TABLE [dbo].[Geometry_Columns] ADD  CONSTRAINT [DF_Geometry_Columns_Geometry_Type]  DEFAULT ('Geometry') FOR [Geometry_Type]
-        GO
-         */
-
         internal static MsSqlServer2008Provider<TOid> Create<TOid>(string connectionString,
-                                                                   IGeometryFactory geometryFactory,
-                                                                   string schema,
-                                                                   string tableName,
-                                                                   FeatureDataTable model)
+                                                                         IGeometryFactory geometryFactory,
+                                                                         string schema,
+                                                                         string tableName,
+                                                                         FeatureDataTable model)
         {
             using (IDbConnection conn = new SqlServerDbUtility().CreateConnection(connectionString))
             {
-                conn.Open();
                 //using (IDbTransaction tran = conn.BeginTransaction())
                 //{
                 //    try
@@ -839,9 +855,155 @@ END
             IDbCommand cmd = conn.CreateCommand();
             cmd.CommandText = sb.ToString();
 
+            ExecuteNoQuery(cmd);
+        }
+
+
+        internal static void CreateGeometryColumnsTable(IDbConnection conn, string schema)
+        {
+            string sql = string.Format(
+@"CREATE TABLE [{0}].[Geometry_Columns](
+    [F_Table_Catalog] [varchar](50) NOT NULL,
+    [F_Table_Schema] [varchar](10) NOT NULL,
+    [F_Table_Name] [varchar](50) NOT NULL,
+    [F_Geometry_Column] [varchar](50) NOT NULL,
+    [Coord_Dimension] [int] NOT NULL,
+    [SRID] [int] NOT NULL,
+    [Geometry_Type] [varchar](20) NULL,
+    [DataSourceValid]  AS (case when object_id([F_Table_Schema] + '.' + [F_Table_Name]) IS NOT NULL then 1 else 0 end),
+ CONSTRAINT [PK_Geometry_Columns] PRIMARY KEY CLUSTERED 
+(
+    [F_Table_Catalog] ASC,
+    [F_Table_Schema] ASC,
+    [F_Table_Name] ASC,
+    [F_Geometry_Column] ASC
+) ON [PRIMARY]
+) ON [PRIMARY]
+
+
+ALTER TABLE [dbo].[Geometry_Columns] ADD  CONSTRAINT [DF_Geometry_Columns_Geometry_Type]  DEFAULT ('Geometry') FOR [Geometry_Type]
+", schema);
+
+            using (IDbCommand cmd = conn.CreateCommand())
+            {
+                cmd.CommandText = sql;
+                cmd.CommandType = CommandType.Text;
+                ExecuteNoQuery(cmd);
+            }
+        }
+
+        internal static void RegisterInGeometryColumns(IDbConnection conn, IDbUtility dbUtility, string schema, string tableName, string geometryColumnName, int coordDimension, int srid, string geometryType)
+        {
+            string sql = string.Format(
+@"IF EXISTS(SELECT * FROM [{0}].[Geometry_Columns] 
+            WHERE 
+                F_Table_Catalog = @pCatalog 
+                AND  F_Table_Schema = @pSchema 
+                AND F_Table_Name = @pTable 
+                AND F_Geometry_Column = @pGeomColumn)
+	BEGIN
+		UPDATE [{0}].Geometry_Columns 
+			SET 
+				Coord_Dimension = @pCoordDimension,
+				SRID = @pSrid,
+				Geometry_Type = @pGeometryType 
+			WHERE 
+				F_Table_Catalog = @pCatalog 
+				AND F_Table_Schema = @pSchema  
+				AND F_Table_Name = @pTable 
+				AND F_Geometry_Column = @pGeomColumn 
+
+	END
+ELSE
+	BEGIN
+		INSERT INTO [{0}].[Geometry_Columns](
+                        F_Table_Catalog
+                        , F_Table_Schema
+                        , F_Table_Name
+                        , F_Geometry_Column
+                        , Coord_Dimension
+                        , SRID
+                        , Geometry_Type)
+		Values(
+                @pCatalog
+                , @pSchema
+                , @pTable
+                , @pGeomColumn
+                , @pCoordDimension
+                , @pSrid
+                , @pGeometryType)           
+	END",
+                schema);
+
+            using (IDbCommand cmd = conn.CreateCommand())
+            {
+                cmd.CommandText = sql;
+                cmd.CommandType = CommandType.Text;
+
+                cmd.Parameters.Add(dbUtility.CreateParameter("pCatalog", conn.Database, ParameterDirection.Input));
+                cmd.Parameters.Add(dbUtility.CreateParameter("pSchema", schema, ParameterDirection.Input));
+                cmd.Parameters.Add(dbUtility.CreateParameter("pTable", tableName, ParameterDirection.Input));
+                cmd.Parameters.Add(dbUtility.CreateParameter("pGeomColumn", geometryColumnName, ParameterDirection.Input));
+                cmd.Parameters.Add(dbUtility.CreateParameter("pCoordDimension", coordDimension, ParameterDirection.Input));
+                cmd.Parameters.Add(dbUtility.CreateParameter("pSrid", srid, ParameterDirection.Input));
+                cmd.Parameters.Add(dbUtility.CreateParameter("pGeometryType", geometryType, ParameterDirection.Input));
+
+                ExecuteNoQuery(cmd);
+            }
+        }
+
+        internal static void CreateSridConstraint(IDbConnection conn, string schema, string tableName, string geometryColumnName, int srid)
+        {
+            DropSridConstraint(conn, schema, tableName, geometryColumnName);
+
+            string name = string.Format("ck_{0}_{1}_{2}_STSrid", schema, tableName, geometryColumnName);
+
+            string sql = string.Format(
+@"ALTER TABLE [{0}].[{1}] ADD CONSTRAINT {2}
+	CHECK ([{3}].STSrid = {4})", schema, tableName, name, geometryColumnName, srid);
+
+            using (IDbCommand cmd = conn.CreateCommand())
+            {
+                cmd.CommandText = sql;
+                cmd.CommandType = CommandType.Text;
+                ExecuteNoQuery(cmd);
+            }
+
+        }
+
+        internal static void DropSridConstraint(IDbConnection conn, string schema, string tableName, string geometryColumnName)
+        {
+            string name = string.Format("ck_{0}_{1}_{2}_STSrid", schema, tableName, geometryColumnName);
+
+            string sql = string.Format(
+@"IF EXISTS(SELECT * FROM sys.check_constraints where object_id = object_id('{0}'))
+    BEGIN
+        ALTER TABLE [{1}].[{2}]
+        DROP CONSTRAINT [{0}]
+    END", name, schema, tableName);
+
+            using (IDbCommand cmd = conn.CreateCommand())
+            {
+                cmd.CommandText = sql;
+                cmd.CommandType = CommandType.Text;
+                ExecuteNoQuery(cmd);
+            }
+        }
+
+        internal static void ExecuteNoQuery(IDbCommand cmd)
+        {
+            EnsureOpenConnection(cmd);
             cmd.ExecuteNonQuery();
         }
+
+        internal static void EnsureOpenConnection(IDbCommand cmd)
+        {
+            if (cmd.Connection.State == ConnectionState.Closed || cmd.Connection.State == ConnectionState.Broken)
+                cmd.Connection.Open();
+        }
     }
+
+
 
     public class IncompatibleSchemaException : Exception
     {

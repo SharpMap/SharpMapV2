@@ -26,11 +26,12 @@ using SharpMap.Utilities;
 
 namespace SharpMap.Demo.FormatConverter.SqlServer2008
 {
-    [ConfigureProvider(typeof(MsSqlServer2008Provider<>), "Sql Server 2008")]
+    [ConfigureProvider(typeof (MsSqlServer2008Provider<>), "Sql Server 2008")]
     public class ConfigureSqlServer2008Provider : IConfigureFeatureSource, IConfigureFeatureTarget
     {
         private string _oidColumn;
         private IFeatureProvider _sourceProvider;
+        private Type _specializedType;
         private IWritableFeatureProvider _targetProvider;
         private bool disposed;
 
@@ -65,7 +66,7 @@ namespace SharpMap.Demo.FormatConverter.SqlServer2008
                 }
             }
 
-            Type t = typeof(MsSqlServer2008Provider<>);
+            Type t = typeof (MsSqlServer2008Provider<>);
             Type specialized = t.MakeGenericType(type);
 
             _sourceProvider =
@@ -97,24 +98,22 @@ namespace SharpMap.Demo.FormatConverter.SqlServer2008
 
         #region IConfigureFeatureTarget Members
 
-        private Type _specializedType;
-
         public IWritableFeatureProvider ConstructTargetProvider(Type oidType, IGeometryFactory geometryFactory,
                                                                 ICoordinateSystemFactory csFactory,
                                                                 FeatureDataTable schemaTable)
         {
+            if (oidType == typeof (UInt16))
+                oidType = typeof (Int16);
+            else if (oidType == typeof (UInt32))
+                oidType = typeof (Int32);
+            else if (oidType == typeof (UInt64))
+                oidType = typeof (Int64);
 
-            if (oidType == typeof(UInt16))
-                oidType = typeof(Int16);
-            else if (oidType == typeof(UInt32))
-                oidType = typeof(Int32);
-            else if (oidType == typeof(UInt64))
-                oidType = typeof(Int64);
-
-            Type typ = typeof(MsSqlServer2008Provider<>);
+            Type typ = typeof (MsSqlServer2008Provider<>);
             _specializedType = typ.MakeGenericType(oidType);
 
-            Console.WriteLine("Please enter the connection string for the target database server. Remember 'Connection Timeout=0' for large datasets.");
+            Console.WriteLine(
+                "Please enter the connection string for the target database server. Remember 'Connection Timeout=0' for large datasets.");
             string connectionString = Console.ReadLine();
 
             Console.WriteLine("Please enter the schema for the table.");
@@ -123,21 +122,99 @@ namespace SharpMap.Demo.FormatConverter.SqlServer2008
             Console.WriteLine("Please enter the table name.");
             string tableName = Console.ReadLine();
 
-            _targetProvider = (IWritableFeatureProvider)_specializedType.GetMethod(
-                "Create",
-                BindingFlags.Public | BindingFlags.Static,
-                null,
-                CallingConventions.Standard,
-                new[] { typeof(string), typeof(IGeometryFactory), typeof(string), typeof(string), typeof(FeatureDataTable) }, null)
-                .Invoke(null, new object[] { connectionString, geometryFactory, schemaName, tableName, schemaTable });
+            _targetProvider = (IWritableFeatureProvider) _specializedType.GetMethod(
+                                                             "Create",
+                                                             BindingFlags.Public | BindingFlags.Static,
+                                                             null,
+                                                             CallingConventions.Standard,
+                                                             new[]
+                                                                 {
+                                                                     typeof (string), typeof (IGeometryFactory),
+                                                                     typeof (string), typeof (string),
+                                                                     typeof (FeatureDataTable)
+                                                                 }, null)
+                                                             .Invoke(null,
+                                                                     new object[]
+                                                                         {
+                                                                             connectionString, geometryFactory,
+                                                                             schemaName,
+                                                                             tableName, schemaTable
+                                                                         });
 
             _targetProvider.Open();
             return _targetProvider;
         }
 
+        public void PostImport()
+        {
+            try
+            {
+                _specializedType.GetMethod("FixGeometries", BindingFlags.Public | BindingFlags.Instance, null,
+                                           CallingConventions.HasThis, Type.EmptyTypes, null).Invoke(_targetProvider,
+                                                                                                     new object[] {});
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("ERROR: an error occured while attempting to fix geometries. " + ex.Message);
+            }
+
+            try
+            {
+                Console.WriteLine("Create Envelope Columns? Y to create otherwise any other key.");
+                if (string.Compare(Console.ReadLine(), "Y", StringComparison.CurrentCultureIgnoreCase) == 0)
+                    _specializedType.GetMethod("CreateEnvelopeColumns", BindingFlags.Public | BindingFlags.Instance,
+                                               null,
+                                               CallingConventions.HasThis, Type.EmptyTypes, null).Invoke(
+                        _targetProvider, new object[] {});
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("ERROR: an error occured while attempting to create envelope columns. " + ex.Message);
+            }
+
+            try
+            {
+                Console.WriteLine("Creating Spatial Index");
+                _specializedType.GetMethod("RebuildSpatialIndex", BindingFlags.Public | BindingFlags.Instance, null,
+                                           CallingConventions.HasThis, Type.EmptyTypes, null).Invoke(_targetProvider,
+                                                                                                     new object[] {});
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("ERROR: an error occured while attempting to create spatial index. " + ex.Message);
+            }
+
+            try
+            {
+                Console.WriteLine(
+                    "Register in Geometry_Columns Table? Y to register otherwise any other key. (Table will be created if it doesn't exist)");
+                if (string.Compare(Console.ReadLine(), "Y", StringComparison.CurrentCultureIgnoreCase) == 0)
+                    _specializedType.GetMethod("RegisterInGeometryColumnsTable",
+                                               BindingFlags.Public | BindingFlags.Instance, null,
+                                               CallingConventions.HasThis, Type.EmptyTypes, null)
+                        .Invoke(_targetProvider, new object[] {});
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(
+                    "ERROR: an error occured while attempting to register in the geometry columns table. " + ex.Message);
+            }
+
+            try
+            {
+                Console.WriteLine("Add check constraint on Srid? Y to add constraint otherwise any other key.");
+                if (string.Compare(Console.ReadLine(), "Y", StringComparison.CurrentCultureIgnoreCase) == 0)
+                    _specializedType.GetMethod("CreateSridConstraint", BindingFlags.Public | BindingFlags.Instance, null,
+                                               CallingConventions.HasThis, Type.EmptyTypes, null)
+                        .Invoke(_targetProvider, new object[] {});
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("ERROR: an error occured while attempting to add check constraint. " + ex.Message);
+            }
+        }
+
         #endregion
-
-
 
         private void Dispose(bool disposing)
         {
@@ -157,32 +234,5 @@ namespace SharpMap.Demo.FormatConverter.SqlServer2008
         {
             Dispose(false);
         }
-
-
-
-        #region IConfigureFeatureTarget Members
-
-
-        public void PostImport()
-        {
-
-            _specializedType.GetMethod("FixGeometries", BindingFlags.Public | BindingFlags.Instance, null,
-                                          CallingConventions.HasThis, Type.EmptyTypes, null).Invoke(_targetProvider, new object[] { });
-
-            Console.WriteLine("Create Envelope Columns? Y to create otherwise any other key.");
-            if (string.Compare(Console.ReadLine(), "Y", StringComparison.CurrentCultureIgnoreCase) == 0)
-                _specializedType.GetMethod("CreateEnvelopeColumns", BindingFlags.Public | BindingFlags.Instance, null,
-                                           CallingConventions.HasThis, Type.EmptyTypes, null).Invoke(_targetProvider, new object[] { });
-
-            Console.WriteLine("Creating Spatial Index");
-            _specializedType.GetMethod("RebuildSpatialIndex", BindingFlags.Public | BindingFlags.Instance, null,
-                                CallingConventions.HasThis, Type.EmptyTypes, null).Invoke(_targetProvider, new object[] { });
-
-
-            //jd: TODO: create / populate Geometry_Columns Table
-
-        }
-
-        #endregion
     }
 }
