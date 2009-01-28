@@ -530,7 +530,7 @@ END
         {
             return CreateTableHelper.Create<TOid>(connectionString, geometryFactory, schema, tableName, model);
         }
-        /// <remarks> This is probably going to be slow - we could select top 1 instead of distinct or perhaps we should enforce a schema OGC style where we can look up in one place </remarks> 
+        //TODO: add a set of strategies for reading srid
         protected override void ReadSpatialReference(out ICoordinateSystem cs, out string srid)
         {
             using (IDbConnection conn = DbUtility.CreateConnection(ConnectionString))
@@ -540,7 +540,20 @@ END
                     cmd.Connection = conn;
                     cmd.CommandType = CommandType.Text;
                     cmd.CommandText =
-                        string.Format("SELECT DISTINCT [{0}].STSrid FROM [{1}].[{2}] ", GeometryColumn, TableSchema, Table);
+                        string.Format(@"
+IF EXISTS(select * from sys.objects where object_id = object_id(@p1 + '.Geometry_Columns') AND EXISTS(SELECT * FROM [{1}].[Geometry_Columns] WHERE F_Table_Catalog= @p0 AND F_Table_Schema = @p1 AND F_Table_Name = @p2 AND F_Geometry_Column = @p3))
+    BEGIN
+        SELECT DISTINCT SRID FROM [{1}].[Geometry_Columns] WHERE F_Table_Catalog = @p0 AND F_Table_Schema = @p1 AND F_Table_Name = @p2 AND F_Geometry_Column = @p3 
+    END
+ELSE
+    BEGIN
+        SELECT DISTINCT [{0}].STSrid FROM [{1}].[{2}] 
+
+    END", GeometryColumn, TableSchema, Table);
+                    cmd.Parameters.Add(DbUtility.CreateParameter("p0", conn.Database, ParameterDirection.Input));
+                    cmd.Parameters.Add(DbUtility.CreateParameter("p1", TableSchema, ParameterDirection.Input));
+                    cmd.Parameters.Add(DbUtility.CreateParameter("p2", Table, ParameterDirection.Input));
+                    cmd.Parameters.Add(DbUtility.CreateParameter("p3", GeometryColumn, ParameterDirection.Input));
 
                     conn.Open();
                     using (IDataReader reader = cmd.ExecuteReader(CommandBehavior.CloseConnection))
@@ -714,6 +727,47 @@ END
             return true;
         }
 
+        //jd: TODO: create / populate Geometry_Columns Table
+        //jd: TODO: consider adding constraints to Table to ensure only homogenous Srids occur
+
+        //Currently using Geometry_Columns schema below
+
+        /*
+        SET ANSI_NULLS ON
+        GO
+
+        SET QUOTED_IDENTIFIER ON
+        GO
+
+        SET ANSI_PADDING ON
+        GO
+
+        CREATE TABLE [dbo].[Geometry_Columns](
+            [F_Table_Catalog] [varchar](50) NOT NULL,
+            [F_Table_Schema] [varchar](10) NOT NULL,
+            [F_Table_Name] [varchar](50) NOT NULL,
+            [F_Geometry_Column] [varchar](50) NOT NULL,
+            [Coord_Dimension] [int] NOT NULL,
+            [SRID] [int] NOT NULL,
+            [Geometry_Type] [varchar](20) NULL,
+            [DataSourceValid]  AS (case when object_id(([F_Table_Schema]+'.')+[F_Table_Name]) IS NOT NULL then (1) else (0) end),
+         CONSTRAINT [PK_Geometry_Columns] PRIMARY KEY CLUSTERED 
+        (
+            [F_Table_Catalog] ASC,
+            [F_Table_Schema] ASC,
+            [F_Table_Name] ASC,
+            [F_Geometry_Column] ASC
+        )WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+        ) ON [PRIMARY]
+
+        GO
+
+        SET ANSI_PADDING OFF
+        GO
+
+        ALTER TABLE [dbo].[Geometry_Columns] ADD  CONSTRAINT [DF_Geometry_Columns_Geometry_Type]  DEFAULT ('Geometry') FOR [Geometry_Type]
+        GO
+         */
 
         internal static MsSqlServer2008Provider<TOid> Create<TOid>(string connectionString,
                                                                    IGeometryFactory geometryFactory,

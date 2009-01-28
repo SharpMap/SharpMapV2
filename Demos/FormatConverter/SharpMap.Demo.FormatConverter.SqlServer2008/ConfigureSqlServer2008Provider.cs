@@ -178,6 +178,9 @@ namespace SharpMap.Demo.FormatConverter.SqlServer2008
             _specializedType.GetMethod("RebuildSpatialIndex", BindingFlags.Public | BindingFlags.Instance, null,
                                 CallingConventions.HasThis, Type.EmptyTypes, null).Invoke(_targetProvider, new object[] { });
 
+
+            //jd: TODO: create / populate Geometry_Columns Table
+
         }
 
         #endregion

@@ -253,9 +253,6 @@ namespace SharpMap.Data.Providers.Db
 
         public int GetValues(object[] values)
         {
-            ///TODO: need to remove the GeometryField from the returned array.
-            /// 
-
             int i;
             for (i = 0; i < FieldCount && i < values.Length; i++)
                 values[i] = GetValue(i);
