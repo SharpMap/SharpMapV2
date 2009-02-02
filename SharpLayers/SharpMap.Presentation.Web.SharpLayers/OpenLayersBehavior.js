@@ -101,7 +101,7 @@ SharpMap.Presentation.Web.SharpLayers.InitSync = {
 Sys.WebForms.PageRequestManager.getInstance().add_pageLoaded(SharpMap.Presentation.Web.SharpLayers.InitSync.pageLoadDone);
 Sys.Application.add_load(SharpMap.Presentation.Web.SharpLayers.InitSync.appInitDone);
 
-
+SharpMap.Presentation.Web.SharpLayers.OpenLayersFactory._factories = {};
 SharpMap.Presentation.Web.SharpLayers.OpenLayersFactory.buildParams = function(originalParams) {
     var newParams = {};
     for (var k in originalParams) {
@@ -122,44 +122,35 @@ SharpMap.Presentation.Web.SharpLayers.OpenLayersFactory.buildOpenLayersObject = 
         throw "Invalid build params";
     delete buildParams.typeToBuild;
 
-    switch (typeToBuild) {
-        case "OpenLayers.Bounds":
-            return $olFactory._buildBounds(buildParams);
-        case "OpenLayers.Pixel":
-            return $olFactory._buildPixel(buildParams);
-        case "OpenLayers.Size":
-            return $olFactory._buildSize(buildParams);
-        case "OpenLayers.LonLat":
-            return $olFactory._buildLonLat(buildParams);
-        case "OpenLayers.Strategy.BBOX":
-            return $olFactory._buildBBoxStrategy(buildParams);
-        case "OpenLayers.Format.GeoJSON":
-            return $olFactory._buildGeoJsonFormat(buildParams);
-        default:
-            throw "Unknown Type" + typeToBuild;
-    }
+
+    var dlgt = $olFactory._factories[typeToBuild];
+
+    if (dlgt != null)
+        return dlgt(buildParams);
+    throw "Unknown Type" + typeToBuild;
+
 
 }
 
 
-SharpMap.Presentation.Web.SharpLayers.OpenLayersFactory._buildBounds = function(buildParams) {
+SharpMap.Presentation.Web.SharpLayers.OpenLayersFactory._factories["OpenLayers.Bounds"] = function(buildParams) {
     return new OpenLayers.Bounds(buildParams.left, buildParams.bottom, buildParams.right, buildParams.top);
 }
-SharpMap.Presentation.Web.SharpLayers.OpenLayersFactory._buildSize = function(buildParams) {
+SharpMap.Presentation.Web.SharpLayers.OpenLayersFactory._factories["OpenLayers.Size"] = function(buildParams) {
     return new OpenLayers.Size(buildParams.w, buildParams.h);
 }
-SharpMap.Presentation.Web.SharpLayers.OpenLayersFactory._buildPixel = function(buildParams) {
+SharpMap.Presentation.Web.SharpLayers.OpenLayersFactory._factories["OpenLayers.Pixel"] = function(buildParams) {
     return new OpenLayers.Pixel(buildParams.x, buildParams.y);
 }
-SharpMap.Presentation.Web.SharpLayers.OpenLayersFactory._buildLonLat = function(buildParams) {
+SharpMap.Presentation.Web.SharpLayers.OpenLayersFactory._factories["OpenLayers.LonLat"] = function(buildParams) {
     return new OpenLayers.LonLat(buildParams.lon, buildParams.lat);
 }
 
-SharpMap.Presentation.Web.SharpLayers.OpenLayersFactory._buildBBoxStrategy = function(buildParams) {
+SharpMap.Presentation.Web.SharpLayers.OpenLayersFactory._factories["OpenLayers.Strategy.BBox"] = function(buildParams) {
     return new OpenLayers.Strategy.BBOX(buildParams);
 }
 
-SharpMap.Presentation.Web.SharpLayers.OpenLayersFactory._buildGeoJsonFormat = function(buildParams) {
+SharpMap.Presentation.Web.SharpLayers.OpenLayersFactory._factories["OpenLayers.Format.GeoJson"] = function(buildParams) {
     return new OpenLayers.Format.GeoJSON(buildParams);
 }
 
