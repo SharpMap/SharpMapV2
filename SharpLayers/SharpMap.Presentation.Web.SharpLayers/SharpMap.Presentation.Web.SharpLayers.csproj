@@ -75,7 +75,7 @@
     <None Include="bin\AjaxControlToolkit.DLL" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="OpenLayers\OpenLayers_lf.js" />
+    <EmbeddedResource Include="OpenLayers\OpenLayers_lf.js" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BuilderParamsBase.cs" />
