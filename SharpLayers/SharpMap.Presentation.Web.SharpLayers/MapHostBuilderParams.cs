@@ -23,10 +23,10 @@ namespace SharpMap.Presentation.Web.SharpLayers
     {
         private readonly CollectionBase<DoubleValue> _resolutions = new CollectionBase<DoubleValue>((a, b) => a != b);
 
-        [SharpLayersSerialization(SerializedName = "tileSize",
-            SerializationFlags = SharpLayersSerializationFlags.CreateClientClass),
-         DesignerSerializationVisibility(DesignerSerializationVisibility.Visible),
-         PersistenceMode(PersistenceMode.InnerProperty)]
+        [SharpLayersSerialization(SerializedName = "tileSize"
+            , SerializationFlags = SharpLayersSerializationFlags.CreateClientClass)
+            , DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)
+            , PersistenceMode(PersistenceMode.InnerProperty)]
         public Size TileSize { get; set; }
 
         [SharpLayersSerialization(SerializedName = "projection")]
@@ -35,9 +35,9 @@ namespace SharpMap.Presentation.Web.SharpLayers
         [SharpLayersSerialization(SerializedName = "units")]
         public MapUnits Units { get; set; }
 
-        [SharpLayersSerialization(SerializedName = "resolutions"),
-         DesignerSerializationVisibility(DesignerSerializationVisibility.Visible),
-         PersistenceMode(PersistenceMode.InnerProperty)]
+        [SharpLayersSerialization(SerializedName = "resolutions")
+            , DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)
+            , PersistenceMode(PersistenceMode.InnerProperty)]
         public CollectionBase<DoubleValue> Resolutions
         {
             get { return _resolutions; }
@@ -57,28 +57,29 @@ namespace SharpMap.Presentation.Web.SharpLayers
         public double? MinScale { get; set; }
 
 
-        [SharpLayersSerialization(SerializedName = "maxExtent",
-            SerializationFlags = SharpLayersSerializationFlags.CreateClientClass),
-         DesignerSerializationVisibility(DesignerSerializationVisibility.Visible),
-         PersistenceMode(PersistenceMode.InnerProperty)]
+        [SharpLayersSerialization(SerializedName = "maxExtent"
+            , SerializationFlags = SharpLayersSerializationFlags.CreateClientClass)
+            , DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)
+            , PersistenceMode(PersistenceMode.InnerProperty)]
         public Bounds MaxExtent { get; set; }
 
-        [SharpLayersSerialization(SerializedName = "minExtent",
-            SerializationFlags = SharpLayersSerializationFlags.CreateClientClass),
-         DesignerSerializationVisibility(DesignerSerializationVisibility.Visible),
-         PersistenceMode(PersistenceMode.InnerProperty)]
+        [SharpLayersSerialization(SerializedName = "minExtent"
+            , SerializationFlags = SharpLayersSerializationFlags.CreateClientClass)
+            , DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)
+            , PersistenceMode(PersistenceMode.InnerProperty)]
         public Bounds MinExtent { get; set; }
 
-        [SharpLayersSerialization(SerializedName = "restrictedExtent",
-            SerializationFlags = SharpLayersSerializationFlags.CreateClientClass),
-         DesignerSerializationVisibility(DesignerSerializationVisibility.Visible),
-         PersistenceMode(PersistenceMode.InnerProperty)]
+        [SharpLayersSerialization(SerializedName = "restrictedExtent"
+            , SerializationFlags = SharpLayersSerializationFlags.CreateClientClass)
+            , DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)
+            , PersistenceMode(PersistenceMode.InnerProperty)]
         public Bounds RestrictedExtent { get; set; }
 
         [SharpLayersSerialization(SerializedName = "numZoomLevels")]
         private int? NumZoomLevels { get; set; }
 
-        [SharpLayersSerialization(SerializedName = "theme")]
+        [SharpLayersSerialization(SerializedName = "theme"
+            , SerializationFlags = SharpLayersSerializationFlags.Uri)]
         public string Theme { get; set; }
 
         [SharpLayersSerialization(SerializedName = "fallThrough")]

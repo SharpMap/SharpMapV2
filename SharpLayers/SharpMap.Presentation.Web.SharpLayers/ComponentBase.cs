@@ -111,7 +111,11 @@ namespace SharpMap.Presentation.Web.SharpLayers
             var descriptor = new ScriptComponentDescriptor(ScriptComponentName);
             descriptor.ID = ClientID;
             var serializer = new JavaScriptSerializer();
-            serializer.RegisterConverters(new[] { new BuilderParamsJavascriptConverter(FindControl) });
+            serializer.RegisterConverters(new[] {
+                                                  new BuilderParamsJavascriptConverter(
+                                                      FindControl, 
+                                                      s => Page.ResolveClientUrl(s))
+                                              });
             descriptor.AddScriptProperty("builderParams", serializer.Serialize(BuilderParams));
             return new[] { descriptor };
         }

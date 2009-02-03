@@ -26,10 +26,12 @@ namespace SharpMap.Presentation.Web.SharpLayers
     public class BuilderParamsJavascriptConverter : JavaScriptConverter
     {
         private readonly Func<string, Control> _findControlDelegate;
+        private readonly Func<string, string> _convertUriDelegate;
 
-        public BuilderParamsJavascriptConverter(Func<string, Control> findControlDelegate)
+        public BuilderParamsJavascriptConverter(Func<string, Control> findControlDelegate, Func<string, string> convertUriDelegate)
         {
             _findControlDelegate = findControlDelegate;
+            _convertUriDelegate = convertUriDelegate;
         }
 
         public override IEnumerable<Type> SupportedTypes
@@ -105,6 +107,10 @@ namespace SharpMap.Presentation.Web.SharpLayers
                             dictionary.Add(clientName,
                                            _findControlDelegate(s).ClientID);
                             //note: frustratingly the client script needs to process the $find 
+                        }
+                        else if (SharpLayersSerializationFlags.Uri == (serializationAttribute.SerializationFlags & SharpLayersSerializationFlags.Uri))
+                        {
+                            dictionary.Add(clientName, _convertUriDelegate(s));
                         }
                         else
                         {
