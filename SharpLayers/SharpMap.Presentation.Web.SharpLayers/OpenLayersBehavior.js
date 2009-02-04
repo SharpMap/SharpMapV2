@@ -146,11 +146,11 @@ SharpMap.Presentation.Web.SharpLayers.OpenLayersFactory._factories["OpenLayers.L
     return new OpenLayers.LonLat(buildParams.lon, buildParams.lat);
 }
 
-SharpMap.Presentation.Web.SharpLayers.OpenLayersFactory._factories["OpenLayers.Strategy.BBox"] = function(buildParams) {
+SharpMap.Presentation.Web.SharpLayers.OpenLayersFactory._factories["OpenLayers.Strategy.BBOX"] = function(buildParams) {
     return new OpenLayers.Strategy.BBOX(buildParams);
 }
 
-SharpMap.Presentation.Web.SharpLayers.OpenLayersFactory._factories["OpenLayers.Format.GeoJson"] = function(buildParams) {
+SharpMap.Presentation.Web.SharpLayers.OpenLayersFactory._factories["OpenLayers.Format.GeoJSON"] = function(buildParams) {
     return new OpenLayers.Format.GeoJSON(buildParams);
 }
 
