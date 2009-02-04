@@ -88,6 +88,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="TempAffineFactory.cs" />
     <Compile Include="GeometryServices.cs" />
     <Compile Include="IGeometryServices.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
