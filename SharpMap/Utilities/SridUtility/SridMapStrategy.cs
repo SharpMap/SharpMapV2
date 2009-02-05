@@ -221,12 +221,16 @@ namespace SharpMap.Utilities.SridUtility
                 return false;
             }
 
-            foreach (IKey<long> key in _map.Keys)
+            foreach (IKey key in _map.Keys)
             {
-                if (key.Code == (long)input)
+                if (key is IKey<long>)
                 {
-                    output = _map[key];
-                    return true;
+                    IKey<long> longKey = key as IKey<long>;
+                    if (longKey.Code == (long)input)
+                    {
+                        output = _map[longKey];
+                        return true;
+                    }
                 }
             }
             output = null;

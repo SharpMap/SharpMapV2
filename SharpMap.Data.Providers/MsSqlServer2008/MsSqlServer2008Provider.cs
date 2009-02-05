@@ -863,10 +863,10 @@ END
         {
             string sql = string.Format(
 @"CREATE TABLE [{0}].[Geometry_Columns](
-    [F_Table_Catalog] [varchar](50) NOT NULL,
-    [F_Table_Schema] [varchar](10) NOT NULL,
-    [F_Table_Name] [varchar](50) NOT NULL,
-    [F_Geometry_Column] [varchar](50) NOT NULL,
+    [F_Table_Catalog] [varchar](255) NOT NULL,
+    [F_Table_Schema] [varchar](20) NOT NULL,
+    [F_Table_Name] [varchar](255) NOT NULL,
+    [F_Geometry_Column] [varchar](255) NOT NULL,
     [Coord_Dimension] [int] NOT NULL,
     [SRID] [int] NOT NULL,
     [Geometry_Type] [varchar](20) NULL,

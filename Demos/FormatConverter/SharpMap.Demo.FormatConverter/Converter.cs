@@ -20,6 +20,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using System.Text;
+using GeoAPI;
 using GeoAPI.Geometries;
 using SharpMap.Data;
 using SharpMap.Demo.FormatConverter.Common;
@@ -106,7 +107,7 @@ namespace SharpMap.Demo.FormatConverter
             foreach (Assembly asm in AppDomain.CurrentDomain.GetAssemblies())
             {
                 ///search for 'plugins' these are types decorated with certain attributes
-                foreach (Type t in  asm.GetExportedTypes())
+                foreach (Type t in asm.GetExportedTypes())
                 {
                     object[] attrs = t.GetCustomAttributes(typeof(ConfigureProviderAttribute), true);
                     if (attrs.Length == 1)
@@ -264,19 +265,27 @@ namespace SharpMap.Demo.FormatConverter
                         int count = 0;
                         foreach (IFeatureDataRecord fdr in sourceRecords)
                         {
-                            if (converter == null)
-                                converter = GetConverter(fdr.OidType,
-                                         GetTypeParamsOfBaseClass(ptarget.CreateNewTable().GetType(),
-                                                                  typeof(FeatureDataTable<>))[0], fdr, index);
-
-                            //ptarget.Insert(converter.ConvertRecord(fdr));/* coerce values if necessary */
-
-                            features.Add(converter.ConvertRecord(fdr));
-                            if (++count % 100 == 0)
+                            try
                             {
-                                ptarget.Insert(features);
-                                features.Clear();
+                                if (converter == null)
+                                    converter = GetConverter(fdr.OidType,
+                                             GetTypeParamsOfBaseClass(ptarget.CreateNewTable().GetType(),
+                                                                      typeof(FeatureDataTable<>))[0], fdr, index);
+
+
+                                features.Add(converter.ConvertRecord(fdr));
+                                if (++count % 100 == 0)
+                                {
+                                    ptarget.Insert(features);
+                                    features.Clear();
+                                }
                             }
+                            catch (GeometryInvalidException ex)
+                            {
+                                Console.WriteLine("An Error Occured : " + ex.Message);
+                                continue;
+                            }
+
                         }
 
                         if (features.Count > 0)

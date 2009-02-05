@@ -26,7 +26,7 @@ using SharpMap.Utilities;
 
 namespace SharpMap.Demo.FormatConverter.SqlServer2008
 {
-    [ConfigureProvider(typeof (MsSqlServer2008Provider<>), "Sql Server 2008")]
+    [ConfigureProvider(typeof(MsSqlServer2008Provider<>), "Sql Server 2008")]
     public class ConfigureSqlServer2008Provider : IConfigureFeatureSource, IConfigureFeatureTarget
     {
         private string _oidColumn;
@@ -39,8 +39,16 @@ namespace SharpMap.Demo.FormatConverter.SqlServer2008
 
         public IFeatureProvider ConstructSourceProvider(IGeometryServices geometryServices)
         {
-            Console.WriteLine("Please enter the connection string for the source server.");
+            Console.WriteLine("Please enter the connection string for the source server. Press Enter to use the following:");
+            Console.WriteLine(Properties.Settings.Default.SourceConnectionString);
+
             string connectionString = Console.ReadLine();
+            if (connectionString == "")
+                connectionString = Properties.Settings.Default.SourceConnectionString;
+            else
+                Properties.Settings.Default.SourceConnectionString = connectionString;
+            Properties.Settings.Default.Save();
+
             Console.WriteLine("Please enter the data tables' schema");
             string dtschema = Console.ReadLine();
             Console.WriteLine("Please enter the table name.");
@@ -66,7 +74,7 @@ namespace SharpMap.Demo.FormatConverter.SqlServer2008
                 }
             }
 
-            Type t = typeof (MsSqlServer2008Provider<>);
+            Type t = typeof(MsSqlServer2008Provider<>);
             Type specialized = t.MakeGenericType(type);
 
             _sourceProvider =
@@ -102,19 +110,27 @@ namespace SharpMap.Demo.FormatConverter.SqlServer2008
                                                                 ICoordinateSystemFactory csFactory,
                                                                 FeatureDataTable schemaTable)
         {
-            if (oidType == typeof (UInt16))
-                oidType = typeof (Int16);
-            else if (oidType == typeof (UInt32))
-                oidType = typeof (Int32);
-            else if (oidType == typeof (UInt64))
-                oidType = typeof (Int64);
+            if (oidType == typeof(UInt16))
+                oidType = typeof(Int16);
+            else if (oidType == typeof(UInt32))
+                oidType = typeof(Int32);
+            else if (oidType == typeof(UInt64))
+                oidType = typeof(Int64);
 
-            Type typ = typeof (MsSqlServer2008Provider<>);
+            Type typ = typeof(MsSqlServer2008Provider<>);
             _specializedType = typ.MakeGenericType(oidType);
 
             Console.WriteLine(
-                "Please enter the connection string for the target database server. Remember 'Connection Timeout=0' for large datasets.");
+                "Please enter the connection string for the target database server. Press enter to use the one below.(Remember 'Connection Timeout=0' for large datasets.)");
+            Console.WriteLine(Properties.Settings.Default.TargetConnectionString);
+
+
             string connectionString = Console.ReadLine();
+            if (connectionString == "")
+                connectionString = Properties.Settings.Default.TargetConnectionString;
+            else
+                Properties.Settings.Default.TargetConnectionString = connectionString;
+            Properties.Settings.Default.Save();
 
             Console.WriteLine("Please enter the schema for the table.");
             string schemaName = Console.ReadLine();
@@ -122,7 +138,7 @@ namespace SharpMap.Demo.FormatConverter.SqlServer2008
             Console.WriteLine("Please enter the table name.");
             string tableName = Console.ReadLine();
 
-            _targetProvider = (IWritableFeatureProvider) _specializedType.GetMethod(
+            _targetProvider = (IWritableFeatureProvider)_specializedType.GetMethod(
                                                              "Create",
                                                              BindingFlags.Public | BindingFlags.Static,
                                                              null,
@@ -151,7 +167,7 @@ namespace SharpMap.Demo.FormatConverter.SqlServer2008
             {
                 _specializedType.GetMethod("FixGeometries", BindingFlags.Public | BindingFlags.Instance, null,
                                            CallingConventions.HasThis, Type.EmptyTypes, null).Invoke(_targetProvider,
-                                                                                                     new object[] {});
+                                                                                                     new object[] { });
             }
             catch (Exception ex)
             {
@@ -165,7 +181,7 @@ namespace SharpMap.Demo.FormatConverter.SqlServer2008
                     _specializedType.GetMethod("CreateEnvelopeColumns", BindingFlags.Public | BindingFlags.Instance,
                                                null,
                                                CallingConventions.HasThis, Type.EmptyTypes, null).Invoke(
-                        _targetProvider, new object[] {});
+                        _targetProvider, new object[] { });
             }
             catch (Exception ex)
             {
@@ -177,7 +193,7 @@ namespace SharpMap.Demo.FormatConverter.SqlServer2008
                 Console.WriteLine("Creating Spatial Index");
                 _specializedType.GetMethod("RebuildSpatialIndex", BindingFlags.Public | BindingFlags.Instance, null,
                                            CallingConventions.HasThis, Type.EmptyTypes, null).Invoke(_targetProvider,
-                                                                                                     new object[] {});
+                                                                                                     new object[] { });
             }
             catch (Exception ex)
             {
@@ -192,7 +208,7 @@ namespace SharpMap.Demo.FormatConverter.SqlServer2008
                     _specializedType.GetMethod("RegisterInGeometryColumnsTable",
                                                BindingFlags.Public | BindingFlags.Instance, null,
                                                CallingConventions.HasThis, Type.EmptyTypes, null)
-                        .Invoke(_targetProvider, new object[] {});
+                        .Invoke(_targetProvider, new object[] { });
             }
             catch (Exception ex)
             {
@@ -206,7 +222,7 @@ namespace SharpMap.Demo.FormatConverter.SqlServer2008
                 if (string.Compare(Console.ReadLine(), "Y", StringComparison.CurrentCultureIgnoreCase) == 0)
                     _specializedType.GetMethod("CreateSridConstraint", BindingFlags.Public | BindingFlags.Instance, null,
                                                CallingConventions.HasThis, Type.EmptyTypes, null)
-                        .Invoke(_targetProvider, new object[] {});
+                        .Invoke(_targetProvider, new object[] { });
             }
             catch (Exception ex)
             {
