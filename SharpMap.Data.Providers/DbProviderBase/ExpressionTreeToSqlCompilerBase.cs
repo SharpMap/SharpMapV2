@@ -628,7 +628,7 @@ namespace SharpMap.Data.Providers.Db
 
         private IExtents TransformExtents(IExtents ext)
         {
-            if (!Provider.SpatialReference.Equals(ext.SpatialReference))
+            if (!Provider.SpatialReference.EqualParams(ext.SpatialReference))
             {
                 if (Provider.CoordinateTransformationFactory == null)
                     throw new MissingCoordinateTransformationFactoryException(
@@ -643,7 +643,7 @@ namespace SharpMap.Data.Providers.Db
 
         private IGeometry TransformGeometry(IGeometry geom)
         {
-            if (!Provider.SpatialReference.Equals(geom.SpatialReference))
+            if (!Provider.SpatialReference.EqualParams(geom.SpatialReference))
             {
                 if (Provider.CoordinateTransformationFactory == null)
                     throw new MissingCoordinateTransformationFactoryException(

@@ -185,7 +185,16 @@ namespace SharpMap.Data.Providers
         {
             try
             {
-                return base.BuildSchemaTable(withGeometryColumn);
+                DataTable dt = base.BuildSchemaTable(withGeometryColumn);
+                //Remove envelope columns from the table
+                for (int i = dt.Columns.Count - 1; i > -1; i--)
+                {
+                    DataColumn c = dt.Columns[i];
+                    if (c.ColumnName.StartsWith(string.Format("{0}_Envelope", GeometryColumn)))
+                        dt.Columns.RemoveAt(i);
+                }
+
+                return dt;
             }
             catch (Exception ex)
             {

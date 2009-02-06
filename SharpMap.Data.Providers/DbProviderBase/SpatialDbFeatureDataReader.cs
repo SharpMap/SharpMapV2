@@ -40,6 +40,9 @@ namespace SharpMap.Data.Providers.Db
 
         private readonly int _oidColumnIndex = -1;
         private readonly Type _oidType;
+        protected IGeometry _currentGeometry;
+        private bool _disposed;
+        private DataTable _schema;
 
         private IGeometryFactory _transFactory;
 
@@ -53,7 +56,7 @@ namespace SharpMap.Data.Providers.Db
 
 
             for (int i = 0; i < internalReader.FieldCount; i++)
-            // note: GetOrdinal crashes if the column does not exist so loop through fields
+                // note: GetOrdinal crashes if the column does not exist so loop through fields
             {
                 string name = internalReader.GetName(i);
                 if (name == geometryColumn)
@@ -86,15 +89,20 @@ namespace SharpMap.Data.Providers.Db
             get
             {
                 return _geomColumnIndex > -1
-                    && !_internalReader.IsDBNull(_geomColumnIndex);
+                       && !_internalReader.IsDBNull(_geomColumnIndex);
             }
+        }
+
+        public bool IsDisposed
+        {
+            get { return _disposed; }
         }
 
         #region IFeatureDataReader Members
 
         public void Close()
         {
-            _internalReader.Close();
+            Dispose();
         }
 
         public int Depth
@@ -102,7 +110,6 @@ namespace SharpMap.Data.Providers.Db
             get { return _internalReader.Depth; }
         }
 
-        private DataTable _schema;
         public DataTable GetSchemaTable()
         {
             if (_schema == null)
@@ -136,7 +143,8 @@ namespace SharpMap.Data.Providers.Db
 
         public void Dispose()
         {
-            _internalReader.Dispose();
+            Dispose(true);
+            GC.SuppressFinalize(this);
         }
 
         public int FieldCount
@@ -280,8 +288,6 @@ namespace SharpMap.Data.Providers.Db
             get { return _internalReader[recomputeIndex(i)]; }
         }
 
-        protected IGeometry _currentGeometry;
-
         public virtual IGeometry Geometry
         {
             get
@@ -290,7 +296,7 @@ namespace SharpMap.Data.Providers.Db
                 {
                     if (_currentGeometry == null)
                     {
-                        IGeometry geom = _geomFactory.WkbReader.Read((byte[])_internalReader[_geomColumnIndex]);
+                        IGeometry geom = _geomFactory.WkbReader.Read((byte[]) _internalReader[_geomColumnIndex]);
 
                         if (CoordinateTransformation == null)
                             _currentGeometry = geom;
@@ -339,6 +345,11 @@ namespace SharpMap.Data.Providers.Db
             {
                 yield return this;
             }
+            //FObermaier:
+            //needed for npgsql, because npgsql throws exceptions after a while
+            //if the connection of the reader is not closed properly.
+            //The Dispose Method got never called, possibly memory leakage?
+            Dispose();
             yield break;
         }
 
@@ -355,5 +366,18 @@ namespace SharpMap.Data.Providers.Db
         public ICoordinateTransformation CoordinateTransformation { get; set; }
 
         #endregion
+
+        ~SpatialDbFeatureDataReader()
+        {
+            Dispose(false);
+        }
+
+        private void Dispose(bool disposing)
+        {
+            if (_disposed)
+                return;
+            _internalReader.Dispose();
+            _disposed = true;
+        }
     }
 }
