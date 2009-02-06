@@ -376,6 +376,7 @@ namespace SharpMap.Data.Providers.Db
         {
             if (_disposed)
                 return;
+            _internalReader.Close(); 
             _internalReader.Dispose();
             _disposed = true;
         }
