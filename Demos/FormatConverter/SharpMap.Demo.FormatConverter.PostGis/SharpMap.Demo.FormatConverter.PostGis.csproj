@@ -5,14 +5,16 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{9BF70D47-05D2-4C64-A21B-1A326547E718}</ProjectGuid>
-    <OutputType>Exe</OutputType>
+    <ProjectGuid>{E8B95470-E24D-4708-8EF3-4C2E7AAF03F4}</ProjectGuid>
+    <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>SharpMap.Demo.FormatConverter</RootNamespace>
-    <AssemblyName>SharpMap.Demo.FormatConverter</AssemblyName>
+    <RootNamespace>SharpMap.Demo.FormatConverter.PostGis</RootNamespace>
+    <AssemblyName>SharpMap.Demo.FormatConverter.PostGis</AssemblyName>
     <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <StartupObject>SharpMap.Demo.FormatConverter.Program</StartupObject>
+    <SignAssembly>false</SignAssembly>
+    <AssemblyOriginatorKeyFile>
+    </AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug_Net20|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -22,8 +24,6 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <RunFxCop>false</RunFxCop>
-    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release_Net20|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -32,6 +32,8 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <DocumentationFile>
+    </DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug_Net35|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -47,6 +49,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release_Net35|AnyCPU' ">
     <OutputPath>bin\Release_Net35\</OutputPath>
     <DefineConstants>TRACE;DOTNET35</DefineConstants>
+    <DocumentationFile>bin\Release_Net35\MapViewer.xml</DocumentationFile>
     <Optimize>true</Optimize>
     <DebugType>pdbonly</DebugType>
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -61,58 +64,52 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ConvertData.cs" />
-    <Compile Include="Converter.cs" />
-    <Compile Include="IConvertData.cs" />
-    <Compile Include="Program.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ConfigurePostGisProvider.cs" />
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\GeoAPI\src\GeoAPI\GeoAPI.Net.csproj">
       <Project>{FFB69466-79DE-466A-ADA7-5C47C5C5CA3A}</Project>
       <Name>GeoAPI.Net</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\..\SharpMap.Data.Providers\DbProviderBase\SharpMap.Data.Providers.Db.csproj">
+      <Project>{FEE2753F-DCC2-4DC6-9651-FA2CED8A2974}</Project>
+      <Name>SharpMap.Data.Providers.Db</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\SharpMap.Data.Providers\SharpMap.Data.Providers.PostGis\SharpMap.Data.Providers.PostGis.csproj">
+      <Project>{7C533D86-BD73-4F55-AE8B-2D95D97C0436}</Project>
+      <Name>SharpMap.Data.Providers.PostGis</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\..\SharpMap.Utilities\SharpMap.Utilities.csproj">
       <Project>{011439C1-A53D-4DA1-AF8E-18D9D61121F4}</Project>
       <Name>SharpMap.Utilities</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\SharpMap\SharpMap.csproj">
-      <Project>{C83777FC-AABB-47D9-911F-D76255D4D541}</Project>
-      <Name>SharpMap</Name>
     </ProjectReference>
     <ProjectReference Include="..\SharpMap.Demo.FormatConverter.Common\SharpMap.Demo.FormatConverter.Common.csproj">
       <Project>{AFEE85D5-3E41-4C72-8515-8063DB2B9FC4}</Project>
       <Name>SharpMap.Demo.FormatConverter.Common</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\..\SharpMap\SharpMap.csproj">
+      <Project>{C83777FC-AABB-47D9-911F-D76255D4D541}</Project>
+      <Name>SharpMap</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
-  </Target>  -->
-  <ItemGroup>
-    <mssqlspatial Include="..\SharpMap.Demo.FormatConverter.MsSqlSpatial\bin\$(Configuration)\*.dll" />
-    <shapefile Include="..\SharpMap.Demo.FormatConverter.Shapefile\bin\$(Configuration)\*.dll" />
-    <sqlserver Include="..\SharpMap.Demo.FormatConverter.SqlServer2008\bin\$(Configuration)\*.dll" />
-    <spatialite2 Include="..\SharpMap.Demo.FormatConverter.SpatialLite2\bin\$(Configuration)\*.dll" />
-    <mssqlspatialdbg Include="..\SharpMap.Demo.FormatConverter.MsSqlSpatial\bin\$(Configuration)\*.pdb" />
-    <shapefiledbg Include="..\SharpMap.Demo.FormatConverter.Shapefile\bin\$(Configuration)\*.pdb" />
-    <sqlserverdbg Include="..\SharpMap.Demo.FormatConverter.SqlServer2008\bin\$(Configuration)\*.pdb" />
-    <spatialite2dbg Include="..\SharpMap.Demo.FormatConverter.SpatialLite2\bin\$(Configuration)\*.pdb" />
-    <postgis Include="..\SharpMap.Demo.FormatConverter.PostGis\bin\$(Configuration)\*.dll" />
-    <postgisdbg Include="..\SharpMap.Demo.FormatConverter.PostGis\bin\$(Configuration)\*.pdb" />
-    
-  </ItemGroup>
-  <Target Name="AfterBuild">
-    <Copy SourceFiles="@(mssqlspatial)" DestinationFolder="$(TargetDir)" />
-    <Copy SourceFiles="@(shapefile)" DestinationFolder="$(TargetDir)" />
-    <Copy SourceFiles="@(sqlserver)" DestinationFolder="$(TargetDir)" />
-    <Copy SourceFiles="@(spatialite2)" DestinationFolder="$(TargetDir)" />
-    <Copy SourceFiles="@(mssqlspatialdbg)" DestinationFolder="$(TargetDir)" />
-    <Copy SourceFiles="@(shapefiledbg)" DestinationFolder="$(TargetDir)" />
-    <Copy SourceFiles="@(sqlserverdbg)" DestinationFolder="$(TargetDir)" />
-    <Copy SourceFiles="@(spatialite2dbg)" DestinationFolder="$(TargetDir)" />
-    <Copy SourceFiles="@(postgis)" DestinationFolder="$(TargetDir)" />
-    <Copy SourceFiles="@(postgisdbg)" DestinationFolder="$(TargetDir)" />
   </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
 </Project>

@@ -42,6 +42,7 @@ using System.Data;
 using System.Data.SQLite;
 using GeoAPI.Geometries;
 using GeoAPI.CoordinateSystems;
+using GeoAPI.CoordinateSystems.Transformations;
 using Proj4Utility;
 using SharpMap.Data.Providers.Db;
 using SharpMap.Data.Providers.Db.Expressions;
@@ -285,6 +286,7 @@ namespace SharpMap.Data.Providers
             using ( SQLiteConnection cn = new SQLiteConnection( connectionString ) )
             {
                 cn.Open();
+
                 createSQLiteInformationSchema( cn );
 
                 SQLiteCommand cm = cn.CreateCommand();
@@ -294,7 +296,7 @@ SELECT	'main' AS [Schema],
         x.f_geometry_column AS [GeometryColumn], 
         x.coord_dimension AS [Dimension], 
 	    x.f_table_name || '.' || x.f_geometry_column || ' (' || x.type || ')' AS [Label],
-        x.auth_name || ':' || x.auth_srid AS [SRID],
+        y.auth_name || ':' || y.auth_srid AS [SRID],
         y.srtext as [SpatialReference]
 FROM [main].[geometry_columns] AS x LEFT JOIN [main].[spatial_ref_sys] as y on x.srid=y.srid;
 TYPES [varchar], [varchar], [varchar], [bool];
@@ -346,6 +348,9 @@ ORDER BY [TableName], x.ordinal_position;";
             //Pragma
             using ( SQLiteConnection cn_pragma = (SQLiteConnection)connection.Clone() )
             {
+
+                var retval = new SQLiteCommand( "SELECT load_extension('libspatialite-2.dll')", cn_pragma ).ExecuteScalar();
+
                 SQLiteCommand pragma = new SQLiteCommand( "PRAGMA table_info('@P1');", cn_pragma );
                 //pragma.CommandType = CommandType.StoredProcedure;
                 pragma.Parameters.Add( "P1", DbType.String );
@@ -392,16 +397,22 @@ WHERE type='table' AND NOT( name like 'cache_%' ) AND NOT( name like 'sqlite%' )
 
         public SpatiaLite2Provider( IGeometryFactory geometryFactory, string connectionString,
                                   string tableSchema, string tableName, string oidColumn, string geometryColumn )
+            : this( geometryFactory, connectionString, tableSchema, tableName, oidColumn, geometryColumn, null )
+        { }
+
+        public SpatiaLite2Provider( IGeometryFactory geometryFactory, string connectionString,
+                              string tableSchema, string tableName, string oidColumn, string geometryColumn,
+                              ICoordinateTransformationFactory coordinateTransformationFactory )
             : base(
                     new SpatiaLite2DbUtility(), geometryFactory, connectionString, tableSchema, tableName, oidColumn,
-                    geometryColumn )
+                    geometryColumn, coordinateTransformationFactory )
         {
             using ( SQLiteConnection cn = new SQLiteConnection( connectionString ) )
             {
                 cn.Open();
                 try
                 {
-                    SQLiteCommand cmd = new SQLiteCommand(cn);
+                    SQLiteCommand cmd = new SQLiteCommand( cn );
                     cmd.CommandText =
 @"SELECT [type], [spatial_index_enabled] FROM [geometry_columns] WHERE ([f_table_name]=@p1 AND [f_geometry_column]=@p2)";
                     cmd.Parameters.AddWithValue( "@p1", tableName );
@@ -420,9 +431,9 @@ WHERE type='table' AND NOT( name like 'cache_%' ) AND NOT( name like 'sqlite%' )
                         switch ( dr.GetInt64( 1 ) )
                         {
                             case 0:
-                                throw new SpatiaLite2Exception( "Spatial index type must not be 'None'" );
-                            //_spatialLiteIndexType = SpatiaLite2IndexType.None;
-                            //break;
+                                //throw new SpatiaLite2Exception( "Spatial index type must not be 'None'" );
+                                _spatialLiteIndexType = SpatiaLite2IndexType.None;
+                                break;
                             case 1:
                                 _spatialLiteIndexType = SpatiaLite2IndexType.RTree;
                                 break;
@@ -467,41 +478,27 @@ WHERE type='table' AND NOT( name like 'cache_%' ) AND NOT( name like 'sqlite%' )
 
         public override string GeomFromWkbFormatString
         {
-            get { return string.Format( "GeomFromWKB({0},{1})", "{0}", SridInt == null ? DefaultSridInt : SridInt ); }
+            get { return string.Format( "GeomFromWKB({0},{1})", "{0}", SridInt.HasValue ? SridInt : DefaultSridInt ); }
         }
 
         public override IExtents GetExtents( )
         {
-            //ensure spatial index
-            if ( SpatiaLiteIndexType == SpatiaLite2IndexType.None )
-                SpatiaLiteIndexType = DefaultSpatiaLiteIndexType;
 
             using ( IDbConnection conn = DbUtility.CreateConnection( ConnectionString ) )
             using ( IDbCommand cmd = DbUtility.CreateCommand() )
             {
                 cmd.Connection = conn;
-                switch ( SpatiaLiteIndexType )
-                {
-                    case SpatiaLite2IndexType.RTree:
-                        cmd.CommandText =
-                        string.Format(
-                            "SELECT MIN(xmin) as xmin, MIN(ymin) as ymin, MAX(xmax) as xmax, MAX(ymax) as ymax FROM idx_{0}_{1}",
-                            Table, GeometryColumn );
-                        break;
-
-                    case SpatiaLite2IndexType.MBRCache:
-                        cmd.CommandText = string.Format(
-                            "SELECT MIN(MbrMinX({0})) as xmin, MIN(MbrMinY({0})) as ymin, MAX(MbrMaxX({0})) as xmax, MAX(MbrMaxY({0})) as maxy from {1};",
-                            GeometryColumn, QualifiedTableName );
-                        break;
-                }
-                cmd.CommandType = CommandType.Text;
+                cmd.CommandText = string.Format(
+                    "SELECT MIN(MbrMinX({0})) as xmin, MIN(MbrMinY({0})) as ymin, MAX(MbrMaxX({0})) as xmax, MAX(MbrMaxY({0})) as maxy from {1};",
+                    GeometryColumn, QualifiedTableName );
                 Double xmin, ymin, xmax, ymax;
 
-                using ( IDataReader r = cmd.ExecuteReader( CommandBehavior.CloseConnection ) )
+                using ( SQLiteDataReader r = (SQLiteDataReader)cmd.ExecuteReader( CommandBehavior.CloseConnection ) )
                 {
-                    while ( r.Read() )
+                    if (r.HasRows)
                     {
+                        r.Read();
+
                         if ( r.IsDBNull( 0 ) || r.IsDBNull( 1 ) || r.IsDBNull( 2 ) || r.IsDBNull( 3 ) )
                             return GeometryFactory.CreateExtents();
 
@@ -509,11 +506,12 @@ WHERE type='table' AND NOT( name like 'cache_%' ) AND NOT( name like 'sqlite%' )
                         ymin = r.GetDouble( 1 );// - 0.000000000001;
                         xmax = r.GetDouble( 2 );// + 0.000000000001;
                         ymax = r.GetDouble( 3 );// + 0.000000000001;
+
                         return GeometryFactory.CreateExtents2D( xmin, ymin, xmax, ymax );
                     }
                 }
-                return GeometryFactory.CreateExtents();
             }
+            return GeometryFactory.CreateExtents();
         }
 
         public SpatiaLite2IndexType SpatiaLiteIndexType
@@ -539,7 +537,7 @@ WHERE type='table' AND NOT( name like 'cache_%' ) AND NOT( name like 'sqlite%' )
             }
             set
             {
-                if ( value == SpatiaLite2IndexType.None ) return;
+                //if ( value == SpatiaLite2IndexType.None ) return;
 
                 Object ret = 0;
                 long retVal = 0;
@@ -559,7 +557,7 @@ WHERE type='table' AND NOT( name like 'cache_%' ) AND NOT( name like 'sqlite%' )
                         retVal = (long)ret;
                         System.Diagnostics.Debug.Assert( retVal == 1 );
                     }
-                    _spatialLiteIndexType = value;
+                    _spatialLiteIndexType = ( retVal == 1 ) ? value : SpatiaLite2IndexType.None;
                 }
             }
         }
@@ -572,12 +570,12 @@ WHERE type='table' AND NOT( name like 'cache_%' ) AND NOT( name like 'sqlite%' )
         protected override DataTable BuildSchemaTable( Boolean withGeometryColumn )
         {
             DataTable dt = null;
-            using ( SQLiteConnection conn = new SQLiteConnection( ConnectionString ) )
+            using ( SQLiteConnection conn = (SQLiteConnection)DbUtility.CreateConnection( ConnectionString ) )
             {
-                conn.Open();
-
-                using ( SQLiteCommand cmd = new SQLiteCommand( string.Format( "SELECT * FROM {0} ", Table ), conn ) )
+                using ( SQLiteCommand cmd = (SQLiteCommand)DbUtility.CreateCommand() )
                 {
+                    cmd.CommandText = string.Format( "SELECT * FROM {0} ", Table );
+                    cmd.Connection = conn;
                     SQLiteDataAdapter da = new SQLiteDataAdapter( cmd );
                     DataSet ds = new DataSet();
                     da.FillSchema( ds, SchemaType.Source );
@@ -698,8 +696,8 @@ WHERE type='table' AND NOT( name like 'cache_%' ) AND NOT( name like 'sqlite%' )
             SpatiaLite2ShapeType shapeType,
             SpatiaLite2IndexType spatialIndexType )
         {
-            if ( spatialIndexType == SpatiaLite2IndexType.None )
-                spatialIndexType = DefaultSpatiaLiteIndexType;
+            //if ( spatialIndexType == SpatiaLite2IndexType.None )
+            //    spatialIndexType = DefaultSpatiaLiteIndexType;
 
             SQLiteConnection conn = initSpatialMetaData( connectionString );
             //string srid = String.IsNullOrEmpty(featureDataTable.GeometryFactory.Srid) ? DefaultSrid : featureDataTable.GeometryFactory.Srid;
@@ -1011,8 +1009,9 @@ WHERE type='table' AND NOT( name like 'cache_%' ) AND NOT( name like 'sqlite%' )
                     cmd.Connection = conn;
                     cmd.CommandType = CommandType.Text;
                     cmd.CommandText =
-@"SELECT y.[srtext] FROM [geometry_columns] as x
-LEFT JOIN [spatial_ref_sys] as y ON x.[srid]=y.[srid]
+//@"SELECT y.[srtext] FROM [spatial_ref_sys] as y 
+@"SELECT y.[auth_name] || "":"" || y.[auth_srid] FROM [spatial_ref_sys] as y 
+INNER JOIN [geometry_columns] as x ON x.[srid]=y.[srid]
 WHERE (x.[f_table_name]=@p1 AND x.[f_geometry_column]=@p2)
 LIMIT 1;";
 

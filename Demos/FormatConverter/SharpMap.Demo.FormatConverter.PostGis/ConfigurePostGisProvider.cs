@@ -23,20 +23,21 @@ using GeoAPI.Geometries;
 using SharpMap.Data;
 using SharpMap.Data.Providers;
 using SharpMap.Data.Providers.Db;
-using SharpMap.Data.Providers.SpatiaLite2;
+using SharpMap.Data.Providers.PostGis;
 using SharpMap.Demo.FormatConverter.Common;
 using SharpMap.Expressions;
 using SharpMap.Utilities;
 using SharpMap.Utilities.SridUtility;
 
-namespace SharpMap.Demo.FormatConverter.SpatiaLite2
+namespace SharpMap.Demo.FormatConverter.PostGis
 {
-    [ConfigureProvider(typeof(SpatiaLite2Provider), "SpatiaLite2")]
-    public class ConfigureSpatiaLiteProvider : IConfigureFeatureSource, IConfigureFeatureTarget
+    [ConfigureProvider(typeof(PostGisProvider<>), "PostGis")]
+    public class ConfigurePostGisProvider : IConfigureFeatureSource, IConfigureFeatureTarget
     {
         private string _oidColumn;
-        private SpatiaLite2Provider _sourceProvider;
-        private SpatiaLite2Provider _targetProvider;
+        private IFeatureProvider _sourceProvider;
+        private Type _specializedType;
+        private IWritableFeatureProvider _targetProvider;
         private bool disposed;
         private bool settingChanged = false;
 
@@ -53,11 +54,11 @@ namespace SharpMap.Demo.FormatConverter.SpatiaLite2
         {
             Console.WriteLine( question );
 
-            if ( !string.IsNullOrEmpty( defaultAnswer ) )
+            if ( !string.IsNullOrEmpty(defaultAnswer))
                 Console.WriteLine( string.Format( "If you just press enter\n  '{0}'\nis used.", defaultAnswer ) );
 
             string answer = "";
-            while ( true )
+            while(true)
             {
                 answer = Console.ReadLine();
                 if ( string.IsNullOrEmpty( answer ) )
@@ -75,28 +76,50 @@ namespace SharpMap.Demo.FormatConverter.SpatiaLite2
 
         public IFeatureProvider ConstructSourceProvider(IGeometryServices geometryServices)
         {
-            header( "Construct SpatiaLite2 source provider\n" +
+            header( "Construct PostGis source provider\n" +
                   "* Author Felix Obermaier 2009\n" +
                   "* Ingenieurgruppe IVV GmbH & Co. KG\n" +
                   "* http://www.ivv-aachen.de" );
 
-            string connectionString = 
-                GetValue("Please enter the connection string for the source database file.",
-                         Properties.Settings.Default.SourceConnectionString);
+            string connectionString = GetValue(
+                "Please enter the connection string for the source database file.",
+                Properties.Settings.Default.SourceConnectionString);
 
-            string tableName = GetValue("Please enter the table name.","");
+            string schema = GetValue( "Please enter the schema name",
+                Properties.Settings.Default.SourceSchema );
 
-            _oidColumn = GetValue("Please enter the id column name.","");
+            string tableName = GetValue( "Please enter the table name.", null );
 
-            string geometryColumn = GetValue("Please enter the geometry column name.","");
+            _oidColumn = GetValue( "Please enter the id column name.", null );
 
-            _sourceProvider = new SpatiaLite2Provider(geometryServices.DefaultGeometryFactory,
-                connectionString, "main", tableName, _oidColumn, geometryColumn,
-                geometryServices.CoordinateTransformationFactory);
+            string geometryColumn = GetValue("Please enter the geometry column name.", null);
 
-            Console.WriteLine(string.Format(
-                "\nThe defined source provider serves shapes of the following type:\n{0}",
-                _sourceProvider.ValidGeometryType.ToString()));
+            Type type;
+            var dbUtility = new PostGisDbUtility();
+            using (IDbConnection conn = dbUtility.CreateConnection(connectionString))
+            {
+                using (IDbCommand cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = string.Format("SELECT \"{0}\" FROM \"{1}\".\"{2}\" LIMIT 1;", _oidColumn, schema,
+                                                    tableName);
+                    cmd.CommandType = CommandType.Text;
+                    conn.Open();
+                    type = cmd.ExecuteScalar().GetType();
+                }
+            }
+
+            Type t = typeof (PostGisProvider<>);
+            Type specialized = t.MakeGenericType(type);
+
+            _sourceProvider =
+                (IFeatureProvider)
+                Activator.CreateInstance(specialized, 
+                                         geometryServices.DefaultGeometryFactory, 
+                                         connectionString, schema, tableName,
+                                         _oidColumn,
+                                         geometryColumn,
+                                         geometryServices.CoordinateTransformationFactory );
+            _sourceProvider.Open();
 
             _sourceProvider.CoordinateTransformation = 
                 SetCoordinateTransfromation(_sourceProvider.OriginalSpatialReference);
@@ -131,24 +154,53 @@ namespace SharpMap.Demo.FormatConverter.SpatiaLite2
                                                                 FeatureDataTable schemaTable)
         {
 
-            header( "Construct SpatiaLite2 target provider\n" +
+            if ( oidType == typeof( UInt16 ) )
+                oidType = typeof( Int16 );
+            else if ( oidType == typeof( UInt32 ) )
+                oidType = typeof( Int32 );
+            else if ( oidType == typeof( UInt64 ) )
+                oidType = typeof( Int64 );
+
+            Type typ = typeof( PostGisProvider<> );
+            _specializedType = typ.MakeGenericType( oidType );
+
+            header( "Construct PostGis target provider\n" +
                   "* Author Felix Obermaier 2009\n" +
-                  "* Ingenieurgruppe IVV GmbH & Co. KG\n" + 
+                  "* Ingenieurgruppe IVV GmbH & Co. KG\n" +
                   "* http://www.ivv-aachen.de" );
 
-            string connectionString = GetValue("Please enter the connection string for the target database file.\nRemember 'Connection Timeout=0' for large datasets.",Properties.Settings.Default.TargetConnectionString);
+            string connectionString = GetValue(
+                "Please enter the connection string for the source database file.",
+                Properties.Settings.Default.SourceConnectionString );
 
-            string tableName = GetValue("Please enter the table name.","");
+            string schema = GetValue( "Please enter the schema name",
+                Properties.Settings.Default.SourceSchema );
 
-            SpatiaLite2ShapeType shapeType = GetShapeType();
+            string tableName = GetValue( "Please enter the table name.", null );
 
-            SpatiaLite2IndexType spatialIndex = GetSpatialIndex();
+            //PostGisProviderStatic.CreateDataTable<oidType.GetType()>( schemaTable, schema, tableName, connectionString)
+            Type pgpstatic = typeof(PostGisProviderStatic);
+            MethodInfo miCreateDataTable = pgpstatic.GetMethod(
+                "CreateDataTable", 
+                BindingFlags.Public | BindingFlags.Static,
+                null,
+                new[] { typeof( FeatureDataTable ), typeof( string ), typeof( string ), typeof( string ), typeof( string ) },
+                null);
 
-            SpatiaLite2Provider.CreateDataTable(schemaTable, tableName, 
-                connectionString, SpatiaLite2Provider.DefaultGeometryColumnName,
-                shapeType, spatialIndex);
+            MethodInfo miCreateDataTableGeneric = miCreateDataTable.MakeGenericMethod(new[] {oidType});
 
-            _targetProvider = new SpatiaLite2Provider(geometryFactory, connectionString, tableName );
+            miCreateDataTableGeneric.Invoke(
+                null, 
+                new object[] {schemaTable, schema, tableName,connectionString, PostGisProviderStatic.DefaultGeometryColumnName});
+
+            _targetProvider =
+                (IWritableFeatureProvider)
+                Activator.CreateInstance(_specializedType, 
+                                         schemaTable.GeometryFactory, 
+                                         connectionString, schema, tableName,
+                                         schemaTable.Columns[0].ColumnName,
+                                         PostGisProviderStatic.DefaultGeometryColumnName,
+                                         new GeometryServices().CoordinateTransformationFactory);
 
             _targetProvider.Open();
             return _targetProvider;
@@ -169,7 +221,7 @@ namespace SharpMap.Demo.FormatConverter.SpatiaLite2
                     "\nThe Srid Authority Code of the sources' coordinate system is '{0}'.\n" +
                     "If you wish to apply a coordinate transformation supply Srid Authority Code.\n" +
                     "{1}.",
-                    spatialReference.AuthorityCode, Properties.Settings.Default.TargetSrid));
+                    spatialReference.AuthorityCode));
 
                 string targetCS = Console.ReadLine();
                 if ( string.IsNullOrEmpty( targetCS ) ) targetCS = Properties.Settings.Default.TargetSrid;
@@ -198,12 +250,12 @@ namespace SharpMap.Demo.FormatConverter.SpatiaLite2
         {
             if ( _sourceProvider != null )
             {
-                if ( _sourceProvider.ConnectionString != Properties.Settings.Default.SourceConnectionString )
+                if ( _sourceProvider.ConnectionId != Properties.Settings.Default.SourceConnectionString )
                 {
                     Console.WriteLine( "\nDo you want to save the source provider connection string for future use (Y/any other key)?" );
                     if ( Console.ReadKey( true ).Key == ConsoleKey.Y )
                     {
-                        Properties.Settings.Default.SourceConnectionString = _sourceProvider.ConnectionString;
+                        Properties.Settings.Default.SourceConnectionString = _sourceProvider.ConnectionId;
                         settingChanged = true;
                     }
                 }
@@ -219,17 +271,17 @@ namespace SharpMap.Demo.FormatConverter.SpatiaLite2
             }
             if ( _targetProvider != null )
             {
-                if ( _targetProvider.ConnectionString != Properties.Settings.Default.TargetConnectionString )
+                if ( _targetProvider.ConnectionId != Properties.Settings.Default.TargetConnectionString )
                 {
                     Console.WriteLine( "\nDo you want to save the target provider connection string for future use (Y/any other key)" );
                     if ( Console.ReadKey( true ).Key == ConsoleKey.Y )
                     {
-                        Properties.Settings.Default.TargetConnectionString = _targetProvider.ConnectionString;
+                        Properties.Settings.Default.TargetConnectionString = _targetProvider.ConnectionId;
                         settingChanged = true;
                     }
                 }
-                Console.WriteLine( "\nCleaning up: VACUUM" );
-                _targetProvider.Vacuum();
+                //Console.WriteLine( "\nCleaning up: VACUUM" );
+                //_targetProvider.Vacuum();
             }
 
             if ( settingChanged )
@@ -256,62 +308,62 @@ namespace SharpMap.Demo.FormatConverter.SpatiaLite2
             }
         }
 
-        ~ConfigureSpatiaLiteProvider()
+        ~ConfigurePostGisProvider( )
         {
-            //Dispose(false);
+            //Dispose(false)
         }
 
-        private static SpatiaLite2ShapeType GetShapeType()
-        {
-            string[] names = Enum.GetNames(typeof(SpatiaLite2ShapeType));
+        //private static SpatiaLite2ShapeType GetShapeType()
+        //{
+        //    string[] names = Enum.GetNames(typeof(SpatiaLite2ShapeType));
 
-            Console.WriteLine("SpatiaLite2 databases allow only homogenous geometry types. The following shape types are available.\n");
-            for (int i = 1; i < names.Length; i++) // omit SpatiaLite2ShapeType._Undefined
-            {
-                Console.WriteLine(string.Format("\t{0} {1}", i, names[i]));
-            }
+        //    Console.WriteLine("SpatiaLite2 databases allow only homogenous geometry types. The following shape types are available.\n");
+        //    for (int i = 1; i < names.Length; i++) // omit SpatiaLite2ShapeType._Undefined
+        //    {
+        //        Console.WriteLine(string.Format("\t{0} {1}", i, names[i]));
+        //    }
 
-            while (true)
-            {
-                Console.WriteLine("Please enter the id of the shape type to export.\nIt must match the geometry type in the input data set.");
+        //    while (true)
+        //    {
+        //        Console.WriteLine("Please enter the id of the shape type to export.\nIt must match the geometry type in the input data set.");
 
-                int i;
+        //        int i;
 
-                if (int.TryParse(Console.ReadLine(), out i))
-                {
-                    if (i > -1 && i < names.Length)
-                        return (SpatiaLite2ShapeType)Enum.Parse(typeof(SpatiaLite2ShapeType), names[i]);
-                }
+        //        if (int.TryParse(Console.ReadLine(), out i))
+        //        {
+        //            if (i > -1 && i < names.Length)
+        //                return (SpatiaLite2ShapeType)Enum.Parse(typeof(SpatiaLite2ShapeType), names[i]);
+        //        }
 
-                Console.WriteLine("Invalid option.");
-            }
-        }
+        //        Console.WriteLine("Invalid option.");
+        //    }
+        //}
 
-        private static SpatiaLite2IndexType GetSpatialIndex()
-        {
-            string[] names = Enum.GetNames(typeof(SpatiaLite2IndexType));
+        //private static SpatiaLite2IndexType GetSpatialIndex()
+        //{
+        //    string[] names = Enum.GetNames(typeof(SpatiaLite2IndexType));
 
-            Console.WriteLine("SpatiaLite2 databases allow the following spatial indices.\n");
-            for (int i = 0; i < names.Length; i++)
-            {
-                Console.WriteLine(string.Format("\t{0} {1}", i, names[i]));
-            }
+        //    Console.WriteLine("SpatiaLite2 databases allow the following spatial indices.\n");
+        //    for (int i = 0; i < names.Length; i++)
+        //    {
+        //        Console.WriteLine(string.Format("\t{0} {1}", i, names[i]));
+        //    }
 
-            while (true)
-            {
-                Console.WriteLine("Please enter the id of the spatial index to apply.");
+        //    while (true)
+        //    {
+        //        Console.WriteLine("Please enter the id of the spatial index to apply.");
 
-                int i;
+        //        int i;
 
-                if (int.TryParse(Console.ReadLine(), out i))
-                {
-                    if (i > -1 && i < names.Length)
-                        return (SpatiaLite2IndexType)Enum.Parse(typeof(SpatiaLite2IndexType), names[i]);
-                }
+        //        if (int.TryParse(Console.ReadLine(), out i))
+        //        {
+        //            if (i > -1 && i < names.Length)
+        //                return (SpatiaLite2IndexType)Enum.Parse(typeof(SpatiaLite2IndexType), names[i]);
+        //        }
 
-                Console.WriteLine("Invalid option.");
-            }
-        }
+        //        Console.WriteLine("Invalid option.");
+        //    }
+        //}
 
     }
 }

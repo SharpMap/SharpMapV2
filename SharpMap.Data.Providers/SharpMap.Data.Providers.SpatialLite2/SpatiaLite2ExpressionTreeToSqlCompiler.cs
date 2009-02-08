@@ -55,13 +55,13 @@ namespace SharpMap.Data.Providers.SpatiaLite2
             : base(provider, query)
         {
 
-            switch (indexType)
-            {
-                case SpatiaLite2IndexType.None:
-                    throw new SpatiaLite2Exception("indexType must not be 'None'");
-                default:
-                    break;
-            }
+            //switch (indexType)
+            //{
+            //    case SpatiaLite2IndexType.None:
+            //        throw new SpatiaLite2Exception("indexType must not be 'None'");
+            //    default:
+            //        break;
+            //}
             _spatialIndexType = indexType;
         }
 
@@ -90,8 +90,46 @@ namespace SharpMap.Data.Providers.SpatiaLite2
             String criteriaClause = "";
             String whereClause = "";
 
+            builder.Append( string.Format( " Mbr{0}( BuildMbr({1}, {2}, {3}, {4}),{5} )",
+                spatialOperation.ToString(),
+                CreateParameter<double>( exts.XMin ).ParameterName,
+                CreateParameter<double>( exts.YMin ).ParameterName,
+                CreateParameter<double>( exts.XMax ).ParameterName,
+                CreateParameter<double>( exts.YMax ).ParameterName,
+                Provider.GeometryColumn ) );
+            /*
+
             switch (_spatialIndexType)
             {
+                case SpatiaLite2IndexType.None:
+                    switch ( spatialOperation )
+                    {
+                        case SpatialOperation.Within:
+                        case SpatialOperation.Equals:
+                            //(minx >= pc->minx && maxx <= pc->maxx && miny >= pc->miny && maxy <= pc->maxy)
+                            criteriaClause = string.Format(
+                                "({0}>=MBRMinX({4}) AND {2}<=MBRMaxX({4}) AND {1}>=MBRMinY({4}) AND {3}<=MBRMaxY({4}))",
+                                "{0}", "{1}", "{2}", "{3}", Provider.GeometryColumn );
+                            break;
+                        case SpatialOperation.Contains:
+                            //(pc->minx >= minx && pc->maxx <= maxx && pc->miny >= miny && pc->maxy <= maxy)
+                            criteriaClause = string.Format(
+                                "(MBRMinX({4})>={0} AND MBRMaxX({4})<={2} AND MBRMinY({4})>={1} AND MBRMaxY({4})<={3})",
+                                "{0}", "{1}", "{2}", "{3}", Provider.GeometryColumn );
+                            break;
+                        case SpatialOperation.Intersects:
+                        case SpatialOperation.Crosses:
+                        case SpatialOperation.Overlaps:
+                        case SpatialOperation.Touches:
+                            criteriaClause = "(MBRMaxX({4})>={0} AND MBRMaxY({4})>={1} AND MBRMinX({4})<={2} AND MBRMinY({4})<={3})";
+                            break;
+                        default: break;
+                    }
+                    if ( String.IsNullOrEmpty( criteriaClause ) ) break;
+
+                    whereClause = string.Format( "[{0}].ROWID in (SELECT [{0}].ROWID FROM {1} WHERE {2})", Provider.Table, Provider.QualifiedTableName, criteriaClause );
+                    break;
+
                 case SpatiaLite2IndexType.RTree:
                     switch (spatialOperation)
                     {
@@ -149,7 +187,7 @@ namespace SharpMap.Data.Providers.SpatiaLite2
                 default:
                     throw new SpatiaLite2Exception("Invalid spatial index type");
             }
-
+            */
             if (!String.IsNullOrEmpty(whereClause))
             {
                 builder.AppendFormat(whereClause,

@@ -87,7 +87,7 @@ namespace SharpMap.Data.Providers.PostGis
                                         String.Format(CultureInfo.InvariantCulture, "{0}",
                                                       CreateParameter(exts.YMax).Value),
                                         //CreateParameter(exts.YMax).ParameterName,
-                                        SridForQuery(exts.SpatialReference.AuthorityCode),
+                                        exts.SpatialReference.AuthorityCode,
                                         Provider.QualifyColumnName(Provider.GeometryColumn));
             builder.Append(whereClause);
         }

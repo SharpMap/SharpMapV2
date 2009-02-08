@@ -52,7 +52,7 @@ namespace MapViewer.DataSource
                 string tableName = (string)drv["TableName"];;
                 string geomColumn = (string)drv["GeometryColumn"];
                 int coordDimension = (int)(long) drv["Dimension"];
-                string srid = ((long)drv["SRID"]).ToString();
+                string srid = drv["SRID"].ToString();
                 string spatialReference = drv["SpatialReference"] == DBNull.Value 
                     ?
                     "" 
@@ -92,7 +92,7 @@ namespace MapViewer.DataSource
                 AttributesProjectionExpression ape = new AttributesProjectionExpression(columns);
 
                 IFeatureProvider prov =
-                    new SpatiaLite2Provider(gf, conn, schema, tableName, oidColumnName, geomColumn); 
+                    new SpatiaLite2Provider(gf, conn, schema, tableName, oidColumnName, geomColumn, gs.CoordinateTransformationFactory); 
 
                 //jd commented temporarily to get a build
                 //((ISpatialDbProvider)prov).DefinitionQuery =

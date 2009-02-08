@@ -33,11 +33,14 @@ using System.Collections.Generic;
 using System.Data;
 using System.Diagnostics;
 using GeoAPI.Geometries;
+using GeoAPI.CoordinateSystems;
+using GeoAPI.CoordinateSystems.Transformations;
 using Npgsql;
 using SharpMap.Data.Providers.Db;
 using SharpMap.Data.Providers.Db.Expressions;
 using SharpMap.Data.Providers.PostGis;
 using SharpMap.Expressions;
+using SharpMap.Utilities.SridUtility;
 
 #if DOTNET35
 using Processor = System.Linq.Enumerable;
@@ -77,47 +80,59 @@ namespace SharpMap.Data.Providers
         {
         }
 
+        public PostGisProvider( IGeometryFactory geometryFactory, string connectionString,
+            string tableSchema, string tableName, string oidColumn, string geometryColumn )
+            : this( geometryFactory, connectionString, tableSchema, tableName, oidColumn, geometryColumn, null )
+        { }
+
         public PostGisProvider(IGeometryFactory geometryFactory, string connectionString,
-                               string tableSchema, string tableName, string oidColumn, string geometryColumn)
+                               string tableSchema, string tableName, string oidColumn, string geometryColumn,
+                               ICoordinateTransformationFactory coordinateTransformationFactory)
             : base(
                 new PostGisDbUtility(), geometryFactory, connectionString, tableSchema,
                 tableName,
                 oidColumn,
-                geometryColumn)
+                geometryColumn,
+                coordinateTransformationFactory)
         {
-            using (var cn = new NpgsqlConnection(connectionString))
+            using (var cn = (NpgsqlConnection)DbUtility.CreateConnection(connectionString))
             {
-                cn.Open();
+
                 try
                 {
-                    String selectClause = string.Format(
-                        @"SELECT x.type, y.auth_name || $l$:$l$ || y.auth_srid AS ""SRID"" 
-    FROM {0}.geometry_columns AS x
-    LEFT JOIN {0}.spatial_ref_sys AS y ON y.srid = x.srid
-    WHERE (f_table_name='{1}' AND f_geometry_column='{2}');",
-                        tableSchema, tableName, geometryColumn);
-                    NpgsqlDataReader dr = new NpgsqlCommand(selectClause, cn).ExecuteReader();
-                    if (dr.HasRows)
+
+                    cn.Open();
+
+                    if ( !PostGisProviderStatic.Has_X_Privilege( cn, "table", "\"public\".\"geometry_columns\"", "SELECT" ) )
+                        throw new PostGisException( "Insufficient rights to access table \"public\".\"geometry_columns\"!" );
+
+                    if ( !PostGisProviderStatic.Has_X_Privilege( cn, "table", string.Format( "\"{0}\".\"{1}\"", tableSchema, tableName ), "SELECT" ) )
+                        throw new PostGisException( string.Format( "Insufficient rights to access table \"{0}\".\"{1}\"!", tableSchema, tableName ) );
+
+                    var cmd = (NpgsqlCommand)DbUtility.CreateCommand();
+                    cmd.Connection = cn;
+                    cmd.CommandText =
+  @"SELECT x.""type""
+    FROM ""public"".""geometry_columns"" AS x
+    WHERE (x.""f_table_schema""=:p0 AND x.""f_table_name""=:p1 AND x.""f_geometry_column""=:p2);";
+                    cmd.Parameters.Add( DbUtility.CreateParameter( "p0", tableSchema, ParameterDirection.Input ) );
+                    cmd.Parameters.Add( DbUtility.CreateParameter( "p1", tableName, ParameterDirection.Input ) );
+                    cmd.Parameters.Add( DbUtility.CreateParameter( "p2", geometryColumn, ParameterDirection.Input ) );
+
+                    var dr = cmd.ExecuteReader(CommandBehavior.CloseConnection);
+                    if ( dr.HasRows )
                     {
                         dr.Read();
                         //valid geometry type
-                        _validGeometryType = parseGeometryType(dr.GetString(0));
+                        _validGeometryType = parseGeometryType( dr.GetString( 0 ) );
 
-                        //Srid
-                        if (String.Compare(OriginalSrid, dr.GetString(1), true) != 0)
-                            throw new PostGisException(
-                                "Spatial Reference System does not match that of assigned geometry factory!");
                     }
                     else
                     {
-                        dr.Close();
-                        selectClause = string.Format("SELECT ST_SRID({0}) FROM {1}.{2} LIMIT 1;", geometryColumn,
-                                                     tableSchema, tableName);
-                        OriginalSrid = ((Int32) new NpgsqlCommand(selectClause, cn).ExecuteScalar()).ToString();
                         _validGeometryType = OgcGeometryType.Geometry;
                     }
                 }
-                catch (Exception)
+                catch ( Exception )
                 {
                     _validGeometryType = OgcGeometryType.Unknown;
                 }
@@ -134,7 +149,7 @@ namespace SharpMap.Data.Providers
             get
             {
                 return string.Format("ST_GeomFromWKB({0}, {1})", "{0}",
-                                     Srid == null ? PostGisProviderStatic.DefaultSrid : Srid);
+                    SridInt.HasValue ? SridInt : PostGisProviderStatic.DefaultSridInt );
             }
         }
 
@@ -171,16 +186,17 @@ namespace SharpMap.Data.Providers
         /// </returns>
         private static Boolean IsSpatiallyEnabled(String connectionString)
         {
-            Boolean result = false;
+            String postGisVersion = null;
             using (var conn = new NpgsqlConnection(connectionString))
             {
                 conn.Open();
 
-                Object postGisVersion =
-                    new NpgsqlCommand("SELECT postgis_version();", conn).ExecuteScalar();
+                postGisVersion = (String)new NpgsqlCommand("SELECT postgis_version();", conn).ExecuteScalar();
+
+                conn.Close();
             }
 
-            return result;
+            return !String.IsNullOrEmpty(postGisVersion);
         }
 
         private static String getGeometryColumnName(string connectionString, String schemaName, String tableName)
@@ -188,14 +204,24 @@ namespace SharpMap.Data.Providers
             String columnName = PostGisProviderStatic.DefaultGeometryColumnName;
             using (var cn = new NpgsqlConnection(connectionString))
             {
-                cn.Open();
                 try
                 {
-                    columnName = (String) new NpgsqlCommand(
-                                              String.Format(
-                                                  "SELECT f_geometry_column FROM \"{0}\".\"geometry_columns\" WHERE (f_table_name='{1}') LIMIT 1;",
-                                                  schemaName, tableName),
-                                              cn).ExecuteScalar();
+                    cn.Open();
+
+                    if ( !PostGisProviderStatic.Has_X_Privilege( cn, "table", "\"public\".\"geometry_columns\"", "SELECT" ) )
+                        return null;
+                    
+                    var cmd = new NpgsqlCommand();
+                    cmd.Connection = cn;
+                    cmd.CommandText =
+@"SELECT x.""f_geometry_column""
+FROM ""public"".""geometry_columns"" AS x 
+WHERE (x.""f_schema_name""=:p0 AND x.""f_table_name""=:p1)
+LIMIT 1;";
+                    cmd.Parameters.Add(new NpgsqlParameter("p0", schemaName));
+                    cmd.Parameters.Add(new NpgsqlParameter("p1", tableName));
+
+                    columnName = (String) cmd.ExecuteScalar();
                 }
                 catch
                 {
@@ -236,53 +262,54 @@ namespace SharpMap.Data.Providers
 
         public override IExtents GetExtents()
         {
-            using (IDbConnection conn = DbUtility.CreateConnection(ConnectionString))
-            using (IDbCommand cmd = DbUtility.CreateCommand())
+            Double xmin = 0, ymin = 0, xmax = 0, ymax = 0;
+            Boolean isDbNull = true;
+
+            using ( var conn = (NpgsqlConnection)DbUtility.CreateConnection( ConnectionString ) )
             {
+                var cmd = (NpgsqlCommand)DbUtility.CreateCommand();
+
                 conn.Open();
                 cmd.Connection = conn;
-                /*cmd.CommandText = String.Format(
-                    "SELECT " + 
-                        "st_xmin(x.ext) AS xmin, st_ymin(x.ext) AS ymin, " +
-                        "st_xmax(x.ext) AS xmax, st_ymax(x.ext) AS ymax " +
-                    "FROM "+
-                        "(SELECT st_box3d( st_estimated_extent('{0}', '{1}', '{2}') ) AS ext ) as x;", 
-                    TableSchema, Table, GeometryColumn);
-
-                 */
                 cmd.CommandText = String.Format(
                     "SELECT " +
                     "st_xmin(x.ext) AS xmin, st_ymin(x.ext) AS ymin, " +
                     "st_xmax(x.ext) AS xmax, st_ymax(x.ext) AS ymax " +
                     "FROM " +
                     "(SELECT st_extent( \"{2}\" ) as ext FROM {0}.\"{1}\") as x;",
-                    TableSchema, Table, GeometryColumn);
+                    TableSchema, Table, GeometryColumn );
                 cmd.CommandType = CommandType.Text;
 
-                using (var r = (NpgsqlDataReader) cmd.ExecuteReader(CommandBehavior.CloseConnection))
-                {
-                    while (r.Read())
-                    {
-                        if (r.IsDBNull(0) || r.IsDBNull(1) || r.IsDBNull(2) || r.IsDBNull(3))
-                            return GeometryFactory.CreateExtents();
+                var r = (NpgsqlDataReader)cmd.ExecuteReader();
 
-                        return GeometryFactory.CreateExtents2D(
-                            r.GetDouble(0), r.GetDouble(1),
-                            r.GetDouble(2), r.GetDouble(3));
+                while ( r.Read() )
+                {
+                    if ( !( r.IsDBNull( 0 ) || r.IsDBNull( 1 ) || r.IsDBNull( 2 ) || r.IsDBNull( 3 ) ) )
+                    {
+                        xmin = r.GetDouble( 0 );
+                        ymin = r.GetDouble( 1 );
+                        xmax = r.GetDouble( 2 );
+                        ymax = r.GetDouble( 3 );
+                        isDbNull = false;
                     }
                 }
-                return GeometryFactory.CreateExtents();
+
+                conn.Close();
+
             }
+
+            return isDbNull
+                ?
+                    GeometryFactory.CreateExtents()
+                :
+                    GeometryFactory.CreateExtents2D( xmin, ymin, xmax, ymax );
+
         }
 
         public override void Insert(IEnumerable<FeatureDataRow<TOid>> features)
         {
             base.Insert(features);
-            using (var cn = new NpgsqlConnection(ConnectionString))
-            {
-                cn.Open();
-                new NpgsqlCommand(String.Format("VACUUM ANALYZE {0};", QualifiedTableName), cn).ExecuteNonQuery();
-            }
+            Vacuum();
         }
 
         protected override DataTable BuildSchemaTable()
@@ -306,45 +333,19 @@ namespace SharpMap.Data.Providers
                     dt = ds.Tables["Table"];
                 }
 
-                //dt.Columns[OidColumn].DataType = typeof(Int64);
-                for (int i = 0; i < dt.Columns.Count; i++)
-                {
-                    if (dt.Columns[i].ColumnName == GeometryColumn)
-                        dt.Columns[i].DataType = typeof (Byte[]);
-                    //replaceObjectDataColumn(dt, dt.Columns[i]);
-                }
-
-                if (!withGeometryColumn)
-                {
-                    dt.Columns.Remove(GeometryColumn);
-                }
+                conn.Close();
             }
+
+            for (int i = 0; i < dt.Columns.Count; i++)
+            {
+                if (dt.Columns[i].ColumnName == GeometryColumn)
+                    dt.Columns[i].DataType = typeof (Byte[]);
+            }
+
+            if (!withGeometryColumn)
+                dt.Columns.Remove(GeometryColumn);
+
             return dt;
-        }
-
-        private void replaceObjectDataColumn(DataTable dt, DataColumn dcOld)
-        {
-            int index = dcOld.Ordinal;
-            dt.Columns.Remove(dcOld);
-
-            var dcNew = new DataColumn(dcOld.ColumnName, typeof (Byte[]), dcOld.Expression, dcOld.ColumnMapping);
-            dcNew.AutoIncrement = dcOld.AutoIncrement;
-            dcNew.AutoIncrementSeed = dcOld.AutoIncrementSeed;
-            dcNew.AutoIncrementStep = dcOld.AutoIncrementStep;
-            dcNew.Caption = dcOld.Caption;
-            dcNew.DefaultValue = dcOld.DefaultValue;
-            foreach (object prop in dcOld.ExtendedProperties)
-                dcNew.ExtendedProperties.Add(prop.GetHashCode(), prop);
-            dcNew.MaxLength = dcOld.MaxLength;
-            dcNew.Prefix = dcOld.Prefix;
-            dcNew.ReadOnly = dcOld.ReadOnly;
-            dcNew.Unique = dcOld.Unique;
-
-            dt.Columns.Add(dcNew);
-            dcNew.SetOrdinal(index);
-
-            dcOld.Dispose();
-            dcOld = null;
         }
 
         protected override ExpressionTreeToSqlCompilerBase<TOid> CreateSqlCompiler(Expression expression)
@@ -358,12 +359,14 @@ namespace SharpMap.Data.Providers
             {
                 try
                 {
+                    cn.Open();
                     new NpgsqlCommand(
-                        String.Format("VACUUM ANALYZE {0};", QualifiedTableName),
-                        cn).ExecuteNonQuery();
+                         String.Format( "VACUUM ANALYZE {0};", QualifiedTableName ),
+                         cn ).ExecuteNonQuery();
                 }
                 finally
                 {
+                    cn.Close();
                 }
             }
         }
@@ -569,9 +572,41 @@ LIMIT {5};",
 
         #endregion
 
-        protected override void ReadSpatialReference(out GeoAPI.CoordinateSystems.ICoordinateSystem cs, out string srid)
+        protected override void ReadSpatialReference(out ICoordinateSystem cs, out string srid)
         {
-            throw new NotImplementedException();
+            using ( var conn = (NpgsqlConnection)DbUtility.CreateConnection( ConnectionString ) )
+            {
+                conn.Open();
+                var cmd = (NpgsqlCommand)DbUtility.CreateCommand();
+
+                cmd.Connection = conn;
+                cmd.CommandType = CommandType.Text;
+                cmd.CommandText =
+//@"SELECT y.""auth_name"" || $L$:$L$ || y.""auth_srid"" FROM ""public"".""spatial_ref_sys"" AS y
+@"SELECT y.""srtext"" FROM ""public"".""spatial_ref_sys"" AS y
+INNER JOIN ""public"".""geometry_columns"" as x ON x.""srid""=y.""srid""
+WHERE (x.""f_table_schema""=:p0 AND x.""f_table_name""=:p1 AND x.""f_geometry_column""=:p2)
+LIMIT 1;";
+
+                cmd.Parameters.Add( DbUtility.CreateParameter( "p0", TableSchema, ParameterDirection.Input ) );
+                cmd.Parameters.Add( DbUtility.CreateParameter( "p1", Table, ParameterDirection.Input ) );
+                cmd.Parameters.Add( DbUtility.CreateParameter( "p2", GeometryColumn, ParameterDirection.Input ) );
+
+                object result = cmd.ExecuteScalar();
+                if ( result is string )
+                {
+                    string ssrid = (string)result;
+                    cs = SridMap.DefaultInstance.Process( ssrid, (ICoordinateSystem)null );
+                    srid = !Equals( cs, default( ICoordinateSystem ) ) ? SridMap.DefaultInstance.Process( cs, "" ) : "";
+                    return;
+                }
+                //close connection
+                conn.Close();
+
+            }
+            cs = default( ICoordinateSystem );
+            srid = "";
+            
         }
     }
 }

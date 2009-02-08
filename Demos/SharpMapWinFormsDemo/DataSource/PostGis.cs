@@ -210,8 +210,9 @@ namespace MapViewer.DataSource
                 string geomColumn = (string)drv["GeometryColumn"];
                 int coordDimension = (int) drv["Dimension"];
                 string srid = (string)drv["SRID"];//((int)).ToString();
-                
-                IGeometryFactory gf = new GeometryServices()[ srid ];//, coordDimension];
+
+                GeometryServices gs = new GeometryServices();
+                IGeometryFactory gf = gs[ srid ];//, coordDimension];
                 //if (!string.IsNullOrEmpty(spatialReference))
                 //    gf.SpatialReference = gs.CoordinateSystemFactory.CreateFromWkt(spatialReference);
 
@@ -247,17 +248,17 @@ namespace MapViewer.DataSource
                 switch ((String)dgvColumns.Rows[oidcolumn].Cells["DataType"].Value)
                 {
                     case "bigint":
-                        prov = new PostGisProvider<long>(gf, conn, schema, tableName, oidColumnName, geomColumn);
+                        prov = new PostGisProvider<long>(gf, conn, schema, tableName, oidColumnName, geomColumn, gs.CoordinateTransformationFactory);
                         break;
                     case "integer":
-                        prov = new PostGisProvider<int>(gf, conn, schema, tableName, oidColumnName, geomColumn);
+                        prov = new PostGisProvider<int>(gf, conn, schema, tableName, oidColumnName, geomColumn, gs.CoordinateTransformationFactory);
                         break;
                     case "character varying":
                     case "text":
-                        prov = new PostGisProvider<string>(gf, conn, schema, tableName, oidColumnName, geomColumn);
+                        prov = new PostGisProvider<string>(gf, conn, schema, tableName, oidColumnName, geomColumn, gs.CoordinateTransformationFactory);
                         break;
                     case "uuid":
-                        prov = new PostGisProvider<Guid>(gf, conn, schema, tableName, oidColumnName, geomColumn);
+                        prov = new PostGisProvider<Guid>(gf, conn, schema, tableName, oidColumnName, geomColumn, gs.CoordinateTransformationFactory);
                         break;
                     default:
                         return null;
