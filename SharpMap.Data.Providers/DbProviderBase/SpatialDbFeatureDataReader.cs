@@ -56,7 +56,7 @@ namespace SharpMap.Data.Providers.Db
 
 
             for (int i = 0; i < internalReader.FieldCount; i++)
-                // note: GetOrdinal crashes if the column does not exist so loop through fields
+            // note: GetOrdinal crashes if the column does not exist so loop through fields
             {
                 string name = internalReader.GetName(i);
                 if (name == geometryColumn)
@@ -127,7 +127,7 @@ namespace SharpMap.Data.Providers.Db
 
         public bool NextResult()
         {
-            return _internalReader.NextResult();
+            return IsClosed ? false : _internalReader.NextResult();
         }
 
         public bool Read()
@@ -296,7 +296,7 @@ namespace SharpMap.Data.Providers.Db
                 {
                     if (_currentGeometry == null)
                     {
-                        IGeometry geom = _geomFactory.WkbReader.Read((byte[]) _internalReader[_geomColumnIndex]);
+                        IGeometry geom = _geomFactory.WkbReader.Read((byte[])_internalReader[_geomColumnIndex]);
 
                         if (CoordinateTransformation == null)
                             _currentGeometry = geom;
@@ -376,7 +376,7 @@ namespace SharpMap.Data.Providers.Db
         {
             if (_disposed)
                 return;
-            _internalReader.Close(); 
+            _internalReader.Close();
             _internalReader.Dispose();
             _disposed = true;
         }
