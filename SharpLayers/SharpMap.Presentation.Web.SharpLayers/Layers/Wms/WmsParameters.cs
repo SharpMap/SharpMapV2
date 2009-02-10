@@ -34,6 +34,7 @@ namespace SharpMap.Presentation.Web.SharpLayers.Layers.Wms
             set { _wmsVersion = value; }
         }
 
+        //TODO:need to sort out serialization to correctly convert virtual paths to relative paths on the client
         [
             SharpLayersSerialization(SerializedName = "url"),
             DesignerSerializationVisibility(DesignerSerializationVisibility.Visible),

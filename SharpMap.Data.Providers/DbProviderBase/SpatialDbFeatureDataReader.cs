@@ -127,7 +127,7 @@ namespace SharpMap.Data.Providers.Db
 
         public bool NextResult()
         {
-            return IsClosed ? false : _internalReader.NextResult();
+            return IsClosed ? false : _internalReader.NextResult(); //jd: need to check IsClosed here because of the call to Dispose in GetEnumerator - need to look further into this.
         }
 
         public bool Read()

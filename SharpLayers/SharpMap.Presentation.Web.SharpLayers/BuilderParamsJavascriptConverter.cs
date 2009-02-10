@@ -135,7 +135,7 @@ namespace SharpMap.Presentation.Web.SharpLayers
                             if (elType.IsPrimitive || elType.IsValueType || elType == typeof(string))
                                 lst.Add(o);
                             else if (o as IUICollectionItem != null)
-                                lst.Add(((IUICollectionItem)o).Value);
+                                lst.Add(o is UriValue ? _convertUriDelegate(((UriValue)o).Value.ToString()) : ((IUICollectionItem)o).Value);//jd: bit hacky for my liking
                             else
                                 lst.Add(Serialize(o, serializer));
                         }
