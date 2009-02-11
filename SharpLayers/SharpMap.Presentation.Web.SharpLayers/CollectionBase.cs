@@ -19,7 +19,7 @@ using System.Collections.Generic;
 namespace SharpMap.Presentation.Web.SharpLayers
 {
     [Serializable]
-    public class CollectionBase<T> : CollectionBase
+    public class CollectionBase<T> : CollectionBase, IList<T>
     {
         #region Delegates
 
@@ -43,7 +43,7 @@ namespace SharpMap.Presentation.Web.SharpLayers
 
         public T this[int i]
         {
-            get { return (T) List[i]; }
+            get { return (T)List[i]; }
             set { List[i] = value; }
         }
 
@@ -54,7 +54,7 @@ namespace SharpMap.Presentation.Web.SharpLayers
         {
             foreach (T component in List)
                 if (component is TLookFor)
-                    yield return (TLookFor) component;
+                    yield return (TLookFor)component;
         }
 
         public virtual void Add(T item)
@@ -132,6 +132,34 @@ namespace SharpMap.Presentation.Web.SharpLayers
             }
 
             public T Item { get; protected set; }
+        }
+
+        #endregion
+
+        #region IEnumerable<T> Members
+
+        public new IEnumerator<T> GetEnumerator()
+        {
+            foreach (T item in List)
+                yield return item;
+        }
+
+        #endregion
+
+        #region ICollection<T> Members
+
+
+        public bool IsReadOnly
+        {
+            get { return List.IsReadOnly; }
+        }
+
+        bool ICollection<T>.Remove(T item)
+        {
+            if (!Contains(item))
+                return false;
+            Remove(item);
+            return true;
         }
 
         #endregion
