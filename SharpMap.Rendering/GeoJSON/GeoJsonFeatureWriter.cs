@@ -47,7 +47,7 @@ namespace SharpMap.Rendering.GeoJson
                                           ? style.GeometryPreProcessor(feature.Geometry)
                                           : feature.Geometry;
             sb.Append("{");
-
+            sb.Append("\"type\":\"Feature\",");
             if (feature.HasOid)
             {
                 sb.Append(JsonUtility.FormatJsonAttribute("id", feature.GetOid()));
