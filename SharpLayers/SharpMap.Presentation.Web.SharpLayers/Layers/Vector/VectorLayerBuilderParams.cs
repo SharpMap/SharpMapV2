@@ -43,10 +43,16 @@ namespace SharpMap.Presentation.Web.SharpLayers.Layers.Vector
         [ClientPropertyName("protocol")]
         public string Protocol { get; set; }
 
+        private string sld;
+
         [ExtenderControlProperty]
         [ClientPropertyName("sld")]
         [ComponentReference]
-        public string Sld { get; set; }
+        public string Sld
+        {
+            get { return sld; }
+            set { sld = value; }
+        }
 
         [ExtenderControlProperty]
         [ClientPropertyName("styleSelector")]

@@ -35,11 +35,14 @@ SharpMap.Presentation.Web.SharpLayers.Layers.Vector.VectorLayerComponent.prototy
         if (options["protocol"] != null) {
             options.protocol = options.protocol.get_hostedItem();
         }
-        if (options["sld"] != null && options["styleSelector"] != null) {
-            if (typeof options.styleSelector == "string") {
-                options.styleSelector = eval(options.styleSelector);
-            }
+        if (options["sld"] != null && options["sld"]["refId"] != null)
+            options.sld = $find(options.sld.refId);
 
+        if (options["styleSelector"] != null)
+            if (typeof options.styleSelector == "string")
+            options.styleSelector = eval(options.styleSelector);
+
+        if (options["sld"] != null && options["styleSelector"] != null) {
             if (options.sld.get_initDone()) {
                 options.styleMap = new OpenLayers.StyleMap(options.styleSelector(options.sld.get_hostedItem()));
             }

@@ -102,19 +102,30 @@ Sys.WebForms.PageRequestManager.getInstance().add_pageLoaded(SharpMap.Presentati
 Sys.Application.add_load(SharpMap.Presentation.Web.SharpLayers.InitSync.appInitDone);
 
 SharpMap.Presentation.Web.SharpLayers.OpenLayersFactory._factories = {};
-SharpMap.Presentation.Web.SharpLayers.OpenLayersFactory.buildParams = function(originalParams) {
+SharpMap.Presentation.Web.SharpLayers.OpenLayersFactory.buildParams = function(originalParams, referenceTracker) {
 
     if (originalParams == null)
         return;
+    var trackerCreated = false;
+    if (referenceTracker == null) {
+        referenceTracker = new Array();
+        trackerCreated = true;
+    }
     var isArray = originalParams instanceof Array;
+
 
 
     var newParams = isArray ? new Array() : {};
     for (var k in originalParams) {
         var v = originalParams[k];
+        if (v == null)
+            continue;
+        if (Array.contains(referenceTracker, v))
+            continue;
+        referenceTracker.push(v);
 
-        if (typeof v == "object") {
-            v = $olFactory.buildParams(originalParams[k]);
+        if (typeof v == "object" && !(v.nodeName)) {
+            v = $olFactory.buildParams(originalParams[k], referenceTracker);
             if (v["typeToBuild"] != null)
                 v = $olFactory.buildOpenLayersObject(v);
             if (v["builderAction"] != null) {
@@ -145,6 +156,10 @@ SharpMap.Presentation.Web.SharpLayers.OpenLayersFactory.buildParams = function(o
             newParams.push(v);
         else
             newParams[k] = v;
+    }
+    if (trackerCreated) {
+        referenceTracker.length = 0;
+        delete referenceTracker;
     }
     return newParams;
 
