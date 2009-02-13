@@ -30,11 +30,9 @@ SharpMap.Presentation.Web.SharpLayers.Controls.SelectFeature.SelectFeatureTool.p
     },
     _toolBuilderDelegate: function() {
         var params = this.get_builderParams();
-        var layer = $find(params.layer).get_hostedItem();
+        var layer = params.layer.get_hostedItem();
         delete params.layer;
 
-        ///hold your nose...
-        ///todo: get the handlers sent correctly from the server
         if (params.onSelect != null)
             if (typeof params.onSelect == "string")
             params.onSelect = eval(params.onSelect);

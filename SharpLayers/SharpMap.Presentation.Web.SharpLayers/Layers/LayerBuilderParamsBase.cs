@@ -14,6 +14,7 @@
  */
 using System.ComponentModel;
 using System.Web.UI;
+using AjaxControlToolkit;
 
 namespace SharpMap.Presentation.Web.SharpLayers.Layers
 {
@@ -24,74 +25,86 @@ namespace SharpMap.Presentation.Web.SharpLayers.Layers
 
         #region ILayerBuilderParams Members
 
-        [SharpLayersSerialization(SerializedName = "alwaysInRange")]
+        [ExtenderControlProperty]
+        [ClientPropertyName("alwaysInRange")]
         public bool AlwaysInRange { get; set; }
 
-
-        [SharpLayersSerialization(SerializedName = "resolutions"),
-         DesignerSerializationVisibility(DesignerSerializationVisibility.Visible),
+        [ExtenderControlProperty]
+        [ClientPropertyName("resolutions")]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible),
          PersistenceMode(PersistenceMode.InnerProperty)]
         public CollectionBase<DoubleValue> Resolutions
         {
             get { return _resolutions; }
         }
 
-
-        [SharpLayersSerialization(SerializedName = "scales"),
-         DesignerSerializationVisibility(DesignerSerializationVisibility.Visible),
+        [ExtenderControlProperty]
+        [ClientPropertyName("scales")]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible),
          PersistenceMode(PersistenceMode.InnerProperty)]
         public CollectionBase<DoubleValue> Scales
         {
             get { return _scales; }
         }
 
-        [SharpLayersSerialization(SerializedName = "minScale")]
+        [ExtenderControlProperty]
+        [ClientPropertyName("minScale")]
         public double? MinScale { get; set; }
 
-        [SharpLayersSerialization(SerializedName = "maxScale")]
+        [ExtenderControlProperty]
+        [ClientPropertyName("maxScale")]
         public double? MaxScale { get; set; }
 
-        [SharpLayersSerialization(SerializedName = "minResolution")]
+        [ExtenderControlProperty]
+        [ClientPropertyName("minResolution")]
         public double? MinResolution { get; set; }
 
-        [SharpLayersSerialization(SerializedName = "maxResolution")]
+        [ExtenderControlProperty]
+        [ClientPropertyName("maxResolution")]
         public double? MaxResolution { get; set; }
 
-        [SharpLayersSerialization(SerializedName = "gutter")]
+        [ExtenderControlProperty]
+        [ClientPropertyName("gutter")]
         public int? Gutter { get; set; }
 
-        //[SharpLayersSerialization(SerializedName = "name")]
-        //public string Value { get; set; }
-
-        [SharpLayersSerialization(SerializedName = "isBaseLayer")]
+        [ExtenderControlProperty]
+        [ClientPropertyName("isBaseLayer")]
         public bool IsBaseLayer { get; set; }
 
-        [SharpLayersSerialization(SerializedName = "displayInLayerSwitcher")]
+        [ExtenderControlProperty]
+        [ClientPropertyName("displayInLayerSwitcher")]
         public bool DisplayInLayerSwitcher { get; set; }
 
-        [SharpLayersSerialization(SerializedName = "visibility")]
+        [ExtenderControlProperty]
+        [ClientPropertyName("visibility")]
         public bool Visibility { get; set; }
 
-        [SharpLayersSerialization(SerializedName = "units")]
+        [ExtenderControlProperty]
+        [ClientPropertyName("units")]
         public MapUnits Units { get; set; }
 
-        [SharpLayersSerialization(SerializedName = "maxExtent"),
-         DesignerSerializationVisibility(DesignerSerializationVisibility.Visible),
+        [ExtenderControlProperty]
+        [ClientPropertyName("maxExtent")]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible),
          PersistenceMode(PersistenceMode.InnerProperty)]
         public Bounds MaxExtent { get; set; }
 
-        [SharpLayersSerialization(SerializedName = "minExtent"),
-         DesignerSerializationVisibility(DesignerSerializationVisibility.Visible),
+        [ExtenderControlProperty]
+        [ClientPropertyName("minExtent")]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible),
          PersistenceMode(PersistenceMode.InnerProperty)]
         public Bounds MinExtent { get; set; }
 
-        [SharpLayersSerialization(SerializedName = "displayOutsideMaxExtent")]
+        [ExtenderControlProperty]
+        [ClientPropertyName("displayOutsideMaxExtent")]
         public bool DisplayOutsideMaxExtent { get; set; }
 
-        [SharpLayersSerialization(SerializedName = "wrapDateLine")]
+        [ExtenderControlProperty]
+        [ClientPropertyName("wrapDateLine")]
         public bool WrapDateLine { get; set; }
 
-        [SharpLayersSerialization(SerializedName = "attribution")]
+        [ExtenderControlProperty]
+        [ClientPropertyName("attribution")]
         public string Attribution { get; set; }
 
         #endregion

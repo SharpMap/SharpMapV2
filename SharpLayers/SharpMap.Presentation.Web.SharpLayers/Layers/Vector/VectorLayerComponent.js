@@ -31,20 +31,11 @@ SharpMap.Presentation.Web.SharpLayers.Layers.Vector.VectorLayerComponent.prototy
     },
     _layerBuilderDelegate: function() {
         var options = this.get_builderParams();
-        if (options["strategies"] != null) {
-            var strats = [];
-            for (var ndx in options.strategies) {
-                strats.push($olFactory.buildOpenLayersObject(options.strategies[ndx]));
-            }
-            options.strategies = strats;
-        }
+
         if (options["protocol"] != null) {
-            if (typeof options.protocol == "string")
-                options.protocol = $find(options.protocol).get_hostedItem();
+            options.protocol = options.protocol.get_hostedItem();
         }
         if (options["sld"] != null && options["styleSelector"] != null) {
-            if (typeof options.sld == "string")
-                options.sld = $find(options.sld);
             if (typeof options.styleSelector == "string") {
                 options.styleSelector = eval(options.styleSelector);
             }

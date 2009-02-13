@@ -15,6 +15,7 @@
 using System;
 using System.ComponentModel;
 using System.Web.UI;
+using AjaxControlToolkit;
 
 namespace SharpMap.Presentation.Web.SharpLayers
 {
@@ -23,66 +24,71 @@ namespace SharpMap.Presentation.Web.SharpLayers
     {
         private readonly CollectionBase<DoubleValue> _resolutions = new CollectionBase<DoubleValue>((a, b) => a != b);
 
-        [SharpLayersSerialization(SerializedName = "tileSize"
-            , SerializationFlags = SharpLayersSerializationFlags.CreateClientClass)
-            , DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)
-            , PersistenceMode(PersistenceMode.InnerProperty)]
+        [ClientPropertyName("tileSize")]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)
+        , PersistenceMode(PersistenceMode.InnerProperty)]
         public Size TileSize { get; set; }
 
-        [SharpLayersSerialization(SerializedName = "projection")]
+        [ClientPropertyName("projection")]
         public string Projection { get; set; }
 
-        [SharpLayersSerialization(SerializedName = "units")]
+        [ClientPropertyName("units")]
         public MapUnits Units { get; set; }
 
-        [SharpLayersSerialization(SerializedName = "resolutions")
-            , DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)
-            , PersistenceMode(PersistenceMode.InnerProperty)]
+        [ExtenderControlProperty]
+        [ClientPropertyName("resolutions")]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)
+        , PersistenceMode(PersistenceMode.InnerProperty)]
         public CollectionBase<DoubleValue> Resolutions
         {
             get { return _resolutions; }
         }
 
-
-        [SharpLayersSerialization(SerializedName = "maxResolution")]
+        [ExtenderControlProperty]
+        [ClientPropertyName("maxResolution")]
         public double? MaxResolution { get; set; }
 
-        [SharpLayersSerialization(SerializedName = "minResolution")]
+        [ExtenderControlProperty]
+        [ClientPropertyName("minResolution")]
         public double? MinResolution { get; set; }
 
-        [SharpLayersSerialization(SerializedName = "maxScale")]
+        [ExtenderControlProperty]
+        [ClientPropertyName("maxScale")]
         public double? MaxScale { get; set; }
 
-        [SharpLayersSerialization(SerializedName = "minScale")]
+        [ExtenderControlProperty]
+        [ClientPropertyName("minScale")]
         public double? MinScale { get; set; }
 
-
-        [SharpLayersSerialization(SerializedName = "maxExtent"
-            , SerializationFlags = SharpLayersSerializationFlags.CreateClientClass)
-            , DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)
-            , PersistenceMode(PersistenceMode.InnerProperty)]
+        [ExtenderControlProperty]
+        [ClientPropertyName("maxExtent")]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)
+        , PersistenceMode(PersistenceMode.InnerProperty)]
         public Bounds MaxExtent { get; set; }
 
-        [SharpLayersSerialization(SerializedName = "minExtent"
-            , SerializationFlags = SharpLayersSerializationFlags.CreateClientClass)
-            , DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)
-            , PersistenceMode(PersistenceMode.InnerProperty)]
+        [ExtenderControlProperty]
+        [ClientPropertyName("minExtent")]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)
+        , PersistenceMode(PersistenceMode.InnerProperty)]
         public Bounds MinExtent { get; set; }
 
-        [SharpLayersSerialization(SerializedName = "restrictedExtent"
-            , SerializationFlags = SharpLayersSerializationFlags.CreateClientClass)
-            , DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)
-            , PersistenceMode(PersistenceMode.InnerProperty)]
+        [ExtenderControlProperty]
+        [ClientPropertyName("restrictedExtent")]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)
+        , PersistenceMode(PersistenceMode.InnerProperty)]
         public Bounds RestrictedExtent { get; set; }
 
-        [SharpLayersSerialization(SerializedName = "numZoomLevels")]
+        [ExtenderControlProperty]
+        [ClientPropertyName("numZoomLevels")]
         private int? NumZoomLevels { get; set; }
 
-        [SharpLayersSerialization(SerializedName = "theme"
-            , SerializationFlags = SharpLayersSerializationFlags.Uri)]
+        [ExtenderControlProperty]
+        [UrlProperty]
+        [ClientPropertyName("theme")]
         public string Theme { get; set; }
 
-        [SharpLayersSerialization(SerializedName = "fallThrough")]
+        [ExtenderControlProperty]
+        [ClientPropertyName("fallThrough")]
         public bool FallThrough { get; set; }
     }
 }

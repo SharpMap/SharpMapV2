@@ -12,10 +12,8 @@
  *  Author: John Diss 2008
  * 
  */
-using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Web.Script.Serialization;
 using System.Web.UI;
 using AjaxControlToolkit;
 
@@ -23,22 +21,40 @@ using AjaxControlToolkit;
 
 namespace SharpMap.Presentation.Web.SharpLayers
 {
-    [RequiredScript(typeof(OpenLayersExtender))]
+    [RequiredScript(typeof (OpenLayersExtender))]
     [ClientScriptResource("SharpMap.Presentation.Web.SharpLayers.ComponentBase",
         "SharpMap.Presentation.Web.SharpLayers.ComponentBase.js")]
-    [TargetControlType(typeof(Control))]
-    public abstract class ComponentBase : ScriptControl
+    [TargetControlType(typeof (Control))]
+    public abstract class ComponentBase : ScriptControlBase
     {
         private readonly Dictionary<string, Control> _findControlHelperCache = new Dictionary<string, Control>();
         protected abstract string ScriptComponentName { get; }
 
 
-
-        protected override IEnumerable<ScriptReference> GetScriptReferences()
+        protected override IEnumerable<ScriptDescriptor> GetScriptDescriptors()
         {
-            return ScriptObjectBuilder.GetScriptReferences(GetType());
+            var descriptor = new ScriptComponentDescriptor(ScriptComponentName);
+            descriptor.ID = ClientID;
+            DescribeComponent(descriptor);
+            yield return descriptor;
         }
 
+        public override void RenderBeginTag(HtmlTextWriter writer)
+        {
+        }
+
+        public override void RenderEndTag(HtmlTextWriter writer)
+        {
+        }
+
+        protected override void DescribeComponent(ScriptComponentDescriptor descriptor)
+        {
+            SharpLayersScriptObjectBuilder.DescribeComponent(this, descriptor, this, this);
+            if (SupportsClientState)
+            {
+                descriptor.AddElementProperty("clientStateField", ClientStateFieldID);
+            }
+        }
 
         protected Control FindControlHelper(string id)
         {
@@ -85,7 +101,6 @@ namespace SharpMap.Presentation.Web.SharpLayers
 
         public override Control FindControl(string id)
         {
-            // Use FindControlHelper so that more complete searching and OnResolveControlID will be used
             return FindControlHelper(id);
         }
     }
@@ -96,6 +111,8 @@ namespace SharpMap.Presentation.Web.SharpLayers
     {
         #region IHaveBuilderParams<TBuilderParams> Members
 
+        [ClientPropertyName("builderParams")]
+        [ExtenderControlProperty(true, true)]
         [
             DesignerSerializationVisibility(DesignerSerializationVisibility.Visible),
             Category("Behavior"),
@@ -105,19 +122,5 @@ namespace SharpMap.Presentation.Web.SharpLayers
         public TBuilderParams BuilderParams { get; set; }
 
         #endregion
-
-        protected override IEnumerable<ScriptDescriptor> GetScriptDescriptors()
-        {
-            var descriptor = new ScriptComponentDescriptor(ScriptComponentName);
-            descriptor.ID = ClientID;
-            var serializer = new JavaScriptSerializer();
-            serializer.RegisterConverters(new[] {
-                                                  new BuilderParamsJavascriptConverter(
-                                                      FindControl, 
-                                                      s => Page.ResolveClientUrl(s))
-                                              });
-            descriptor.AddScriptProperty("builderParams", serializer.Serialize(BuilderParams));
-            return new[] { descriptor };
-        }
     }
 }

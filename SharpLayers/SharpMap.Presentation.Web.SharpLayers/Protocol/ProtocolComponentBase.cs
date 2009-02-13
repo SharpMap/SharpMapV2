@@ -35,15 +35,5 @@ namespace SharpMap.Presentation.Web.SharpLayers.Protocol
         }
 
         #endregion
-
-        public override void RenderBeginTag(HtmlTextWriter writer)
-        {
-            //do nothing
-        }
-
-        public override void RenderEndTag(HtmlTextWriter writer)
-        {
-            //do nothing
-        }
     }
 }

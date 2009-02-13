@@ -12,40 +12,51 @@
  *  Author: John Diss 2008
  * 
  */
+using AjaxControlToolkit;
+
 namespace SharpMap.Presentation.Web.SharpLayers.Controls.SelectFeature
 {
     public class SelectFeatureToolBuilderParams : ToolBuilderParamsBase
     {
-        [SharpLayersSerialization(SerializedName = "multipleKey")]
+        [ExtenderControlProperty]
+        [ClientPropertyName("multipleKey")]
         public EventModifierKeys MultipleKey { get; set; }
 
-        [SharpLayersSerialization(SerializedName = "toggleKey")]
+        [ExtenderControlProperty]
+        [ClientPropertyName("toggleKey")]
         public EventModifierKeys ToggleKey { get; set; }
 
-        [SharpLayersSerialization(SerializedName = "multiple")]
+        [ExtenderControlProperty]
+        [ClientPropertyName("multiple")]
         public bool Multiple { get; set; }
 
-        [SharpLayersSerialization(SerializedName = "clickout")]
+        [ExtenderControlProperty]
+        [ClientPropertyName("clickout")]
         public bool ClickOut { get; set; }
 
-        [SharpLayersSerialization(SerializedName = "toggle")]
+        [ExtenderControlProperty]
+        [ClientPropertyName("toggle")]
         public bool Toggle { get; set; }
 
-        [SharpLayersSerialization(SerializedName = "hover")]
+        [ExtenderControlProperty]
+        [ClientPropertyName("hover")]
         public bool Hover { get; set; }
 
-        [SharpLayersSerialization(SerializedName = "box")]
+        [ExtenderControlProperty]
+        [ClientPropertyName("box")]
         public bool Box { get; set; }
 
-
-        [SharpLayersSerialization(SerializedName = "onSelect")]
+        [ExtenderControlProperty]
+        [ClientPropertyName("onSelect")]
         public string OnSelect { get; set; }
 
-        [SharpLayersSerialization(SerializedName = "onUnselect")]
+        [ExtenderControlProperty]
+        [ClientPropertyName("onUnselect")]
         public string OnUnselect { get; set; }
 
-        [SharpLayersSerialization(SerializedName = "layer",
-            SerializationFlags = SharpLayersSerializationFlags.GetComponent)]
+        [ExtenderControlProperty]
+        [ComponentReference]
+        [ClientPropertyName("layer")]
         public string SelectableLayer { get; set; }
     }
 

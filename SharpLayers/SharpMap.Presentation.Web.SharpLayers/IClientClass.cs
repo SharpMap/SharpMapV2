@@ -15,6 +15,7 @@ namespace SharpMap.Presentation.Web.SharpLayers
 {
     public interface IClientClass
     {
+        bool NotSet { get; }
         string ClientClassName { get; }
     }
 }

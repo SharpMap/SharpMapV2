@@ -13,23 +13,30 @@
  * 
  */
 using System;
+using AjaxControlToolkit;
 
 namespace SharpMap.Presentation.Web.SharpLayers
 {
     [Serializable]
     public class Pixel : IClientClass
     {
-        [SharpLayersSerialization(SerializedName = "x")]
+        [ClientPropertyName("x")]
         public double? X { get; set; }
 
-        [SharpLayersSerialization(SerializedName = "y")]
+        [ClientPropertyName("y")]
         public double? Y { get; set; }
 
         #region IClientClass Members
 
+        [ClientPropertyName("typeToBuild")]
         public string ClientClassName
         {
             get { return "OpenLayers.Pixel"; }
+        }
+
+        public bool NotSet
+        {
+            get { return !(X.HasValue || Y.HasValue); }
         }
 
         #endregion

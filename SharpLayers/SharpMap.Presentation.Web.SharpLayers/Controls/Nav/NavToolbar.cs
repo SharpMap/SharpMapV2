@@ -24,7 +24,7 @@ namespace SharpMap.Presentation.Web.SharpLayers.Controls.Nav
 {
     [ClientScriptResource("SharpMap.Presentation.Web.SharpLayers.Controls.Nav.NavToolbar",
         "SharpMap.Presentation.Web.SharpLayers.Controls.Nav.NavToolbar.js")]
-    [TargetControlType(typeof(Control))]
+    [TargetControlType(typeof (Control))]
     public class NavToolbar : ToolBaseComponent<NavToolbarBuilderParams>
     {
         protected override string ScriptComponentName

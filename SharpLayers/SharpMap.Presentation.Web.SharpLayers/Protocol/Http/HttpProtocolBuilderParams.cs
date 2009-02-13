@@ -14,6 +14,7 @@
 */
 using System.Collections.Generic;
 using System.Web.UI;
+using AjaxControlToolkit;
 using SharpMap.Presentation.Web.SharpLayers.Format;
 
 namespace SharpMap.Presentation.Web.SharpLayers.Protocol.Http
@@ -23,16 +24,20 @@ namespace SharpMap.Presentation.Web.SharpLayers.Protocol.Http
         private readonly Dictionary<string, object> _headers = new Dictionary<string, object>();
         private readonly Dictionary<string, object> _params = new Dictionary<string, object>();
 
-        [SharpLayersSerialization(SerializedName = "url")]
+        [ExtenderControlProperty]
+        [UrlProperty]
+        [ClientPropertyName("url")]
         public string Url { get; set; }
 
-        [SharpLayersSerialization(SerializedName = "headers")]
+        [ExtenderControlProperty]
+        [ClientPropertyName("headers")]
         public IDictionary<string, object> Headers
         {
             get { return _headers; }
         }
 
-        [SharpLayersSerialization(SerializedName = "params")]
+        [ExtenderControlProperty]
+        [ClientPropertyName("params")]
         public IDictionary<string, object> Params
         {
             get { return _params; }
@@ -43,7 +48,9 @@ namespace SharpMap.Presentation.Web.SharpLayers.Protocol.Http
     {
         private readonly CollectionBase<IFormat> _formats = new CollectionBase<IFormat>((a, b) => !Equals(a, b));
 
-        [SharpLayersSerialization(SerializedName = "formats"), PersistenceMode(PersistenceMode.InnerDefaultProperty)]
+        [ExtenderControlProperty]
+        [ClientPropertyName("formats")]
+        [PersistenceMode(PersistenceMode.InnerDefaultProperty)]
         public CollectionBase<IFormat> Formats
         {
             get { return _formats; }

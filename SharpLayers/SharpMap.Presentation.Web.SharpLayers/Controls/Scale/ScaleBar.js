@@ -28,9 +28,8 @@ SharpMap.Presentation.Web.SharpLayers.Controls.Scale.ScaleBar.prototype = {
     },
     _toolBuilderDelegate: function() {
         var options = this.get_builderParams();
-        options.div = typeof options.div == "string" ? $get(options.div) : options.div;
-
-
+        if (options)
+            options.div = typeof options.div == "string" ? $get(options.div) : options.div;
         return new OpenLayers.Control.ScaleLine(options);
     }
 }

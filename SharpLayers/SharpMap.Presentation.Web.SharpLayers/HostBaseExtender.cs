@@ -12,9 +12,7 @@
  *  Author: John Diss 2008
  * 
  */
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Web.Script.Serialization;
 using System.Web.UI;
 using AjaxControlToolkit;
 
@@ -22,18 +20,19 @@ using AjaxControlToolkit;
 
 namespace SharpMap.Presentation.Web.SharpLayers
 {
-    [RequiredScript(typeof(OpenLayersExtender))]
-    [RequiredScript(typeof(ComponentBase<>))]
+    [RequiredScript(typeof (OpenLayersExtender))]
+    [RequiredScript(typeof (ComponentBase<>))]
     [ClientScriptResource("SharpMap.Presentation.Web.SharpLayers.HostBaseBehavior",
         "SharpMap.Presentation.Web.SharpLayers.HostBaseBehavior.js")]
-    [TargetControlType(typeof(Control))]
+    [TargetControlType(typeof (Control))]
     public class HostBaseExtender<TBuilderParams> : ExtenderControlBase, IHaveBuilderParams<TBuilderParams>
         where TBuilderParams : IBuilderParams
     {
         #region IHaveBuilderParams<TBuilderParams> Members
 
         [
-            ExtenderControlProperty, DefaultValue("{}"), ClientPropertyName("builderParams"),
+            ExtenderControlProperty(true, true),
+            ClientPropertyName("builderParams"),
             Category("Behavior"),
             Description("The Builder Options"),
             DesignerSerializationVisibility(DesignerSerializationVisibility.Visible),
@@ -47,23 +46,10 @@ namespace SharpMap.Presentation.Web.SharpLayers
 
         #endregion
 
-        protected override IEnumerable<ScriptDescriptor> GetScriptDescriptors(Control targetControl)
+        protected override void RenderScriptAttributes(ScriptBehaviorDescriptor descriptor)
         {
-            var serializer = new JavaScriptSerializer();
-            serializer.RegisterConverters(new[]
-                                              {
-                                                  new BuilderParamsJavascriptConverter(
-                                                      FindControl, 
-                                                      s => Page.ResolveClientUrl(s))
-                                              });
-
-            foreach (ScriptDescriptor descriptor in base.GetScriptDescriptors(targetControl))
-            {
-                if (descriptor is ScriptComponentDescriptor)
-                    ((ScriptComponentDescriptor)descriptor).AddScriptProperty("builderParams",
-                                                                               serializer.Serialize(BuilderParams));
-                yield return descriptor;
-            }
+            descriptor.ID = ClientID;
+            SharpLayersScriptObjectBuilder.DescribeComponent(this, descriptor, this, this);
         }
     }
 }

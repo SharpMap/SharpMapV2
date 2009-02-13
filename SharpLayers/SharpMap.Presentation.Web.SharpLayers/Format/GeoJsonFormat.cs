@@ -12,15 +12,24 @@
 *  Author: John Diss 2008
 * 
 */
+using AjaxControlToolkit;
+
 namespace SharpMap.Presentation.Web.SharpLayers.Format
 {
     public class GeoJsonFormat : IFormat
     {
         #region IFormat Members
 
+        [ClientPropertyName("typeToBuild")]
+        [ExtenderControlProperty]
         public string ClientClassName
         {
             get { return "OpenLayers.Format.GeoJSON"; }
+        }
+
+        public bool NotSet
+        {
+            get { return false; }
         }
 
         #endregion

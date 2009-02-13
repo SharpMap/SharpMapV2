@@ -12,23 +12,33 @@
  * 
  */
 using System;
+using AjaxControlToolkit;
 
 namespace SharpMap.Presentation.Web.SharpLayers
 {
     [Serializable]
     public class Size : IClientClass
     {
-        [SharpLayersSerialization(SerializedName = "w")]
+        [ExtenderControlProperty]
+        [ClientPropertyName("w")]
         public double? Width { get; set; }
 
-        [SharpLayersSerialization(SerializedName = "h")]
+        [ExtenderControlProperty]
+        [ClientPropertyName("h")]
         public double? Height { get; set; }
 
         #region IClientClass Members
 
+        [ExtenderControlProperty]
+        [ClientPropertyName("typeToBuild")]
         public string ClientClassName
         {
             get { return "OpenLayers.Size"; }
+        }
+
+        public bool NotSet
+        {
+            get { return !(Width.HasValue || Height.HasValue); }
         }
 
         #endregion

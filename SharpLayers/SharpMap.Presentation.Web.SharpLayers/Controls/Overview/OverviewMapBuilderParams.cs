@@ -12,20 +12,26 @@
  *  Author: John Diss 2008
  * 
  */
+using AjaxControlToolkit;
+
 namespace SharpMap.Presentation.Web.SharpLayers.Controls.Overview
 {
     public class OverviewMapBuilderParams : ToolBuilderParamsBase
     {
-        [SharpLayersSerialization(SerializedName = "size", SerializationFlags = SharpLayersSerializationFlags.CreateClientClass)]
+        [ExtenderControlProperty(true, true)]
+        [ClientPropertyName("size")]
         public Size Size { get; set; }
 
-        [SharpLayersSerialization(SerializedName = "minRectSize")]
+        [ExtenderControlProperty]
+        [ClientPropertyName("minRectSize")]
         public int MinimumRectangleSize { get; set; }
 
-        [SharpLayersSerialization(SerializedName = "minRatio")]
+        [ExtenderControlProperty]
+        [ClientPropertyName("minRatio")]
         public int MinRatio { get; set; }
 
-        [SharpLayersSerialization(SerializedName = "maxRatio")]
+        [ExtenderControlProperty]
+        [ClientPropertyName("maxRatio")]
         public int MaxRatio { get; set; }
     }
 }

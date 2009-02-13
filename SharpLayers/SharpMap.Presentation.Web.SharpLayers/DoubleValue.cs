@@ -18,5 +18,6 @@ namespace SharpMap.Presentation.Web.SharpLayers
 {
     [Serializable]
     public class DoubleValue : ValueBase<double>
-    { }
+    {
+    }
 }

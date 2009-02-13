@@ -18,6 +18,5 @@ namespace SharpMap.Presentation.Web.SharpLayers
 {
     public class UriValue : ValueBase<Uri>
     {
-
     }
 }

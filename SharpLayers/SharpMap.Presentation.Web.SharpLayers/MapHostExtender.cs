@@ -12,7 +12,6 @@
  *  Author: John Diss 2008
  * 
  */
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Web.UI;
 using System.Web.UI.WebControls;
@@ -91,9 +90,6 @@ namespace SharpMap.Presentation.Web.SharpLayers
                 Controls.Remove((Control) e.Item);
         }
 
-        //private readonly ToolbarCollection _toolbars;
-
-
         protected override void CreateChildControls()
         {
             base.CreateChildControls();
@@ -104,12 +100,6 @@ namespace SharpMap.Presentation.Web.SharpLayers
                 Controls.Add((Control) toolComponent);
         }
 
-        protected override IEnumerable<ScriptDescriptor> GetScriptDescriptors(Control targetControl)
-        {
-            foreach (ScriptDescriptor descriptor in base.GetScriptDescriptors(targetControl))
-                yield return descriptor;
-        }
-
         protected override void AddParsedSubObject(object obj)
         {
             if (obj as ILayerComponent != null)
@@ -118,62 +108,4 @@ namespace SharpMap.Presentation.Web.SharpLayers
                 Tools.Add((IToolComponent) obj);
         }
     }
-
-    //public class ToolbarCollection : CollectionBase<ToolbarHostExtender>
-    //{
-    //    public MapHostExtender MapHost
-    //    {
-    //        get;
-    //        protected set;
-    //    }
-
-    //    public ToolbarCollection(MapHostExtender mapHost, EnsureUniqueDelegate uniqueDelegate)
-    //        : base(uniqueDelegate)
-    //    {
-    //        MapHost = mapHost;
-    //    }
-
-    //    public override void Add(ToolbarHostExtender item)
-    //    {
-    //        base.Add(item);
-    //        item.TargetMapId = MapHost.ClientID;
-    //    }
-
-    //    public override void Insert(int ndx, ToolbarHostExtender item)
-    //    {
-    //        base.Insert(ndx, item);
-    //        item.TargetMapId = MapHost.ClientID;
-    //    }
-
-
-    //}
-
-
-    //public class LayerComponentCollectionBuilder : ControlBuilder
-    //{
-    //    private static readonly Dictionary<string, Type> _layerTypesRegistry = new Dictionary<string, Type>();
-
-    //    public static void RegisterLayerType<TLayer, TBuilderParams>()
-    //        where TLayer : LayerComponent<TBuilderParams>
-    //        where TBuilderParams : LayerBuilderParamsBase
-    //    {
-    //        string name = TypeDescriptor.GetClassName(typeof (TLayer)).ToLower();
-    //        _layerTypesRegistry.Add(name, typeof (TLayer));
-    //    }
-
-    //    public override bool AllowWhitespaceLiterals()
-    //    {
-    //        return false;
-    //    }
-
-    //    public override void AppendLiteralString(string s)
-    //    {
-    //        //do nothing
-    //    }
-
-    //    public override Type GetChildControlType(string tagName, IDictionary attribs)
-    //    {
-    //        return _layerTypesRegistry[tagName.ToLower()];
-    //    }
-    //}
 }

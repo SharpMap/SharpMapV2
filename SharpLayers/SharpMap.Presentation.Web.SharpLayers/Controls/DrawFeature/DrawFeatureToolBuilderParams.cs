@@ -12,12 +12,15 @@
  *  Author: John Diss 2008
  * 
  */
+using AjaxControlToolkit;
+
 namespace SharpMap.Presentation.Web.SharpLayers.Controls.DrawFeature
 {
     public class DrawFeatureToolBuilderParams : ToolBuilderParamsBase
     {
-        [SharpLayersSerialization(SerializedName = "layer",
-            SerializationFlags = SharpLayersSerializationFlags.GetComponent)]
+        [ExtenderControlProperty]
+        [ComponentReference]
+        [ClientPropertyName("layer")]
         public string EditableLayerId { get; set; }
     }
 }

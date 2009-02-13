@@ -31,8 +31,6 @@ SharpMap.Presentation.Web.SharpLayers.Controls.LayerSwitcher.LayerSwitcherTool.p
     },
     _toolBuilderDelegate: function() {
         var options = this.get_builderParams();
-        if (options["div"] && typeof options["div"] == "string")
-            options.div = $get(options.div);
         return new OpenLayers.Control.LayerSwitcher(options);
     }
 

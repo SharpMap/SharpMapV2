@@ -24,11 +24,6 @@ namespace SharpMap.Presentation.Web.SharpLayers.Layers.Tms
     [TargetControlType(typeof (Control))]
     public class TmsLayerComponent : LayerComponent<TmsLayerBuilderParams>
     {
-        //static TmsLayerComponent()
-        //{
-        //    LayerComponentCollectionBuilder.RegisterLayerType<TmsLayerComponent, TmsLayerBuilderParams>();
-        //}
-
         protected override string ScriptComponentName
         {
             get { return "SharpMap.Presentation.Web.SharpLayers.Layers.Tms.TmsLayerComponent"; }

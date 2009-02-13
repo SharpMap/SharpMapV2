@@ -16,7 +16,7 @@ namespace SharpMap.Presentation.Web.SharpLayers.Layers.Vector
 {
     public struct VectorGeometryType
     {
-        private string _type;
+        private readonly string _type;
 
         private VectorGeometryType(string type)
         {
@@ -61,6 +61,11 @@ namespace SharpMap.Presentation.Web.SharpLayers.Layers.Vector
         public static VectorGeometryType Rectangle
         {
             get { return new VectorGeometryType("OpenLayers.Geometry.Rectangle"); }
+        }
+
+        public string GeometryType
+        {
+            get { return _type; }
         }
     }
 }

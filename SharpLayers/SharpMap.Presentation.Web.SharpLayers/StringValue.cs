@@ -16,6 +16,5 @@ namespace SharpMap.Presentation.Web.SharpLayers
 {
     public class StringValue : ValueBase<string>
     {
-
     }
 }

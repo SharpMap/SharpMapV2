@@ -12,7 +12,6 @@
  *  Author: John Diss 2008
  * 
  */
-using System.Collections.Generic;
 using System.Web.UI;
 using AjaxControlToolkit;
 
@@ -34,10 +33,8 @@ namespace SharpMap.Presentation.Web.SharpLayers.Controls.Containers
             _childTools.ItemRemoved += _childTools_ItemRemoved;
         }
 
-        [
-            SharpLayersSerialization(SerializedName = "childControlHostIds"),
-            PersistenceMode(PersistenceMode.InnerProperty)
-        ]
+        [ClientPropertyName("childControlHostIds")]
+        [PersistenceMode(PersistenceMode.InnerProperty)]
         public CollectionBase<IToolComponent> ChildTools
         {
             get { return _childTools; }
@@ -56,29 +53,6 @@ namespace SharpMap.Presentation.Web.SharpLayers.Controls.Containers
         private void _childTools_ItemRemoved(object sender, CollectionBase<IToolComponent>.ItemEventArgs e)
         {
             Controls.Remove(e.Item as Control);
-        }
-
-        protected override IEnumerable<ScriptDescriptor> GetScriptDescriptors()
-        {
-            foreach (ScriptDescriptor dexc in base.GetScriptDescriptors())
-            {
-                var descriptor = dexc as ScriptComponentDescriptor;
-                if (descriptor != null)
-                {
-                    var lst = new List<string>();
-                    foreach (IToolComponent c in ChildTools)
-                        lst.Add(((Control) c).ClientID);
-
-                    string s = "['" + string.Join("','", lst.ToArray()) + "']";
-
-                    descriptor.AddScriptProperty("childControlHostIds", s);
-                    yield return descriptor;
-                }
-                else
-                {
-                    yield return dexc;
-                }
-            }
         }
     }
 }

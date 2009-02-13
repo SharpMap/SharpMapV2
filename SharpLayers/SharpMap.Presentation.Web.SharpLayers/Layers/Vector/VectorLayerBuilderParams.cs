@@ -14,6 +14,7 @@
  */
 using System.ComponentModel;
 using System.Web.UI;
+using AjaxControlToolkit;
 using SharpMap.Presentation.Web.SharpLayers.Strategy;
 
 namespace SharpMap.Presentation.Web.SharpLayers.Layers.Vector
@@ -24,33 +25,31 @@ namespace SharpMap.Presentation.Web.SharpLayers.Layers.Vector
             new CollectionBase<IStrategy>(
                 (item, check) => false);
 
-        [SharpLayersSerialization(SerializedName = "geometryType")]
+        [ExtenderControlProperty]
+        [ClientPropertyName("geometryType")]
         public VectorGeometryType? LimitToGeometryType { get; set; }
 
-
-        [
-            SharpLayersSerialization(SerializedName = "strategies"),
-            DesignerSerializationVisibility(DesignerSerializationVisibility.Visible),
-            PersistenceMode(PersistenceMode.InnerProperty)
-        ]
+        [ExtenderControlProperty]
+        [ClientPropertyName("strategies")]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible),
+         PersistenceMode(PersistenceMode.InnerProperty)]
         public CollectionBase<IStrategy> Strategies
         {
             get { return _strategies; }
         }
 
-
-        [SharpLayersSerialization(SerializedName = "protocol",
-            SerializationFlags = SharpLayersSerializationFlags.GetComponent)]
+        [ExtenderControlProperty]
+        [ComponentReference]
+        [ClientPropertyName("protocol")]
         public string Protocol { get; set; }
 
-
-
-        [SharpLayersSerialization(SerializedName = "sld",
-           SerializationFlags = SharpLayersSerializationFlags.GetComponent)]
+        [ExtenderControlProperty]
+        [ClientPropertyName("sld")]
+        [ComponentReference]
         public string Sld { get; set; }
 
-        [SharpLayersSerialization(SerializedName = "styleSelector")]
+        [ExtenderControlProperty]
+        [ClientPropertyName("styleSelector")]
         public string StyleSelector { get; set; }
-
     }
 }

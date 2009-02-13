@@ -14,6 +14,7 @@
  */
 using System.ComponentModel;
 using System.Web.UI;
+using AjaxControlToolkit;
 
 namespace SharpMap.Presentation.Web.SharpLayers.Layers.Tms
 {
@@ -21,14 +22,17 @@ namespace SharpMap.Presentation.Web.SharpLayers.Layers.Tms
     {
         private readonly CollectionBase<UriValue> _urls = new CollectionBase<UriValue>((a, b) => a.Value != b.Value);
 
-        [SharpLayersSerialization(SerializedName = "layername")]
+        [ExtenderControlProperty]
+        [ClientPropertyName("layername")]
         public string TileCatalogName { get; set; }
 
-        [SharpLayersSerialization(SerializedName = "type")]
+        [ExtenderControlProperty]
+        [ClientPropertyName("type")]
         public string ImageExtension { get; set; }
 
-        [SharpLayersSerialization(SerializedName = "url"),
-         DesignerSerializationVisibility(DesignerSerializationVisibility.Visible),
+        [ExtenderControlProperty]
+        [ClientPropertyName("url")]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible),
          PersistenceMode(PersistenceMode.InnerProperty)]
         public CollectionBase<UriValue> TmsServerUrls
         {
@@ -37,23 +41,19 @@ namespace SharpMap.Presentation.Web.SharpLayers.Layers.Tms
 
         #region IGridBasedLayerBuilderParams Members
 
-        [SharpLayersSerialization(SerializedName = "tileSize"),
-         DesignerSerializationVisibility(DesignerSerializationVisibility.Visible),
+        [ExtenderControlProperty(true, true)]
+        [ClientPropertyName("tileSize")]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible),
          PersistenceMode(PersistenceMode.InnerProperty)]
         public Size TileSize { get; set; }
 
-        [SharpLayersSerialization(SerializedName = "transitionEffect")]
+        [ExtenderControlProperty]
+        [ClientPropertyName("transitionEffect")]
         public TransitionEffects TransitionEffect { get; set; }
 
-        #endregion
-
-        #region IGridBasedLayerBuilderParams Members
-
-        [SharpLayersSerialization(SerializedName = "buffer")]
-        public int Buffer
-        {
-            get; set;
-        }
+        [ExtenderControlProperty]
+        [ClientPropertyName("buffer")]
+        public int Buffer { get; set; }
 
         #endregion
     }

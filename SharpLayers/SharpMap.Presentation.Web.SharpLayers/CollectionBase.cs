@@ -41,20 +41,12 @@ namespace SharpMap.Presentation.Web.SharpLayers
             AddRange(items);
         }
 
+        #region IList<T> Members
+
         public T this[int i]
         {
-            get { return (T)List[i]; }
+            get { return (T) List[i]; }
             set { List[i] = value; }
-        }
-
-        public event EventHandler<ItemEventArgs> ItemAdded;
-        public event EventHandler<ItemEventArgs> ItemRemoved;
-
-        public virtual IEnumerable<TLookFor> FindByType<TLookFor>() where TLookFor : T
-        {
-            foreach (T component in List)
-                if (component is TLookFor)
-                    yield return (TLookFor)component;
         }
 
         public virtual void Add(T item)
@@ -64,6 +56,57 @@ namespace SharpMap.Presentation.Web.SharpLayers
 
             List.Add(item);
             OnItemAdded(new ItemEventArgs(item));
+        }
+
+        public virtual void Insert(int ndx, T item)
+        {
+            List.Insert(ndx, item);
+        }
+
+        public bool Contains(T item)
+        {
+            return List.Contains(item);
+        }
+
+        public int IndexOf(T item)
+        {
+            return List.IndexOf(item);
+        }
+
+        public void CopyTo(T[] array, int index)
+        {
+            List.CopyTo(array, index);
+        }
+
+        public new IEnumerator<T> GetEnumerator()
+        {
+            foreach (T item in List)
+                yield return item;
+        }
+
+        public bool IsReadOnly
+        {
+            get { return List.IsReadOnly; }
+        }
+
+        bool ICollection<T>.Remove(T item)
+        {
+            if (!Contains(item))
+                return false;
+            Remove(item);
+            return true;
+        }
+
+        #endregion
+
+        public event EventHandler<ItemEventArgs> ItemAdded;
+        public event EventHandler<ItemEventArgs> ItemRemoved;
+
+        public virtual IEnumerable<TLookFor> FindByType<TLookFor>() where TLookFor : T
+        {
+            foreach (T component in List)
+                if (component is TLookFor)
+                    yield return (TLookFor) component;
         }
 
         private void OnItemAdded(ItemEventArgs itemEventArgs)
@@ -89,11 +132,6 @@ namespace SharpMap.Presentation.Web.SharpLayers
             return true;
         }
 
-        public virtual void Insert(int ndx, T item)
-        {
-            List.Insert(ndx, item);
-        }
-
         public virtual void Remove(T item)
         {
             List.Remove(item);
@@ -107,21 +145,6 @@ namespace SharpMap.Presentation.Web.SharpLayers
                 ItemRemoved(this, itemEventArgs);
         }
 
-        public bool Contains(T item)
-        {
-            return List.Contains(item);
-        }
-
-        public int IndexOf(T item)
-        {
-            return List.IndexOf(item);
-        }
-
-        public void CopyTo(T[] array, int index)
-        {
-            List.CopyTo(array, index);
-        }
-
         #region Nested type: ItemEventArgs
 
         public class ItemEventArgs : EventArgs
@@ -132,34 +155,6 @@ namespace SharpMap.Presentation.Web.SharpLayers
             }
 
             public T Item { get; protected set; }
-        }
-
-        #endregion
-
-        #region IEnumerable<T> Members
-
-        public new IEnumerator<T> GetEnumerator()
-        {
-            foreach (T item in List)
-                yield return item;
-        }
-
-        #endregion
-
-        #region ICollection<T> Members
-
-
-        public bool IsReadOnly
-        {
-            get { return List.IsReadOnly; }
-        }
-
-        bool ICollection<T>.Remove(T item)
-        {
-            if (!Contains(item))
-                return false;
-            Remove(item);
-            return true;
         }
 
         #endregion

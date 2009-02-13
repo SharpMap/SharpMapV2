@@ -103,17 +103,62 @@ Sys.Application.add_load(SharpMap.Presentation.Web.SharpLayers.InitSync.appInitD
 
 SharpMap.Presentation.Web.SharpLayers.OpenLayersFactory._factories = {};
 SharpMap.Presentation.Web.SharpLayers.OpenLayersFactory.buildParams = function(originalParams) {
-    var newParams = {};
+
+    if (originalParams == null)
+        return;
+    var isArray = originalParams instanceof Array;
+
+
+    var newParams = isArray ? new Array() : {};
     for (var k in originalParams) {
         var v = originalParams[k];
-        if (v != null) {
-            if (typeof (v) == "object" && v["typeToBuild"])
-                newParams[k] = $olFactory.buildOpenLayersObject(v);
-            else
-                newParams[k] = v;
+
+        if (typeof v == "object") {
+            v = $olFactory.buildParams(originalParams[k]);
+            if (v["typeToBuild"] != null)
+                v = $olFactory.buildOpenLayersObject(v);
+            if (v["builderAction"] != null) {
+                var a = v.builderAction;
+                switch (a) {
+                    case "reference":
+                        {
+                            var id = v.refId;
+                            var t = v.referenceType;
+                            switch (t) {
+                                case "Component":
+                                    {
+                                        v = $find(id);
+                                        break;
+                                    }
+                                case "Element":
+                                    {
+                                        v = $get(id);
+                                        break;
+                                    }
+                            }
+                            break;
+                        }
+                }
+            }
         }
+        if (isArray)
+            newParams.push(v);
+        else
+            newParams[k] = v;
     }
     return newParams;
+
+    //    var newParams = {};
+    //    for (var k in originalParams) {
+    //        var v = originalParams[k];
+    //        if (v != null) {
+    //            if (typeof (v) == "object" && v["typeToBuild"])
+    //                newParams[k] = $olFactory.buildOpenLayersObject(v);
+    //            else
+    //                newParams[k] = v;
+    //        }
+    //    }
+    //    return newParams;
 }
 SharpMap.Presentation.Web.SharpLayers.OpenLayersFactory.buildOpenLayersObject = function(buildParams) {
 
@@ -294,14 +339,29 @@ SharpMap.Presentation.Web.SharpLayers.GeometryUtilities = {
     },
 
     midPointOnLineString: function(lineString) {
-        $geomUtils.pointOnLineString(lineString, 0.5);
+        return $geomUtils.pointOnLineString(lineString, 0.5);
     }
 
 }
 
+SharpMap.Presentation.Web.SharpLayers.Utility = {
+    getAttribute: function(object, attributeName) {
+
+        if (object.nodeName)
+            return object.getAttribute(attributeName);
+
+        if (object[attributeName])
+            return object[attributeName];
+
+
+        return object;
+    }
+};
+
 $olRegistry = SharpMap.Presentation.Web.SharpLayers.OpenLayersRegistry;
 $olRegItem = SharpMap.Presentation.Web.SharpLayers.OpenLayersRegistryItem;
 $olFactory = SharpMap.Presentation.Web.SharpLayers.OpenLayersFactory;
+$olUtils = SharpMap.Presentation.Web.SharpLayers.Utility;
 $geomUtils = SharpMap.Presentation.Web.SharpLayers.GeometryUtilities;
 
   

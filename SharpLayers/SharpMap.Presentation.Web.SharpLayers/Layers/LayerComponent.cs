@@ -12,7 +12,6 @@
  *  Author: John Diss 2008
  * 
  */
-using System.Collections.Generic;
 using System.Web.UI;
 using AjaxControlToolkit;
 
@@ -26,7 +25,17 @@ namespace SharpMap.Presentation.Web.SharpLayers.Layers
         : ComponentBase<TLayerBuildParams>, ILayerComponent<TLayerBuildParams>
         where TLayerBuildParams : ILayerBuilderParams
     {
+        [ExtenderControlProperty]
+        [ClientPropertyName("name")]
         public string Name { get; set; }
+
+        [ExtenderControlProperty]
+        [ComponentReference]
+        [ClientPropertyName("targetMapHost")]
+        public string TargetMapHost
+        {
+            get { return Parent.ClientID; }
+        }
 
         #region ILayerComponent<TLayerBuildParams> Members
 
@@ -37,25 +46,5 @@ namespace SharpMap.Presentation.Web.SharpLayers.Layers
         }
 
         #endregion
-
-        public override void RenderBeginTag(HtmlTextWriter writer)
-        {
-            //base.RenderBeginTag(writer);
-        }
-
-        public override void RenderEndTag(HtmlTextWriter writer)
-        {
-            //base.RenderEndTag(writer);
-        }
-
-        protected override IEnumerable<ScriptDescriptor> GetScriptDescriptors()
-        {
-            foreach (ScriptComponentDescriptor componentDescriptor in base.GetScriptDescriptors())
-            {
-                componentDescriptor.AddComponentProperty("targetMapHost", Parent.ClientID);
-                componentDescriptor.AddProperty("name", Name);
-                yield return componentDescriptor;
-            }
-        }
     }
 }

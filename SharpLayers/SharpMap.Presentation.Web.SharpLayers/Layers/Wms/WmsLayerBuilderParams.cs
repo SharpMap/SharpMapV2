@@ -14,41 +14,41 @@
  */
 using System.ComponentModel;
 using System.Web.UI;
+using AjaxControlToolkit;
 
 namespace SharpMap.Presentation.Web.SharpLayers.Layers.Wms
 {
-    public class WmsLayerBuilderParams : LayerBuilderParamsBase, IGridBasedLayerBuilderParams 
+    public class WmsLayerBuilderParams : LayerBuilderParamsBase, IGridBasedLayerBuilderParams
     {
-        [
-            SharpLayersSerialization(SerializedName = "params"),
-            DesignerSerializationVisibility(DesignerSerializationVisibility.Visible),
-            PersistenceMode(PersistenceMode.InnerProperty)
-        ]
+        [ExtenderControlProperty]
+        [ClientPropertyName("params")]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible),
+         PersistenceMode(PersistenceMode.InnerProperty)]
         public WmsParameters WmsParameters { get; set; }
 
-        [SharpLayersSerialization(SerializedName = "projection")]
+        [ExtenderControlProperty]
+        [ClientPropertyName("projection")]
         public string Projection { get; set; }
 
-        [SharpLayersSerialization(SerializedName = "maxResolution")]
+        [ExtenderControlProperty]
+        [ClientPropertyName("maxResolution")]
         public string MaxResolution { get; set; }
-
-        [
-            SharpLayersSerialization(SerializedName = "tileSize"),
-            DesignerSerializationVisibility(DesignerSerializationVisibility.Visible),
-            PersistenceMode(PersistenceMode.InnerProperty)
-        ]
-        public Size TileSize { get; set; }
-
-        [SharpLayersSerialization(SerializedName = "transitionEffect")]
-        public TransitionEffects TransitionEffect { get; set; }
 
         #region IGridBasedLayerBuilderParams Members
 
-        [SharpLayersSerialization(SerializedName = "buffer")]
-        public int Buffer
-        {
-            get; set;
-        }
+        [ExtenderControlProperty(true, true)]
+        [ClientPropertyName("tileSize")]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible),
+         PersistenceMode(PersistenceMode.InnerProperty)]
+        public Size TileSize { get; set; }
+
+        [ExtenderControlProperty]
+        [ClientPropertyName("transitionEffect")]
+        public TransitionEffects TransitionEffect { get; set; }
+
+        [ExtenderControlProperty]
+        [ClientPropertyName("buffer")]
+        public int Buffer { get; set; }
 
         #endregion
     }

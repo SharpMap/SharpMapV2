@@ -13,23 +13,33 @@
  * 
  */
 using System;
+using AjaxControlToolkit;
 
 namespace SharpMap.Presentation.Web.SharpLayers
 {
     [Serializable]
     public class LonLat : IClientClass
     {
-        [SharpLayersSerialization(SerializedName = "lon")]
+        [ExtenderControlProperty]
+        [ClientPropertyName("lon")]
         public double? Lon { get; set; }
 
-        [SharpLayersSerialization(SerializedName = "lat")]
+        [ExtenderControlProperty]
+        [ClientPropertyName("lat")]
         public double? Lat { get; set; }
 
         #region IClientClass Members
 
+        [ExtenderControlProperty]
+        [ClientPropertyName("typeToBuild")]
         public string ClientClassName
         {
             get { return "OpenLayers.LonLat"; }
+        }
+
+        public bool NotSet
+        {
+            get { return !(Lon.HasValue || Lat.HasValue); }
         }
 
         #endregion

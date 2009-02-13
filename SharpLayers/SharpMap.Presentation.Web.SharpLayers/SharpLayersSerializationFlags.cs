@@ -11,17 +11,15 @@
  *  Author: John Diss 2008
  * 
  */
-using System;
-
 namespace SharpMap.Presentation.Web.SharpLayers
 {
-    [Flags]
-    public enum SharpLayersSerializationFlags
-        : byte
-    {
-        GetElement = 0x01,
-        Uri = GetElement << 1,
-        CreateClientClass = Uri << 1,
-        GetComponent = CreateClientClass << 1
-    }
+    //[Flags]
+    //public enum SharpLayersSerializationFlags
+    //    : byte
+    //{
+    //    GetElement = 0x01,
+    //    Uri = GetElement << 1,
+    //    CreateClientClass = Uri << 1,
+    //    GetComponent = CreateClientClass << 1
+    //}
 }

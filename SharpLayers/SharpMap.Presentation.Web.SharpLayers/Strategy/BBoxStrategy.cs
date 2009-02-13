@@ -12,15 +12,24 @@
 *  Author: John Diss 2008
 * 
 */
+using AjaxControlToolkit;
+
 namespace SharpMap.Presentation.Web.SharpLayers.Strategy
 {
     public class BBoxStrategy : IStrategy
     {
         #region IStrategy Members
 
+        [ExtenderControlProperty]
+        [ClientPropertyName("typeToBuild")]
         public string ClientClassName
         {
             get { return "OpenLayers.Strategy.BBOX"; }
+        }
+
+        public bool NotSet
+        {
+            get { return false; }
         }
 
         #endregion

@@ -16,57 +16,60 @@
 
 using System.ComponentModel;
 using System.Web.UI;
+using AjaxControlToolkit;
 
 namespace SharpMap.Presentation.Web.SharpLayers.Layers.Wms
 {
     public class WmsParameters
     {
-        private readonly CollectionBase<StringValue> _layers = new CollectionBase<StringValue>((a, b) => a.Value != b.Value);
+        private readonly CollectionBase<StringValue> _layers =
+            new CollectionBase<StringValue>((a, b) => a.Value != b.Value);
+
         private readonly CollectionBase<UriValue> _urls = new CollectionBase<UriValue>((a, b) => a.Value != b.Value);
         private string _imageMimeType = "image/png";
         private bool _transaparent = true;
         private string _wmsVersion = "1.3.0";
 
-        [SharpLayersSerialization(SerializedName = "version")]
+        [ExtenderControlProperty]
+        [ClientPropertyName("version")]
         public string WmsVersion
         {
             get { return _wmsVersion; }
             set { _wmsVersion = value; }
         }
 
-        //TODO:need to sort out serialization to correctly convert virtual paths to relative paths on the client
-        [
-            SharpLayersSerialization(SerializedName = "url"),
-            DesignerSerializationVisibility(DesignerSerializationVisibility.Visible),
-            PersistenceMode(PersistenceMode.InnerProperty)
-        ]
+        [ExtenderControlProperty]
+        [ClientPropertyName("url")]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible),
+         PersistenceMode(PersistenceMode.InnerProperty)]
         public CollectionBase<UriValue> WmsServerUrls
         {
             get { return _urls; }
         }
 
-        [
-            SharpLayersSerialization(SerializedName = "layers"),
-            DesignerSerializationVisibility(DesignerSerializationVisibility.Visible),
-            PersistenceMode(PersistenceMode.InnerProperty)
-        ]
+        [ExtenderControlProperty]
+        [ClientPropertyName("layers")]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible),
+         PersistenceMode(PersistenceMode.InnerProperty)]
         public CollectionBase<StringValue> WmsLayerNames
         {
             get { return _layers; }
-            //set { _layers = value; }
         }
 
-        [SharpLayersSerialization(SerializedName = "crs")]
+        [ExtenderControlProperty]
+        [ClientPropertyName("crs")]
         public string Crs { get; set; }
 
-        [SharpLayersSerialization(SerializedName = "TRANSPARENT")]
+        [ExtenderControlProperty]
+        [ClientPropertyName("TRANSPARENT")]
         public bool Transparent
         {
             get { return _transaparent; }
             set { _transaparent = value; }
         }
 
-        [SharpLayersSerialization(SerializedName = "FORMAT")]
+        [ExtenderControlProperty]
+        [ClientPropertyName("FORMAT")]
         public string ImageMimeType
         {
             get { return _imageMimeType; }

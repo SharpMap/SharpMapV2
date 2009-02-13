@@ -12,11 +12,15 @@
  *  Author: John Diss 2008
  * 
  */
+using AjaxControlToolkit;
+
 namespace SharpMap.Presentation.Web.SharpLayers.Controls
 {
     public class ToolBuilderParamsBase : BuilderParamsBase, IToolBuilderParams
     {
-        [SharpLayersSerialization(SerializedName = "div")]
+        [ExtenderControlProperty]
+        [ElementReference]
+        [ClientPropertyName("div")]
         public string TargetElementId { get; set; }
     }
 }

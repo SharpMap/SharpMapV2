@@ -12,6 +12,7 @@
  * 
  */
 using System;
+using AjaxControlToolkit;
 
 namespace SharpMap.Presentation.Web.SharpLayers
 {
@@ -19,23 +20,34 @@ namespace SharpMap.Presentation.Web.SharpLayers
     public class Bounds
         : IClientClass
     {
-        [SharpLayersSerialization(SerializedName = "left")]
+        [ExtenderControlProperty]
+        [ClientPropertyName("left")]
         public double? Left { get; set; }
 
-        [SharpLayersSerialization(SerializedName = "bottom")]
+        [ExtenderControlProperty]
+        [ClientPropertyName("bottom")]
         public double? Bottom { get; set; }
 
-        [SharpLayersSerialization(SerializedName = "right")]
+        [ExtenderControlProperty]
+        [ClientPropertyName("right")]
         public double? Right { get; set; }
 
-        [SharpLayersSerialization(SerializedName = "top")]
+        [ExtenderControlProperty]
+        [ClientPropertyName("top")]
         public double? Top { get; set; }
 
         #region IClientClass Members
 
+        [ExtenderControlProperty]
+        [ClientPropertyName("typeToBuild")]
         public string ClientClassName
         {
             get { return "OpenLayers.Bounds"; }
+        }
+
+        public bool NotSet
+        {
+            get { return !(Left.HasValue || Bottom.HasValue || Right.HasValue || Top.HasValue); }
         }
 
         #endregion

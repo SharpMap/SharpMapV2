@@ -13,26 +13,36 @@
  * 
  */
 using System;
+using AjaxControlToolkit;
 
 namespace SharpMap.Presentation.Web.SharpLayers
 {
     [Serializable]
     public class Icon : IClientClass
     {
-        [SharpLayersSerialization(SerializedName = "url")]
+        [ClientPropertyName("url")]
         public string Url { get; set; }
 
-        [SharpLayersSerialization(SerializedName = "size")]
+
+        [ExtenderControlProperty(true, true)]
+        [ClientPropertyName("size")]
         public Size Size { get; set; }
 
-        [SharpLayersSerialization(SerializedName = "offset")]
+        [ExtenderControlProperty(true, true)]
+        [ClientPropertyName("offset")]
         public Pixel Offset { get; set; }
 
         #region IClientClass Members
 
+        [ClientPropertyName("typeToBuild")]
         public string ClientClassName
         {
             get { return "OpenLayers.Icon"; }
+        }
+
+        public bool NotSet
+        {
+            get { return !(string.IsNullOrEmpty(Url) || !Offset.NotSet || !Size.NotSet); }
         }
 
         #endregion

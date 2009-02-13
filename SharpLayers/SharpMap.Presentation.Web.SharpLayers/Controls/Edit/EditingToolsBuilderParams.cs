@@ -12,13 +12,15 @@
  *  Author: John Diss 2008
  * 
  */
+using AjaxControlToolkit;
+
 namespace SharpMap.Presentation.Web.SharpLayers.Controls.Edit
 {
     public class EditingToolsBuilderParams : ToolBuilderParamsBase
     {
-        //TODO : this has to work through the naming containers
-        [SharpLayersSerialization(SerializedName = "layer",
-            SerializationFlags = SharpLayersSerializationFlags.GetComponent)]
+        [ExtenderControlProperty]
+        [ComponentReference]
+        [ClientPropertyName("layer")]
         public string EditableLayerId { get; set; }
     }
 }

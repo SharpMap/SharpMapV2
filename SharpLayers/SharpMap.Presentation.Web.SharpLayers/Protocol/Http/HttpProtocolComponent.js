@@ -29,8 +29,8 @@ SharpMap.Presentation.Web.SharpLayers.Protocol.Http.HttpProtocolComponent.protot
     _protocolBuilderDelegate: function() {
         var options = this.get_builderParams();
         var formats = options["formats"];
-        options.format = $olFactory.buildOpenLayersObject(formats[0]);
-        delete options.formats;
+        options.format = formats[0];
+        //delete options.formats;
         return new OpenLayers.Protocol.HTTP(options);
     }
 }

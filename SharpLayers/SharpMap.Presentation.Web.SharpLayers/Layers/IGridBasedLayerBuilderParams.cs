@@ -13,17 +13,23 @@
  * 
  */
 
+using AjaxControlToolkit;
+
 namespace SharpMap.Presentation.Web.SharpLayers.Layers
 {
     public interface IGridBasedLayerBuilderParams
     {
-        [SharpLayersSerialization(SerializedName = "tileSize")]
-        Size TileSize { get; set; }
+        [ExtenderControlProperty(true, true)]
+        [ClientPropertyName("tileSize")]
+        //[SharpLayersSerialization(SerializedName = "tileSize")]
+            Size TileSize { get; set; }
 
-        [SharpLayersSerialization(SerializedName = "transitionEffect")]
-        TransitionEffects TransitionEffect { get; set; }
+        [ClientPropertyName("transitionEffect")]
+        //[SharpLayersSerialization(SerializedName = "transitionEffect")]
+            TransitionEffects TransitionEffect { get; set; }
 
-        [SharpLayersSerialization(SerializedName = "buffer")]
-        int Buffer { get; set; }
+        [ClientPropertyName("buffer")]
+        //[SharpLayersSerialization(SerializedName = "buffer")]
+            int Buffer { get; set; }
     }
 }

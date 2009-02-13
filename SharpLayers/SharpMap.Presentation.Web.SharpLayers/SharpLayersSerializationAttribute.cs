@@ -11,16 +11,14 @@
  *  Author: John Diss 2008
  * 
  */
-using System;
-
 namespace SharpMap.Presentation.Web.SharpLayers
 {
-    [AttributeUsage(AttributeTargets.Property, AllowMultiple = false, Inherited = true)]
-    public class SharpLayersSerializationAttribute
-        : Attribute
-    {
-        public string SerializedName { get; set; }
+    //[AttributeUsage(AttributeTargets.Property, AllowMultiple = false, Inherited = true)]
+    //public class SharpLayersSerializationAttribute
+    //    : Attribute
+    //{
+    //    public string SerializedName { get; set; }
 
-        public SharpLayersSerializationFlags SerializationFlags { get; set; }
-    }
+    //    public SharpLayersSerializationFlags SerializationFlags { get; set; }
+    //}
 }
