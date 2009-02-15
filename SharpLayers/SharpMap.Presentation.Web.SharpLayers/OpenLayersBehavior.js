@@ -102,10 +102,17 @@ Sys.WebForms.PageRequestManager.getInstance().add_pageLoaded(SharpMap.Presentati
 Sys.Application.add_load(SharpMap.Presentation.Web.SharpLayers.InitSync.appInitDone);
 
 SharpMap.Presentation.Web.SharpLayers.OpenLayersFactory._factories = {};
-SharpMap.Presentation.Web.SharpLayers.OpenLayersFactory.buildParams = function(originalParams, referenceTracker) {
 
+SharpMap.Presentation.Web.SharpLayers.OpenLayersFactory.__trackReference = function(storage, obj) {
+    if (!Array.contains(storage, obj))
+        storage.push(obj);
+};
+SharpMap.Presentation.Web.SharpLayers.OpenLayersFactory.buildParams = function(originalParams, referenceTracker) {
     if (originalParams == null)
         return;
+    if (originalParams.__builderIgnore && originalParams.__builderIgnore == true)
+        return originalParams;
+
     var trackerCreated = false;
     if (referenceTracker == null) {
         referenceTracker = new Array();
@@ -113,19 +120,23 @@ SharpMap.Presentation.Web.SharpLayers.OpenLayersFactory.buildParams = function(o
     }
     var isArray = originalParams instanceof Array;
 
-
+    var changed = false;
 
     var newParams = isArray ? new Array() : {};
     for (var k in originalParams) {
+
         var v = originalParams[k];
+        var cmpr = v;
+
         if (v == null)
             continue;
-        if (Array.contains(referenceTracker, v))
-            continue;
-        referenceTracker.push(v);
 
-        if (typeof v == "object" && !(v.nodeName)) {
+        if (typeof v == "object" && !(v.nodeName) && !v.__builderIgnore && !Array.contains(referenceTracker, v)) {
+
+            $olFactory.__trackReference(referenceTracker, v);
             v = $olFactory.buildParams(originalParams[k], referenceTracker);
+            $olFactory.__trackReference(referenceTracker, v);
+
             if (v["typeToBuild"] != null)
                 v = $olFactory.buildOpenLayersObject(v);
             if (v["builderAction"] != null) {
@@ -151,17 +162,26 @@ SharpMap.Presentation.Web.SharpLayers.OpenLayersFactory.buildParams = function(o
                         }
                 }
             }
+            v.__builderIgnore = true;
+
+            if (v != cmpr)
+                changed = true;
         }
         if (isArray)
             newParams.push(v);
         else
             newParams[k] = v;
     }
-    if (trackerCreated) {
+    if (trackerCreated == true) {
         referenceTracker.length = 0;
         delete referenceTracker;
     }
-    return newParams;
+
+    var retVal = changed ? newParams : originalParams;
+
+    retVal.__builderIgnore = true;
+
+    return retVal;
 
     //    var newParams = {};
     //    for (var k in originalParams) {
