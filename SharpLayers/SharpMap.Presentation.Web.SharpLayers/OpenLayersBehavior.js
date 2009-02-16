@@ -98,6 +98,15 @@ SharpMap.Presentation.Web.SharpLayers.InitSync = {
     }
 }
 
+//SharpMap.Presentation.Web.SharpLayers.OpenLayersFactory.slArray = function() {
+//}
+//SharpMap.Presentation.Web.SharpLayers.OpenLayersFactory.slArray.prototype = new Array();
+//SharpMap.Presentation.Web.SharpLayers.OpenLayersFactory.slArray.prototype.slBuilderIgnore = function() { return false; }
+//Array.prototype = new SharpMap.Presentation.Web.SharpLayers.OpenLayersFactory.slArray();
+
+
+
+
 Sys.WebForms.PageRequestManager.getInstance().add_pageLoaded(SharpMap.Presentation.Web.SharpLayers.InitSync.pageLoadDone);
 Sys.Application.add_load(SharpMap.Presentation.Web.SharpLayers.InitSync.appInitDone);
 
@@ -107,10 +116,12 @@ SharpMap.Presentation.Web.SharpLayers.OpenLayersFactory.__trackReference = funct
     if (!Array.contains(storage, obj))
         storage.push(obj);
 };
+SharpMap.Presentation.Web.SharpLayers.OpenLayersFactory.__slBuilderIgnore = function() { return true; }
+
 SharpMap.Presentation.Web.SharpLayers.OpenLayersFactory.buildParams = function(originalParams, referenceTracker) {
     if (originalParams == null)
         return;
-    if (originalParams.__builderIgnore && originalParams.__builderIgnore == true)
+    if (originalParams.slBuilderIgnore && originalParams.slBuilderIgnore() == true)
         return originalParams;
 
     var trackerCreated = false;
@@ -123,6 +134,7 @@ SharpMap.Presentation.Web.SharpLayers.OpenLayersFactory.buildParams = function(o
     var changed = false;
 
     var newParams = isArray ? new Array() : {};
+
     for (var k in originalParams) {
 
         var v = originalParams[k];
@@ -131,7 +143,7 @@ SharpMap.Presentation.Web.SharpLayers.OpenLayersFactory.buildParams = function(o
         if (v == null)
             continue;
 
-        if (typeof v == "object" && !(v.nodeName) && !v.__builderIgnore && !Array.contains(referenceTracker, v)) {
+        if (typeof v == "object" && !(v.nodeName) && (!v.slBuilderIgnore || !v.slBuilderIgnore()) && !Array.contains(referenceTracker, v)) {
 
             $olFactory.__trackReference(referenceTracker, v);
             v = $olFactory.buildParams(originalParams[k], referenceTracker);
@@ -162,25 +174,23 @@ SharpMap.Presentation.Web.SharpLayers.OpenLayersFactory.buildParams = function(o
                         }
                 }
             }
-            v.__builderIgnore = true;
 
             if (v != cmpr)
                 changed = true;
+
+            v.slBuilderIgnore = SharpMap.Presentation.Web.SharpLayers.OpenLayersFactory.__slBuilderIgnore;
         }
         if (isArray)
             newParams.push(v);
         else
             newParams[k] = v;
     }
-    if (trackerCreated == true) {
-        referenceTracker.length = 0;
+    if (trackerCreated == true)
         delete referenceTracker;
-    }
+
 
     var retVal = changed ? newParams : originalParams;
-
-    retVal.__builderIgnore = true;
-
+    retVal.slBuilderIgnore = SharpMap.Presentation.Web.SharpLayers.OpenLayersFactory.__slBuilderIgnore;
     return retVal;
 
     //    var newParams = {};
