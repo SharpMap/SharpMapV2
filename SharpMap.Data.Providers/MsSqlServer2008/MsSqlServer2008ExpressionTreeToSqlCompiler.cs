@@ -39,7 +39,7 @@ namespace SharpMap.Data.Providers.MsSqlServer2008
 
             string declaredParamName = string.Format("@dparam_{0}", ParameterDeclarations.Count);
             ParameterDeclarations.Add(
-                string.Format("DECLARE {0} geometry\n SET {0} = geometry::STGeomFromWKB({1},{2})\n ",
+                string.Format("DECLARE {0} geometry\n SET {0} = geometry::STGeomFromWKB({1},{2}).MakeValid()\n ",
                               declaredParamName,
                               CreateParameter(geom).ParameterName,
                              geomSrid.HasValue && geomSrid.Value > 0

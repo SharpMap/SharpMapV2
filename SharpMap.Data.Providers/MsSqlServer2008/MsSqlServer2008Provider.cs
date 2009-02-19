@@ -21,7 +21,6 @@ using System.Globalization;
 using System.Text;
 using GeoAPI.Coordinates;
 using GeoAPI.CoordinateSystems;
-using GeoAPI.DataStructures;
 using GeoAPI.Geometries;
 using SharpMap.Data.Providers.Db;
 using SharpMap.Data.Providers.Db.Expressions;
@@ -35,7 +34,9 @@ using Processor = System.Linq.Enumerable;
 using Enumerable = System.Linq.Enumerable;
 using Caster = System.Linq.Enumerable;
 #else
-
+using Processor = GeoAPI.DataStructures.Processor ;
+using Enumerable = GeoAPI.DataStructures.Enumerable;
+using Caster = GeoAPI.DataStructures.Caster;
 #endif
 
 namespace SharpMap.Data.Providers
@@ -93,7 +94,7 @@ namespace SharpMap.Data.Providers
         {
             get
             {
-                return String.Format("geometry::STGeomFromWKB({0}, {1})", "{0}",
+                return String.Format("geometry::STGeomFromWKB({0}, {1}).MakeValid()", "{0}",
                                      SridInt.HasValue ? SridInt : 0);
             }
         }

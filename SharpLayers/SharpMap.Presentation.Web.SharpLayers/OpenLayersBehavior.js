@@ -98,15 +98,6 @@ SharpMap.Presentation.Web.SharpLayers.InitSync = {
     }
 }
 
-//SharpMap.Presentation.Web.SharpLayers.OpenLayersFactory.slArray = function() {
-//}
-//SharpMap.Presentation.Web.SharpLayers.OpenLayersFactory.slArray.prototype = new Array();
-//SharpMap.Presentation.Web.SharpLayers.OpenLayersFactory.slArray.prototype.slBuilderIgnore = function() { return false; }
-//Array.prototype = new SharpMap.Presentation.Web.SharpLayers.OpenLayersFactory.slArray();
-
-
-
-
 Sys.WebForms.PageRequestManager.getInstance().add_pageLoaded(SharpMap.Presentation.Web.SharpLayers.InitSync.pageLoadDone);
 Sys.Application.add_load(SharpMap.Presentation.Web.SharpLayers.InitSync.appInitDone);
 
@@ -199,17 +190,6 @@ SharpMap.Presentation.Web.SharpLayers.OpenLayersFactory.buildParams = function(o
     retVal.slBuilderIgnore = SharpMap.Presentation.Web.SharpLayers.OpenLayersFactory.__slBuilderIgnore;
     return retVal;
 
-    //    var newParams = {};
-    //    for (var k in originalParams) {
-    //        var v = originalParams[k];
-    //        if (v != null) {
-    //            if (typeof (v) == "object" && v["typeToBuild"])
-    //                newParams[k] = $olFactory.buildOpenLayersObject(v);
-    //            else
-    //                newParams[k] = v;
-    //        }
-    //    }
-    //    return newParams;
 }
 SharpMap.Presentation.Web.SharpLayers.OpenLayersFactory.buildOpenLayersObject = function(buildParams) {
 

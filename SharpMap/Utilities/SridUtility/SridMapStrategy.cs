@@ -20,7 +20,15 @@ using System;
 using System.Collections.Generic;
 using GeoAPI.CoordinateSystems;
 using Proj4Utility;
-
+#if DOTNET35
+using Processor = System.Linq.Enumerable;
+using Enumerable = System.Linq.Enumerable;
+using Caster = System.Linq.Enumerable;
+#else
+using Processor = GeoAPI.DataStructures.Processor;
+using Enumerable = GeoAPI.DataStructures.Enumerable;
+using Caster = GeoAPI.DataStructures.Caster;
+#endif
 namespace SharpMap.Utilities.SridUtility
 {
     public class SridMapStrategy : SridMapStrategyBase
@@ -129,10 +137,18 @@ namespace SharpMap.Utilities.SridUtility
                 {
                     key = new StringKey() { Authority = cs.Authority, Code = cs.AuthorityCode };
                 }
+                if (!_map.ContainsKey(key))
+                    _map.Add(key, cs);
+                else
+                    if (!cs.EqualParams(_map[key]))
+                        throw new ApplicationException();
 
-                _map.Add(key, cs);
-
-                _hashMap.Add(HashCoordSystem(cs), key);
+                int csKey = HashCoordSystem(cs);
+                if (!_hashMap.ContainsKey(csKey))
+                    _hashMap.Add(csKey, key);
+                else
+                    if (!cs.EqualParams(_map[_hashMap[csKey]]))
+                        throw new ApplicationException();
 
             }
         }
@@ -171,10 +187,11 @@ namespace SharpMap.Utilities.SridUtility
         private int HashProjection(IProjection proj)
         {
             int h = proj.ProjectionClassName.GetHashCode();
-
-            foreach (var v in proj)
+            ProjectionParameter[] arr = Enumerable.ToArray(proj);
+            Array.Sort(arr, new Comparison<ProjectionParameter>(
+                                delegate(ProjectionParameter a, ProjectionParameter b) { return string.Compare(a.Name, b.Name); }));
+            foreach (ProjectionParameter v in arr)
                 h ^= v.Value.GetHashCode();
-
             return h;
         }
 
