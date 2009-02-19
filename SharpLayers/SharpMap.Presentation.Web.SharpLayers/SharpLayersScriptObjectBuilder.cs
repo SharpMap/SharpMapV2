@@ -310,6 +310,9 @@ namespace SharpMap.Presentation.Web.SharpLayers
                 if (value as IClientClass != null && ((IClientClass)value).NotSet)
                     continue;
 
+                if (value as ClientEvalScript != null && string.IsNullOrEmpty((value as ClientEvalScript).ClientScript))
+                    continue;
+
                 if (pd.PropertyType == typeof(string))
                 {
                     o = value;

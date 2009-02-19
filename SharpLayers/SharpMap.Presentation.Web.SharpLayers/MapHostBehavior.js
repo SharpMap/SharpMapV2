@@ -23,10 +23,6 @@ SharpMap.Presentation.Web.SharpLayers.MapHostBehavior = function(element) {
 SharpMap.Presentation.Web.SharpLayers.MapHostBehavior.prototype = {
     initialize: function() {
         this._builderDelegate = Function.createDelegate(this, this._mapBuilderDelegate);
-
-//        var _this = this;
-//        var f = function() { _this.get_hostedItem().zoomToMaxExtent() };
-//        SharpMap.Presentation.Web.SharpLayers.InitSync.addLoad(f);
         SharpMap.Presentation.Web.SharpLayers.MapHostBehavior.callBaseMethod(this, 'initialize');
     },
 

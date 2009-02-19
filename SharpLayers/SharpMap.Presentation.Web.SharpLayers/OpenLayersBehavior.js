@@ -172,13 +172,19 @@ SharpMap.Presentation.Web.SharpLayers.OpenLayersFactory.buildParams = function(o
                             }
                             break;
                         }
+                    case "evaluate":
+                        {
+                            eval("v=" + v.script);
+                            break;
+                        }
+                    default: throw "Unknown Builder Action";
                 }
             }
 
             if (v != cmpr)
                 changed = true;
-
-            v.slBuilderIgnore = SharpMap.Presentation.Web.SharpLayers.OpenLayersFactory.__slBuilderIgnore;
+            if ((v))
+                v.slBuilderIgnore = SharpMap.Presentation.Web.SharpLayers.OpenLayersFactory.__slBuilderIgnore;
         }
         if (isArray)
             newParams.push(v);
