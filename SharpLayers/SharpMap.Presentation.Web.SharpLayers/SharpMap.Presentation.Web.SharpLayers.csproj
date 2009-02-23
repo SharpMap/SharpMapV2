@@ -73,7 +73,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="bin\AjaxControlToolkit.DLL" />
     <None Include="OpenLayers\Build\full.cfg" />
     <None Include="OpenLayers\Build\library.cfg" />
     <None Include="OpenLayers\Build\lite.cfg" />
@@ -860,9 +859,8 @@
   <Target Name="AfterBuild">
   </Target>
   -->
-
   <Target Name="BeforeBuild">
-    <Exec Command ="$(ProjectDir)OpenLayers\Build\build.py"  WorkingDirectory="$(ProjectDir)OpenLayers\Build\"/>
-    <Exec Command ="$(ProjectDir)OpenLayers\Build\buildUncompressed.py" WorkingDirectory="$(ProjectDir)OpenLayers\Build\"  />
+    <Exec Command="$(ProjectDir)OpenLayers\Build\build.py" WorkingDirectory="$(ProjectDir)OpenLayers\Build\" />
+    <Exec Command="$(ProjectDir)OpenLayers\Build\buildUncompressed.py" WorkingDirectory="$(ProjectDir)OpenLayers\Build\" />
   </Target>
 </Project>
