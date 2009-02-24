@@ -33,7 +33,6 @@ namespace SharpMap.Presentation.Web.SharpLayers.Controls
     public class GenericOLToolBuilderParams : ToolBuilderParamsBase
     {
         [ClientPropertyName("openLayersClassName")]
-        //[SharpLayersSerialization(SerializedName = "openLayersClassName")]
             public string OpenLayersClassName { get; set; }
     }
 }

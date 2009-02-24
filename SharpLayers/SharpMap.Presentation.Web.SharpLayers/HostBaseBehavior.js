@@ -25,7 +25,6 @@ SharpMap.Presentation.Web.SharpLayers.HostBaseBehavior = function(element) {
 SharpMap.Presentation.Web.SharpLayers.HostBaseBehavior.prototype = {
     initialize: function() {
         SharpMap.Presentation.Web.SharpLayers.HostBaseBehavior.callBaseMethod(this, 'initialize');
-        //this.buildObject();
         SharpMap.Presentation.Web.SharpLayers.InitSync.addInit(this);
 
     },
