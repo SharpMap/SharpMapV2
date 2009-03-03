@@ -954,13 +954,17 @@ namespace SharpMap.Data.Providers.Db
             private readonly string _schema;
 
             private readonly string _tableName;
-
+            private readonly int _hash;
             public TableCacheKey(Type providerType, string connectionString, string schema, string tblName)
             {
                 _providerType = providerType;
                 _tableName = tblName;
                 _schema = schema;
                 _connectionString = connectionString;
+                _hash = _providerType.GetHashCode() ^ _connectionString.ToLower().GetHashCode() ^
+                       _schema.ToLower().GetHashCode() ^
+                       _tableName.ToLower().GetHashCode();
+
             }
 
             public string TableName
@@ -985,9 +989,7 @@ namespace SharpMap.Data.Providers.Db
 
             public override int GetHashCode()
             {
-                return _providerType.GetHashCode() ^ _connectionString.ToLower().GetHashCode() ^
-                       _schema.ToLower().GetHashCode() ^
-                       _tableName.ToLower().GetHashCode();
+                return _hash;
             }
         }
 

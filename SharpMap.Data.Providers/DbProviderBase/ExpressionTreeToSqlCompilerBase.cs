@@ -192,40 +192,43 @@ namespace SharpMap.Data.Providers.Db
             {
                 lock (_CreateParameterDelegateTypeMap)
                 {
-                    //We havent so we build one
-                    var m = new DynamicMethod(string.Format("CreateParam_{0}", tValue),
-                                              MethodAttributes.Public | MethodAttributes.Static,
-                                              CallingConventions.Standard, typeof(IDataParameter),
-                                              new[] { typeof(object), typeof(object) }, GetType(), true);
+                    //aquire a lock and test again
+                    if (!_CreateParameterDelegateTypeMap.TryGetValue(tValue, out dlgt))
+                    {
+                        var m = new DynamicMethod(string.Format("CreateParam_{0}", tValue),
+                                                  MethodAttributes.Public | MethodAttributes.Static,
+                                                  CallingConventions.Standard, typeof(IDataParameter),
+                                                  new[] { typeof(object), typeof(object) }, GetType(), true);
 
-                    Type classType = GetType();
+                        Type classType = GetType();
 
-                    ///get the method info for the method we want to call e.g CreateParameter<classType>(classType val)
-                    MethodInfo mi = classType.GetMethod("CreateParameter",
-                                                        BindingFlags.NonPublic | BindingFlags.Public |
-                                                        BindingFlags.Instance);
+                        ///get the method info for the method we want to call e.g CreateParameter<classType>(classType val)
+                        MethodInfo mi = classType.GetMethod("CreateParameter",
+                                                            BindingFlags.NonPublic | BindingFlags.Public |
+                                                            BindingFlags.Instance);
 
-                    //construct a generic method with the same type argument as the value
-                    MethodInfo mig = mi.MakeGenericMethod(tValue);
+                        //construct a generic method with the same type argument as the value
+                        MethodInfo mig = mi.MakeGenericMethod(tValue);
 
-                    //create our ILGenerator
-                    ILGenerator generator = m.GetILGenerator();
-                    generator.Emit(OpCodes.Ldarg_0);
-                    // load the first argument onto the stack - equivalent to 'this' within the method
-                    generator.Emit(OpCodes.Ldarg_1); // load the first argument (the value) onto the stack 
-                    if (tValue.IsValueType)
-                        generator.Emit(OpCodes.Unbox_Any, tValue); //unbox value types
-                    else
-                        generator.Emit(OpCodes.Castclass, tValue); //cast ref types to the correct arg type
-                    generator.EmitCall(OpCodes.Callvirt, mig, null); // call the method passing in the param
-                    generator.Emit(OpCodes.Ret); //return the value
+                        //create our ILGenerator
+                        ILGenerator generator = m.GetILGenerator();
+                        generator.Emit(OpCodes.Ldarg_0);
+                        // load the first argument onto the stack - equivalent to 'this' within the method
+                        generator.Emit(OpCodes.Ldarg_1); // load the first argument (the value) onto the stack 
+                        if (tValue.IsValueType)
+                            generator.Emit(OpCodes.Unbox_Any, tValue); //unbox value types
+                        else
+                            generator.Emit(OpCodes.Castclass, tValue); //cast ref types to the correct arg type
+                        generator.EmitCall(OpCodes.Callvirt, mig, null); // call the method passing in the param
+                        generator.Emit(OpCodes.Ret); //return the value
 
-                    //Put it all together into a callable method
-                    dlgt =
-                        (Func<object, object, IDataParameter>)
-                        m.CreateDelegate(typeof(Func<object, object, IDataParameter>));
+                        //Put it all together into a callable method
+                        dlgt =
+                            (Func<object, object, IDataParameter>)
+                            m.CreateDelegate(typeof(Func<object, object, IDataParameter>));
 
-                    _CreateParameterDelegateTypeMap.Add(tValue, dlgt);
+                        _CreateParameterDelegateTypeMap.Add(tValue, dlgt);
+                    }
                 }
             }
 
