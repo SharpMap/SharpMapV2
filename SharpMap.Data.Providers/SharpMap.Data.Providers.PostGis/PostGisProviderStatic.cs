@@ -115,8 +115,11 @@ namespace SharpMap.Data.Providers
             String geometryColumnName,
             OgcGeometryType geometryType)
         {
-            string srid = featureDataTable.GeometryFactory.SpatialReference.AuthorityCode;
-            if (srid == null) srid = DefaultSridInt.ToString();
+            string srid = featureDataTable.GeometryFactory.SpatialReference != null
+                ? 
+                    featureDataTable.GeometryFactory.SpatialReference.AuthorityCode
+                :
+                    DefaultSridInt.ToString();
 
             NpgsqlConnectionStringBuilder csb = new NpgsqlConnectionStringBuilder(connectionString);
 

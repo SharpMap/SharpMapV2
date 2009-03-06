@@ -37,7 +37,7 @@ namespace SharpMap.Data.Providers
 
         public IFeatureDataReader ExecuteFeatureQuery(FeatureQueryExpression query)
         {
-            if (CoordinateTransformation != null)
+            if (CoordinateTransformation != null && query.IsSpatialPredicateNonEmpty)
             {
                 query = transformQuery(query);
             }
@@ -48,7 +48,7 @@ namespace SharpMap.Data.Providers
         public IFeatureDataReader ExecuteFeatureQuery(FeatureQueryExpression query,
                                                       FeatureQueryExecutionOptions options)
         {
-            if (CoordinateTransformation != null)
+            if (CoordinateTransformation != null && query.IsSpatialPredicateNonEmpty)
             {
                 query = transformQuery(query);
             }
@@ -100,7 +100,7 @@ namespace SharpMap.Data.Providers
             SpatialBinaryExpression spatial = query.SpatialPredicate;
             ICoordinateSystem querySpatialReference = spatial.SpatialExpression.SpatialReference;
 
-            if (querySpatialReference.EqualParams(SpatialReference))
+            if (querySpatialReference.EqualParams(OriginalSpatialReference))
             {
                 return query;
             }

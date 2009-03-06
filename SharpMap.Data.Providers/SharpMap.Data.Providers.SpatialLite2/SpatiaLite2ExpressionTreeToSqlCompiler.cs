@@ -45,27 +45,14 @@ namespace SharpMap.Data.Providers.SpatiaLite2
     internal class SpatiaLite2ExpressionTreeToSqlCompiler
         : ExpressionTreeToSqlCompilerBase<long>
     {
-
-        private readonly SpatiaLite2IndexType _spatialIndexType;
-
         public SpatiaLite2ExpressionTreeToSqlCompiler(SpatialDbProviderBase<long> provider,
                                                        Expression query,
                                                        SpatiaLite2IndexType indexType)
 
             : base(provider, query)
         {
-
-            //switch (indexType)
-            //{
-            //    case SpatiaLite2IndexType.None:
-            //        throw new SpatiaLite2Exception("indexType must not be 'None'");
-            //    default:
-            //        break;
-            //}
-            _spatialIndexType = indexType;
         }
-
-
+        
         protected override void WriteSpatialGeometryExpressionSqlInternal(StringBuilder builder, SpatialOperation op,
                                                                   IGeometry geom)
         {
@@ -87,121 +74,15 @@ namespace SharpMap.Data.Providers.SpatiaLite2
                                                                  SpatialOperation spatialOperation, IExtents ext)
         {
             IExtents2D exts = (IExtents2D)ext;
-            String criteriaClause = "";
-            String whereClause = "";
 
             builder.Append( string.Format( " Mbr{0}( BuildMbr({1}, {2}, {3}, {4}),{5} )",
                 spatialOperation.ToString(),
                 CreateParameter<double>( exts.XMin ).ParameterName,
                 CreateParameter<double>( exts.YMin ).ParameterName,
-                CreateParameter<double>( exts.XMax ).ParameterName,
-                CreateParameter<double>( exts.YMax ).ParameterName,
+                CreateParameter<double>( exts.XMax + 1.0e-6 ).ParameterName,
+                CreateParameter<double>( exts.YMax + 1.0e-6 ).ParameterName,
                 Provider.GeometryColumn ) );
-            /*
 
-            switch (_spatialIndexType)
-            {
-                case SpatiaLite2IndexType.None:
-                    switch ( spatialOperation )
-                    {
-                        case SpatialOperation.Within:
-                        case SpatialOperation.Equals:
-                            //(minx >= pc->minx && maxx <= pc->maxx && miny >= pc->miny && maxy <= pc->maxy)
-                            criteriaClause = string.Format(
-                                "({0}>=MBRMinX({4}) AND {2}<=MBRMaxX({4}) AND {1}>=MBRMinY({4}) AND {3}<=MBRMaxY({4}))",
-                                "{0}", "{1}", "{2}", "{3}", Provider.GeometryColumn );
-                            break;
-                        case SpatialOperation.Contains:
-                            //(pc->minx >= minx && pc->maxx <= maxx && pc->miny >= miny && pc->maxy <= maxy)
-                            criteriaClause = string.Format(
-                                "(MBRMinX({4})>={0} AND MBRMaxX({4})<={2} AND MBRMinY({4})>={1} AND MBRMaxY({4})<={3})",
-                                "{0}", "{1}", "{2}", "{3}", Provider.GeometryColumn );
-                            break;
-                        case SpatialOperation.Intersects:
-                        case SpatialOperation.Crosses:
-                        case SpatialOperation.Overlaps:
-                        case SpatialOperation.Touches:
-                            criteriaClause = "(MBRMaxX({4})>={0} AND MBRMaxY({4})>={1} AND MBRMinX({4})<={2} AND MBRMinY({4})<={3})";
-                            break;
-                        default: break;
-                    }
-                    if ( String.IsNullOrEmpty( criteriaClause ) ) break;
-
-                    whereClause = string.Format( "[{0}].ROWID in (SELECT [{0}].ROWID FROM {1} WHERE {2})", Provider.Table, Provider.QualifiedTableName, criteriaClause );
-                    break;
-
-                case SpatiaLite2IndexType.RTree:
-                    switch (spatialOperation)
-                    {
-                        case SpatialOperation.Within:
-                        case SpatialOperation.Equals:
-                            //(minx >= pc->minx && maxx <= pc->maxx && miny >= pc->miny && maxy <= pc->maxy)
-                            criteriaClause = "({0}>=xmin AND {2}<=xmax AND {1}>=ymin AND {3}<=ymax)";
-                            break;
-                        case SpatialOperation.Contains:
-                            //(pc->minx >= minx && pc->maxx <= maxx && pc->miny >= miny && pc->maxy <= maxy)
-                            criteriaClause = "(xmin>={0} AND xmax<={2} AND ymin>={1} AND ymax<={3})";
-                            break;
-                        case SpatialOperation.Intersects:
-                        case SpatialOperation.Crosses:
-                        case SpatialOperation.Overlaps:
-                        case SpatialOperation.Touches:
-                            criteriaClause = "(xmax>={0} AND ymax>={1} AND xmin<={2} AND ymin<={3})";
-                            break;
-                        default: break;
-                    }
-                    if (String.IsNullOrEmpty(criteriaClause)) break;
-
-                    whereClause = string.Format("[{0}].ROWID in (SELECT pkid FROM idx_{0}_{1} WHERE {2})", Provider.Table, Provider.GeometryColumn, criteriaClause);
-                    break;
-
-                case SpatiaLite2IndexType.MBRCache:
-
-                    switch (spatialOperation)
-                    {
-                        case SpatialOperation.Contains:
-                        case SpatialOperation.Equals:
-                            criteriaClause = "FilterMbrContains({0}, {1}, {2}, {3})";
-                            break;
-                        case SpatialOperation.Within:
-                            criteriaClause = "FilterMbrWithin({0}, {1}, {2}, {3})";
-                            break;
-                        case SpatialOperation.Intersects:
-                        case SpatialOperation.Crosses:
-                        case SpatialOperation.Overlaps:
-                        case SpatialOperation.Touches:
-                            criteriaClause = "FilterMbrIntersects({0}, {1}, {2}, {3})";
-                            break;
-                        default:
-                            break;
-                    }
-                    if (String.IsNullOrEmpty(criteriaClause)) break;
-
-                    whereClause = String.Format(" [{0}].ROWID in (SELECT ROWID FROM cache_{0}_{1} WHERE mbr={2})",
-                        Provider.Table,
-                        Provider.GeometryColumn,
-                        criteriaClause);
-
-                    break;
-
-                default:
-                    throw new SpatiaLite2Exception("Invalid spatial index type");
-            }
-            */
-            if (!String.IsNullOrEmpty(whereClause))
-            {
-                builder.AppendFormat(whereClause,
-                   CreateParameter(exts.XMin).ParameterName,
-                   CreateParameter(exts.YMin).ParameterName,
-                   CreateParameter(exts.XMax).ParameterName,
-                   CreateParameter(exts.YMax).ParameterName);
-            }
-            else
-            {
-                //remove possible trailing " AND" statement
-                if (builder.ToString().EndsWith(" AND"))
-                    builder.Remove(builder.Length - 4, 4);
-            }
         }
     }
 

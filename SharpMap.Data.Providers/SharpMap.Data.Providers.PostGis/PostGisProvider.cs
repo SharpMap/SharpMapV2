@@ -216,7 +216,7 @@ namespace SharpMap.Data.Providers
                     cmd.CommandText =
 @"SELECT x.""f_geometry_column""
 FROM ""public"".""geometry_columns"" AS x 
-WHERE (x.""f_schema_name""=:p0 AND x.""f_table_name""=:p1)
+WHERE (x.""f_table_schema""=:p0 AND x.""f_table_name""=:p1)
 LIMIT 1;";
                     cmd.Parameters.Add(new NpgsqlParameter("p0", schemaName));
                     cmd.Parameters.Add(new NpgsqlParameter("p1", tableName));
@@ -312,11 +312,6 @@ LIMIT 1;";
             Vacuum();
         }
 
-        protected override DataTable BuildSchemaTable()
-        {
-            return BuildSchemaTable(false);
-        }
-
         protected override DataTable BuildSchemaTable(Boolean withGeometryColumn)
         {
             DataTable dt = null;
@@ -324,8 +319,28 @@ LIMIT 1;";
             {
                 conn.Open();
 
+                CollectionExpression<PropertyNameExpression> attributes = null;
+                if (DefaultProviderProperties != null)
+                    attributes = GetProviderPropertyValue<AttributesCollectionExpression, CollectionExpression<PropertyNameExpression>>(
+                        DefaultProviderProperties.ProviderProperties,
+                        null);
+
+                string columns = attributes == null
+                    ?
+                        "*"
+                    :
+                        string.Join(",", Enumerable.ToArray(Processor.Select(attributes, o => QualifyColumnName(o.PropertyName))));
+
+                if (columns != "*")
+                {
+                    if (!columns.Contains(QualifyColumnName(GeometryColumn)))
+                        columns = string.Format("{0},{1}", QualifyColumnName(GeometryColumn), columns);
+                    if (!columns.Contains(QualifyColumnName(OidColumn)))
+                        columns = string.Format("{0},{1}", QualifyColumnName(OidColumn), columns);
+                }
+
                 using (
-                    var cmd = new NpgsqlCommand(string.Format("SELECT * FROM {0} LIMIT 1;", QualifiedTableName), conn))
+                    var cmd = new NpgsqlCommand(string.Format("SELECT {0} FROM {1} LIMIT 1;", columns, QualifiedTableName), conn))
                 {
                     var da = new NpgsqlDataAdapter(cmd);
                     var ds = new DataSet();
@@ -336,15 +351,26 @@ LIMIT 1;";
                 conn.Close();
             }
 
+            if (!dt.Columns.Contains("oid") && HasOids)
+            {
+                dt.Columns.Add(new DataColumn("oid", typeof(System.Int64)));
+                DataColumn dc = dt.Columns["oid"];
+                dc.SetOrdinal(0);
+                if (dt.Constraints.Count == 0)
+                    dt.Constraints.Add("PK", dt.Columns[0], true);
+            }
+
             for (int i = 0; i < dt.Columns.Count; i++)
             {
                 if (dt.Columns[i].ColumnName == GeometryColumn)
-                    dt.Columns[i].DataType = typeof (Byte[]);
+                    dt.Columns[i].DataType = typeof (Byte[]);            
             }
 
             if (!withGeometryColumn)
                 dt.Columns.Remove(GeometryColumn);
 
+            //remove Primary Key to avoid possibliy mismatched PrimaryKey of FeatureDataTable
+            dt.PrimaryKey = null;
             return dt;
         }
 
@@ -368,6 +394,38 @@ LIMIT 1;";
                 {
                     cn.Close();
                 }
+            }
+        }
+
+        public Boolean HasOids
+        {
+            get
+            {
+                Boolean retval = false;
+                using ( var cn = (NpgsqlConnection)DbUtility.CreateConnection(ConnectionString) )
+                {
+                    cn.Open();
+                    var cmd = DbUtility.CreateCommand();
+                    cmd.Connection = cn;
+                    cmd.CommandText = 
+@"select cls.relhasoids
+from pg_class as cls
+inner join pg_namespace as ns on ns.oid = cls.relnamespace
+where ns.nspname=:p0::text and cls.relname=:p1::text and cls.relkind='r';";
+                    cmd.Parameters.Add(DbUtility.CreateParameter("p0", TableSchema,ParameterDirection.Input));
+                    cmd.Parameters.Add(DbUtility.CreateParameter("p1", Table,ParameterDirection.Input));
+                    try
+                    {
+                        var result = cmd.ExecuteScalar();
+                        retval = result != null ? (Boolean)result : false;
+                    }
+                    catch
+                    {
+                        retval = false;
+                    }
+                    cn.Close();
+                }
+                return retval;
             }
         }
 
@@ -608,5 +666,15 @@ LIMIT 1;";
             srid = "";
             
         }
+        protected override IFeatureDataReader ExecuteFeatureDataReader(IDbCommand cmd)
+        {
+            Debug.WriteLine(String.Format("executing sql : {0}", cmd.CommandText));
+            IDbConnection conn = DbUtility.CreateConnection(ConnectionString);
+            cmd.Connection = conn;
+            if (conn.State == ConnectionState.Closed) conn.Open();
+            return new PostGisFeatureDataReader(GeometryFactory, cmd.ExecuteReader(CommandBehavior.CloseConnection),
+                                                  GeometryColumn, OidColumn) { CoordinateTransformation = CoordinateTransformation };
+        }
+
     }
 }

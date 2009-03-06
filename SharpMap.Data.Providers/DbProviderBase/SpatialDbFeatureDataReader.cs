@@ -68,8 +68,8 @@ namespace SharpMap.Data.Providers.Db
                 if (_geomColumnIndex > -1 && _oidColumnIndex > -1)
                     break;
             }
-            if (_geomColumnIndex > -1)
-                _oidType = _internalReader.GetFieldType(_geomColumnIndex);
+            if (_oidColumnIndex > -1)
+                _oidType = _internalReader.GetFieldType(_oidColumnIndex);
         }
 
         #region private helper
@@ -309,7 +309,6 @@ namespace SharpMap.Data.Providers.Db
                                 _transFactory.Srid = SridMap.DefaultInstance.Process(_transFactory.SpatialReference, "");
                             }
                             _currentGeometry = CoordinateTransformation.Transform(geom, _transFactory);
-                            //_currentGeometry.Centroid = CoordinateTransformation.Transform( geom.Centroid, _transFactory );
                         }
                     }
                 }
@@ -339,18 +338,15 @@ namespace SharpMap.Data.Providers.Db
             get { return _oidType; }
         }
 
-        public IEnumerator<IFeatureDataRecord> GetEnumerator()
+        public virtual IEnumerator<IFeatureDataRecord> GetEnumerator()
         {
             while (Read())
             {
                 yield return this;
             }
-            //FObermaier:
-            //needed for npgsql, because npgsql throws exceptions after a while
-            //if the connection of the reader is not closed properly.
-            //The Dispose Method got never called, possibly memory leakage?
-            Dispose();
+            Close();//jd:re-implementing close here due to strange exceptions when the finalizer is called.
             yield break;
+            
         }
 
         IEnumerator IEnumerable.GetEnumerator()
@@ -372,13 +368,16 @@ namespace SharpMap.Data.Providers.Db
             Dispose(false);
         }
 
+        
         private void Dispose(bool disposing)
         {
             if (_disposed)
                 return;
-            _internalReader.Close();
-            _internalReader.Dispose();
             _disposed = true;
+            if (!_internalReader.IsClosed)
+            {
+                _internalReader.Close();
+            }
         }
     }
 }

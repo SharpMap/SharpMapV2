@@ -1,4 +1,6 @@
-#define EXPLAIN
+#if DEBUG
+//#define EXPLAIN
+#endif
 /*
  *  The attached / following is part of SharpMap.Data.Providers.SpatiaLite2
  *  SharpMap.Data.Providers.SpatiaLite2 is free software � 2008 Ingenieurgruppe IVV GmbH & Co. KG, 
@@ -572,14 +574,35 @@ WHERE type='table' AND NOT( name like 'cache_%' ) AND NOT( name like 'sqlite%' )
             DataTable dt = null;
             using ( SQLiteConnection conn = (SQLiteConnection)DbUtility.CreateConnection( ConnectionString ) )
             {
-                using ( SQLiteCommand cmd = (SQLiteCommand)DbUtility.CreateCommand() )
+                CollectionExpression<PropertyNameExpression> attributes = null;
+                if (DefaultProviderProperties != null)
                 {
-                    cmd.CommandText = string.Format( "SELECT * FROM {0} ", Table );
+                    attributes = GetProviderPropertyValue<AttributesCollectionExpression, CollectionExpression<PropertyNameExpression>>(
+                            DefaultProviderProperties.ProviderProperties,
+                            null);
+                }
+
+                string columns = attributes == null
+                        ?
+                            "*"
+                        :
+                            string.Join(",", Enumerable.ToArray(Processor.Select(attributes, o => QualifyColumnName(o.PropertyName))));
+
+                if (columns != "*")
+                {
+                    if (!columns.Contains(QualifyColumnName(GeometryColumn)))
+                        columns = string.Format("{0},{1}", QualifyColumnName(GeometryColumn), columns);
+                    if (!columns.Contains(QualifyColumnName(OidColumn)))
+                        columns = string.Format("{0},{1}", QualifyColumnName(OidColumn), columns);
+                }
+
+                using (SQLiteCommand cmd = new SQLiteCommand(string.Format("SELECT {0} FROM {1} LIMIT 1;", columns, QualifiedTableName), conn))
+                {
                     cmd.Connection = conn;
-                    SQLiteDataAdapter da = new SQLiteDataAdapter( cmd );
+                    SQLiteDataAdapter da = new SQLiteDataAdapter(cmd);
                     DataSet ds = new DataSet();
-                    da.FillSchema( ds, SchemaType.Source );
-                    dt = ds.Tables[ "Table" ];
+                    da.FillSchema(ds, SchemaType.Source);
+                    dt = ds.Tables["Table"];
                 }
 
                 for ( int i = 0; i < dt.Columns.Count; i++ )
@@ -595,6 +618,7 @@ WHERE type='table' AND NOT( name like 'cache_%' ) AND NOT( name like 'sqlite%' )
                 {
                     dt.Columns.Remove( GeometryColumn );
                 }
+                dt.PrimaryKey = null;
             }
             return dt;
         }
@@ -640,7 +664,7 @@ WHERE type='table' AND NOT( name like 'cache_%' ) AND NOT( name like 'sqlite%' )
             SQLiteConnection conn = new SQLiteConnection( connectionString );
             conn.Open();
 
-            Object retVal = new SQLiteCommand( "SELECT load_extension('libspatialite-2.dll');;", conn ).ExecuteScalar();
+            Object retVal = new SQLiteCommand( "SELECT load_extension('libspatialite-2.dll');", conn ).ExecuteScalar();
             if ( spatiallyEnabled ) return conn;
 
             SQLiteTransaction tran = conn.BeginTransaction();
@@ -700,8 +724,12 @@ WHERE type='table' AND NOT( name like 'cache_%' ) AND NOT( name like 'sqlite%' )
             //    spatialIndexType = DefaultSpatiaLiteIndexType;
 
             SQLiteConnection conn = initSpatialMetaData( connectionString );
-            //string srid = String.IsNullOrEmpty(featureDataTable.GeometryFactory.Srid) ? DefaultSrid : featureDataTable.GeometryFactory.Srid;
-            int? sridInt = SridMap.DefaultInstance.Process( featureDataTable.GeometryFactory.SpatialReference, (int?)null );
+
+            string srid = featureDataTable.GeometryFactory.SpatialReference != null 
+                ?
+                    featureDataTable.GeometryFactory.SpatialReference.AuthorityCode 
+                :
+                    DefaultSridInt.ToString();
 
             if ( conn != null )
             {
@@ -721,7 +749,7 @@ WHERE type='table' AND NOT( name like 'cache_%' ) AND NOT( name like 'sqlite%' )
                 String addGeometryColumnClause = String.Format( "('{0}', '{1}', {2}, '{3}', {4})",
                   tableName,
                   geometryColumnName,
-                  sridInt,
+                  srid,
                   shapeType.ToString(),
                   2 );
 

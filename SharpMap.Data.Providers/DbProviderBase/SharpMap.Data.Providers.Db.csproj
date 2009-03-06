@@ -87,6 +87,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ExpressionMerger.cs" />
+    <Compile Include="Expressions\AttributesCollectionExpression.cs" />
     <Compile Include="Expressions\DataPageNumberExpression.cs" />
     <Compile Include="Expressions\DataPageSizeExpression.cs" />
     <Compile Include="Expressions\ForceIndexExpression.cs" />

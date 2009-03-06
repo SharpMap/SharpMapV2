@@ -489,6 +489,7 @@
     <Content Include="OpenLayers\OpenLayersSource\lib\OpenLayers\Format\WMC\v1.js" />
     <Content Include="OpenLayers\OpenLayersSource\lib\OpenLayers\Format\WMC\v1_0_0.js" />
     <Content Include="OpenLayers\OpenLayersSource\lib\OpenLayers\Format\WMC\v1_1_0.js" />
+    <Content Include="OpenLayers\OpenLayersSource\lib\OpenLayers\Format\WMSGetFeatureInfo.js" />
     <Content Include="OpenLayers\OpenLayersSource\lib\OpenLayers\Format\XML.js" />
     <Content Include="OpenLayers\OpenLayersSource\lib\OpenLayers\Geometry.js" />
     <Content Include="OpenLayers\OpenLayersSource\lib\OpenLayers\Geometry\Collection.js" />

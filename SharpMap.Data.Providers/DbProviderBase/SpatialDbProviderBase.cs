@@ -251,8 +251,17 @@ namespace SharpMap.Data.Providers.Db
             get { return QualifyTableName(TableSchema, Table); }
         }
 
-
-        public ProviderPropertiesExpression DefaultProviderProperties { get; set; }
+        private ProviderPropertiesExpression _defaultProviderProperties = null;
+        private bool _forceCreateNewSchemaTable = false;
+        public ProviderPropertiesExpression DefaultProviderProperties
+        {
+            get { return _defaultProviderProperties; }
+            set
+            {
+                _forceCreateNewSchemaTable = true;
+                _defaultProviderProperties = value;
+            }
+        }
 
         #endregion
 
@@ -281,18 +290,28 @@ namespace SharpMap.Data.Providers.Db
                     cmd.CommandText = string.Format(
                         "INSERT INTO {0} {1};", QualifiedTableName, InsertClause(cmd));
 
+                    int geometryParameterIndex = cmd.Parameters.Count - 1;
                     foreach (FeatureDataRow<TOid> row in features)
                     {
-                        cmd.Parameters.Clear();
-
-                        for (int i = 0; i < row.FieldCount; i++)
+                        if (cmd.Parameters.Count > 0)
                         {
-                            cmd.Parameters.Add(DbUtility.CreateParameter(string.Format("P{0}", i), row[i],
-                                                                         ParameterDirection.Input));
+                            for (int i = 0; i < row.FieldCount; i++)
+                                ((IDataParameter)cmd.Parameters[i]).Value = row.GetValue(i);
+                            ((IDataParameter)cmd.Parameters[geometryParameterIndex]).Value =
+                                row.Geometry.AsBinary();
                         }
+                        else
+                        {
+                            for (int i = 0; i < row.FieldCount; i++)
+                            {
+                                cmd.Parameters.Add(DbUtility.CreateParameter(string.Format("P{0}", i), row[i],
+                                                                             ParameterDirection.Input));
+                            }
 
-                        cmd.Parameters.Add(DbUtility.CreateParameter("PGeo", row.Geometry.AsBinary(),
-                                                                     ParameterDirection.Input));
+                            geometryParameterIndex = cmd.Parameters.Add(
+                                DbUtility.CreateParameter("PGeo", row.Geometry.AsBinary(),
+                                ParameterDirection.Input));
+                        }
 
                         //for (int i = 0; i < cmd.Parameters.Count - 1; i++)
                         //    ((IDataParameter)cmd.Parameters[i]).Value = row[i];
@@ -480,7 +499,6 @@ namespace SharpMap.Data.Providers.Db
         public void SetTableSchema(FeatureDataTable<TOid> table, SchemaMergeAction schemaAction)
         {
             DataTable dt = GetSchemaTable();
-
             table.Merge(dt);
         }
 
@@ -532,7 +550,9 @@ namespace SharpMap.Data.Providers.Db
 
         public override DataTable GetSchemaTable()
         {
-            return GetSchemaTable(false);
+            DataTable dt = GetSchemaTable(_forceCreateNewSchemaTable);
+            _forceCreateNewSchemaTable = false;
+            return dt;
         }
 
 
@@ -770,6 +790,15 @@ namespace SharpMap.Data.Providers.Db
         protected virtual IDbCommand PrepareSelectCommand(Expression query)
         {
             Expression exp = ExpressionMerger.MergeExpressions(query, DefinitionQuery);
+            //if (DefaultProviderProperties != null)
+            //{
+            //    var attributes = 
+            //        GetProviderPropertyValue<AttributesCollectionExpression, CollectionExpression<PropertyNameExpression>>(
+            //            DefaultProviderProperties.ProviderProperties, 
+            //            null);
+            //    if (attributes != null)
+            //        exp = ExpressionMerger.MergeExpressions(exp, new AttributesProjectionExpression(attributes));
+            //}
 
             ExpressionTreeToSqlCompilerBase<TOid> compiler = CreateSqlCompiler(exp);
 

@@ -80,19 +80,25 @@ namespace MapViewer.DataSource
                 columns.Insert(1, geomColumn);
 
                 ProviderPropertiesExpression ppe = null;
-                if (orderby.Count > 0)
+
+                if (orderby.Count == 0)
+                {
+                    ppe = new ProviderPropertiesExpression(
+                     new ProviderPropertyExpression[] {
+                         new AttributesCollectionExpression(columns) 
+                     });
+                }
+                else
                 {
                     ppe = new ProviderPropertiesExpression(
                         new ProviderPropertyExpression[] { 
-                            new OrderByCollectionExpression(orderby)}
-                            );
-                    //,new AttributesProjectionExpression(columns)});
+                            new OrderByCollectionExpression(orderby), 
+                            new AttributesCollectionExpression(columns)
+                        });
                 }
 
-                AttributesProjectionExpression ape = new AttributesProjectionExpression(columns);
-
                 IFeatureProvider prov =
-                    new SpatiaLite2Provider(gf, conn, schema, tableName, oidColumnName, geomColumn, gs.CoordinateTransformationFactory); 
+                    new SpatiaLite2Provider(gf, conn, schema, tableName, oidColumnName, geomColumn, gs.CoordinateTransformationFactory) { DefaultProviderProperties = ppe}; 
 
                 //jd commented temporarily to get a build
                 //((ISpatialDbProvider)prov).DefinitionQuery =

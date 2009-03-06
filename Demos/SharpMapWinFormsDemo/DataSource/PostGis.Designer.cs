@@ -164,7 +164,7 @@
             this.cbTables.FormattingEnabled = true;
             this.cbTables.Location = new System.Drawing.Point(134, 138);
             this.cbTables.Name = "cbTables";
-            this.cbTables.Size = new System.Drawing.Size(143, 21);
+            this.cbTables.Size = new System.Drawing.Size(224, 21);
             this.cbTables.TabIndex = 6;
             this.cbTables.DataSourceChanged += new System.EventHandler(this.cbTables_DataSourceChanged);
             this.cbTables.SelectedIndexChanged += new System.EventHandler(this.cbTables_SelectedIndexChanged);
@@ -178,16 +178,16 @@
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.dgvColumns.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvColumns.Enabled = false;
-            this.dgvColumns.Location = new System.Drawing.Point(14, 182);
+            this.dgvColumns.Location = new System.Drawing.Point(14, 211);
             this.dgvColumns.Name = "dgvColumns";
-            this.dgvColumns.Size = new System.Drawing.Size(344, 126);
+            this.dgvColumns.Size = new System.Drawing.Size(344, 97);
             this.dgvColumns.TabIndex = 9;
             this.dgvColumns.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvColumns_CellDoubleClick);
             // 
             // lbColumns
             // 
             this.lbColumns.AutoSize = true;
-            this.lbColumns.Location = new System.Drawing.Point(11, 166);
+            this.lbColumns.Location = new System.Drawing.Point(11, 195);
             this.lbColumns.Name = "lbColumns";
             this.lbColumns.Size = new System.Drawing.Size(47, 13);
             this.lbColumns.TabIndex = 8;
@@ -218,7 +218,7 @@
             // 
             this.lbSRID.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lbSRID.AutoSize = true;
-            this.lbSRID.Location = new System.Drawing.Point(283, 141);
+            this.lbSRID.Location = new System.Drawing.Point(11, 165);
             this.lbSRID.Name = "lbSRID";
             this.lbSRID.Size = new System.Drawing.Size(39, 13);
             this.lbSRID.TabIndex = 7;

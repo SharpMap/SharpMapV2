@@ -32,7 +32,7 @@ using GeoAPI.Geometries;
 
 namespace MapViewer.DataSource
 {
-    public partial class PostGis : UserControl, ICreateDataProvider
+    internal partial class PostGis : UserControl, ICreateDataProvider
     {
         private DataSet datasetTableAndColumns = null;
         private string lastDbQueried = "";
@@ -229,36 +229,47 @@ namespace MapViewer.DataSource
 
                 if (!columns.Contains(oidColumnName))
                     columns.Insert(0, oidColumnName);
-                columns.Insert(1, geomColumn);
 
-                ProviderPropertiesExpression ppe = null;
-                if (orderby.Count > 0)
+                columns.Add(geomColumn);
+
+                ProviderPropertiesExpression ppe = null; 
+                
+                if (orderby.Count == 0)
+                {
+                    ppe = new ProviderPropertiesExpression(
+                     new ProviderPropertyExpression[] {
+                         new AttributesCollectionExpression(columns) 
+                     });
+                }
+                else
                 {
                     ppe = new ProviderPropertiesExpression(
                         new ProviderPropertyExpression[] { 
-                            new OrderByCollectionExpression(orderby)}
-                            );
-                    //,new AttributesProjectionExpression(columns)});
+                            new OrderByCollectionExpression(orderby), 
+                            new AttributesCollectionExpression(columns)
+                        });
                 }
-
-                AttributesProjectionExpression ape = new AttributesProjectionExpression(columns);
 
                 IFeatureProvider prov = null;
 
                 switch ((String)dgvColumns.Rows[oidcolumn].Cells["DataType"].Value)
                 {
                     case "bigint":
-                        prov = new PostGisProvider<long>(gf, conn, schema, tableName, oidColumnName, geomColumn, gs.CoordinateTransformationFactory);
+                        prov = new PostGisProvider<long>(gf, conn, schema, tableName, oidColumnName, geomColumn, gs.CoordinateTransformationFactory) 
+                            { DefaultProviderProperties = ppe };
                         break;
                     case "integer":
-                        prov = new PostGisProvider<int>(gf, conn, schema, tableName, oidColumnName, geomColumn, gs.CoordinateTransformationFactory);
+                        prov = new PostGisProvider<int>(gf, conn, schema, tableName, oidColumnName, geomColumn, gs.CoordinateTransformationFactory) 
+                            { DefaultProviderProperties = ppe };
                         break;
                     case "character varying":
                     case "text":
-                        prov = new PostGisProvider<string>(gf, conn, schema, tableName, oidColumnName, geomColumn, gs.CoordinateTransformationFactory);
+                        prov = new PostGisProvider<string>(gf, conn, schema, tableName, oidColumnName, geomColumn, gs.CoordinateTransformationFactory) 
+                            { DefaultProviderProperties = ppe };
                         break;
                     case "uuid":
-                        prov = new PostGisProvider<Guid>(gf, conn, schema, tableName, oidColumnName, geomColumn, gs.CoordinateTransformationFactory);
+                        prov = new PostGisProvider<Guid>(gf, conn, schema, tableName, oidColumnName, geomColumn, gs.CoordinateTransformationFactory) 
+                            { DefaultProviderProperties = ppe };
                         break;
                     default:
                         return null;
@@ -323,19 +334,33 @@ OPEN tbl FOR
 RETURN NEXT tbl;
 
 OPEN col FOR
-    SELECT  x.table_name as ""TableName"",
-	        x.column_name as ""ColumnName"",
-	        x.data_type as ""DataType"",
-	        CAST(1 AS bit) AS ""Include"",
-            CASE
-		        WHEN u.column_name = x.column_name then cast(1 AS bit)
-		        ELSE CAST(0 as bit)
-		    END AS ""PK""
-    FROM    information_schema.columns AS x 
-		        LEFT JOIN (SELECT DISTINCT z.f_table_name FROM geometry_columns AS z) AS cte ON cte.f_table_name=x.table_name
-		        LEFT JOIN information_schema.key_column_usage AS u ON u.table_name=x.table_name
-    WHERE cte.f_table_name=x.table_name AND (RTRIM(x.data_type) <> 'USER-DEFINED')
-    ORDER BY ""TableName"", x.ordinal_position;
+SELECT	x.table_schema as ""TableSchema"",
+	    x.table_name as ""TableName"",
+	    x.column_name as ""ColumnName"",
+	    x.data_type as ""DataType"",
+	    true AS ""Include"",
+	    CASE
+		    WHEN u.column_name = x.column_name then true
+		    ELSE false
+	    END AS ""PK"",
+	    x.ordinal_position
+FROM	information_schema.columns AS x 
+LEFT JOIN (SELECT DISTINCT z.f_table_schema, z.f_table_name FROM geometry_columns AS z) AS cte ON (cte.f_table_schema = x.table_schema and cte.f_table_name=x.table_name)
+LEFT JOIN information_schema.key_column_usage AS u ON u.table_name=x.table_name
+WHERE   cte.f_table_name=x.table_name AND (RTRIM(x.data_type) <> 'USER-DEFINED')
+UNION
+    SELECT 	gc.f_table_schema as ""TableSchema"",
+	        gc.f_table_name as ""TableName"",
+	        CAST('oid' as character varying) as ""ColumnName"",
+	        cast('bigint' as character varying) as ""DataType"",
+	        true as ""Include"",
+	        true as ""PK"",
+	        cast(0 as integer) as ordinal_position
+    FROM    pg_class as cls
+    INNER JOIN pg_namespace as ns on ns.oid = cls.relnamespace
+    INNER JOIN geometry_columns as gc on ns.nspname=gc.f_table_schema and cls.relname=gc.f_table_name
+    WHERE cls.relkind='r' and cls.relhasoids
+ORDER BY ""TableName"", ordinal_position;
 RETURN NEXT col;
 RETURN;
 END;
@@ -390,7 +415,7 @@ $BODY$
             dv.AllowNew = false;
 
             dgvColumns.DataSource = dv;
-            if (dgvColumns.Columns.Count < 6)
+            if (dgvColumns.Columns.Count < 8)
             {
                 var dgvc = new DataGridViewComboBoxColumn();
                 dgvc.Name = "SortOrder";
@@ -398,11 +423,13 @@ $BODY$
                 dgvc.DataSource = Enum.GetNames(typeof(System.Data.SqlClient.SortOrder));//new List<String>(GeoAPI.DataStructures.Enumerable.ToArray<String> Enum.GetNames(SortOrder));
                 dgvColumns.Columns.Add(dgvc);
 
+                dgvColumns.Columns["TableSchema"].Visible = false; // TableName
                 dgvColumns.Columns["TableName"].Visible = false; // TableName
                 dgvColumns.Columns["ColumnName"].ReadOnly = true; // ColumnName
                 dgvColumns.Columns["DataType"].ReadOnly = true; // DataType
                 dgvColumns.Columns["Include"].ReadOnly = false;// Include
                 dgvColumns.Columns["PK"].Visible = false; // PrimaryKey
+                dgvColumns.Columns["ordinal_position"].Visible = false;
                 dgvColumns.Columns["SortOrder"].ReadOnly = false;// SortOrder
             }
 
