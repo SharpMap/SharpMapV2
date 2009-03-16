@@ -75,7 +75,7 @@
           <SpecificVersion>False</SpecificVersion>
           <HintPath>..\GeoAPI\ExternalReferences\Debug_Net35\NPack.dll</HintPath>
         </Reference>
-        <Reference Include="System.Core"/>
+        <Reference Include="System.Core" />
       </ItemGroup>
     </When>
   </Choose>
@@ -86,7 +86,7 @@
           <SpecificVersion>False</SpecificVersion>
           <HintPath>..\GeoAPI\ExternalReferences\Release_Net35\NPack.dll</HintPath>
         </Reference>
-        <Reference Include="System.Core"/>
+        <Reference Include="System.Core" />
       </ItemGroup>
     </When>
   </Choose>
@@ -107,6 +107,7 @@
           <SpecificVersion>False</SpecificVersion>
           <HintPath>..\GeoAPI\ExternalReferences\Debug_Net20\NPack.dll</HintPath>
         </Reference>
+        <Reference Include="System.Xml" />
       </ItemGroup>
     </When>
   </Choose>
@@ -121,6 +122,7 @@
     <Compile Include="GeoJsonTextRenderer.cs" />
     <Compile Include="GeoJsonVectorRenderer.cs" />
     <Compile Include="HttpUtility.cs" />
+    <Compile Include="IGeoJsonGeometryStyle.cs" />
     <Compile Include="IGeometryPreProcessingStyle.cs" />
     <Compile Include="JsonUtility.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
