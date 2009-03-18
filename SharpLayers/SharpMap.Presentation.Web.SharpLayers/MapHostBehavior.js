@@ -42,4 +42,28 @@ SharpMap.Presentation.Web.SharpLayers.MapHostBehavior.prototype = {
     }
 
 }
+SharpMap.Presentation.Web.SharpLayers.MapHostBehavior.panMapToFeature = function(mapHost, feature) {
+
+    var map = mapHost.get_hostedItem();
+
+    if (feature.bbox && (feature.bbox.getWidth() > 0 || feature.bbox.getHeight() > 0)) {
+        map.zoomToExtent(feature.bbox, true)
+    }
+    else {
+        if (feature.geometry.CLASS_NAME == "OpenLayers.Geometry.Point"
+            || (feature.geometry.getBounds().getWidth() == 0 && feature.geometry.getBounds().getHeight() == 0))
+            map.setCenter(feature.geometry.getBounds().getCenterLonLat(), map.getZoomForResolution(map.resolutions[map.resolutions.length - 1], true));
+        else {
+            map.zoomToExtent(feature.geometry.getBounds(), true)
+        }
+    }
+}
+
+SharpMap.Presentation.Web.SharpLayers.MapHostBehavior.drawFeatureOnMap = function(mapHost, vectorLayerHost, feature) {
+    var layer = vectorLayerHost.get_hostedItem();
+    layer.addFeatures(feature, null);
+    feature.layer = layer;
+    SharpMap.Presentation.Web.SharpLayers.MapHostBehavior.panMapToFeature(mapHost, feature);
+}
+
 SharpMap.Presentation.Web.SharpLayers.MapHostBehavior.registerClass('SharpMap.Presentation.Web.SharpLayers.MapHostBehavior', SharpMap.Presentation.Web.SharpLayers.HostBaseBehavior);
