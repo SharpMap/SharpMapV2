@@ -425,6 +425,7 @@
     <Content Include="OpenLayers\OpenLayersSource\lib\OpenLayers\Control\DragPan.js" />
     <Content Include="OpenLayers\OpenLayersSource\lib\OpenLayers\Control\DrawFeature.js" />
     <Content Include="OpenLayers\OpenLayersSource\lib\OpenLayers\Control\EditingToolbar.js" />
+    <Content Include="OpenLayers\OpenLayersSource\lib\OpenLayers\Control\GetFeature.js" />
     <Content Include="OpenLayers\OpenLayersSource\lib\OpenLayers\Control\KeyboardDefaults.js" />
     <Content Include="OpenLayers\OpenLayersSource\lib\OpenLayers\Control\LayerSwitcher.js" />
     <Content Include="OpenLayers\OpenLayersSource\lib\OpenLayers\Control\Measure.js" />
@@ -445,6 +446,8 @@
     <Content Include="OpenLayers\OpenLayersSource\lib\OpenLayers\Control\Scale.js" />
     <Content Include="OpenLayers\OpenLayersSource\lib\OpenLayers\Control\ScaleLine.js" />
     <Content Include="OpenLayers\OpenLayersSource\lib\OpenLayers\Control\SelectFeature.js" />
+    <Content Include="OpenLayers\OpenLayersSource\lib\OpenLayers\Control\Snapping.js" />
+    <Content Include="OpenLayers\OpenLayersSource\lib\OpenLayers\Control\Split.js" />
     <Content Include="OpenLayers\OpenLayersSource\lib\OpenLayers\Control\ZoomBox.js" />
     <Content Include="OpenLayers\OpenLayersSource\lib\OpenLayers\Control\ZoomIn.js" />
     <Content Include="OpenLayers\OpenLayersSource\lib\OpenLayers\Control\ZoomOut.js" />
@@ -533,6 +536,7 @@
     <Content Include="OpenLayers\OpenLayersSource\lib\OpenLayers\Lang\zh-CN.js" />
     <Content Include="OpenLayers\OpenLayersSource\lib\OpenLayers\Lang\zh-TW.js" />
     <Content Include="OpenLayers\OpenLayersSource\lib\OpenLayers\Layer.js" />
+    <Content Include="OpenLayers\OpenLayersSource\lib\OpenLayers\Layer\ArcGIS93Rest.js" />
     <Content Include="OpenLayers\OpenLayersSource\lib\OpenLayers\Layer\Boxes.js" />
     <Content Include="OpenLayers\OpenLayersSource\lib\OpenLayers\Layer\EventPane.js" />
     <Content Include="OpenLayers\OpenLayersSource\lib\OpenLayers\Layer\FixedZoomLevels.js" />

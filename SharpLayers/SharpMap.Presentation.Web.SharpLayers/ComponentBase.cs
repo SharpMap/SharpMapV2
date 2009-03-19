@@ -21,10 +21,10 @@ using AjaxControlToolkit;
 
 namespace SharpMap.Presentation.Web.SharpLayers
 {
-    [RequiredScript(typeof (OpenLayersExtender))]
+    [RequiredScript(typeof(OpenLayersExtender))]
     [ClientScriptResource("SharpMap.Presentation.Web.SharpLayers.ComponentBase",
         "SharpMap.Presentation.Web.SharpLayers.ComponentBase.js")]
-    [TargetControlType(typeof (Control))]
+    [TargetControlType(typeof(Control))]
     public abstract class ComponentBase : ScriptControlBase
     {
         private readonly Dictionary<string, Control> _findControlHelperCache = new Dictionary<string, Control>();
@@ -33,6 +33,7 @@ namespace SharpMap.Presentation.Web.SharpLayers
 
         protected override IEnumerable<ScriptDescriptor> GetScriptDescriptors()
         {
+            EnsureID();
             var descriptor = new ScriptComponentDescriptor(ScriptComponentName);
             descriptor.ID = ClientID;
             DescribeComponent(descriptor);
