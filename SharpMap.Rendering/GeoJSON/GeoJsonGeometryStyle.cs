@@ -26,7 +26,7 @@ namespace SharpMap.Styles
     /// could be a bit unwieldy, but i need to be able to get access to the underlying data. Ideally we would be able to drop all the unneccesary style properties..
     /// </remarks>
     public class GeoJsonGeometryStyle
-        : GeometryStyle, IGeometryPreProcessingStyle, IGeoJsonGeometryStyle
+        : GeometryStyle, IGeometryPreProcessingStyle, IGeoJsonFeatureStyle
     {
         public bool IncludeAttributes { get; set; }
         public AttributeExtractionDelegate AttributeExtractionDelegate { get; set; }

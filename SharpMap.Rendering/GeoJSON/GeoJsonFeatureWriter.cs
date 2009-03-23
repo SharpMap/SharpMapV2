@@ -34,14 +34,14 @@ namespace SharpMap.Rendering.GeoJson
 
     public static class GeoJsonFeatureWriter
     {
-        public static string WriteFeature(GeoJsonGeometryStyle style, IFeatureDataRecord feature)
+        public static string WriteFeature(IGeoJsonFeatureStyle style, IFeatureDataRecord feature)
         {
             StringBuilder sb = new StringBuilder();
             WriteFeature(sb, style, feature);
             return sb.ToString();
         }
 
-        public static void WriteFeature(StringBuilder sb, IGeoJsonGeometryStyle style, IFeatureDataRecord feature)
+        public static void WriteFeature(StringBuilder sb, IGeoJsonFeatureStyle style, IFeatureDataRecord feature)
         {
             IGeometry g = style.PreProcessGeometries
                                           ? style.GeometryPreProcessor(feature.Geometry)
@@ -193,7 +193,7 @@ namespace SharpMap.Rendering.GeoJson
             sb.Append("]");
         }
 
-        private static void WriteFeatureAttributes(StringBuilder sb, IGeoJsonGeometryStyle style,
+        private static void WriteFeatureAttributes(StringBuilder sb, IGeoJsonFeatureStyle style,
                                                    IFeatureDataRecord feature)
         {
             sb.Append("{");
