@@ -123,6 +123,7 @@
     <Compile Include="GeoJsonVectorRenderer.cs" />
     <Compile Include="HttpUtility.cs" />
     <Compile Include="IGeoJsonFeatureStyle.cs" />
+    <Compile Include="IGeoJsonGeometryStyle.cs" />
     <Compile Include="IGeometryPreProcessingStyle.cs" />
     <Compile Include="JsonUtility.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

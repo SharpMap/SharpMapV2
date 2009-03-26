@@ -37,6 +37,9 @@ namespace SharpMap.Rendering.GeoJson
 
         private static string FormatJsonValue(object v)
         {
+            if (v == null || v is DBNull)
+                return "null";
+
             Type tval = v.GetType();
 
             if (tval != typeof(string) && typeof(IEnumerable).IsAssignableFrom(tval))

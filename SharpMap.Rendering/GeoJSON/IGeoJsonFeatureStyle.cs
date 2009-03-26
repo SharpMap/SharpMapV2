@@ -14,13 +14,9 @@
  */
 namespace SharpMap.Styles
 {
-    public interface IGeoJsonFeatureStyle
+    public interface IGeoJsonFeatureStyle : IGeoJsonGeometryStyle
     {
         bool IncludeAttributes { get; set; }
         AttributeExtractionDelegate AttributeExtractionDelegate { get; set; }
-        bool IncludeBBox { get; set; }
-        bool PreProcessGeometries { get; set; }
-        GeometryPreProcessor GeometryPreProcessor { get; set; }
-        string CoordinateNumberFormatString { get; set; }
     }
 }
