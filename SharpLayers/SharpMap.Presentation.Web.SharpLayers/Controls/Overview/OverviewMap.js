@@ -28,7 +28,6 @@ SharpMap.Presentation.Web.SharpLayers.Controls.Overview.OverviewMap.prototype = 
     },
     _toolBuilderDelegate: function() {
         var options = this.get_builderParams();
-        options.div = typeof options.div == "string" ? $get(options.div) : options.div;
         var mapHost = this.get_targetMapHost();
         options.mapOptions = mapHost.get_builderParams();
         return new OpenLayers.Control.OverviewMap(options);

@@ -21,7 +21,7 @@ namespace SharpMap.Presentation.Web.SharpLayers.Controls
 {
     [ClientScriptResource("SharpMap.Presentation.Web.SharpLayers.Controls.GenericOLControl",
         "SharpMap.Presentation.Web.SharpLayers.Controls.GenericOLControl.js")]
-    [TargetControlType(typeof (Control))]
+    [TargetControlType(typeof(Control))]
     public class GenericOLControl : ToolBaseComponent<GenericOLToolBuilderParams>
     {
         protected override string ScriptComponentName
@@ -33,6 +33,6 @@ namespace SharpMap.Presentation.Web.SharpLayers.Controls
     public class GenericOLToolBuilderParams : ToolBuilderParamsBase
     {
         [ClientPropertyName("openLayersClassName")]
-            public string OpenLayersClassName { get; set; }
+        public string OpenLayersClassName { get; set; }
     }
 }

@@ -29,7 +29,6 @@ SharpMap.Presentation.Web.SharpLayers.Controls.DrawFeature.DrawFeatureTool.proto
     },
     _toolBuilderDelegate: function() {
         var options = this.get_builderParams();
-        options.div = typeof options.div == "string" ? $get(options.div) : options.div;
         return new OpenLayers.Control.DrawFeature(options);
     }
 }

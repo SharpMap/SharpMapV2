@@ -7,6 +7,11 @@ namespace SharpMap.Demo.SharpLayers
     {
         protected void Page_Load(object sender, EventArgs e)
         {
+            Page.ClientScript.RegisterStartupScript(GetType(), "zoomExtentOnLoad",
+@"(function(){
+    var f = function(){ $find('" + Panel1_MapHostExtender.ClientID + @"').get_hostedItem().zoomToMaxExtent();}
+SharpMap.Presentation.Web.SharpLayers.InitSync.addPostLoad(f);
+})();", true);
         }
     }
 }

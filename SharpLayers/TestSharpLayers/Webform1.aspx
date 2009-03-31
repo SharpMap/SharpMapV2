@@ -43,30 +43,26 @@
         </asp:ScriptManager>
         <asp:Panel ID="mapPanel1" runat="server" Height="700px">
         </asp:Panel>
-        <div style="background-color: Green;">
-            <asp:Panel ID="toolBar1" runat="server" Height="100px" BackColor="Black" CssClass="olControlEditingToolbar" />
-        </div>
+        <style:SldComponent runat="server" ID="stylemap1">
+            <BuilderParams SldDocumentPath="mysld.xml"/>
+        </style:SldComponent>
         <cc1:MapHostExtender ID="Panel1_MapHostExtender" runat="server" Enabled="True" TargetControlID="mapPanel1">
             <BuilderParams FallThrough="true">
                 <TileSize Height="256" Width="256" />
             </BuilderParams>
             <Tools>
                 <edit:EditingTools runat="server" ID="editTool1">
-                    <BuilderParams EditableLayerId="VectorLayerComponent1" TargetElementId="toolBar1" />
+                    <BuilderParams EditableLayerId="VectorLayerComponent1" />
                 </edit:EditingTools>
                 <switch:LayerSwitcherTool runat="server" ID="layerSwitcherTool1">
                     <BuilderParams />
                 </switch:LayerSwitcherTool>
-                <pnl:ToolPanel runat="server">
-                    <ChildTools>
-                        <gen:GenericOLControl ID="GenericOLControl1" runat="server">
-                            <BuilderParams OpenLayersClassName="OpenLayers.Control.Navigation" />
-                        </gen:GenericOLControl>
-                        <gen:GenericOLControl ID="GenericOLControl2" runat="server">
-                            <BuilderParams OpenLayersClassName="OpenLayers.Control.PanZoom" />
-                        </gen:GenericOLControl>
-                    </ChildTools>
-                </pnl:ToolPanel>
+                <gen:GenericOLControl ID="GenericOLControl1" runat="server">
+                    <BuilderParams OpenLayersClassName="OpenLayers.Control.Navigation" />
+                </gen:GenericOLControl>
+                <gen:GenericOLControl ID="GenericOLControl2" runat="server">
+                    <BuilderParams OpenLayersClassName="OpenLayers.Control.PanZoom" />
+                </gen:GenericOLControl>
             </Tools>
             <LayerComponents>
                 <wms:WmsLayerComponent ID="WmsLayerComponent1" runat="server" Name="My Wms Layer">
@@ -81,7 +77,8 @@
                                 <cc1:StringValue Value="Cities" />
                             </WmsLayerNames>
                             <WmsServerUrls>
-                                <cc1:UriValue Value="http://localhost:50322/Maps/Map.ashx" /><%--This should be updated to the port number assigned by vs dev web server or IIS --%>
+                                <cc1:UriValue Value="http://localhost:50322/Maps/Map.ashx" />
+                                <%--This should be updated to the port number assigned by vs dev web server or IIS to the SharpMap.Demo.AspNet project --%>
                             </WmsServerUrls>
                         </WmsParameters>
                     </BuilderParams>
@@ -94,9 +91,6 @@
                 </vector:VectorLayerComponent>
             </LayerComponents>
         </cc1:MapHostExtender>
-        <style:SldComponent runat="server" ID="stylemap1">
-            <BuilderParams SldDocumentUri="mysld.xml" />
-        </style:SldComponent>
     </div>
     </form>
 </body>

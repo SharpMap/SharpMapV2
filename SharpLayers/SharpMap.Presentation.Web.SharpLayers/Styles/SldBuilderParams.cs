@@ -9,7 +9,7 @@ namespace SharpMap.Presentation.Web.SharpLayers.Styles
     {
         [ExtenderControlProperty(true)]
         [ClientPropertyName("sldDocumentXml"),
-         PersistenceMode(PersistenceMode.EncodedInnerDefaultProperty)]
+         PersistenceMode(PersistenceMode.InnerProperty)]
         public string SldDocumentXml { get; set; }
         private string _sldDocumentPath;
 

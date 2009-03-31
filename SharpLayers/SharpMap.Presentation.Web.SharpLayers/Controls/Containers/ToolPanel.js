@@ -34,9 +34,6 @@ SharpMap.Presentation.Web.SharpLayers.Controls.Containers.ToolPanel.prototype = 
     },
     _toolBuilderDelegate: function() {
         var opts = this.get_builderParams();
-        if (opts.div && typeof opts.div == "string")
-            opts.div = $get(opts.div);
-
         var p = new OpenLayers.Control.Panel(opts);
         var childControls = [];
         var ids = this.get_childControlHostIds();
