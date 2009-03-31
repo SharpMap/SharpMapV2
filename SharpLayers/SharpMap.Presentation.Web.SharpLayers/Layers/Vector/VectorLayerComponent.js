@@ -22,7 +22,6 @@ SharpMap.Presentation.Web.SharpLayers.Layers.Vector.VectorLayerComponent = funct
 SharpMap.Presentation.Web.SharpLayers.Layers.Vector.VectorLayerComponent.prototype = {
     initialize: function() {
         this._builderDelegate = Function.createDelegate(this, this._layerBuilderDelegate);
-        this._loadDelegate = Function.createDelegate(this, this._sldLoaded);
         SharpMap.Presentation.Web.SharpLayers.Layers.Vector.VectorLayerComponent.callBaseMethod(this, 'initialize');
     },
 
@@ -42,26 +41,12 @@ SharpMap.Presentation.Web.SharpLayers.Layers.Vector.VectorLayerComponent.prototy
             if (typeof options.styleSelector == "string")
             options.styleSelector = eval(options.styleSelector);
 
-        if (options["sld"] != null && options["styleSelector"] != null) {
-            if (options.sld.get_initDone()) {
-                options.styleMap = new OpenLayers.StyleMap(options.styleSelector(options.sld.get_hostedItem()));
-            }
-            else {
-                options.sld.add_sldLoaded(this._loadDelegate);
-            }
-        }
+        if (options["sld"] != null && options["styleSelector"] != null) 
+            options.styleMap = options.styleSelector(options.sld.get_hostedItem());
+ 
 
 
         return new OpenLayers.Layer.Vector(this.get_name(), options);
-    },
-    _sldLoaded: function(e) {
-        var opts = this.get_builderParams();
-        opts.sld.remove_sldLoaded(this._loadDelegate);
-        if (opts.styleSelector && this.get_hostedItem() != null)
-            this.get_hostedItem().styleMap = new OpenLayers.StyleMap(opts.styleSelector(opts.sld.get_hostedItem()));
     }
-
-
-
 }
 SharpMap.Presentation.Web.SharpLayers.Layers.Vector.VectorLayerComponent.registerClass('SharpMap.Presentation.Web.SharpLayers.Layers.Vector.VectorLayerComponent', SharpMap.Presentation.Web.SharpLayers.Layers.LayerComponent);

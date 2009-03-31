@@ -36,7 +36,8 @@ SharpMap.Presentation.Web.SharpLayers.MapHostBehavior.prototype = {
         var options = this.get_builderParams();
         options.controls = [new OpenLayers.Control.Navigation(),
                             new OpenLayers.Control.ArgParser(),
-                            new OpenLayers.Control.Attribution()];
+                            new OpenLayers.Control.Attribution(),
+                            new OpenLayers.Control.KeyboardDefaults()];
 
         return new OpenLayers.Map(this.get_element(), options);
     }

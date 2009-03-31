@@ -81,10 +81,8 @@ SharpMap.Presentation.Web.SharpLayers.Styles.SldComponent.prototype = {
         return this._sldInitDone;
     },
 
-    add_sldLoaded: function(handler) {
-        this.get_events().addHandler("sldloaded", handler);
-    },
     remove_sldLoaded: function(handler) {
+        debugger;
         this.get_events().removeHandler("sldloaded", handler);
     }
 
