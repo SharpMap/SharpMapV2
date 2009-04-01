@@ -47,7 +47,7 @@
             <BuilderParams SldDocumentPath="mysld.xml"/>
         </style:SldComponent>
         <cc1:MapHostExtender ID="Panel1_MapHostExtender" runat="server" Enabled="True" TargetControlID="mapPanel1">
-            <BuilderParams FallThrough="true">
+            <BuilderParams FallThrough="false">
                 <TileSize Height="256" Width="256" />
             </BuilderParams>
             <Tools>
