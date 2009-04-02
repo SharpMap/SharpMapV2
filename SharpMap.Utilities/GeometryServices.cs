@@ -21,6 +21,7 @@ using GisSharpBlog.NetTopologySuite.Geometries;
 using NetTopologySuite.Coordinates;
 using NPack;
 using NPack.Interfaces;
+using NPack.Matrix;
 using ProjNet.CoordinateSystems;
 using ProjNet.CoordinateSystems.Transformations;
 using SharpMap.Utilities.SridUtility;
@@ -97,7 +98,7 @@ namespace SharpMap.Utilities
 
                 _coordinateTransformationFactory = new CoordinateTransformationFactory<BufferedCoordinate>(
                       (BufferedCoordinateFactory)_coordinateFactory,
-                      (GeometryFactory<BufferedCoordinate>)_geometryFactory, new TempAffineFactory());
+                      (GeometryFactory<BufferedCoordinate>)_geometryFactory, new LinearFactory<DoubleComponent>());
 
             }
 

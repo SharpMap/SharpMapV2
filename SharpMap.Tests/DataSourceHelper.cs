@@ -1,10 +1,10 @@
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Data;
 using GeoAPI.Geometries;
 using SharpMap.Data;
-using SharpMap.Data.Providers.FeatureProvider;
-using SharpMap.Data.Providers.GeometryProvider;
+using SharpMap.Data.Providers;
 using SharpMap.Layers;
 
 namespace SharpMap.Tests
@@ -148,7 +148,7 @@ namespace SharpMap.Tests
             row.Geometry = geoFactory.WktReader.Read(EmptyLineString);
             features.AddRow(row);
 
-            provider.Insert(features);
+            provider.Insert((IEnumerable<FeatureDataRow<Guid>>) features);
 
             return provider;
         }

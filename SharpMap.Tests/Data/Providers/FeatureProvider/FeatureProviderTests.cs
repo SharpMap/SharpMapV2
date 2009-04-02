@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Data;
 using Xunit;
-using FProvider = SharpMap.Data.Providers.FeatureProvider.FeatureProvider;
+using FProvider = SharpMap.Data.Providers.FeatureProvider;
 
 namespace SharpMap.Tests.Data.Providers.FeatureProvider
 {

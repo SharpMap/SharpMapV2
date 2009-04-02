@@ -7,7 +7,7 @@ using GisSharpBlog.NetTopologySuite.Geometries;
 using NetTopologySuite.Coordinates;
 
 using SharpMap.Data;
-using SharpMap.Data.Providers.FeatureProvider;
+using SharpMap.Data.Providers;
 using SharpMap.Expressions;
 using Xunit;
 
