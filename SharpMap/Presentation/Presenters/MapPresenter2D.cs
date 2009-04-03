@@ -787,6 +787,7 @@ namespace SharpMap.Presentation.Presenters
                 default:
                     break;
             }
+            base.NotifyLayersChanged(listChangedType, oldIndex, newIndex, propertyDescriptor);
         }
 
         protected override ListChangedEventHandler GetHighlightedChangedEventHandler()
@@ -998,7 +999,11 @@ namespace SharpMap.Presentation.Presenters
 
             Path2D path = selection.Path.Clone() as Path2D;
             Debug.Assert(path != null);
-            path.TransformPoints(ToWorldTransformInternal);
+
+            // kbd4hire 20090318 Vector renderer uses device / pixels.
+            // No need to convert to world.
+            //path.TransformPoints(ToWorldTransformInternal);
+
             IEnumerable<Path2D> paths = new Path2D[] { path };
 
             IEnumerable renderedSelection = renderer.RenderPaths(paths,
@@ -1018,6 +1023,9 @@ namespace SharpMap.Presentation.Presenters
         protected virtual void RenderFeatureLayer(IFeatureLayer layer, RenderPhase phase)
         {
             IFeatureRenderer renderer = GetRenderer<IFeatureRenderer>(layer);
+
+            // kbd4hire 20090318 Set internal transform.
+            renderer.RenderTransform = _toViewTransform;
 
             Debug.Assert(renderer != null);
             Debug.Assert(layer.Style is FeatureStyle);

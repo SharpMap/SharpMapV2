@@ -1079,6 +1079,16 @@ namespace SharpMap
             raisePropertyChanged(SelectedLayersProperty.Name);
         }
 
+        /// <summary>
+        /// 20090402 kbd4hire
+        /// Notify the presenters that the map extents have changed allowing
+        /// them to update their internal metrics.
+        /// </summary>
+        private void onExtentsChanged()
+        {
+            raisePropertyChanged(ExtentsProperty.Name);
+        }
+
         private void onNameChanged()
         {
             raisePropertyChanged(TitleProperty.Name);
@@ -1149,6 +1159,7 @@ namespace SharpMap
                         {
                             _extents.ExpandToInclude(layer.Extents);
                         }
+                        onExtentsChanged();
                     }
                     break;
                 case ListChangedType.ItemChanged:
@@ -1156,6 +1167,7 @@ namespace SharpMap
                     {
                         ILayer layer = _layers[args.NewIndex];
                         _extents.ExpandToInclude(layer.Extents);
+                        onExtentsChanged();
                     }
                     break;
                 case ListChangedType.ItemDeleted:
@@ -1193,6 +1205,7 @@ namespace SharpMap
             }
 
             _extents = extents;
+            onExtentsChanged();
         }
 
         private static void changeLayerEnabled(ILayer layer, Boolean enabled)

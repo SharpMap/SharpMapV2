@@ -607,7 +607,8 @@ namespace SharpMap.Presentation.WinForms
             g = Graphics.FromImage(_bufferedMapImage);
             g.SmoothingMode = SmoothingMode.AntiAlias;
 
-            g.Transform = getGdiViewTransform();
+            // kbd4hire Leave GDI transform at identity.
+            //g.Transform = getGdiViewTransform();
 
             if (!_presenter.IsRenderingSelection)
             {
@@ -654,7 +655,9 @@ namespace SharpMap.Presentation.WinForms
                             {
                                 RectangleF newBounds = AdjustForLabel(g, ro);
                                 g.DrawString(ro.Text, ro.Font, ro.Fill, newBounds.Location);
-                                g.Transform = getGdiViewTransform();
+
+                                // kbd4hire Leave GDI transform at identity.
+                                //g.Transform = getGdiViewTransform();
                             }
 
                             break;
@@ -685,7 +688,9 @@ namespace SharpMap.Presentation.WinForms
                             {
                                 RectangleF newBounds = AdjustForLabel(g, ro);
                                 g.DrawString(ro.Text, ro.Font, ro.HighlightFill, newBounds);
-                                g.Transform = getGdiViewTransform();
+
+                                // kbd4hire 20090318 Leave transfrom at identity
+                                //g.Transform = getGdiViewTransform();
                             }
 
                             break;
@@ -716,7 +721,8 @@ namespace SharpMap.Presentation.WinForms
                             {
                                 RectangleF newBounds = AdjustForLabel(g, ro);
                                 g.DrawString(ro.Text, ro.Font, ro.SelectFill, newBounds);
-                                g.Transform = getGdiViewTransform();
+                                // kbd4hire 20090318 Leave transfrom at identity
+                                //g.Transform = getGdiViewTransform();
                             }
                             break;
                         case RenderState.Unknown:
@@ -1083,6 +1089,10 @@ namespace SharpMap.Presentation.WinForms
             return new Rectangle(new Point(0, 0), bitmap.Size);
         }
 
+        /// <summary>
+        ///  kbd4hire 20090318 Method no longer used!
+        /// </summary>
+        /// <returns></returns>
         private GdiMatrix getGdiViewTransform()
         {
             if (_gdiViewMatrix == null)
