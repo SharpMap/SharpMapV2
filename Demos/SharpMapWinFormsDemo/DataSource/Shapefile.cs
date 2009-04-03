@@ -33,9 +33,9 @@ namespace MapViewer.DataSource
         public IFeatureProvider GetProvider()
         {
             IGeometryServices svc = new GeometryServices();
-            if (File.Exists(tbPath.Text)){}
-                return new ShapeFileProvider(tbPath.Text, svc.DefaultGeometryFactory, svc.CoordinateSystemFactory, false)
-                           {IsSpatiallyIndexed = false};
+            if (File.Exists(tbPath.Text)){
+                return new ShapeFileProvider(tbPath.Text, svc.DefaultGeometryFactory, svc.CoordinateSystemFactory, false) { IsSpatiallyIndexed = false };
+            }
             return null;
         }
 

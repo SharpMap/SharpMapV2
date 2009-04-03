@@ -164,19 +164,21 @@ namespace MapViewer
 
         private static Size2D RandomSymbolSize()
         {
-            int d = random.Next(50, 100);
+            int d = random.Next(10, 25);
             return new Size2D(d, d);
         }
 
 
         public static StylePen RandomPen()
         {
-            var p = new StylePen(RandomColor(), random.Next(1, 15));
-            p.Alignment = StylePenAlignment.Center;
-            p.LineJoin = StyleLineJoin.MiterClipped;
-            p.MiterLimit = 2;
-            p.StartCap = StyleLineCap.NoAnchor;
-            p.EndCap = StyleLineCap.NoAnchor;
+            var p = new StylePen(RandomColor(), random.Next(1, 5))
+                        {
+                            Alignment = StylePenAlignment.Center,
+                            LineJoin = StyleLineJoin.MiterClipped,
+                            MiterLimit = 2,
+                            StartCap = StyleLineCap.NoAnchor,
+                            EndCap = StyleLineCap.NoAnchor
+                        };
             return p;
         }
 
@@ -187,7 +189,7 @@ namespace MapViewer
 
         public static StyleColor RandomColor()
         {
-            return new StyleColor(random.Next(0, 256), random.Next(0, 256), random.Next(0, 256), random.Next(60, 256));
+            return new StyleColor(random.Next(0, 255), random.Next(0, 255), random.Next(0, 255), random.Next(60, 255));
         }
     }
 }
