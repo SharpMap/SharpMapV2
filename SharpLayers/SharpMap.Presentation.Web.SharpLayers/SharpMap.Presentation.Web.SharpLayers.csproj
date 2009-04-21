@@ -116,6 +116,8 @@
     <Compile Include="Controls\IToolBuilderParams.cs" />
     <Compile Include="Controls\LayerSwitcher\LayerSwitcherTool.cs" />
     <Compile Include="Controls\LayerSwitcher\LayerSwitcherToolBuilderParams.cs" />
+    <Compile Include="Controls\Measure\MeasureTool.cs" />
+    <Compile Include="Controls\Measure\MeasureToolBuilderParams.cs" />
     <Compile Include="Controls\Nav\NavToolbar.cs" />
     <Compile Include="Controls\Nav\NavToolbarBuilderParams.cs" />
     <Compile Include="Controls\Overview\OverviewMap.cs" />
@@ -204,6 +206,7 @@
     <EmbeddedResource Include="Protocol\ProtocolComponent.js" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Controls\Measure\MeasureTool.js" />
     <Content Include="OpenLayers\Build\build.py" />
     <Content Include="OpenLayers\Build\buildUncompressed.py" />
     <Content Include="OpenLayers\Build\license.txt" />
@@ -448,6 +451,7 @@
     <Content Include="OpenLayers\OpenLayersSource\lib\OpenLayers\Control\SelectFeature.js" />
     <Content Include="OpenLayers\OpenLayersSource\lib\OpenLayers\Control\Snapping.js" />
     <Content Include="OpenLayers\OpenLayersSource\lib\OpenLayers\Control\Split.js" />
+    <Content Include="OpenLayers\OpenLayersSource\lib\OpenLayers\Control\WMSGetFeatureInfo.js" />
     <Content Include="OpenLayers\OpenLayersSource\lib\OpenLayers\Control\ZoomBox.js" />
     <Content Include="OpenLayers\OpenLayersSource\lib\OpenLayers\Control\ZoomIn.js" />
     <Content Include="OpenLayers\OpenLayersSource\lib\OpenLayers\Control\ZoomOut.js" />

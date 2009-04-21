@@ -102,7 +102,7 @@ namespace SharpMap.Data.Providers.Db
 
         public void Close()
         {
-            Dispose();
+            Dispose(true);
         }
 
         public int Depth
