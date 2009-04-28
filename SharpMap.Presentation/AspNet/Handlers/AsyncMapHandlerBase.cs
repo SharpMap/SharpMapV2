@@ -30,7 +30,7 @@ namespace SharpMap.Presentation.AspNet.Handlers
         {
             Debug.WriteLine(string.Format("Request recieved on thread {0}", Thread.CurrentThread.ManagedThreadId));
 
-            var result = new AsyncResult(cb, context);
+            AsyncResult result = new AsyncResult(cb, context);
             ThreadingUtility.QueueWorkItem(ProcessRequestAsync, result);
             return result;
         }
@@ -53,10 +53,10 @@ namespace SharpMap.Presentation.AspNet.Handlers
 
         private void ProcessRequestAsync(object asyncResult)
         {
-            var result = asyncResult as AsyncResult;
+            AsyncResult result = asyncResult as AsyncResult;
             if (result != null)
             {
-                var c = (HttpContext) result.AsyncState;
+                HttpContext c = (HttpContext) result.AsyncState;
                 try
                 {
                     ProcessRequest(c);

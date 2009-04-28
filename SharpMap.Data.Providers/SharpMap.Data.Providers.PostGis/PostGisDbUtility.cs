@@ -44,7 +44,7 @@ namespace SharpMap.Data.Providers.PostGis
             if (cns.Contains("enlist=false")) cns = cns.Replace("enlist=false", "enlist=true");
             if (!cns.Contains("enlist=true")) cns += " enlist=true;";
 
-            var cn = new NpgsqlConnection(connectionString);
+            NpgsqlConnection cn = new NpgsqlConnection(connectionString);
             return cn;
         }
 

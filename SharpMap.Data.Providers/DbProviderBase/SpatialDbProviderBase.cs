@@ -28,6 +28,7 @@ using System.Diagnostics;
 using System.Globalization;
 using GeoAPI.CoordinateSystems;
 using GeoAPI.CoordinateSystems.Transformations;
+using GeoAPI.DataStructures;
 using GeoAPI.Geometries;
 using SharpMap.Data.Providers.Db.Expressions;
 using SharpMap.Expressions;
@@ -37,9 +38,7 @@ using Processor = System.Linq.Enumerable;
 using Enumerable = System.Linq.Enumerable;
 using Caster = GeoAPI.DataStructures.Caster;
 #else
-using Processor = GeoAPI.DataStructures.Processor;
-using Caster = GeoAPI.DataStructures.Caster;
-using Enumerable = GeoAPI.DataStructures.Enumerable;
+
 #endif
 
 namespace SharpMap.Data.Providers.Db
@@ -47,19 +46,12 @@ namespace SharpMap.Data.Providers.Db
     public abstract class SpatialDbProviderBase<TOid>
         : FeatureProviderBase, IWritableFeatureProvider<TOid>, ISpatialDbProvider
     {
-        private readonly int? _geometryFactorySridInt;
-        protected int? SridInt
-        {
-            get
-            {
-                return _geometryFactorySridInt;
-            }
-        }
-
-        public ICoordinateTransformationFactory CoordinateTransformationFactory { get; set; }
-
         private static readonly Dictionary<TableCacheKey, DataTable> _cachedSchemas =
             new Dictionary<TableCacheKey, DataTable>();
+
+        private readonly int? _geometryFactorySridInt;
+        private ProviderPropertiesExpression _defaultProviderProperties;
+        private bool _forceCreateNewSchemaTable;
 
         private String _geometryColumn = "Wkb_Geometry";
         private String _oidColumn = "Oid";
@@ -67,19 +59,7 @@ namespace SharpMap.Data.Providers.Db
 
         static SpatialDbProviderBase()
         {
-            AddDerivedProperties(typeof(SpatialDbProviderBase<TOid>));
-        }
-
-        protected SpatialDbProviderBase(IDbUtility dbUtility,
-                                IGeometryFactory geometryFactory,
-                                String connectionString,
-                                String tableSchema,
-                                String tableName,
-                                String oidColumn,
-                                String geometryColumn)
-            : this(dbUtility, geometryFactory, connectionString, tableSchema, tableName, oidColumn, geometryColumn, null)
-        {
-
+            AddDerivedProperties(typeof (SpatialDbProviderBase<TOid>));
         }
 
         protected SpatialDbProviderBase(IDbUtility dbUtility,
@@ -88,7 +68,20 @@ namespace SharpMap.Data.Providers.Db
                                         String tableSchema,
                                         String tableName,
                                         String oidColumn,
-                                        String geometryColumn, ICoordinateTransformationFactory coordinateTransformationFactory)
+                                        String geometryColumn)
+            : this(dbUtility, geometryFactory, connectionString, tableSchema, tableName, oidColumn, geometryColumn, null
+                )
+        {
+        }
+
+        protected SpatialDbProviderBase(IDbUtility dbUtility,
+                                        IGeometryFactory geometryFactory,
+                                        String connectionString,
+                                        String tableSchema,
+                                        String tableName,
+                                        String oidColumn,
+                                        String geometryColumn,
+                                        ICoordinateTransformationFactory coordinateTransformationFactory)
         {
             DbUtility = dbUtility;
             GeometryFactory = geometryFactory.Clone();
@@ -96,7 +89,7 @@ namespace SharpMap.Data.Providers.Db
             OriginalSrid = GeometryFactory.Srid;
 
             if (geometryFactory.SpatialReference != null)
-                _geometryFactorySridInt = SridMap.DefaultInstance.Process(geometryFactory.SpatialReference, (int?)null);
+                _geometryFactorySridInt = SridMap.DefaultInstance.Process(geometryFactory.SpatialReference, (int?) null);
 
             if (!String.IsNullOrEmpty(connectionString))
             {
@@ -136,7 +129,12 @@ namespace SharpMap.Data.Providers.Db
             GeometryFactory.Srid = Srid;
         }
 
-        protected abstract void ReadSpatialReference(out ICoordinateSystem cs, out string srid);
+        protected int? SridInt
+        {
+            get { return _geometryFactorySridInt; }
+        }
+
+        public ICoordinateTransformationFactory CoordinateTransformationFactory { get; set; }
 
         /// <summary>
         /// Gets a <see cref="PropertyDescriptor"/> for 
@@ -251,8 +249,6 @@ namespace SharpMap.Data.Providers.Db
             get { return QualifyTableName(TableSchema, Table); }
         }
 
-        private ProviderPropertiesExpression _defaultProviderProperties = null;
-        private bool _forceCreateNewSchemaTable = false;
         public ProviderPropertiesExpression DefaultProviderProperties
         {
             get { return _defaultProviderProperties; }
@@ -269,7 +265,7 @@ namespace SharpMap.Data.Providers.Db
 
         public void Insert(FeatureDataRow<TOid> feature)
         {
-            Insert((IEnumerable<FeatureDataRow<TOid>>)new[] { feature });
+            Insert((IEnumerable<FeatureDataRow<TOid>>) new[] {feature});
         }
 
         public virtual void Insert(IEnumerable<FeatureDataRow<TOid>> features)
@@ -296,8 +292,8 @@ namespace SharpMap.Data.Providers.Db
                         if (cmd.Parameters.Count > 0)
                         {
                             for (int i = 0; i < row.FieldCount; i++)
-                                ((IDataParameter)cmd.Parameters[i]).Value = row.GetValue(i);
-                            ((IDataParameter)cmd.Parameters[geometryParameterIndex]).Value =
+                                ((IDataParameter) cmd.Parameters[i]).Value = row.GetValue(i);
+                            ((IDataParameter) cmd.Parameters[geometryParameterIndex]).Value =
                                 row.Geometry.AsBinary();
                         }
                         else
@@ -310,7 +306,7 @@ namespace SharpMap.Data.Providers.Db
 
                             geometryParameterIndex = cmd.Parameters.Add(
                                 DbUtility.CreateParameter("PGeo", row.Geometry.AsBinary(),
-                                ParameterDirection.Input));
+                                                          ParameterDirection.Input));
                         }
 
                         //for (int i = 0; i < cmd.Parameters.Count - 1; i++)
@@ -326,13 +322,12 @@ namespace SharpMap.Data.Providers.Db
                     }
                     tran.Commit();
                 }
-
             }
         }
 
         public void Update(FeatureDataRow<TOid> feature)
         {
-            Update((IEnumerable<FeatureDataRow<TOid>>)new[] { feature });
+            Update((IEnumerable<FeatureDataRow<TOid>>) new[] {feature});
         }
 
         public virtual void Update(IEnumerable<FeatureDataRow<TOid>> features)
@@ -357,10 +352,10 @@ namespace SharpMap.Data.Providers.Db
                         foreach (FeatureDataRow row in features)
                         {
                             for (int i = 0; i < cmd.Parameters.Count - 2; i++)
-                                ((IDataParameter)cmd.Parameters[i]).Value = row[i];
+                                ((IDataParameter) cmd.Parameters[i]).Value = row[i];
 
-                            ((IDataParameter)cmd.Parameters["@PGeo"]).Value = row.Geometry.AsBinary();
-                            ((IDataParameter)cmd.Parameters["@POldOid"]).Value =
+                            ((IDataParameter) cmd.Parameters["@PGeo"]).Value = row.Geometry.AsBinary();
+                            ((IDataParameter) cmd.Parameters["@POldOid"]).Value =
                                 row[OidColumn, DataRowVersion.Original];
 
                             try
@@ -383,13 +378,13 @@ namespace SharpMap.Data.Providers.Db
 
         public void Delete(FeatureDataRow<TOid> feature)
         {
-            Delete((IEnumerable<FeatureDataRow<TOid>>)new[] { feature });
+            Delete((IEnumerable<FeatureDataRow<TOid>>) new[] {feature});
         }
 
         public virtual void Delete(IEnumerable<FeatureDataRow<TOid>> features)
         {
-            var featureIds = new List<TOid>();
-            foreach (var fdr in features)
+            List<TOid> featureIds = new List<TOid>();
+            foreach (FeatureDataRow<TOid> fdr in features)
             {
                 featureIds.Add(fdr.Id);
             }
@@ -409,10 +404,10 @@ namespace SharpMap.Data.Providers.Db
                                         Enumerable.ToArray(
                                             Processor.Select(featureIds,
                                                              delegate(TOid o)
-                                                             {
-                                                                 return
-                                                                     compiler.CreateParameter(o).ParameterName;
-                                                             })))
+                                                                 {
+                                                                     return
+                                                                         compiler.CreateParameter(o).ParameterName;
+                                                                 })))
                             );
                     conn.Open();
                     foreach (IDataParameter p in compiler.ParameterCache.Values)
@@ -428,22 +423,22 @@ namespace SharpMap.Data.Providers.Db
             foreach (IFeatureDataRecord fdr in
                 ExecuteFeatureDataReader(
                     PrepareSelectCommand(
-                        new FeatureQueryExpression(new AttributesProjectionExpression(new[] { OidColumn }),
-                                                   (AttributeBinaryExpression)null, query))))
+                        new FeatureQueryExpression(new AttributesProjectionExpression(new[] {OidColumn}),
+                                                   (AttributeBinaryExpression) null, query))))
             {
-                yield return (TOid)fdr.GetOid();
+                yield return (TOid) fdr.GetOid();
             }
         }
 
         public IGeometry GetGeometryByOid(TOid oid)
         {
-            var exp
+            FeatureQueryExpression exp
                 = new FeatureQueryExpression(
                     new AttributesProjectionExpression(
                         new[]
                             {
                                 GeometryColumn
-                            }), null, null, new OidCollectionExpression(new[] { oid }));
+                            }), null, null, new OidCollectionExpression(new[] {oid}));
 
 
             using (IFeatureDataReader reader = ExecuteFeatureQuery(exp))
@@ -456,9 +451,9 @@ namespace SharpMap.Data.Providers.Db
 
         public IFeatureDataRecord GetFeatureByOid(TOid oid)
         {
-            var exp
+            FeatureQueryExpression exp
                 = new FeatureQueryExpression(
-                    new AllAttributesExpression(), null, null, new OidCollectionExpression(new[] { oid }));
+                    new AllAttributesExpression(), null, null, new OidCollectionExpression(new[] {oid}));
 
             using (IFeatureDataReader reader = ExecuteFeatureQuery(exp))
             {
@@ -514,36 +509,26 @@ namespace SharpMap.Data.Providers.Db
                 fact.Srid = SridMap.DefaultInstance.Process(fact.SpatialReference, "");
             }
 
-            var tbl = new FeatureDataTable<TOid>(OidColumn, fact);
+            FeatureDataTable<TOid> tbl = new FeatureDataTable<TOid>(OidColumn, fact);
             SetTableSchema(tbl, SchemaMergeAction.AddAll | SchemaMergeAction.Key);
             return tbl;
         }
 
-        protected override IFeatureDataReader InternalExecuteFeatureQuery(FeatureQueryExpression query)
-        {
-            return ExecuteFeatureQuery(query, FeatureQueryExecutionOptions.FullFeature);
-        }
-
-        protected override IFeatureDataReader InternalExecuteFeatureQuery(FeatureQueryExpression query, FeatureQueryExecutionOptions options)
-        {
-            return ExecuteFeatureDataReader(PrepareSelectCommand(query));
-        }
-
         public override Int32 GetFeatureCount()
         {
-            var attrs = new AttributesProjectionExpression(new[] { "Count(*)" });
+            AttributesProjectionExpression attrs = new AttributesProjectionExpression(new[] {"Count(*)"});
 
             using (IDbConnection conn = DbUtility.CreateConnection(ConnectionString))
             {
                 using (
                     IDbCommand cmd =
                         PrepareSelectCommand(DefinitionQuery == null
-                                                 ? (Expression)attrs
+                                                 ? (Expression) attrs
                                                  : new QueryExpression(attrs, DefinitionQuery)))
                 {
                     cmd.Connection = conn;
                     conn.Open();
-                    return (Int32)cmd.ExecuteScalar();
+                    return (Int32) cmd.ExecuteScalar();
                 }
             }
         }
@@ -578,14 +563,14 @@ namespace SharpMap.Data.Providers.Db
 
         public IExtents GetExtentsByOid(TOid oid)
         {
-            var query =
-                new FeatureQueryExpression(new AttributesProjectionExpression(new[] { GeometryColumn }),
-                                           null, null, new OidCollectionExpression(new[] { oid }));
+            FeatureQueryExpression query =
+                new FeatureQueryExpression(new AttributesProjectionExpression(new[] {GeometryColumn}),
+                                           null, null, new OidCollectionExpression(new[] {oid}));
             using (IFeatureDataReader fdr = ExecuteFeatureQuery(query))
             {
                 while (fdr.Read())
                 {
-                    return (IExtents)fdr.Geometry.Extents.Clone();
+                    return (IExtents) fdr.Geometry.Extents.Clone();
                 }
             }
             return GeometryFactory.CreateExtents();
@@ -593,7 +578,7 @@ namespace SharpMap.Data.Providers.Db
 
         public void Insert(FeatureDataRow feature)
         {
-            Insert((FeatureDataRow<TOid>)feature);
+            Insert((FeatureDataRow<TOid>) feature);
         }
 
         public void Insert(IEnumerable<FeatureDataRow> features)
@@ -603,7 +588,7 @@ namespace SharpMap.Data.Providers.Db
 
         public void Update(FeatureDataRow feature)
         {
-            Update((FeatureDataRow<TOid>)feature);
+            Update((FeatureDataRow<TOid>) feature);
         }
 
         public void Update(IEnumerable<FeatureDataRow> features)
@@ -613,7 +598,7 @@ namespace SharpMap.Data.Providers.Db
 
         public void Delete(FeatureDataRow feature)
         {
-            Delete((FeatureDataRow<TOid>)feature);
+            Delete((FeatureDataRow<TOid>) feature);
         }
 
         public void Delete(IEnumerable<FeatureDataRow> features)
@@ -622,6 +607,19 @@ namespace SharpMap.Data.Providers.Db
         }
 
         #endregion
+
+        protected abstract void ReadSpatialReference(out ICoordinateSystem cs, out string srid);
+
+        protected override IFeatureDataReader InternalExecuteFeatureQuery(FeatureQueryExpression query)
+        {
+            return ExecuteFeatureQuery(query, FeatureQueryExecutionOptions.FullFeature);
+        }
+
+        protected override IFeatureDataReader InternalExecuteFeatureQuery(FeatureQueryExpression query,
+                                                                          FeatureQueryExecutionOptions options)
+        {
+            return ExecuteFeatureDataReader(PrepareSelectCommand(query));
+        }
 
         protected virtual string QualifyTableName(string schema, string table)
         {
@@ -636,14 +634,14 @@ namespace SharpMap.Data.Providers.Db
             if (forceCreateNew)
                 RemoveCachedSchema();
 
-            var key = new TableCacheKey(GetType(), ConnectionString, TableSchema, Table);
+            TableCacheKey key = new TableCacheKey(GetType(), ConnectionString, TableSchema, Table);
             DataTable tbl;
             if (!_cachedSchemas.TryGetValue(key, out tbl))
             {
                 DataTable tb = BuildSchemaTable(); ///this may take some time
                 lock (_cachedSchemas)
                     if (!_cachedSchemas.TryGetValue(key, out tbl))
-                    //check again in case a matching schema has been created
+                        //check again in case a matching schema has been created
                     {
                         _cachedSchemas.Add(key, tb);
                         tbl = tb;
@@ -655,7 +653,7 @@ namespace SharpMap.Data.Providers.Db
 
         protected void RemoveCachedSchema()
         {
-            var key = new TableCacheKey(GetType(), ConnectionString, TableSchema, Table);
+            TableCacheKey key = new TableCacheKey(GetType(), ConnectionString, TableSchema, Table);
             lock (_cachedSchemas)
             {
                 if (_cachedSchemas.ContainsKey(key))
@@ -680,7 +678,7 @@ namespace SharpMap.Data.Providers.Db
 
         protected void GuardValueNotNull<T>(T value, string name)
         {
-            if (Equals(value, default(T)) || (typeof(T) == typeof(string)
+            if (Equals(value, default(T)) || (typeof (T) == typeof (string)
                                               && string.IsNullOrEmpty(value as string)))
                 throw new InvalidOperationException(string.Format("{0} cannot be null.", name));
         }
@@ -693,7 +691,7 @@ namespace SharpMap.Data.Providers.Db
             if (Equals(null, primary))
                 return secondary;
 
-            var list = new List<ProviderPropertyExpression>();
+            List<ProviderPropertyExpression> list = new List<ProviderPropertyExpression>();
 
             Func<ProviderPropertyExpression, ProviderPropertyExpression, bool> predicate
                 =
@@ -723,7 +721,7 @@ namespace SharpMap.Data.Providers.Db
                 cmd.CommandType = CommandType.Text;
                 cmd.Connection = conn;
                 IDbDataAdapter da = DbUtility.CreateAdapter(cmd);
-                var ds = new DataSet();
+                DataSet ds = new DataSet();
                 da.FillSchema(ds, SchemaType.Source);
                 DataTable dt = ds.Tables[0];
 
@@ -784,7 +782,8 @@ namespace SharpMap.Data.Providers.Db
             cmd.Connection = conn;
             if (conn.State == ConnectionState.Closed) conn.Open();
             return new SpatialDbFeatureDataReader(GeometryFactory, cmd.ExecuteReader(CommandBehavior.CloseConnection),
-                                                  GeometryColumn, OidColumn) { CoordinateTransformation = CoordinateTransformation };
+                                                  GeometryColumn, OidColumn)
+                       {CoordinateTransformation = CoordinateTransformation};
         }
 
 
@@ -803,7 +802,7 @@ namespace SharpMap.Data.Providers.Db
 
             ExpressionTreeToSqlCompilerBase<TOid> compiler = CreateSqlCompiler(exp);
 
-            var props =
+            List<ProviderPropertyExpression> props =
                 new List<ProviderPropertyExpression>(
                     MergeProviderProperties(
                         compiler.ProviderProperties,
@@ -826,7 +825,7 @@ namespace SharpMap.Data.Providers.Db
 
         public int? ParseSrid(string sridText)
         {
-            return SridMap.DefaultInstance.Process(sridText, (int?)null);
+            return SridMap.DefaultInstance.Process(sridText, (int?) null);
         }
 
 
@@ -847,7 +846,7 @@ namespace SharpMap.Data.Providers.Db
                                                                         CollectionExpression<OrderByExpression>>(
                                                                         properties,
                                                                         new CollectionExpression<OrderByExpression>(
-                                                                            new OrderByExpression[] { })),
+                                                                            new OrderByExpression[] {})),
                                                                     delegate(OrderByExpression o) { return o.ToString(); })));
 
             string orderByClause = string.IsNullOrEmpty(orderByCols) ? "" : " ORDER BY " + orderByCols;
@@ -884,7 +883,7 @@ namespace SharpMap.Data.Providers.Db
 
             foreach (ProviderPropertyExpression propertyExpression in expressions)
                 if (propertyExpression is TExpression)
-                    return ((TExpression)propertyExpression).PropertyValueExpression.Value;
+                    return ((TExpression) propertyExpression).PropertyValueExpression.Value;
             return defaultValue;
         }
 
@@ -901,7 +900,7 @@ namespace SharpMap.Data.Providers.Db
 
             foreach (FeatureDataRow fdr in features)
             {
-                var fdrTOid = fdr as FeatureDataRow<TOid>;
+                FeatureDataRow<TOid> fdrTOid = fdr as FeatureDataRow<TOid>;
                 if (fdrTOid != null) yield return fdrTOid;
             }
         }
@@ -910,7 +909,7 @@ namespace SharpMap.Data.Providers.Db
 
         protected virtual string InsertClause(IDbCommand cmd)
         {
-            var sets = new List<string>();
+            List<string> sets = new List<string>();
 
             //Columnnames
             DataColumnCollection dcc = GetSchemaTable().Columns;
@@ -937,7 +936,7 @@ namespace SharpMap.Data.Providers.Db
 
         protected virtual string UpdateClause(IDbCommand cmd)
         {
-            var sets = new List<string>();
+            List<string> sets = new List<string>();
             //Attribute
             foreach (DataColumn dc in GetSchemaTable().Columns)
             {
@@ -980,11 +979,12 @@ namespace SharpMap.Data.Providers.Db
         private struct TableCacheKey
         {
             private readonly string _connectionString;
+            private readonly int _hash;
             private readonly Type _providerType;
             private readonly string _schema;
 
             private readonly string _tableName;
-            private readonly int _hash;
+
             public TableCacheKey(Type providerType, string connectionString, string schema, string tblName)
             {
                 _providerType = providerType;
@@ -992,9 +992,8 @@ namespace SharpMap.Data.Providers.Db
                 _schema = schema;
                 _connectionString = connectionString;
                 _hash = _providerType.GetHashCode() ^ _connectionString.ToLower().GetHashCode() ^
-                       _schema.ToLower().GetHashCode() ^
-                       _tableName.ToLower().GetHashCode();
-
+                        _schema.ToLower().GetHashCode() ^
+                        _tableName.ToLower().GetHashCode();
             }
 
             public string TableName

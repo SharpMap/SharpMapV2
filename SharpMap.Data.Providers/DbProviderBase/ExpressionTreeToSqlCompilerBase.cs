@@ -19,17 +19,17 @@ using System.Data;
 using System.Reflection;
 using System.Reflection.Emit;
 using System.Text;
-using GeoAPI.CoordinateSystems;
 using GeoAPI.CoordinateSystems.Transformations;
+using GeoAPI.DataStructures;
 using GeoAPI.Geometries;
 using SharpMap.Expressions;
 #if DOTNET35
 using Enumerable = System.Linq.Enumerable;
 using Caster = System.Linq.Enumerable;
 #else
-using Enumerable = GeoAPI.DataStructures.Enumerable;
-using Caster = GeoAPI.DataStructures.Caster;
+
 #endif
+
 namespace SharpMap.Data.Providers.Db
 {
     public abstract class ExpressionTreeToSqlCompilerBase<TOid>
@@ -153,7 +153,7 @@ namespace SharpMap.Data.Providers.Db
         public virtual IDataParameter CreateParameter<TValue>(TValue value)
         {
             ///if TValue is System.Object we need to expand it to generate the correct parameter type
-            if (typeof(TValue) == typeof(object) && value.GetType() != typeof(object))
+            if (typeof (TValue) == typeof (object) && value.GetType() != typeof (object))
                 return CreateParameterFromObject(value);
 
             object key = value;
@@ -166,7 +166,7 @@ namespace SharpMap.Data.Providers.Db
             IDataParameter p;
             if (value is IGeometry)
                 p = Provider.DbUtility.CreateParameter(string.Format("iparam{0}", ParameterCache.Count),
-                                                       ((IGeometry)value).AsBinary(),
+                                                       ((IGeometry) value).AsBinary(),
                                                        ParameterDirection.Input);
 
 
@@ -188,17 +188,17 @@ namespace SharpMap.Data.Providers.Db
             Type tValue = value.GetType();
 
             if (!_CreateParameterDelegateTypeMap.TryGetValue(tValue, out dlgt))
-            //see if we have already created this method.
+                //see if we have already created this method.
             {
                 lock (_CreateParameterDelegateTypeMap)
                 {
                     //aquire a lock and test again
                     if (!_CreateParameterDelegateTypeMap.TryGetValue(tValue, out dlgt))
                     {
-                        var m = new DynamicMethod(string.Format("CreateParam_{0}", tValue),
-                                                  MethodAttributes.Public | MethodAttributes.Static,
-                                                  CallingConventions.Standard, typeof(IDataParameter),
-                                                  new[] { typeof(object), typeof(object) }, GetType(), true);
+                        DynamicMethod m = new DynamicMethod(string.Format("CreateParam_{0}", tValue),
+                                                            MethodAttributes.Public | MethodAttributes.Static,
+                                                            CallingConventions.Standard, typeof (IDataParameter),
+                                                            new[] {typeof (object), typeof (object)}, GetType(), true);
 
                         Type classType = GetType();
 
@@ -225,7 +225,7 @@ namespace SharpMap.Data.Providers.Db
                         //Put it all together into a callable method
                         dlgt =
                             (Func<object, object, IDataParameter>)
-                            m.CreateDelegate(typeof(Func<object, object, IDataParameter>));
+                            m.CreateDelegate(typeof (Func<object, object, IDataParameter>));
 
                         _CreateParameterDelegateTypeMap.Add(tValue, dlgt);
                     }
@@ -248,7 +248,7 @@ namespace SharpMap.Data.Providers.Db
 
         private string BuildSql()
         {
-            var sb = new StringBuilder();
+            StringBuilder sb = new StringBuilder();
             VisitExpression(sb, _expression);
             return sb.ToString();
         }
@@ -258,33 +258,33 @@ namespace SharpMap.Data.Providers.Db
             if (exp == null)
                 return;
             if (exp is ProviderQueryExpression)
-                VisitProviderQueryExpression(builder, (ProviderQueryExpression)exp);
+                VisitProviderQueryExpression(builder, (ProviderQueryExpression) exp);
             else if (exp is FeatureQueryExpression)
-                VisitFeatureQueryExpression(builder, (FeatureQueryExpression)exp);
+                VisitFeatureQueryExpression(builder, (FeatureQueryExpression) exp);
             else if (exp is ProviderPropertiesExpression)
-                VisitProviderPropertiesExpression(builder, (ProviderPropertiesExpression)exp);
+                VisitProviderPropertiesExpression(builder, (ProviderPropertiesExpression) exp);
             else if (exp is ProviderPropertyExpression)
-                VisitProviderPropertyExpression(builder, (ProviderPropertyExpression)exp);
+                VisitProviderPropertyExpression(builder, (ProviderPropertyExpression) exp);
             else if (exp is ProjectionExpression)
-                VisitProjectionExpression((ProjectionExpression)exp);
+                VisitProjectionExpression((ProjectionExpression) exp);
             else if (exp is SpatialBinaryExpression)
-                VisitSpatialBinaryExpression(builder, (SpatialBinaryExpression)exp);
+                VisitSpatialBinaryExpression(builder, (SpatialBinaryExpression) exp);
             else if (exp is QueryExpression)
-                VisitQueryExpression(builder, (QueryExpression)exp);
+                VisitQueryExpression(builder, (QueryExpression) exp);
             else if (exp is CollectionBinaryExpression)
-                VisitCollectionBinaryExpression(builder, (CollectionBinaryExpression)exp);
+                VisitCollectionBinaryExpression(builder, (CollectionBinaryExpression) exp);
             else if (exp is BinaryExpression)
-                VisitBinaryExpression(builder, (BinaryExpression)exp);
+                VisitBinaryExpression(builder, (BinaryExpression) exp);
             else if (exp is AttributeBinaryStringExpression)
-                VisitBinaryStringExpression(builder, (AttributeBinaryStringExpression)exp);
+                VisitBinaryStringExpression(builder, (AttributeBinaryStringExpression) exp);
             else if (exp is LiteralExpression)
-                VisitValueExpression(builder, (LiteralExpression)exp);
+                VisitValueExpression(builder, (LiteralExpression) exp);
             else if (exp is PropertyNameExpression)
-                VisitAttributeExpression(builder, (PropertyNameExpression)exp);
+                VisitAttributeExpression(builder, (PropertyNameExpression) exp);
             else if (exp is CollectionExpression)
-                VisitCollectionExpression(builder, (CollectionExpression)exp);
+                VisitCollectionExpression(builder, (CollectionExpression) exp);
             else if (exp is OidExpression)
-                VisitOidExpression(builder, (OidExpression)exp);
+                VisitOidExpression(builder, (OidExpression) exp);
             else
                 throw new NotImplementedException(string.Format("Unknown Expression Type {0}", exp.GetType()));
         }
@@ -336,7 +336,7 @@ namespace SharpMap.Data.Providers.Db
             }
 
             else if (exp is AttributesProjectionExpression)
-                VisitAttributeProjectionExpression((AttributesProjectionExpression)exp);
+                VisitAttributeProjectionExpression((AttributesProjectionExpression) exp);
         }
 
         protected virtual void VisitAttributeProjectionExpression(AttributesProjectionExpression exp)
@@ -367,7 +367,7 @@ namespace SharpMap.Data.Providers.Db
             if (exp == null)
                 return;
 
-            var sb = new StringBuilder();
+            StringBuilder sb = new StringBuilder();
 
             sb.Append(string.Join(", ",
                                   Enumerable.ToArray(EnumerableToParameterConverter(exp.Collection))));
@@ -384,7 +384,7 @@ namespace SharpMap.Data.Providers.Db
             if (Enumerable.Count(exp.Right.Collection) == 0)
                 return;
 
-            var sb = new StringBuilder();
+            StringBuilder sb = new StringBuilder();
             VisitExpression(sb, exp.Left);
             sb.Append(GetCollectionExpressionString(exp.Op));
             VisitExpression(sb, exp.Right);
@@ -446,7 +446,7 @@ namespace SharpMap.Data.Providers.Db
             if (exp.Projection != null)
                 VisitExpression(builder, exp.Projection);
 
-            var sb = new StringBuilder();
+            StringBuilder sb = new StringBuilder();
 
             if (exp.IsMultiAttributePredicateNonEmpty)
                 VisitExpression(sb, exp.MultiAttributePredicate);
@@ -478,7 +478,7 @@ namespace SharpMap.Data.Providers.Db
             if (exp.SpatialExpression is ExtentsExpression)
                 WriteSpatialExtentsExpressionSql(builder, exp.Op, (exp.SpatialExpression).Extents);
             else if (exp.SpatialExpression is GeometryExpression)
-                WriteSpatialGeometryExpressionSql(builder, exp.Op, ((GeometryExpression)exp.SpatialExpression).Geometry);
+                WriteSpatialGeometryExpressionSql(builder, exp.Op, ((GeometryExpression) exp.SpatialExpression).Geometry);
             else
                 throw new NotImplementedException(string.Format("{0} is not implemented", exp.GetType()));
         }
@@ -489,7 +489,7 @@ namespace SharpMap.Data.Providers.Db
             if (exp == null)
                 return;
 
-            var sb = new StringBuilder();
+            StringBuilder sb = new StringBuilder();
 
             VisitExpression(sb, exp.Left);
 
@@ -507,7 +507,7 @@ namespace SharpMap.Data.Providers.Db
             if (exp == null)
                 return;
 
-            var sb = new StringBuilder();
+            StringBuilder sb = new StringBuilder();
             VisitExpression(sb, exp.Left);
 
             if (sb.Length > 0)
@@ -554,8 +554,8 @@ namespace SharpMap.Data.Providers.Db
                                                                  Expression right)
         {
             if (right is LiteralExpression
-                && (Equals(null, ((LiteralExpression)right).Value)
-                    || Equals(string.Empty, ((LiteralExpression)right).Value)))
+                && (Equals(null, ((LiteralExpression) right).Value)
+                    || Equals(string.Empty, ((LiteralExpression) right).Value)))
             {
                 switch (binaryStringOperator)
                 {
@@ -587,7 +587,7 @@ namespace SharpMap.Data.Providers.Db
 
         protected virtual string GetBinaryExpressionString(BinaryOperator binaryOperator, Expression right)
         {
-            if (right is LiteralExpression && Equals(null, ((LiteralExpression)right).Value))
+            if (right is LiteralExpression && Equals(null, ((LiteralExpression) right).Value))
             {
                 switch (binaryOperator)
                 {
@@ -624,7 +624,8 @@ namespace SharpMap.Data.Providers.Db
         }
 
 
-        protected void WriteSpatialExtentsExpressionSql(StringBuilder builder, SpatialOperation spatialOperation, IExtents ext)
+        protected void WriteSpatialExtentsExpressionSql(StringBuilder builder, SpatialOperation spatialOperation,
+                                                        IExtents ext)
         {
             WriteSpatialExtentsExpressionSqlInternal(builder, spatialOperation, TransformExtents(ext));
         }
@@ -638,7 +639,9 @@ namespace SharpMap.Data.Providers.Db
                         "Data requires transformation however no CoordinateTransformationFactory is set");
 
                 ICoordinateTransformation ct =
-                    Provider.CoordinateTransformationFactory.CreateFromCoordinateSystems(ext.SpatialReference, Provider.OriginalSpatialReference);
+                    Provider.CoordinateTransformationFactory.CreateFromCoordinateSystems(ext.SpatialReference,
+                                                                                         Provider.
+                                                                                             OriginalSpatialReference);
                 return ct.Transform(ext, Provider.GeometryFactory);
             }
             return ext;
@@ -653,28 +656,28 @@ namespace SharpMap.Data.Providers.Db
                         "Data requires transformation however no CoordinateTransformationFactory is set");
 
                 ICoordinateTransformation ct =
-                    Provider.CoordinateTransformationFactory.CreateFromCoordinateSystems(geom.SpatialReference, Provider.OriginalSpatialReference);
+                    Provider.CoordinateTransformationFactory.CreateFromCoordinateSystems(geom.SpatialReference,
+                                                                                         Provider.
+                                                                                             OriginalSpatialReference);
 
                 return ct.Transform(geom, Provider.GeometryFactory);
-
             }
             return geom;
         }
 
         protected abstract void WriteSpatialExtentsExpressionSqlInternal(StringBuilder builder,
-                                                                 SpatialOperation spatialOperation, IExtents ext);
+                                                                         SpatialOperation spatialOperation, IExtents ext);
 
 
         protected void WriteSpatialGeometryExpressionSql(StringBuilder builder, SpatialOperation op,
-                                                                  IGeometry geom)
+                                                         IGeometry geom)
         {
             WriteSpatialGeometryExpressionSqlInternal(builder, op, TransformGeometry(geom));
         }
 
 
-
         protected abstract void WriteSpatialGeometryExpressionSqlInternal(StringBuilder builder, SpatialOperation op,
-                                                                  IGeometry geom);
+                                                                          IGeometry geom);
 
         #region Nested type: NullValue
 

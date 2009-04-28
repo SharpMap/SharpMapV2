@@ -47,7 +47,7 @@ namespace SharpMap.Data.Providers.SpatiaLite2
         public IDbConnection CreateConnection(string connectionString)
         {
             //load spatialite-extension
-            var cn = new SQLiteConnection(connectionString);
+            SQLiteConnection cn = new SQLiteConnection(connectionString);
             cn.Open();
             object ret = new SQLiteCommand("SELECT load_extension('libspatialite-2.dll');", cn).ExecuteScalar();
             //cn.Close();
@@ -72,7 +72,7 @@ namespace SharpMap.Data.Providers.SpatiaLite2
 
         public IDbDataAdapter CreateAdapter(IDbCommand cmd)
         {
-            return new SQLiteDataAdapter((SQLiteCommand)cmd);
+            return new SQLiteDataAdapter((SQLiteCommand) cmd);
         }
 
         public IDataParameter CreateParameter(string parameterName, Type netType,
@@ -84,7 +84,8 @@ namespace SharpMap.Data.Providers.SpatiaLite2
 
         public IDataParameter CreateParameter(string parameterName, DbType dbType, ParameterDirection parameterDirection)
         {
-            var p = new SQLiteParameter(ParameterNameForQueries(parameterName), dbType, GetDbSize(dbType)) { Direction = parameterDirection };
+            SQLiteParameter p = new SQLiteParameter(ParameterNameForQueries(parameterName), dbType, GetDbSize(dbType))
+                                    {Direction = parameterDirection};
             return p;
         }
 
@@ -118,39 +119,70 @@ namespace SharpMap.Data.Providers.SpatiaLite2
             return GetDbSize(dbType);
         }
 
+        string IDbUtility<DbType>.GetFullTypeString(DbType dbType, int size)
+        {
+            return GetFullTypeString(dbType, size);
+        }
+
+        string IDbUtility<DbType>.GetFullTypeString(Type netType, int size)
+        {
+            return GetFullTypeString(netType, size);
+        }
+
+        string IDbUtility<DbType>.GetFullTypeString(DbType dbType)
+        {
+            return GetFullTypeString(dbType);
+        }
+
+        string IDbUtility<DbType>.GetFullTypeString(Type netType)
+        {
+            return GetFullTypeString(netType);
+        }
+
+        int IDbUtility<DbType>.GetDbSize(Type dbType)
+        {
+            return GetDbSize(dbType);
+        }
+
+        public IDataParameter CreateParameter(string parameterName, object value, ParameterDirection paramDirection)
+        {
+            return new SQLiteParameter(parameterName.StartsWith("@") ? parameterName : "@" + parameterName, value)
+                       {Direction = paramDirection};
+        }
+
         #endregion
 
         public static DbType GetDbType<TValue>()
         {
-            return GetDbType(typeof(TValue));
+            return GetDbType(typeof (TValue));
         }
 
         public static DbType GetDbType(Type netType)
         {
-					switch ( netType.FullName )
-					{
-						case "System.Byte":
-						case "System.SByte":
-						case "System.Boolean":
-						case "System.Int16":
-						case "System.Int32":
-						case "System.Int64":
-						case "System.UInt16":
-						case "System.UInt32":
-						case "System.UInt64":
-							return DbType.Int64;
-						case "System.Single":
-						case "System.Double":
-							return DbType.Double;
-						case "System.DateTime":
-							return DbType.DateTime;
-						case "System.Byte[]":
-							return DbType.Binary;
-						case "System.String":
-							return DbType.String;
-						default:
-							throw ( new NotSupportedException( "Unsupported datatype '" + netType.Name + "' found in datasource" ) );
-					}
+            switch (netType.FullName)
+            {
+                case "System.Byte":
+                case "System.SByte":
+                case "System.Boolean":
+                case "System.Int16":
+                case "System.Int32":
+                case "System.Int64":
+                case "System.UInt16":
+                case "System.UInt32":
+                case "System.UInt64":
+                    return DbType.Int64;
+                case "System.Single":
+                case "System.Double":
+                    return DbType.Double;
+                case "System.DateTime":
+                    return DbType.DateTime;
+                case "System.Byte[]":
+                    return DbType.Binary;
+                case "System.String":
+                    return DbType.String;
+                default:
+                    throw (new NotSupportedException("Unsupported datatype '" + netType.Name + "' found in datasource"));
+            }
         }
 
         public String ParameterNameForQueries(String parameterName)
@@ -177,8 +209,8 @@ namespace SharpMap.Data.Providers.SpatiaLite2
             switch (netType.FullName)
             {
                 case "System.Byte":
-								case "System.SByte":
-								case "System.Boolean":
+                case "System.SByte":
+                case "System.Boolean":
                 case "System.Int16":
                 case "System.Int32":
                 case "System.Int64":
@@ -201,9 +233,6 @@ namespace SharpMap.Data.Providers.SpatiaLite2
                     throw (new NotSupportedException("Unsupported datatype '" + netType.Name + "' found in datasource"));
             }
         }
-
-        #region IDbUtility<DbType> Members
-
 
         public static string GetFullTypeString(DbType dbType, int size)
         {
@@ -229,47 +258,5 @@ namespace SharpMap.Data.Providers.SpatiaLite2
         {
             return GetDbSize(GetDbType(dbType));
         }
-
-        #endregion
-
-        #region IDbUtility<DbType> Members
-
-
-        string IDbUtility<DbType>.GetFullTypeString(DbType dbType, int size)
-        {
-            return GetFullTypeString(dbType, size);
-        }
-
-        string IDbUtility<DbType>.GetFullTypeString(Type netType, int size)
-        {
-            return GetFullTypeString(netType, size);
-        }
-
-        string IDbUtility<DbType>.GetFullTypeString(DbType dbType)
-        {
-            return GetFullTypeString(dbType);
-        }
-
-        string IDbUtility<DbType>.GetFullTypeString(Type netType)
-        {
-            return GetFullTypeString(netType);
-        }
-
-        int IDbUtility<DbType>.GetDbSize(Type dbType)
-        {
-            return GetDbSize(dbType);
-        }
-
-        #endregion
-
-        #region IDbUtility Members
-
-
-        public IDataParameter CreateParameter(string parameterName, object value, ParameterDirection paramDirection)
-        {
-            return new SQLiteParameter(parameterName.StartsWith("@") ? parameterName : "@" + parameterName, value) { Direction = paramDirection };
-        }
-
-        #endregion
     }
 }

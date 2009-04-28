@@ -11,7 +11,7 @@ namespace SharpMap.Presentation.AspNet.Demo.GeoJson
 
         public GeoJsonRequestConfig CreateConfig(HttpContext context)
         {
-            var config = new GeoJsonRequestConfig();
+            GeoJsonRequestConfig config = new GeoJsonRequestConfig();
             string soutputsize = context.Request.QueryString["outputsize"];
 
             bool useDefaultSize = true;

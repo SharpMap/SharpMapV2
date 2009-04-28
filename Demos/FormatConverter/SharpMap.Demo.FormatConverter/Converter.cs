@@ -15,8 +15,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Data;
-using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using System.Text;
@@ -50,6 +48,78 @@ namespace SharpMap.Demo.FormatConverter
          * http://www.cetus-links.org/oo_dotnet.html - http://dnetmaster.net/
          * use at your own risk
          */
+
+        static Converter()
+        {
+            _geometryServices = new GeometryServices();
+
+            ///ensure all the assemblies which may contain 'plugins' are loaded
+            foreach (FileInfo f in new DirectoryInfo(Environment.CurrentDirectory).GetFiles("*.dll"))
+            {
+                if (IsClrImage(f.Name))
+                {
+                    AssemblyName name = AssemblyName.GetAssemblyName(f.Name);
+                    try
+                    {
+                        AppDomain.CurrentDomain.Load(name);
+                    }
+                    catch
+                    {
+                    }
+                }
+            }
+
+
+            foreach (Assembly asm in AppDomain.CurrentDomain.GetAssemblies())
+            {
+                ///search for 'plugins' these are types decorated with certain attributes
+                foreach (Type t in asm.GetExportedTypes())
+                {
+                    object[] attrs = t.GetCustomAttributes(typeof (ConfigureProviderAttribute), true);
+                    if (attrs.Length == 1)
+                    {
+                        ConfigureProviderAttribute attr = (ConfigureProviderAttribute) attrs[0];
+                        ProviderItem pi = new ProviderItem
+                                              {Builder = t, Name = attr.Name, ProviderType = attr.ProviderType};
+
+                        if (typeof (IConfigureFeatureSource).IsAssignableFrom(t))
+                            _configureSourceProviders.Add(pi);
+
+                        if (typeof (IConfigureFeatureTarget).IsAssignableFrom(t))
+                            _configureTargetProviders.Add(pi);
+                    }
+
+                    attrs = t.GetCustomAttributes(typeof (FeatureDataRecordProcessorAttribute), true);
+                    if (attrs.Length > 0)
+                    {
+                        FeatureDataRecordProcessorAttribute attr = (FeatureDataRecordProcessorAttribute) attrs[0];
+                        _featureDataRecordProcessors.Add(new ProcessorItem
+                                                             {
+                                                                 Description = attr.Description,
+                                                                 Name = attr.Name,
+                                                                 ProcessorType = t
+                                                             });
+                    }
+                }
+            }
+        }
+
+
+        public IList<ProviderItem> SourceProviders
+        {
+            get { return _configureSourceProviders; }
+        }
+
+        public IList<ProviderItem> TargetProviders
+        {
+            get { return _configureTargetProviders; }
+        }
+
+        public IList<ProcessorItem> FeatureProcessors
+        {
+            get { return _featureDataRecordProcessors; }
+        }
+
         private static bool IsClrImage(string fileName)
         {
             FileStream fs = null;
@@ -85,74 +155,6 @@ namespace SharpMap.Demo.FormatConverter
             }
         }
 
-        static Converter()
-        {
-            _geometryServices = new GeometryServices();
-
-            ///ensure all the assemblies which may contain 'plugins' are loaded
-            foreach (FileInfo f in new DirectoryInfo(Environment.CurrentDirectory).GetFiles("*.dll"))
-            {
-                if (IsClrImage(f.Name))
-                {
-                    AssemblyName name = AssemblyName.GetAssemblyName(f.Name);
-                    try
-                    {
-                        AppDomain.CurrentDomain.Load(name);
-                    }
-                    catch { }
-                }
-            }
-
-
-            foreach (Assembly asm in AppDomain.CurrentDomain.GetAssemblies())
-            {
-                ///search for 'plugins' these are types decorated with certain attributes
-                foreach (Type t in asm.GetExportedTypes())
-                {
-                    object[] attrs = t.GetCustomAttributes(typeof(ConfigureProviderAttribute), true);
-                    if (attrs.Length == 1)
-                    {
-                        var attr = (ConfigureProviderAttribute)attrs[0];
-                        var pi = new ProviderItem { Builder = t, Name = attr.Name, ProviderType = attr.ProviderType };
-
-                        if (typeof(IConfigureFeatureSource).IsAssignableFrom(t))
-                            _configureSourceProviders.Add(pi);
-
-                        if (typeof(IConfigureFeatureTarget).IsAssignableFrom(t))
-                            _configureTargetProviders.Add(pi);
-                    }
-
-                    attrs = t.GetCustomAttributes(typeof(FeatureDataRecordProcessorAttribute), true);
-                    if (attrs.Length > 0)
-                    {
-                        var attr = (FeatureDataRecordProcessorAttribute)attrs[0];
-                        _featureDataRecordProcessors.Add(new ProcessorItem
-                                                             {
-                                                                 Description = attr.Description,
-                                                                 Name = attr.Name,
-                                                                 ProcessorType = t
-                                                             });
-                    }
-                }
-            }
-        }
-
-
-        public IList<ProviderItem> SourceProviders
-        {
-            get { return _configureSourceProviders; }
-        }
-
-        public IList<ProviderItem> TargetProviders
-        {
-            get { return _configureTargetProviders; }
-        }
-
-        public IList<ProcessorItem> FeatureProcessors
-        {
-            get { return _featureDataRecordProcessors; }
-        }
-
 
         public bool Run()
         {
@@ -182,7 +184,7 @@ namespace SharpMap.Demo.FormatConverter
 
             ProviderItem output = GetTargetProvider();
 
-            var confirmBuilder = new StringBuilder();
+            StringBuilder confirmBuilder = new StringBuilder();
             confirmBuilder.AppendLine("\nReady to process the following chain:\n");
             confirmBuilder.AppendLine("Read from:");
             confirmBuilder.AppendLine("\t" + input.Name);
@@ -210,14 +212,14 @@ namespace SharpMap.Demo.FormatConverter
 
         private void DoConversion(ProviderItem input, IEnumerable<ProcessorItem> processors, ProviderItem output)
         {
-            using (IConfigureFeatureSource csource = (IConfigureFeatureSource)Activator.CreateInstance(input.Builder))
+            using (IConfigureFeatureSource csource = (IConfigureFeatureSource) Activator.CreateInstance(input.Builder))
             {
                 IFeatureProvider psource = csource.ConstructSourceProvider(_geometryServices);
-                Type srcOidType = GetTypeParamsOfImplementedInterface(psource.GetType(), typeof(IFeatureProvider<>))[0];
-                var realProcessors = new List<IProcessFeatureDataRecords>();
+                Type srcOidType = GetTypeParamsOfImplementedInterface(psource.GetType(), typeof (IFeatureProvider<>))[0];
+                List<IProcessFeatureDataRecords> realProcessors = new List<IProcessFeatureDataRecords>();
 
                 foreach (ProcessorItem pi in processors)
-                    realProcessors.Add((IProcessFeatureDataRecords)Activator.CreateInstance(pi.ProcessorType));
+                    realProcessors.Add((IProcessFeatureDataRecords) Activator.CreateInstance(pi.ProcessorType));
 
                 FeatureDataRecordProcessor processChain = null;
 
@@ -225,7 +227,8 @@ namespace SharpMap.Demo.FormatConverter
                 {
                     processChain = Equals(processChain, null)
                                        ? processor.Processor
-                                       : ((IEnumerable<IFeatureDataRecord> o, ref int i) => processor.Processor(processChain(o, ref i), ref i));
+                                       : ((IEnumerable<IFeatureDataRecord> o, ref int i) =>
+                                          processor.Processor(processChain(o, ref i), ref i));
                 }
 
                 processChain = processChain ??
@@ -243,20 +246,21 @@ namespace SharpMap.Demo.FormatConverter
 
                 using (
                     IConfigureFeatureTarget ctarget =
-                        (IConfigureFeatureTarget)Activator.CreateInstance(output.Builder))
+                        (IConfigureFeatureTarget) Activator.CreateInstance(output.Builder))
                 {
                     Type oidType =
-                        GetTypeParamsOfBaseClass(fdt.GetType(), typeof(FeatureDataTable<>))[0];
+                        GetTypeParamsOfBaseClass(fdt.GetType(), typeof (FeatureDataTable<>))[0];
 
                     using (IWritableFeatureProvider ptarget =
-                         ctarget.ConstructTargetProvider(oidType, fdt.GeometryFactory,
-                                                                   _geometryServices.CoordinateSystemFactory,
-                                                                   fdt))
+                        ctarget.ConstructTargetProvider(oidType, fdt.GeometryFactory,
+                                                        _geometryServices.CoordinateSystemFactory,
+                                                        fdt))
                     {
                         if (!ptarget.IsOpen)
                             ptarget.Open();
 
-                        IConvertData converter = null;/* Some Data Providers do not respect the oidType param passed in. 
+                        IConvertData converter = null;
+                            /* Some Data Providers do not respect the oidType param passed in. 
                                                        * For instance Shapefile will always be IWritableFeatureProvider<UInt32> 
                                                        * so we need to make sure we can coerce OID values  */
 
@@ -269,12 +273,13 @@ namespace SharpMap.Demo.FormatConverter
                             {
                                 if (converter == null)
                                     converter = GetConverter(fdr.OidType,
-                                             GetTypeParamsOfBaseClass(ptarget.CreateNewTable().GetType(),
-                                                                      typeof(FeatureDataTable<>))[0], fdr, index);
+                                                             GetTypeParamsOfBaseClass(
+                                                                 ptarget.CreateNewTable().GetType(),
+                                                                 typeof (FeatureDataTable<>))[0], fdr, index);
 
 
                                 features.Add(converter.ConvertRecord(fdr));
-                                if (++count % 100 == 0)
+                                if (++count%100 == 0)
                                 {
                                     ptarget.Insert(features);
                                     features.Clear();
@@ -285,7 +290,6 @@ namespace SharpMap.Demo.FormatConverter
                                 Console.WriteLine("An Error Occured : " + ex.Message);
                                 continue;
                             }
-
                         }
 
                         if (features.Count > 0)
@@ -301,7 +305,6 @@ namespace SharpMap.Demo.FormatConverter
                         ctarget.PostImport();
                     }
                 }
-
             }
 
             Console.WriteLine("Finished");
@@ -309,17 +312,18 @@ namespace SharpMap.Demo.FormatConverter
 
         private IConvertData GetConverter(Type tsource, Type ttarget, IFeatureDataRecord sourcetable, int index)
         {
-            Type t = typeof(ConvertData<,>);
+            Type t = typeof (ConvertData<,>);
             Type g = t.MakeGenericType(tsource, ttarget);
 
-            return (IConvertData)Activator.CreateInstance(g, sourcetable, index);
+            return (IConvertData) Activator.CreateInstance(g, sourcetable, index);
         }
 
-        private FeatureDataTable GetTypedFeatureDataTable(Type oidType, string oidColumnName, IGeometryFactory geometryFactory)
+        private FeatureDataTable GetTypedFeatureDataTable(Type oidType, string oidColumnName,
+                                                          IGeometryFactory geometryFactory)
         {
-            Type baseType = typeof(FeatureDataTable<>);
-            Type realType = baseType.MakeGenericType(new[] { oidType });
-            return (FeatureDataTable)Activator.CreateInstance(realType, oidColumnName, geometryFactory);
+            Type baseType = typeof (FeatureDataTable<>);
+            Type realType = baseType.MakeGenericType(new[] {oidType});
+            return (FeatureDataTable) Activator.CreateInstance(realType, oidColumnName, geometryFactory);
         }
 
 
@@ -341,7 +345,6 @@ namespace SharpMap.Demo.FormatConverter
 
         private Type[] GetTypeParamsOfBaseClass(Type implementor, Type baseClassToFind)
         {
-
             for (Type t = implementor; t != null; t = t.BaseType)
             {
                 if (!t.IsGenericType)
@@ -392,7 +395,7 @@ namespace SharpMap.Demo.FormatConverter
             Console.WriteLine(
                 "\nPlease enter a comma seperated list of processor ids you wish to use,\nin the order you wish to use them.");
 
-            string[] idstring = Console.ReadLine().Split(new[] { ',', ';', '|' });
+            string[] idstring = Console.ReadLine().Split(new[] {',', ';', '|'});
 
             foreach (string s in idstring)
             {

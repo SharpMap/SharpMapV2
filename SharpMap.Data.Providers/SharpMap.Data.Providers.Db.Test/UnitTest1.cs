@@ -51,28 +51,29 @@ namespace SharpMap.Data.Providers.Db.Test
         [TestMethod]
         public void TestSqlServer2008()
         {
-            var services = new GeometryServices();
+            GeometryServices services = new GeometryServices();
 
-            var search = new MsSqlServer2008Provider<long>(services.DefaultGeometryFactory,
-                                                           ConfigurationManager.ConnectionStrings["sql2008"].
-                                                               ConnectionString,
-                                                           "dbo",
-                                                           "vw_iMARS_BRANCH", "ACSId", "Geom")
-                             {
-                                 DefaultProviderProperties
-                                     = new ProviderPropertiesExpression(
-                                     new ProviderPropertyExpression[]
-                                         {
-                                             new WithNoLockExpression(true),
-                                             new ForceIndexExpression(true)
-                                         })
-                             };
+            MsSqlServer2008Provider<long> search = new MsSqlServer2008Provider<long>(services.DefaultGeometryFactory,
+                                                                                     ConfigurationManager.
+                                                                                         ConnectionStrings["sql2008"].
+                                                                                         ConnectionString,
+                                                                                     "dbo",
+                                                                                     "vw_iMARS_BRANCH", "ACSId", "Geom")
+                                                       {
+                                                           DefaultProviderProperties
+                                                               = new ProviderPropertiesExpression(
+                                                               new ProviderPropertyExpression[]
+                                                                   {
+                                                                       new WithNoLockExpression(true),
+                                                                       new ForceIndexExpression(true)
+                                                                   })
+                                                       };
 
-            var binaryExpression =
+            CollectionBinaryExpression binaryExpression =
                 new CollectionBinaryExpression(new PropertyNameExpression("PostCode"), CollectionOperator.In,
                                                new CollectionExpression(new[] {3, 4, 5, 6}));
 
-            var providerProps =
+            ProviderPropertiesExpression providerProps =
                 new ProviderPropertiesExpression(
                     new ProviderPropertyExpression[]
                         {
@@ -83,7 +84,8 @@ namespace SharpMap.Data.Providers.Db.Test
                         });
 
 
-            var prov = new ProviderQueryExpression(providerProps, new AllAttributesExpression(), binaryExpression);
+            ProviderQueryExpression prov = new ProviderQueryExpression(providerProps, new AllAttributesExpression(),
+                                                                       binaryExpression);
 
             object obj = search.ExecuteQuery(prov);
 
@@ -93,31 +95,34 @@ namespace SharpMap.Data.Providers.Db.Test
         [TestMethod]
         public void TestSqlServer2008Paged()
         {
-            var services = new GeometryServices();
+            GeometryServices services = new GeometryServices();
 
-            var search = new MsSqlServer2008Provider<long>(services.DefaultGeometryFactory,
-                                                           ConfigurationManager.ConnectionStrings["sql2008"].
-                                                               ConnectionString,
-                                                           "dbo",
-                                                           "vw_iMARS_BRANCH", "ACSId", "Geom")
-                             {
-                                 DefaultProviderProperties
-                                     = new ProviderPropertiesExpression(
-                                     new ProviderPropertyExpression[]
-                                         {
-                                             new WithNoLockExpression(true),
-                                             new ForceIndexExpression(true)
-                                         })
-                             };
+            MsSqlServer2008Provider<long> search = new MsSqlServer2008Provider<long>(services.DefaultGeometryFactory,
+                                                                                     ConfigurationManager.
+                                                                                         ConnectionStrings["sql2008"].
+                                                                                         ConnectionString,
+                                                                                     "dbo",
+                                                                                     "vw_iMARS_BRANCH", "ACSId", "Geom")
+                                                       {
+                                                           DefaultProviderProperties
+                                                               = new ProviderPropertiesExpression(
+                                                               new ProviderPropertyExpression[]
+                                                                   {
+                                                                       new WithNoLockExpression(true),
+                                                                       new ForceIndexExpression(true)
+                                                                   })
+                                                       };
 
             //var binaryExpression =
             //    new CollectionBinaryExpression(new PropertyNameExpression("PostCode"), CollectionOperator.In, new CollectionExpression(new[] { 3, 4, 5, 6 }));
 
 
-            var binaryExpression = new AttributeBinaryStringExpression("PostCode", BinaryStringOperator.StartsWith, "W");
+            AttributeBinaryStringExpression binaryExpression = new AttributeBinaryStringExpression("PostCode",
+                                                                                                   BinaryStringOperator.
+                                                                                                       StartsWith, "W");
 
 
-            var providerProps =
+            ProviderPropertiesExpression providerProps =
                 new ProviderPropertiesExpression(
                     new ProviderPropertyExpression[]
                         {
@@ -130,7 +135,8 @@ namespace SharpMap.Data.Providers.Db.Test
                         });
 
 
-            var prov = new ProviderQueryExpression(providerProps, new AllAttributesExpression(), binaryExpression);
+            ProviderQueryExpression prov = new ProviderQueryExpression(providerProps, new AllAttributesExpression(),
+                                                                       binaryExpression);
 
             object obj = search.ExecuteQuery(prov);
 
@@ -140,32 +146,35 @@ namespace SharpMap.Data.Providers.Db.Test
         [TestMethod]
         public void TestMsSqlSpatialPaged()
         {
-            var services = new GeometryServices();
+            GeometryServices services = new GeometryServices();
 
-            var search = new MsSqlSpatialProvider(services.DefaultGeometryFactory,
-                                                  ConfigurationManager.ConnectionStrings["mssqlspatial"].
-                                                      ConnectionString,
-                                                  "ST",
-                                                  "dbo",
-                                                  "BRoads", "OID", "the_geom")
-                             {
-                                 DefaultProviderProperties
-                                     = new ProviderPropertiesExpression(
-                                     new ProviderPropertyExpression[]
-                                         {
-                                             new WithNoLockExpression(true),
-                                             new ForceIndexExpression(true)
-                                         })
-                             };
+            MsSqlSpatialProvider search = new MsSqlSpatialProvider(services.DefaultGeometryFactory,
+                                                                   ConfigurationManager.ConnectionStrings["mssqlspatial"
+                                                                       ].
+                                                                       ConnectionString,
+                                                                   "ST",
+                                                                   "dbo",
+                                                                   "BRoads", "OID", "the_geom")
+                                              {
+                                                  DefaultProviderProperties
+                                                      = new ProviderPropertiesExpression(
+                                                      new ProviderPropertyExpression[]
+                                                          {
+                                                              new WithNoLockExpression(true),
+                                                              new ForceIndexExpression(true)
+                                                          })
+                                              };
 
             //var binaryExpression =
             //    new CollectionBinaryExpression(new PropertyNameExpression("PostCode"), CollectionOperator.In, new CollectionExpression(new[] { 3, 4, 5, 6 }));
 
 
-            var binaryExpression = new AttributeBinaryStringExpression("NAME", BinaryStringOperator.StartsWith, "W");
+            AttributeBinaryStringExpression binaryExpression = new AttributeBinaryStringExpression("NAME",
+                                                                                                   BinaryStringOperator.
+                                                                                                       StartsWith, "W");
 
 
-            var providerProps =
+            ProviderPropertiesExpression providerProps =
                 new ProviderPropertiesExpression(
                     new ProviderPropertyExpression[]
                         {
@@ -178,7 +187,8 @@ namespace SharpMap.Data.Providers.Db.Test
                         });
 
 
-            var prov = new ProviderQueryExpression(providerProps, new AllAttributesExpression(), binaryExpression);
+            ProviderQueryExpression prov = new ProviderQueryExpression(providerProps, new AllAttributesExpression(),
+                                                                       binaryExpression);
 
             object obj = search.ExecuteQuery(prov);
 
@@ -188,24 +198,26 @@ namespace SharpMap.Data.Providers.Db.Test
         [TestMethod]
         public void TestSqLite()
         {
-            var services = new GeometryServices();
+            GeometryServices services = new GeometryServices();
 
-            var search = new SpatiaLite2Provider(services.DefaultGeometryFactory,
-                                                 ConfigurationManager.ConnectionStrings["sqLite"].ConnectionString,
-                                                 "main",
-                                                 "regions", "OID", "XGeometryX");
+            SpatiaLite2Provider search = new SpatiaLite2Provider(services.DefaultGeometryFactory,
+                                                                 ConfigurationManager.ConnectionStrings["sqLite"].
+                                                                     ConnectionString,
+                                                                 "main",
+                                                                 "regions", "OID", "XGeometryX");
             search.SpatiaLiteIndexType = SpatiaLite2IndexType.MBRCache;
 
-            var binaryExpression =
+            BinaryExpression binaryExpression =
                 new BinaryExpression(new PropertyNameExpression("VHG5"),
                                      BinaryOperator.GreaterThan, new LiteralExpression<int>(6));
 
-            var providerProps =
+            ProviderPropertiesExpression providerProps =
                 new ProviderPropertiesExpression(
                     new ProviderPropertyExpression[] {});
 
 
-            var prov = new ProviderQueryExpression(providerProps, new AllAttributesExpression(), binaryExpression);
+            ProviderQueryExpression prov = new ProviderQueryExpression(providerProps, new AllAttributesExpression(),
+                                                                       binaryExpression);
 
             object obj = search.ExecuteQuery(prov);
 
@@ -215,22 +227,23 @@ namespace SharpMap.Data.Providers.Db.Test
         [TestMethod]
         public void TestGetExtentsByOid()
         {
-            var services = new GeometryServices();
+            GeometryServices services = new GeometryServices();
 
-            var search = new MsSqlServer2008Provider<long>(services.DefaultGeometryFactory,
-                                                           ConfigurationManager.ConnectionStrings["sql2008"].
-                                                               ConnectionString,
-                                                           "dbo",
-                                                           "vw_iMARS_BRANCH", "ACSId", "Geom")
-                             {
-                                 DefaultProviderProperties
-                                     = new ProviderPropertiesExpression(
-                                     new ProviderPropertyExpression[]
-                                         {
-                                             new WithNoLockExpression(true),
-                                             new ForceIndexExpression(true)
-                                         })
-                             };
+            MsSqlServer2008Provider<long> search = new MsSqlServer2008Provider<long>(services.DefaultGeometryFactory,
+                                                                                     ConfigurationManager.
+                                                                                         ConnectionStrings["sql2008"].
+                                                                                         ConnectionString,
+                                                                                     "dbo",
+                                                                                     "vw_iMARS_BRANCH", "ACSId", "Geom")
+                                                       {
+                                                           DefaultProviderProperties
+                                                               = new ProviderPropertiesExpression(
+                                                               new ProviderPropertyExpression[]
+                                                                   {
+                                                                       new WithNoLockExpression(true),
+                                                                       new ForceIndexExpression(true)
+                                                                   })
+                                                       };
 
 
             IExtents extents = search.GetExtentsByOid(1);
@@ -241,22 +254,23 @@ namespace SharpMap.Data.Providers.Db.Test
         [TestMethod]
         public void TestGetFeatureByOid()
         {
-            var services = new GeometryServices();
+            GeometryServices services = new GeometryServices();
 
-            var search = new MsSqlServer2008Provider<long>(services.DefaultGeometryFactory,
-                                                           ConfigurationManager.ConnectionStrings["sql2008"].
-                                                               ConnectionString,
-                                                           "dbo",
-                                                           "vw_iMARS_BRANCH", "ACSId", "Geom")
-                             {
-                                 DefaultProviderProperties
-                                     = new ProviderPropertiesExpression(
-                                     new ProviderPropertyExpression[]
-                                         {
-                                             new WithNoLockExpression(true),
-                                             new ForceIndexExpression(true)
-                                         })
-                             };
+            MsSqlServer2008Provider<long> search = new MsSqlServer2008Provider<long>(services.DefaultGeometryFactory,
+                                                                                     ConfigurationManager.
+                                                                                         ConnectionStrings["sql2008"].
+                                                                                         ConnectionString,
+                                                                                     "dbo",
+                                                                                     "vw_iMARS_BRANCH", "ACSId", "Geom")
+                                                       {
+                                                           DefaultProviderProperties
+                                                               = new ProviderPropertiesExpression(
+                                                               new ProviderPropertyExpression[]
+                                                                   {
+                                                                       new WithNoLockExpression(true),
+                                                                       new ForceIndexExpression(true)
+                                                                   })
+                                                       };
 
 
             IFeatureDataRecord record = search.GetFeatureByOid(1);
@@ -267,7 +281,7 @@ namespace SharpMap.Data.Providers.Db.Test
         [TestMethod]
         public void TestSridMap()
         {
-            var map = new SridMap(new[] {new SridProj4Strategy(0, new GeometryServices().CoordinateSystemFactory)});
+            SridMap map = new SridMap(new[] {new SridProj4Strategy(0, new GeometryServices().CoordinateSystemFactory)});
 
             ICoordinateSystem cs = map.Process(27700, default(ICoordinateSystem));
 
@@ -297,7 +311,7 @@ namespace SharpMap.Data.Providers.Db.Test
             string wkt =
                 "PROJCS[\"British_National_Grid\",GEOGCS[\"GCS_OSGB_1936\",DATUM[\"D_OSGB_1936\",SPHEROID[\"Airy_1830\",6377563.396,299.3249646]],PRIMEM[\"Greenwich\",0],UNIT[\"Degree\",0.017453292519943295]],PROJECTION[\"Transverse_Mercator\"],PARAMETER[\"False_Easting\",400000],PARAMETER[\"False_Northing\",-100000],PARAMETER[\"Central_Meridian\",-2],PARAMETER[\"Scale_Factor\",0.999601272],PARAMETER[\"Latitude_Of_Origin\",49],UNIT[\"Meter\",1]]";
 
-            var map = new SridMap(new[] {new SridProj4Strategy(0, new GeometryServices().CoordinateSystemFactory)});
+            SridMap map = new SridMap(new[] {new SridProj4Strategy(0, new GeometryServices().CoordinateSystemFactory)});
 
             int? srid = map.Process(wkt, (int?) null);
 
@@ -311,7 +325,7 @@ namespace SharpMap.Data.Providers.Db.Test
         public void TestEpsgToSridMap()
         {
             string wkt = "EPSG:27700";
-            var map = new SridMap(new[] {new SridProj4Strategy(0, new GeometryServices().CoordinateSystemFactory)});
+            SridMap map = new SridMap(new[] {new SridProj4Strategy(0, new GeometryServices().CoordinateSystemFactory)});
 
             int? srid = map.Process(wkt, (int?) null);
 
@@ -325,7 +339,7 @@ namespace SharpMap.Data.Providers.Db.Test
         public void TestGeometryProvider()
         {
             string wkt;
-            var g = new GeometryServices();
+            GeometryServices g = new GeometryServices();
             GeometryProvider prov;
 
             IGeometry geom = g.DefaultGeometryFactory.WktReader.Read(File.ReadAllText("D:\\geometries.txt"));
@@ -351,7 +365,7 @@ namespace SharpMap.Data.Providers.Db.Test
             string toWkt =
                 "GEOGCS[\"WGS 84\",DATUM[\"WGS_1984\",SPHEROID[\"WGS 84\",6378137,298.257223563,AUTHORITY[\"EPSG\",\"7030\"]],TOWGS84[0,0,0,0,0,0,0],AUTHORITY[\"EPSG\",\"6326\"]],PRIMEM[\"Greenwich\",0,AUTHORITY[\"EPSG\",\"8901\"]],UNIT[\"degree\",0.01745329251994328,AUTHORITY[\"EPSG\",\"9122\"]],AUTHORITY[\"EPSG\",\"4326\"]]";
 
-            var gs = new GeometryServices();
+            GeometryServices gs = new GeometryServices();
             ICoordinateSystem srs = gs.CoordinateSystemFactory.CreateFromWkt(fromWkt);
             ICoordinateSystem dst = gs.CoordinateSystemFactory.CreateFromWkt(toWkt); //WGS84
             ICoordinateTransformation ics = gs.CoordinateTransformationFactory.CreateFromCoordinateSystems(srs, dst);

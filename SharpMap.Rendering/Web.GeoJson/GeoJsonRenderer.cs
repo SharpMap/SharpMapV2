@@ -75,7 +75,7 @@ namespace SharpMap.Rendering.Web
 
         public Type GetRenderObjectType()
         {
-            return typeof(GeoJsonRenderObject);
+            return typeof (GeoJsonRenderObject);
         }
 
         public void ClearRenderQueue()
@@ -85,15 +85,15 @@ namespace SharpMap.Rendering.Web
 
         public void EnqueueRenderObject(object o)
         {
-            _renderQueue.Enqueue((GeoJsonRenderObject)o);
+            _renderQueue.Enqueue((GeoJsonRenderObject) o);
         }
 
         public event EventHandler RenderDone;
 
         Stream IWebMapRenderer.Render(WebMapView mapView, out string mimeType)
         {
-            var ms = new MemoryStream();
-            var sw = new StreamWriter(ms);
+            MemoryStream ms = new MemoryStream();
+            StreamWriter sw = new StreamWriter(ms);
 
             sw.Write(Render(mapView, out mimeType));
             sw.Flush();
@@ -102,30 +102,20 @@ namespace SharpMap.Rendering.Web
             return ms;
         }
 
-        public WebMapView MapView
-        {
-            get;
-            set;
-        }
+        public WebMapView MapView { get; set; }
 
         public void Dispose()
         {
-
         }
-
-        #endregion
-
-        #region IWebMapRenderer Members
-
 
         public Type GeometryRendererType
         {
-            get { return typeof(GeoJsonGeometryRenderer<>); }
+            get { return typeof (GeoJsonGeometryRenderer<>); }
         }
 
         public Type LabelRendererType
         {
-            get { return typeof(BasicLabelRenderer2D<>); }
+            get { return typeof (BasicLabelRenderer2D<>); }
         }
 
         #endregion

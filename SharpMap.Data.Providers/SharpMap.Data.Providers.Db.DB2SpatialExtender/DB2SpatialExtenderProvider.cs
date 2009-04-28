@@ -31,6 +31,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Diagnostics;
+using GeoAPI.CoordinateSystems;
 using GeoAPI.DataStructures;
 using GeoAPI.Geometries;
 using IBM.Data.DB2;
@@ -44,9 +45,7 @@ using Processor = System.Linq.Enumerable;
 using Enumerable = System.Linq.Enumerable;
 using Caster = System.Linq.Enumerable;
 #else
-using Processor = GeoAPI.DataStructures.Processor;
-using Enumerable = GeoAPI.DataStructures.Enumerable;
-using Caster = GeoAPI.DataStructures.Caster;
+
 #endif
 
 namespace SharpMap.Data.Providers
@@ -107,7 +106,7 @@ namespace SharpMap.Data.Providers
                 oidColumn,
                 geometryColumn)
         {
-            using (var cn = new DB2Connection(connectionString))
+            using (DB2Connection cn = new DB2Connection(connectionString))
             {
                 cn.Open();
                 cn.CacheData = true;
@@ -176,7 +175,7 @@ SELECT {0}.ST_SRID({1})
                 {
                     if (!String.IsNullOrEmpty(OriginalSrid))
                     {
-                        using (var cn = new DB2Connection(ConnectionString))
+                        using (DB2Connection cn = new DB2Connection(ConnectionString))
                         {
                             cn.Open();
                             DB2DataReader dr = new DB2Command(String.Format(
@@ -200,7 +199,7 @@ WHERE SRS.ORGANIZATION = {0} AND SRS.ORGANIZATION_COORDSYS_ID = {1};",
 
             private set
             {
-                using (var cn = new DB2Connection(ConnectionString))
+                using (DB2Connection cn = new DB2Connection(ConnectionString))
                 {
                     cn.Open();
                     DB2DataReader dr = new DB2Command(String.Format(
@@ -213,7 +212,7 @@ WHERE SRS.ORGANIZATION = {0} AND SRS.ORGANIZATION_COORDSYS_ID = {1};",
                     {
                         dr.Read();
 
-                        var gserv = new GeometryServices();
+                        GeometryServices gserv = new GeometryServices();
                         if (!dr.IsDBNull(2))
                         {
                             OriginalSpatialReference = gserv.CoordinateSystemFactory.CreateFromWkt(dr.GetString(2));
@@ -288,7 +287,7 @@ WHERE SRS.ORGANIZATION = {0} AND SRS.ORGANIZATION_COORDSYS_ID = {1};",
         private static String getGeometryColumnName(string connectionString, String schemaName, String tableName)
         {
             String columnName = DB2SpatialExtenderProviderStatic.DefaultGeometryColumnName;
-            using (var cn = new DB2Connection(connectionString))
+            using (DB2Connection cn = new DB2Connection(connectionString))
             {
                 cn.Open();
                 try
@@ -360,7 +359,7 @@ SELECT COLS.COLUMN_NAME
                     GeometryColumn);
                 cmd.CommandType = CommandType.Text;
 
-                using (var r = (DB2DataReader) cmd.ExecuteReader(CommandBehavior.CloseConnection))
+                using (DB2DataReader r = (DB2DataReader) cmd.ExecuteReader(CommandBehavior.CloseConnection))
                 {
                     while (r.Read())
                     {
@@ -390,15 +389,15 @@ SELECT COLS.COLUMN_NAME
         protected override DataTable BuildSchemaTable(Boolean withGeometryColumn)
         {
             DataTable dt = null;
-            using (var conn = new DB2Connection(ConnectionString))
+            using (DB2Connection conn = new DB2Connection(ConnectionString))
             {
                 conn.Open();
                 conn.CacheData = true;
 
-                using (var cmd = new DB2Command(string.Format("SELECT * FROM {0};", QualifiedTableName), conn))
+                using (DB2Command cmd = new DB2Command(string.Format("SELECT * FROM {0};", QualifiedTableName), conn))
                 {
-                    var da = new DB2DataAdapter(cmd);
-                    var ds = new DataSet();
+                    DB2DataAdapter da = new DB2DataAdapter(cmd);
+                    DataSet ds = new DataSet();
                     da.FillSchema(ds, SchemaType.Source);
                     dt = ds.Tables["Table"];
                 }
@@ -438,7 +437,7 @@ SELECT COLS.COLUMN_NAME
                             for (int i = 0; i < cmd.Parameters.Count - 1; i++)
                                 ((IDataParameter) cmd.Parameters[i]).Value = row[i];
 
-                            var blob = new DB2Blob(row.Geometry.AsBinary());
+                            DB2Blob blob = new DB2Blob(row.Geometry.AsBinary());
                             ((IDataParameter) cmd.Parameters["@PGeo"]).Value = blob; //val; //row.Geometry.AsBinary();
 
                             if (row.Geometry.GeometryType == _validGeometryType
@@ -558,11 +557,16 @@ SELECT COLS.COLUMN_NAME
                        {CoordinateTransformation = CoordinateTransformation};
         }
 
+        protected override void ReadSpatialReference(out ICoordinateSystem cs, out string srid)
+        {
+            throw new NotImplementedException();
+        }
+
         #region Private helpers for Insert and Update
 
         protected override string InsertClause(IDbCommand cmd)
         {
-            var sets = new List<string>();
+            List<string> sets = new List<string>();
 
             //Columnnames
             DataColumnCollection dcc = GetSchemaTable().Columns;
@@ -578,7 +582,7 @@ SELECT COLS.COLUMN_NAME
                 IDataParameter param = null;
                 sets.Add(string.Format("{0}", ParamForColumn(dc, out param)));
 
-                var par = param as DB2Parameter;
+                DB2Parameter par = param as DB2Parameter;
                 switch (par.DB2Type)
                 {
                     case DB2Type.VarChar:
@@ -604,7 +608,7 @@ SELECT COLS.COLUMN_NAME
 
         protected override string UpdateClause(IDbCommand cmd)
         {
-            var sets = new List<string>();
+            List<string> sets = new List<string>();
             //Attribute
             foreach (DataColumn dc in GetSchemaTable().Columns)
             {
@@ -641,10 +645,5 @@ SELECT COLS.COLUMN_NAME
         }
 
         #endregion
-
-        protected override void ReadSpatialReference(out GeoAPI.CoordinateSystems.ICoordinateSystem cs, out string srid)
-        {
-            throw new NotImplementedException();
-        }
     }
 }

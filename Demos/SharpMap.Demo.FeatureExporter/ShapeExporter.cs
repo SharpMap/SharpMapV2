@@ -58,7 +58,7 @@ namespace SharpMap.Demo.FeatureExporter
 
             if (File.Exists(path))
             {
-                using (var exporter = new ShapeExporter(path))
+                using (ShapeExporter exporter = new ShapeExporter(path))
                 {
                     FeatureDataTable tbl = exporter.Provider.CreateNewTable();
                     Console.WriteLine("The shapefile dbf contains the following columns:");
@@ -85,7 +85,8 @@ namespace SharpMap.Demo.FeatureExporter
 
         private void Export(string colName)
         {
-            ExportDirectory = Path.Combine(Path.GetDirectoryName(Provider.Filename), Path.GetFileNameWithoutExtension(Provider.Filename) + "_Export");
+            ExportDirectory = Path.Combine(Path.GetDirectoryName(Provider.Filename),
+                                           Path.GetFileNameWithoutExtension(Provider.Filename) + "_Export");
             if (!Directory.Exists(ExportDirectory))
                 Directory.CreateDirectory(ExportDirectory);
 
@@ -98,14 +99,15 @@ namespace SharpMap.Demo.FeatureExporter
                 using (
                     ShapeFileProvider export = ShapeFileProvider.Create(ExportDirectory, layerName,
                                                                         Provider.ShapeType, Provider.CreateNewTable(),
-                                                                        Provider.GeometryFactory, _geometryServices.CoordinateSystemFactory))
+                                                                        Provider.GeometryFactory,
+                                                                        _geometryServices.CoordinateSystemFactory))
                 {
                     export.IsSpatiallyIndexed = false;
                     export.Open();
 
 
-                    var fdr = (FeatureDataRow<uint>)fdt.NewRow();
-                    var vals = new object[fdt.Columns.Count];
+                    FeatureDataRow<uint> fdr = (FeatureDataRow<uint>) fdt.NewRow();
+                    object[] vals = new object[fdt.Columns.Count];
 
                     reader.GetValues(vals);
 

@@ -14,27 +14,28 @@
  *  Also Felix Obermaier
  * 
  */
+
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Diagnostics;
+using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
-using SharpMap.Data.Providers.Db.Expressions;
-using SharpMap.Expressions;
-
+using GeoAPI.Geometries;
+using Npgsql;
 using SharpMap.Data;
 using SharpMap.Data.Providers;
-using SharpMap.Data.Providers.Db;
-using SharpMap.Data.Providers.PostGis;
+using SharpMap.Data.Providers.Db.Expressions;
+using SharpMap.Expressions;
 using SharpMap.Utilities;
-using Npgsql;
-using GeoAPI.Geometries;
+using SortOrder=System.Data.SqlClient.SortOrder;
 
 namespace MapViewer.DataSource
 {
     internal partial class PostGis : UserControl, ICreateDataProvider
     {
-        private DataSet datasetTableAndColumns = null;
+        private DataSet datasetTableAndColumns;
         private string lastDbQueried = "";
         private int oidcolumn = -1;
 
@@ -57,6 +58,112 @@ namespace MapViewer.DataSource
                     tbPassword.Text);
             }
         }
+
+        #region ICreateDataProvider Members
+
+        public IFeatureProvider GetProvider()
+        {
+            if (EnsureTables())
+            {
+                string conn = ServerConnectionString;
+
+                conn += string.Format("Database={0};", cbDataBases.SelectedItem);
+                conn += "Enlist=true;";
+
+                DataRowView drv = (DataRowView) cbTables.SelectedItem;
+                string schema = (string) drv["Schema"];
+                string tableName = (string) drv["TableName"];
+                ;
+                string geomColumn = (string) drv["GeometryColumn"];
+                int coordDimension = (int) drv["Dimension"];
+                string srid = (string) drv["SRID"]; //((int)).ToString();
+
+                GeometryServices gs = new GeometryServices();
+                IGeometryFactory gf = gs[srid]; //, coordDimension];
+                //if (!string.IsNullOrEmpty(spatialReference))
+                //    gf.SpatialReference = gs.CoordinateSystemFactory.CreateFromWkt(spatialReference);
+
+                string oidColumnName = (String) dgvColumns.Rows[oidcolumn].Cells["ColumnName"].Value;
+
+                List<String> columns = new List<string>();
+                List<OrderByExpression> orderby = new List<OrderByExpression>();
+                foreach (DataGridViewRow dgvr in dgvColumns.Rows)
+                {
+                    if ((bool) dgvr.Cells["Include"].Value) columns.Add((String) dgvr.Cells["ColumnName"].Value);
+                    if (dgvr.Cells["SortOrder"].Value != null)
+                        orderby.Add(new OrderByExpression((String) dgvr.Cells[1].Value,
+                                                          (SortOrder) dgvr.Cells["SortOrder"].Value));
+                }
+
+                if (!columns.Contains(oidColumnName))
+                    columns.Insert(0, oidColumnName);
+
+                columns.Add(geomColumn);
+
+                ProviderPropertiesExpression ppe = null;
+
+                if (orderby.Count == 0)
+                {
+                    ppe = new ProviderPropertiesExpression(
+                        new ProviderPropertyExpression[]
+                            {
+                                new AttributesCollectionExpression(columns)
+                            });
+                }
+                else
+                {
+                    ppe = new ProviderPropertiesExpression(
+                        new ProviderPropertyExpression[]
+                            {
+                                new OrderByCollectionExpression(orderby),
+                                new AttributesCollectionExpression(columns)
+                            });
+                }
+
+                IFeatureProvider prov = null;
+
+                switch ((String) dgvColumns.Rows[oidcolumn].Cells["DataType"].Value)
+                {
+                    case "bigint":
+                        prov = new PostGisProvider<long>(gf, conn, schema, tableName, oidColumnName, geomColumn,
+                                                         gs.CoordinateTransformationFactory)
+                                   {DefaultProviderProperties = ppe};
+                        break;
+                    case "integer":
+                        prov = new PostGisProvider<int>(gf, conn, schema, tableName, oidColumnName, geomColumn,
+                                                        gs.CoordinateTransformationFactory)
+                                   {DefaultProviderProperties = ppe};
+                        break;
+                    case "character varying":
+                    case "text":
+                        prov = new PostGisProvider<string>(gf, conn, schema, tableName, oidColumnName, geomColumn,
+                                                           gs.CoordinateTransformationFactory)
+                                   {DefaultProviderProperties = ppe};
+                        break;
+                    case "uuid":
+                        prov = new PostGisProvider<Guid>(gf, conn, schema, tableName, oidColumnName, geomColumn,
+                                                         gs.CoordinateTransformationFactory)
+                                   {DefaultProviderProperties = ppe};
+                        break;
+                    default:
+                        return null;
+                }
+
+                //jd commented temporarily to get a build
+                //((ISpatialDbProvider)prov).DefinitionQuery =
+                //    new ProviderQueryExpression(ppe, ape, null);
+
+                return prov;
+            }
+            return null;
+        }
+
+        public string ProviderName
+        {
+            get { return (string) ((DataRowView) cbTables.SelectedItem)["Label"]; }
+        }
+
+        #endregion
 
         private void cbDataBases_MouseDown(object sender, MouseEventArgs e)
         {
@@ -89,7 +196,7 @@ namespace MapViewer.DataSource
         private bool EnsureConnection()
         {
             bool ok = true;
-            var message = new StringBuilder();
+            StringBuilder message = new StringBuilder();
             if (string.IsNullOrEmpty(tbServer.Text))
             {
                 message.AppendLine("Please specifiy a Server and Port to connect to");
@@ -120,8 +227,8 @@ namespace MapViewer.DataSource
                 return ok;
             }
 
-            var serverConnectionString = ServerConnectionString + ";Database=postgres";
-            using (var conn = new NpgsqlConnection(serverConnectionString))
+            string serverConnectionString = ServerConnectionString + ";Database=postgres";
+            using (NpgsqlConnection conn = new NpgsqlConnection(serverConnectionString))
             {
                 try
                 {
@@ -140,44 +247,44 @@ namespace MapViewer.DataSource
 
         private bool GetDataBases()
         {
-            var select = "select datname as name from pg_database where not(datistemplate) AND datallowconn;";
+            string select = "select datname as name from pg_database where not(datistemplate) AND datallowconn;";
 
-            var serverConnectionString = ServerConnectionString + "Database=postgres;";
+            string serverConnectionString = ServerConnectionString + "Database=postgres;";
             using (NpgsqlConnection cn = new NpgsqlConnection(serverConnectionString))
             {
-                var cm = cn.CreateCommand();
+                NpgsqlCommand cm = cn.CreateCommand();
                 cm.CommandText = select;
-                cm.CommandType = System.Data.CommandType.Text;
+                cm.CommandType = CommandType.Text;
 
                 try
                 {
-                    var lst = new List<string>();
+                    List<string> lst = new List<string>();
                     cn.Open();
                     using (NpgsqlDataReader dr = cm.ExecuteReader())
                     {
                         while (dr.Read())
                         {
-                            var tmpConnectionString = ServerConnectionString + string.Format("Database={0};", dr.GetString(0));
+                            string tmpConnectionString = ServerConnectionString +
+                                                         string.Format("Database={0};", dr.GetString(0));
                             try
                             {
                                 using (NpgsqlConnection tmpCn = new NpgsqlConnection(tmpConnectionString))
                                 {
                                     tmpCn.Open();
-                                    var tmpCm = tmpCn.CreateCommand();
+                                    NpgsqlCommand tmpCm = tmpCn.CreateCommand();
                                     tmpCm.CommandText = "postgis_version";
                                     tmpCm.CommandType = CommandType.StoredProcedure;
-                                    var res = tmpCm.ExecuteScalar();
+                                    object res = tmpCm.ExecuteScalar();
 
                                     lst.Add(dr.GetString(0));
                                 }
                             }
                             catch (NpgsqlException ex)
                             {
-                                System.Diagnostics.Trace.Write(string.Format("Database '{0}' is not a postgis database!", dr.GetString(0)));
+                                Trace.Write(string.Format("Database '{0}' is not a postgis database!", dr.GetString(0)));
                             }
                             finally
                             {
-
                             }
                         }
                     }
@@ -191,100 +298,6 @@ namespace MapViewer.DataSource
                 }
             }
         }
-
-
-        #region ICreateDataProvider Members
-
-        public IFeatureProvider GetProvider()
-        {
-            if (EnsureTables())
-            {
-                string conn = ServerConnectionString;
-
-                conn += string.Format("Database={0};", cbDataBases.SelectedItem);
-                conn += "Enlist=true;";
-
-                DataRowView drv = (DataRowView)cbTables.SelectedItem;
-                string schema = (string)drv["Schema"];
-                string tableName = (string)drv["TableName"];;
-                string geomColumn = (string)drv["GeometryColumn"];
-                int coordDimension = (int) drv["Dimension"];
-                string srid = (string)drv["SRID"];//((int)).ToString();
-
-                GeometryServices gs = new GeometryServices();
-                IGeometryFactory gf = gs[ srid ];//, coordDimension];
-                //if (!string.IsNullOrEmpty(spatialReference))
-                //    gf.SpatialReference = gs.CoordinateSystemFactory.CreateFromWkt(spatialReference);
-
-                string oidColumnName = (String)dgvColumns.Rows[oidcolumn].Cells["ColumnName"].Value;
-
-                List<String> columns = new List<string>();
-                List<OrderByExpression> orderby = new List<OrderByExpression>();
-                foreach (DataGridViewRow dgvr in dgvColumns.Rows)
-                {
-                    if ((bool)dgvr.Cells["Include"].Value) columns.Add((String)dgvr.Cells["ColumnName"].Value);
-                    if (dgvr.Cells["SortOrder"].Value != null)
-                        orderby.Add(new OrderByExpression((String)dgvr.Cells[1].Value, (System.Data.SqlClient.SortOrder)dgvr.Cells["SortOrder"].Value));
-                }
-
-                if (!columns.Contains(oidColumnName))
-                    columns.Insert(0, oidColumnName);
-
-                columns.Add(geomColumn);
-
-                ProviderPropertiesExpression ppe = null; 
-                
-                if (orderby.Count == 0)
-                {
-                    ppe = new ProviderPropertiesExpression(
-                     new ProviderPropertyExpression[] {
-                         new AttributesCollectionExpression(columns) 
-                     });
-                }
-                else
-                {
-                    ppe = new ProviderPropertiesExpression(
-                        new ProviderPropertyExpression[] { 
-                            new OrderByCollectionExpression(orderby), 
-                            new AttributesCollectionExpression(columns)
-                        });
-                }
-
-                IFeatureProvider prov = null;
-
-                switch ((String)dgvColumns.Rows[oidcolumn].Cells["DataType"].Value)
-                {
-                    case "bigint":
-                        prov = new PostGisProvider<long>(gf, conn, schema, tableName, oidColumnName, geomColumn, gs.CoordinateTransformationFactory) 
-                            { DefaultProviderProperties = ppe };
-                        break;
-                    case "integer":
-                        prov = new PostGisProvider<int>(gf, conn, schema, tableName, oidColumnName, geomColumn, gs.CoordinateTransformationFactory) 
-                            { DefaultProviderProperties = ppe };
-                        break;
-                    case "character varying":
-                    case "text":
-                        prov = new PostGisProvider<string>(gf, conn, schema, tableName, oidColumnName, geomColumn, gs.CoordinateTransformationFactory) 
-                            { DefaultProviderProperties = ppe };
-                        break;
-                    case "uuid":
-                        prov = new PostGisProvider<Guid>(gf, conn, schema, tableName, oidColumnName, geomColumn, gs.CoordinateTransformationFactory) 
-                            { DefaultProviderProperties = ppe };
-                        break;
-                    default:
-                        return null;
-                }
-
-                //jd commented temporarily to get a build
-                //((ISpatialDbProvider)prov).DefinitionQuery =
-                //    new ProviderQueryExpression(ppe, ape, null);
-
-                return prov;
-            }
-            return null;
-        }
-
-        #endregion
 
         private void chkUsername_CheckedChanged(object sender, EventArgs e)
         {
@@ -308,11 +321,11 @@ namespace MapViewer.DataSource
             if (cbDataBases.Text == lastDbQueried) return true;
             lastDbQueried = cbDataBases.Text;
 
-            var serverConnectionString = ServerConnectionString + string.Format("Database={0}", cbDataBases.Text);
+            string serverConnectionString = ServerConnectionString + string.Format("Database={0}", cbDataBases.Text);
             using (NpgsqlConnection cn = new NpgsqlConnection(serverConnectionString))
             {
-                var select =
-    @"
+                string select =
+                    @"
 CREATE OR REPLACE FUNCTION gis_table_and_columns()
   RETURNS SETOF refcursor AS
 $BODY$
@@ -372,13 +385,13 @@ $BODY$
 
                 //do function
                 cn.Open();
-                new NpgsqlCommand(select, (NpgsqlConnection)cn).ExecuteNonQuery();
+                new NpgsqlCommand(select, cn).ExecuteNonQuery();
 
-                var cm = cn.CreateCommand();
+                NpgsqlCommand cm = cn.CreateCommand();
                 cm.CommandText = "gis_table_and_columns";
                 cm.CommandType = CommandType.StoredProcedure;
                 cm.Transaction = cn.BeginTransaction();
-                var da = new NpgsqlDataAdapter(cm);
+                NpgsqlDataAdapter da = new NpgsqlDataAdapter(cm);
                 datasetTableAndColumns = new DataSet();
                 da.Fill(datasetTableAndColumns);
                 cm.Transaction.Commit();
@@ -389,7 +402,6 @@ $BODY$
                 cbTables.DataSource = datasetTableAndColumns.Tables[0];
                 cbTables.DisplayMember = "Label";
                 cbTables.ValueMember = "TableName";
-
             }
             return true;
         }
@@ -404,39 +416,40 @@ $BODY$
 
             DataView dv = new DataView(
                 datasetTableAndColumns.Tables[1],
-                string.Format("TableName='{0}'", cbTables.SelectedValue.GetType() == typeof(String)
-                    ?
-                    cbTables.SelectedValue
-                    :
-                    datasetTableAndColumns.Tables[0].Rows[0][0]),
-                    "",
-                    DataViewRowState.CurrentRows);
+                string.Format("TableName='{0}'", cbTables.SelectedValue.GetType() == typeof (String)
+                                                     ?
+                                                         cbTables.SelectedValue
+                                                     :
+                                                         datasetTableAndColumns.Tables[0].Rows[0][0]),
+                "",
+                DataViewRowState.CurrentRows);
             dv.AllowDelete = false;
             dv.AllowNew = false;
 
             dgvColumns.DataSource = dv;
             if (dgvColumns.Columns.Count < 8)
             {
-                var dgvc = new DataGridViewComboBoxColumn();
+                DataGridViewComboBoxColumn dgvc = new DataGridViewComboBoxColumn();
                 dgvc.Name = "SortOrder";
 
-                dgvc.DataSource = Enum.GetNames(typeof(System.Data.SqlClient.SortOrder));//new List<String>(GeoAPI.DataStructures.Enumerable.ToArray<String> Enum.GetNames(SortOrder));
+                dgvc.DataSource = Enum.GetNames(typeof (SortOrder));
+                    //new List<String>(GeoAPI.DataStructures.Enumerable.ToArray<String> Enum.GetNames(SortOrder));
                 dgvColumns.Columns.Add(dgvc);
 
                 dgvColumns.Columns["TableSchema"].Visible = false; // TableName
                 dgvColumns.Columns["TableName"].Visible = false; // TableName
                 dgvColumns.Columns["ColumnName"].ReadOnly = true; // ColumnName
                 dgvColumns.Columns["DataType"].ReadOnly = true; // DataType
-                dgvColumns.Columns["Include"].ReadOnly = false;// Include
+                dgvColumns.Columns["Include"].ReadOnly = false; // Include
                 dgvColumns.Columns["PK"].Visible = false; // PrimaryKey
                 dgvColumns.Columns["ordinal_position"].Visible = false;
-                dgvColumns.Columns["SortOrder"].ReadOnly = false;// SortOrder
+                dgvColumns.Columns["SortOrder"].ReadOnly = false; // SortOrder
             }
 
             oidcolumn = -2;
             setOidColumn(-1);
             foreach (DataGridViewRow dgvr in dgvColumns.Rows)
-                if ((bool)dgvr.Cells["PK"].Value)
+                if ((bool) dgvr.Cells["PK"].Value)
                 {
                     setOidColumn(dgvr.Index);
                     break;
@@ -444,7 +457,7 @@ $BODY$
 
             dgvColumns.Enabled = true;
 
-            lbSRID.Text = string.Format("SRID: {0}", ((DataRowView)cbTables.SelectedItem)["SRID"]);
+            lbSRID.Text = string.Format("SRID: {0}", ((DataRowView) cbTables.SelectedItem)["SRID"]);
         }
 
         private void cbDataBases_DataSourceChanged(object sender, EventArgs e)
@@ -473,14 +486,13 @@ $BODY$
 
         private void setOidColumn(int rowindex)
         {
-
             if (oidcolumn == rowindex) return;
-            var fnt = dgvColumns.DefaultCellStyle.Font;
+            Font fnt = dgvColumns.DefaultCellStyle.Font;
 
-            if (oidcolumn >= 0 )
+            if (oidcolumn >= 0)
             {
                 dgvColumns.Rows[oidcolumn].Cells["ColumnName"].Style.Font =
-                new System.Drawing.Font(fnt.FontFamily.Name, fnt.SizeInPoints, System.Drawing.FontStyle.Regular);
+                    new Font(fnt.FontFamily.Name, fnt.SizeInPoints, FontStyle.Regular);
 
                 dgvColumns.Rows[oidcolumn].Cells["PK"].Value = false;
             }
@@ -488,20 +500,11 @@ $BODY$
             if (rowindex >= 0)
             {
                 dgvColumns.Rows[rowindex].Cells["ColumnName"].Style.Font =
-                    new System.Drawing.Font(fnt.FontFamily.Name, fnt.SizeInPoints, System.Drawing.FontStyle.Bold); ;
+                    new Font(fnt.FontFamily.Name, fnt.SizeInPoints, FontStyle.Bold);
+                ;
                 dgvColumns.Rows[rowindex].Cells["PK"].Value = true;
             }
             oidcolumn = rowindex;
         }
-
-        #region ICreateDataProvider Members
-
-
-        public string ProviderName
-        {
-            get { return (string) ((DataRowView) cbTables.SelectedItem)["Label"]; }
-        }
-
-        #endregion
     }
 }

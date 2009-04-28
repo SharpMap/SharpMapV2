@@ -47,7 +47,7 @@ namespace SharpMap.Data.Providers.PostGis
         }
 
         protected override void WriteSpatialGeometryExpressionSqlInternal(StringBuilder builder, SpatialOperation op,
-                                                                  IGeometry geom)
+                                                                          IGeometry geom)
         {
             //int? srid = Provider.ParseSrid(geom.Srid);
             //if (!srid.HasValue || srid < 0)
@@ -68,9 +68,9 @@ namespace SharpMap.Data.Providers.PostGis
         }
 
         protected override void WriteSpatialExtentsExpressionSqlInternal(StringBuilder builder,
-                                                                 SpatialOperation spatialOperation, IExtents ext)
+                                                                         SpatialOperation spatialOperation, IExtents ext)
         {
-            var exts = (IExtents2D) ext;
+            IExtents2D exts = (IExtents2D) ext;
             //ST_SetSRID('BOX3D(0 0,1 1)'::box3d,4326)
             String whereClause = "";
 

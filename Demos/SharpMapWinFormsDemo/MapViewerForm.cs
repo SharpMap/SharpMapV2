@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows.Forms;
 using GeoAPI.Coordinates;
+using GeoAPI.DataStructures;
 using GeoAPI.Geometries;
 using MapViewer.Commands;
 using MapViewer.Controls;
@@ -34,16 +35,15 @@ using SharpMap.Rendering.Rendering2D;
 using SharpMap.Styles;
 using SharpMap.Tools;
 using SharpMap.Utilities;
+using SharpMap.Utilities.SridUtility;
 #if DOTNET35
 using Processor = System.Linq.Enumerable;
 using Enumerable = System.Linq.Enumerable;
 using Caster = System.Linq.Enumerable;
 #else
-using SharpMap.Utilities.SridUtility;
-using Processor = GeoAPI.DataStructures.Processor;
-using Enumerable = GeoAPI.DataStructures.Enumerable;
-using Caster = GeoAPI.DataStructures.Caster;
+
 #endif
+
 namespace MapViewer
 {
     public partial class MapViewerForm : Form
@@ -61,7 +61,8 @@ namespace MapViewer
         static MapViewerForm()
         {
             //jd: hopefully a temporary measure
-            SridMap.DefaultInstance = new SridMap(new[] { new SridProj4Strategy(0, new GeometryServices().CoordinateSystemFactory) });
+            SridMap.DefaultInstance =
+                new SridMap(new[] {new SridProj4Strategy(0, new GeometryServices().CoordinateSystemFactory)});
         }
 
         public MapViewerForm()
@@ -114,12 +115,12 @@ namespace MapViewer
         {
             IFeatureLayer l =
                 Enumerable.FirstOrDefault(
-                Caster.Cast<IFeatureLayer>(
-                    Processor.Where(Map.SelectedLayers, delegate(ILayer o) { return o as IFeatureLayer != null; })));
+                    Caster.Cast<IFeatureLayer>(
+                        Processor.Where(Map.SelectedLayers, delegate(ILayer o) { return o as IFeatureLayer != null; })));
 
             if (l != null)
             {
-                var dv = new FeatureDataView(l.SelectedFeatures.Table);
+                FeatureDataView dv = new FeatureDataView(l.SelectedFeatures.Table);
 
                 if (l.SelectedFeatures.AttributeFilter != null)
                     dv.AttributeFilter =
@@ -142,7 +143,7 @@ namespace MapViewer
                         l.SelectedFeatures.ViewDefinition.Clone();
 
 
-                var tab = new QueryResultsTab(l.LayerName, dv);
+                QueryResultsTab tab = new QueryResultsTab(l.LayerName, dv);
                 resultsTabControl.TabPages.Insert(0, tab);
                 resultsTabControl.SelectedTab = tab;
             }
@@ -179,7 +180,7 @@ namespace MapViewer
             Map.DeselectLayers(Map.SelectedLayers);
 
             if (queryLayerComboBox.SelectedIndex > -1)
-                Map.SelectLayer((string)queryLayerComboBox.SelectedItem);
+                Map.SelectLayer((string) queryLayerComboBox.SelectedItem);
         }
 
         private void Layers_ListChanged(object sender, ListChangedEventArgs e)
@@ -218,20 +219,20 @@ namespace MapViewer
         {
             #region "ApplicationExit Command"
 
-            var exitCommand = new Command(CommandNames.ApplicationExit);
+            Command exitCommand = new Command(CommandNames.ApplicationExit);
             CommandManager.AddCommandSource(
                 new ToolStripItemCommandSource<ToolStripItem>(
                     exitToolStripMenuItem, exitCommand));
 
-            var exitHandler = new ExitCommandHandler(exitCommand);
+            ExitCommandHandler exitHandler = new ExitCommandHandler(exitCommand);
             CommandManager.AddCommandHandler(exitHandler);
 
             #endregion
 
             #region"AddLayer Command"
 
-            var addLayerCommand = new Command(CommandNames.AddLayer);
-            var addLayerHandler = new ActionCommandHandler(addLayerCommand, AddLayer);
+            Command addLayerCommand = new Command(CommandNames.AddLayer);
+            ActionCommandHandler addLayerHandler = new ActionCommandHandler(addLayerCommand, AddLayer);
             CommandManager.AddCommand(addLayerCommand);
             CommandManager.AddCommandHandler(addLayerHandler);
             CommandManager.AddCommandSource(
@@ -254,8 +255,8 @@ namespace MapViewer
 
             #region "ClearLayers Command"
 
-            var clearLayersCommand = new Command(CommandNames.ClearLayers);
-            var clearLayersHandler = new ActionCommandHandler(clearLayersCommand, ClearLayers);
+            Command clearLayersCommand = new Command(CommandNames.ClearLayers);
+            ActionCommandHandler clearLayersHandler = new ActionCommandHandler(clearLayersCommand, ClearLayers);
             CommandManager.AddCommandHandler(clearLayersHandler);
 
             CommandManager.AddCommandSource(
@@ -416,7 +417,7 @@ namespace MapViewer
 
         private void AddStyle()
         {
-            using (var dlg = new OpenFileDialog())
+            using (OpenFileDialog dlg = new OpenFileDialog())
             {
                 dlg.Filter = "Styled Layer Descriptor Files|*.sld|Xml Documents|*.xml";
                 if (dlg.ShowDialog() == DialogResult.OK)
@@ -424,7 +425,7 @@ namespace MapViewer
                     IDictionary<string, GeometryStyle> dict
                         = new SldConverter().ParseFeatureStyleFromFile(dlg.FileName);
 
-                    foreach (var pair in dict)
+                    foreach (KeyValuePair<string, GeometryStyle> pair in dict)
                         _loadedStyles.Add(pair);
                 }
             }
@@ -468,16 +469,16 @@ namespace MapViewer
 
         private void FixedZoomIn()
         {
-            Zoom(1 / 1.2);
+            Zoom(1/1.2);
         }
 
         private void Zoom(double amount)
         {
-            var ext = (IExtents2D)MapView.ViewEnvelope.Clone();
+            IExtents2D ext = (IExtents2D) MapView.ViewEnvelope.Clone();
             double dx, dy;
-            dx = ext.Width * amount / 2;
-            dy = ext.Height * amount / 2;
-            var c = (ICoordinate2D)ext.Center;
+            dx = ext.Width*amount/2;
+            dy = ext.Height*amount/2;
+            ICoordinate2D c = (ICoordinate2D) ext.Center;
 
             MapView.ZoomToWorldBounds(ext.Factory.CreateExtents2D(c.X - dx, c.Y - dy, c.X + dx, c.Y + dy));
         }
@@ -518,7 +519,7 @@ namespace MapViewer
         private void ZoomLayerExtent(CommandEventArgs<ILayer> layerArgs)
         {
             if (layerArgs.Value != null)
-                MapView.ZoomToWorldBounds((IExtents2D)layerArgs.Value.Extents);
+                MapView.ZoomToWorldBounds((IExtents2D) layerArgs.Value.Extents);
         }
 
         private void EditLayerSymbology(CommandEventArgs<ILayer> layerArgs)
@@ -542,7 +543,7 @@ namespace MapViewer
 
         private void AddLayer()
         {
-            using (var choose = new ChooseDataSource())
+            using (ChooseDataSource choose = new ChooseDataSource())
             {
                 if (choose.ShowDialog() == DialogResult.OK)
                 {
@@ -552,42 +553,39 @@ namespace MapViewer
                     workQueue.AddWorkItem(
                         string.Format("Loading Datasource {0}", name),
                         delegate
-                        {
-                            var lyr =
-                                new GeometryLayer(
-                                    name,
-                                    prov);
-                            lyr.Features.IsSpatiallyIndexed = false;
-                            prov.Open();
+                            {
+                                GeometryLayer lyr =
+                                    new GeometryLayer(
+                                        name,
+                                        prov);
+                                lyr.Features.IsSpatiallyIndexed = false;
+                                prov.Open();
 
 
-                            InvokeIfRequired(new Action(delegate
-                                                            {
-
-                                                                if (Map.Layers.Count == 0)
+                                InvokeIfRequired(new Action(delegate
                                                                 {
-                                                                    if (lyr.SpatialReference != null)
-                                                                        Map.SpatialReference = lyr.SpatialReference;
-                                                                }
+                                                                    if (Map.Layers.Count == 0)
+                                                                    {
+                                                                        if (lyr.SpatialReference != null)
+                                                                            Map.SpatialReference = lyr.SpatialReference;
+                                                                    }
 
-                                                                Map.Layers.Insert(0, lyr);
+                                                                    Map.Layers.Insert(0, lyr);
 
-                                                                lyr.Style = RandomStyle.RandomGeometryStyle();
-                                                                //lyr.Style = setGeometryStyle(lyr);
+                                                                    lyr.Style = RandomStyle.RandomGeometryStyle();
+                                                                    //lyr.Style = setGeometryStyle(lyr);
 
-                                                                if (Map.Layers.Count == 1)
-                                                                {
-                                                                    mapViewControl1.Map = Map;
+                                                                    if (Map.Layers.Count == 1)
+                                                                    {
+                                                                        mapViewControl1.Map = Map;
 
-                                                                    layersView1.Map = Map;
-                                                                    MapView.ZoomToExtents();
-                                                                }
-                                                            }));
-                        }, EnableDisableCommandsRequiringLayers
-                        , delegate(Exception ex)
-                              {
-                                  MessageBox.Show(string.Format("An error occured\n{0}\n{1}", ex.Message, ex.StackTrace));
-                              });
+                                                                        layersView1.Map = Map;
+                                                                        MapView.ZoomToExtents();
+                                                                    }
+                                                                }));
+                            }, EnableDisableCommandsRequiringLayers
+                        ,
+                        delegate(Exception ex) { MessageBox.Show(string.Format("An error occured\n{0}\n{1}", ex.Message, ex.StackTrace)); });
                 }
             }
         }

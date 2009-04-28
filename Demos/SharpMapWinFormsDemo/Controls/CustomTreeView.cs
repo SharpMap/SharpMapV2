@@ -32,7 +32,6 @@ namespace MapViewer.Controls
         {
             NodeMouseClick += CustomTreeView_NodeMouseClick;
             AfterCheck += CustomTreeView_AfterCheck;
-
         }
 
         public event EventHandler<LayerEnabledChangeEventArgs> RequestLayerEnabledChange;
@@ -70,14 +69,13 @@ namespace MapViewer.Controls
         {
             if (RequestLayerEnabledChange != null)
                 RequestLayerEnabledChange(this, args);
-
         }
 
         private void CustomTreeView_AfterCheck(object sender, TreeViewEventArgs e)
         {
             if (e.Node is LayerNode)
             {
-                var n = e.Node as LayerNode;
+                LayerNode n = e.Node as LayerNode;
                 if (e.Node.Checked != n.Layer.Enabled)
                     OnRequestLayerEnabledChange(new LayerEnabledChangeEventArgs(n.Layer, e.Node.Checked));
             }
@@ -115,15 +113,15 @@ namespace MapViewer.Controls
 
             protected override void BuildChildNodes()
             {
-                var alias = new TreeNode("Alias");
+                TreeNode alias = new TreeNode("Alias");
                 Nodes.Add(alias);
                 alias.Nodes.Add(CoordinateSystem.Alias);
 
-                var auth = new TreeNode("Authority");
+                TreeNode auth = new TreeNode("Authority");
                 Nodes.Add(auth);
                 auth.Nodes.Add(CoordinateSystem.Authority);
 
-                var code = new TreeNode("Authority Code");
+                TreeNode code = new TreeNode("Authority Code");
                 Nodes.Add(code);
                 code.Nodes.Add(CoordinateSystem.AuthorityCode);
             }
@@ -140,7 +138,7 @@ namespace MapViewer.Controls
 
             protected new TCoordinateSystem CoordinateSystem
             {
-                get { return (TCoordinateSystem)base.CoordinateSystem; }
+                get { return (TCoordinateSystem) base.CoordinateSystem; }
             }
         }
 
@@ -185,29 +183,29 @@ namespace MapViewer.Controls
                     return;
                 }
 
-                var name = new TreeNode("Name");
+                TreeNode name = new TreeNode("Name");
                 Nodes.Add(name);
                 name.Nodes.Add(Transform.Name);
 
-                var auth = new TreeNode("Authority Code");
+                TreeNode auth = new TreeNode("Authority Code");
                 Nodes.Add(auth);
 
                 auth.Nodes.Add(Transform.AuthorityCode);
 
-                var area = new TreeNode("Area of Use");
+                TreeNode area = new TreeNode("Area of Use");
                 Nodes.Add(area);
                 area.Nodes.Add(Transform.AreaOfUse);
 
-                var source = new TreeNode("Source Coordinate System");
+                TreeNode source = new TreeNode("Source Coordinate System");
                 Nodes.Add(source);
 
-                var type = new TreeNode("Transform Type");
+                TreeNode type = new TreeNode("Transform Type");
                 Nodes.Add(type);
-                type.Nodes.Add(Enum.GetName(typeof(TransformType), Transform.TransformType));
+                type.Nodes.Add(Enum.GetName(typeof (TransformType), Transform.TransformType));
 
                 source.Nodes.Add(NodeFactory.CreateCoordinateSystemNode(Transform.Source));
 
-                var trgt = new TreeNode("Target Coordinate System");
+                TreeNode trgt = new TreeNode("Target Coordinate System");
                 Nodes.Add(trgt);
                 trgt.Nodes.Add(NodeFactory.CreateCoordinateSystemNode(Transform.Target));
             }
@@ -227,7 +225,7 @@ namespace MapViewer.Controls
 
             public new CustomTreeView TreeView
             {
-                get { return (CustomTreeView)base.TreeView; }
+                get { return (CustomTreeView) base.TreeView; }
             }
 
             protected bool IsDisposed { get; set; }
@@ -254,42 +252,6 @@ namespace MapViewer.Controls
 
         #endregion
 
-
-
-        protected abstract class StyleNode<TStyle> : CustomTreeNode
-            where TStyle : IStyle
-        {
-            protected StyleNode(TStyle style, string name)
-                : base(name)
-            {
-                Style = style;
-            }
-
-            public TStyle Style { get; protected set; }
-
-            protected override void Dispose(bool Disposing)
-            {
-                if (!IsDisposed)
-                {
-                    Style = default(TStyle);
-                    IsDisposed = true;
-                }
-            }
-
-            protected override void BuildChildNodes()
-            {
-
-            }
-        }
-
-
-        protected class GeometryStyleNode : StyleNode<GeometryStyle>
-        {
-            public GeometryStyleNode(GeometryStyle style, string name)
-                : base(style, name)
-            { }
-        }
-
         #region Nested type: DbProviderNode
 
         protected class DbProviderNode : ProviderNode<ISpatialDbProvider>
@@ -303,15 +265,15 @@ namespace MapViewer.Controls
             {
                 base.BuildChildNodes();
 
-                var con = new TreeNode("Connection String");
+                TreeNode con = new TreeNode("Connection String");
                 Nodes.Add(con);
                 con.Nodes.Add(Provider.ConnectionString);
 
-                var sch = new TreeNode("Schema");
+                TreeNode sch = new TreeNode("Schema");
                 Nodes.Add(sch);
                 sch.Nodes.Add(Provider.TableSchema);
 
-                var tbl = new TreeNode("Table");
+                TreeNode tbl = new TreeNode("Table");
                 Nodes.Add(tbl);
                 tbl.Nodes.Add(Provider.Table);
 
@@ -333,7 +295,7 @@ namespace MapViewer.Controls
 
             protected override void BuildChildNodes()
             {
-                var n = new TreeNode("Type");
+                TreeNode n = new TreeNode("Type");
                 Nodes.Add(n);
                 n.Nodes.Add("Feature Layer");
 
@@ -356,9 +318,21 @@ namespace MapViewer.Controls
             {
                 base.BuildChildNodes();
 
-                var ang = new TreeNode("Angular Unit");
+                TreeNode ang = new TreeNode("Angular Unit");
                 Nodes.Add(ang);
                 ang.Nodes.Add(CoordinateSystem.AngularUnit.Name);
+            }
+        }
+
+        #endregion
+
+        #region Nested type: GeometryStyleNode
+
+        protected class GeometryStyleNode : StyleNode<GeometryStyle>
+        {
+            public GeometryStyleNode(GeometryStyle style, string name)
+                : base(style, name)
+            {
             }
         }
 
@@ -389,7 +363,7 @@ namespace MapViewer.Controls
 
             protected override void BuildChildNodes()
             {
-                var tn = new TreeNode("Child Layers");
+                TreeNode tn = new TreeNode("Child Layers");
                 foreach (ILayer l in Layer)
                     tn.Nodes.Add(NodeFactory.CreateLayerNode(l));
 
@@ -447,24 +421,24 @@ namespace MapViewer.Controls
 
             protected override void BuildChildNodes()
             {
-                var ds = new TreeNode("Datasource");
+                TreeNode ds = new TreeNode("Datasource");
                 Nodes.Add(ds);
 
                 ds.Nodes.Add(NodeFactory.CreateProviderNode(Layer.DataSource));
 
-                var srid = new TreeNode("Srid");
+                TreeNode srid = new TreeNode("Srid");
                 Nodes.Add(srid);
 
                 srid.Nodes.Add(string.IsNullOrEmpty(Layer.Srid) ? "None" : Layer.Srid);
 
-                var cs = new TreeNode("Spatial Reference System");
+                TreeNode cs = new TreeNode("Spatial Reference System");
                 Nodes.Add(cs);
                 if (Layer.SpatialReference == null)
                     cs.Nodes.Add("None");
                 else
                     cs.Nodes.Add(NodeFactory.CreateCoordinateSystemNode(Layer.SpatialReference));
 
-                var tran = new TreeNode("Transformation");
+                TreeNode tran = new TreeNode("Transformation");
                 Nodes.Add(tran);
                 if (Layer.CoordinateTransformation == null)
                     tran.Nodes.Add("None");
@@ -483,7 +457,7 @@ namespace MapViewer.Controls
 
             public new TLayer Layer
             {
-                get { return (TLayer)base.Layer; }
+                get { return (TLayer) base.Layer; }
             }
         }
 
@@ -496,17 +470,17 @@ namespace MapViewer.Controls
             public static TreeNode CreateLayerNode<TLayer>(TLayer layer)
                 where TLayer : ILayer
             {
-                if (IsAssignbleFrom(typeof(IFeatureLayer), layer.GetType()))
+                if (IsAssignbleFrom(typeof (IFeatureLayer), layer.GetType()))
                 {
-                    return new FeatureLayerNode((IFeatureLayer)layer);
+                    return new FeatureLayerNode((IFeatureLayer) layer);
                 }
-                if (IsAssignbleFrom(typeof(LayerGroup), layer.GetType()))
+                if (IsAssignbleFrom(typeof (LayerGroup), layer.GetType()))
                 {
-                    return new LayerGroupNode((LayerGroup)(object)layer);
+                    return new LayerGroupNode((LayerGroup) (object) layer);
                 }
-                if (IsAssignbleFrom(typeof(LabelLayer), layer.GetType()))
+                if (IsAssignbleFrom(typeof (LabelLayer), layer.GetType()))
                 {
-                    return new LabelLayerNode((LabelLayer)(object)layer);
+                    return new LabelLayerNode((LabelLayer) (object) layer);
                 }
 
                 throw new NotImplementedException();
@@ -515,13 +489,13 @@ namespace MapViewer.Controls
             public static TreeNode CreateLayerNode(ILayer layer)
             {
                 if (layer is IFeatureLayer)
-                    return CreateLayerNode((IFeatureLayer)layer);
+                    return CreateLayerNode((IFeatureLayer) layer);
 
                 if (layer is LayerGroup)
-                    return CreateLayerNode((LayerGroup)layer);
+                    return CreateLayerNode((LayerGroup) layer);
 
                 if (layer is LabelLayer)
-                    return CreateLayerNode((LabelLayer)layer);
+                    return CreateLayerNode((LabelLayer) layer);
 
                 throw new NotImplementedException();
             }
@@ -529,34 +503,34 @@ namespace MapViewer.Controls
             public static TreeNode CreateCoordinateSystemNode<TCoordinateSystem>(TCoordinateSystem cs)
                 where TCoordinateSystem : ICoordinateSystem
             {
-                if (IsAssignbleFrom(typeof(IGeographicCoordinateSystem), cs.GetType()))
-                    return new GeographicCoordinateSystemNode((IGeographicCoordinateSystem)cs);
-                if (IsAssignbleFrom(typeof(IProjectedCoordinateSystem), cs.GetType()))
-                    return new ProjectedCoordinateSystemNode((IProjectedCoordinateSystem)cs);
+                if (IsAssignbleFrom(typeof (IGeographicCoordinateSystem), cs.GetType()))
+                    return new GeographicCoordinateSystemNode((IGeographicCoordinateSystem) cs);
+                if (IsAssignbleFrom(typeof (IProjectedCoordinateSystem), cs.GetType()))
+                    return new ProjectedCoordinateSystemNode((IProjectedCoordinateSystem) cs);
                 return new CoordinateSystemNode(cs);
             }
 
             public static TreeNode CreateCoordinateSystemNode(ICoordinateSystem cs)
             {
                 if (cs is IProjectedCoordinateSystem)
-                    return CreateCoordinateSystemNode((IProjectedCoordinateSystem)cs);
+                    return CreateCoordinateSystemNode((IProjectedCoordinateSystem) cs);
 
                 if (cs is IGeographicCoordinateSystem)
-                    return CreateCoordinateSystemNode((IGeographicCoordinateSystem)cs);
+                    return CreateCoordinateSystemNode((IGeographicCoordinateSystem) cs);
 
                 return new CoordinateSystemNode(cs);
             }
 
             public static TreeNode CreateProviderNode<TProvider>(TProvider provider) where TProvider : IProvider
             {
-                if (IsAssignbleFrom(typeof(AsyncFeatureProviderAdapter), provider.GetType()))
-                    return CreateProviderNode(((AsyncFeatureProviderAdapter)(object)provider).InnerFeatureProvider);
+                if (IsAssignbleFrom(typeof (AsyncFeatureProviderAdapter), provider.GetType()))
+                    return CreateProviderNode(((AsyncFeatureProviderAdapter) (object) provider).InnerFeatureProvider);
 
-                if (IsAssignbleFrom(typeof(ShapeFileProvider), provider.GetType()))
-                    return new ShapeFileProviderNode((ShapeFileProvider)(object)provider);
+                if (IsAssignbleFrom(typeof (ShapeFileProvider), provider.GetType()))
+                    return new ShapeFileProviderNode((ShapeFileProvider) (object) provider);
 
-                if (IsAssignbleFrom(typeof(ISpatialDbProvider), provider.GetType()))
-                    return new DbProviderNode((ISpatialDbProvider)provider);
+                if (IsAssignbleFrom(typeof (ISpatialDbProvider), provider.GetType()))
+                    return new DbProviderNode((ISpatialDbProvider) provider);
 
                 throw new NotImplementedException();
             }
@@ -564,11 +538,11 @@ namespace MapViewer.Controls
             public static TreeNode CreateProviderNode(IProvider provider)
             {
                 if (provider is AsyncFeatureProviderAdapter)
-                    return CreateProviderNode(((AsyncFeatureProviderAdapter)provider).InnerFeatureProvider);
+                    return CreateProviderNode(((AsyncFeatureProviderAdapter) provider).InnerFeatureProvider);
                 if (provider is ShapeFileProvider)
-                    return CreateProviderNode((ShapeFileProvider)provider);
+                    return CreateProviderNode((ShapeFileProvider) provider);
                 if (provider is ISpatialDbProvider)
-                    return CreateProviderNode((ISpatialDbProvider)provider);
+                    return CreateProviderNode((ISpatialDbProvider) provider);
 
                 throw new NotImplementedException();
             }
@@ -597,7 +571,7 @@ namespace MapViewer.Controls
             {
                 base.BuildChildNodes();
 
-                var unit = new TreeNode("Linear Unit");
+                TreeNode unit = new TreeNode("Linear Unit");
                 Nodes.Add(unit);
 
                 unit.Nodes.Add(CoordinateSystem.LinearUnit.Name);
@@ -630,15 +604,15 @@ namespace MapViewer.Controls
 
             protected override void BuildChildNodes()
             {
-                var n = new TreeNode("Type");
+                TreeNode n = new TreeNode("Type");
                 Nodes.Add(n);
                 n.Nodes.Add(Provider.GetType().Name);
 
-                var srid = new TreeNode("Srid");
+                TreeNode srid = new TreeNode("Srid");
                 Nodes.Add(srid);
                 srid.Nodes.Add(string.IsNullOrEmpty(Provider.Srid) ? "None" : Provider.Srid);
 
-                var spat = new TreeNode("Spatial Reference System");
+                TreeNode spat = new TreeNode("Spatial Reference System");
                 Nodes.Add(spat);
 
                 if (Provider.SpatialReference == null)
@@ -647,7 +621,7 @@ namespace MapViewer.Controls
                     spat.Nodes.Add(NodeFactory.CreateCoordinateSystemNode(Provider.SpatialReference));
 
 
-                var transform = new TreeNode("Transform");
+                TreeNode transform = new TreeNode("Transform");
                 Nodes.Add(transform);
                 if (Provider.CoordinateTransformation == null)
                     transform.Nodes.Add("None");
@@ -675,7 +649,7 @@ namespace MapViewer.Controls
 
             protected new TProvider Provider
             {
-                get { return (TProvider)base.Provider; }
+                get { return (TProvider) base.Provider; }
             }
         }
 
@@ -694,15 +668,44 @@ namespace MapViewer.Controls
             {
                 base.BuildChildNodes();
 
-                var n = new TreeNode("Path");
+                TreeNode n = new TreeNode("Path");
                 Nodes.Add(n);
                 n.Nodes.Add(new TreeNode(Provider.Filename));
 
-                var ndx = new TreeNode("Is Spatially Indexed");
+                TreeNode ndx = new TreeNode("Is Spatially Indexed");
                 Nodes.Add(ndx);
                 ndx.Nodes.Add(new TreeNode(Provider.IsSpatiallyIndexed.ToString()));
 
                 Nodes.Add(new CoordinateTransformNode(Provider.CoordinateTransformation));
+            }
+        }
+
+        #endregion
+
+        #region Nested type: StyleNode
+
+        protected abstract class StyleNode<TStyle> : CustomTreeNode
+            where TStyle : IStyle
+        {
+            protected StyleNode(TStyle style, string name)
+                : base(name)
+            {
+                Style = style;
+            }
+
+            public TStyle Style { get; protected set; }
+
+            protected override void Dispose(bool Disposing)
+            {
+                if (!IsDisposed)
+                {
+                    Style = default(TStyle);
+                    IsDisposed = true;
+                }
+            }
+
+            protected override void BuildChildNodes()
+            {
             }
         }
 

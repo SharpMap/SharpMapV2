@@ -14,17 +14,19 @@
  */
 using System;
 using System.Collections.Generic;
-using System.Windows.Forms;
 using System.Data;
-//using System.Data.SQLite;
+using System.Drawing;
 using System.Text;
+using System.Windows.Forms;
+using GeoAPI.Geometries;
 using SharpMap.Data;
 using SharpMap.Data.Providers;
 using SharpMap.Data.Providers.Db.Expressions;
 using SharpMap.Data.Providers.SpatiaLite2;
 using SharpMap.Expressions;
 using SharpMap.Utilities;
-using GeoAPI.Geometries;
+using SortOrder=System.Data.SqlClient.SortOrder;
+//using System.Data.SQLite;
 
 namespace MapViewer.DataSource
 {
@@ -39,6 +41,17 @@ namespace MapViewer.DataSource
             cbTables.MouseDown += cbTables_MouseDown;
         }
 
+        private string ServerConnectionString
+        {
+            get
+            {
+                string scs = string.Format("Data Source={0};", tbPath.Text);
+                if (!string.IsNullOrEmpty(tbPassword.Text))
+                    scs += string.Format("Password={0};", tbPassword.Text);
+                return scs;
+            }
+        }
+
         #region ICreateDataProvider Members
 
         public IFeatureProvider GetProvider()
@@ -47,32 +60,34 @@ namespace MapViewer.DataSource
             {
                 string conn = ServerConnectionString;
 
-                DataRowView drv = (DataRowView)cbTables.SelectedItem;
-                string schema = (string)drv["Schema"];
-                string tableName = (string)drv["TableName"];;
-                string geomColumn = (string)drv["GeometryColumn"];
-                int coordDimension = (int)(long) drv["Dimension"];
+                DataRowView drv = (DataRowView) cbTables.SelectedItem;
+                string schema = (string) drv["Schema"];
+                string tableName = (string) drv["TableName"];
+                ;
+                string geomColumn = (string) drv["GeometryColumn"];
+                int coordDimension = (int) (long) drv["Dimension"];
                 string srid = drv["SRID"].ToString();
-                string spatialReference = drv["SpatialReference"] == DBNull.Value 
-                    ?
-                    "" 
-                    :
-                    (string)drv["SpatialReference"];
+                string spatialReference = drv["SpatialReference"] == DBNull.Value
+                                              ?
+                                                  ""
+                                              :
+                                                  (string) drv["SpatialReference"];
 
                 GeometryServices gs = new GeometryServices();
-                IGeometryFactory gf = gs[ srid ];//, coordDimension];
+                IGeometryFactory gf = gs[srid]; //, coordDimension];
                 //if (!string.IsNullOrEmpty(spatialReference))
                 //    gf.SpatialReference = gs.CoordinateSystemFactory.CreateFromWkt(spatialReference);
 
-                string oidColumnName = (String)dgvColumns.Rows[oidcolumn].Cells[2].Value;
+                string oidColumnName = (String) dgvColumns.Rows[oidcolumn].Cells[2].Value;
 
                 List<String> columns = new List<string>();
                 List<OrderByExpression> orderby = new List<OrderByExpression>();
                 foreach (DataGridViewRow dgvr in dgvColumns.Rows)
                 {
-                    if ((bool)dgvr.Cells["Include"].Value) columns.Add((String)dgvr.Cells[2].Value);
+                    if ((bool) dgvr.Cells["Include"].Value) columns.Add((String) dgvr.Cells[2].Value);
                     if (dgvr.Cells["SortOrder"].Value != null)
-                        orderby.Add(new OrderByExpression((String)dgvr.Cells[1].Value, (System.Data.SqlClient.SortOrder)dgvr.Cells["SortOrder"].Value));
+                        orderby.Add(new OrderByExpression((String) dgvr.Cells[1].Value,
+                                                          (SortOrder) dgvr.Cells["SortOrder"].Value));
                 }
 
                 if (!columns.Contains(oidColumnName))
@@ -84,21 +99,24 @@ namespace MapViewer.DataSource
                 if (orderby.Count == 0)
                 {
                     ppe = new ProviderPropertiesExpression(
-                     new ProviderPropertyExpression[] {
-                         new AttributesCollectionExpression(columns) 
-                     });
+                        new ProviderPropertyExpression[]
+                            {
+                                new AttributesCollectionExpression(columns)
+                            });
                 }
                 else
                 {
                     ppe = new ProviderPropertiesExpression(
-                        new ProviderPropertyExpression[] { 
-                            new OrderByCollectionExpression(orderby), 
-                            new AttributesCollectionExpression(columns)
-                        });
+                        new ProviderPropertyExpression[]
+                            {
+                                new OrderByCollectionExpression(orderby),
+                                new AttributesCollectionExpression(columns)
+                            });
                 }
 
                 IFeatureProvider prov =
-                    new SpatiaLite2Provider(gf, conn, schema, tableName, oidColumnName, geomColumn, gs.CoordinateTransformationFactory) { DefaultProviderProperties = ppe}; 
+                    new SpatiaLite2Provider(gf, conn, schema, tableName, oidColumnName, geomColumn,
+                                            gs.CoordinateTransformationFactory) {DefaultProviderProperties = ppe};
 
                 //jd commented temporarily to get a build
                 //((ISpatialDbProvider)prov).DefinitionQuery =
@@ -111,27 +129,15 @@ namespace MapViewer.DataSource
 
         public string ProviderName
         {
-            get { return (string)((DataRowView)cbTables.SelectedItem)["Label"]; }
+            get { return (string) ((DataRowView) cbTables.SelectedItem)["Label"]; }
         }
 
         #endregion
 
-        private string ServerConnectionString
-        {
-            get 
-            { 
-                
-                string scs = string.Format("Data Source={0};", tbPath.Text);
-                if (!string.IsNullOrEmpty(tbPassword.Text))
-                    scs += string.Format("Password={0};", tbPassword.Text);
-                return scs;
-            }
-        }
-
         private bool EnsureConnection()
         {
             bool ok = true;
-            var message = new StringBuilder();
+            StringBuilder message = new StringBuilder();
             if (string.IsNullOrEmpty(tbPath.Text))
             {
                 message.AppendLine("Please specifiy path to SpatiaLite database file");
@@ -148,7 +154,7 @@ namespace MapViewer.DataSource
             {
                 ok = SpatiaLite2Provider.IsSpatiallyEnabled(ServerConnectionString);
             }
-            catch(SpatiaLite2Exception ex)
+            catch (SpatiaLite2Exception ex)
             {
                 ok = false;
                 message.AppendFormat("Error connection to server {0}", ex.Message);
@@ -170,11 +176,10 @@ namespace MapViewer.DataSource
 
         private bool GetTables()
         {
-
             if (!EnsureConnection())
                 return false;
 
-            datasetTableAndColumns = 
+            datasetTableAndColumns =
                 SpatiaLite2Provider.GetSpatiallyEnabledTables(ServerConnectionString);
 
             if (datasetTableAndColumns == null) return false;
@@ -207,23 +212,24 @@ namespace MapViewer.DataSource
 
             DataView dv = new DataView(
                 datasetTableAndColumns.Tables[1],
-                string.Format("TableName='{0}'", cbTables.SelectedValue.GetType() == typeof(String)
-                    ?
-                    cbTables.SelectedValue
-                    :
-                    datasetTableAndColumns.Tables[0].Rows[0][0]),
-                    "",
-                    DataViewRowState.CurrentRows);
+                string.Format("TableName='{0}'", cbTables.SelectedValue.GetType() == typeof (String)
+                                                     ?
+                                                         cbTables.SelectedValue
+                                                     :
+                                                         datasetTableAndColumns.Tables[0].Rows[0][0]),
+                "",
+                DataViewRowState.CurrentRows);
             dv.AllowDelete = false;
             dv.AllowNew = false;
 
             dgvColumns.DataSource = dv;
             if (dgvColumns.Columns.Count < 6)
             {
-                var dgvc = new DataGridViewComboBoxColumn();
+                DataGridViewComboBoxColumn dgvc = new DataGridViewComboBoxColumn();
                 dgvc.Name = "SortOrder";
 
-                dgvc.DataSource = Enum.GetNames(typeof(System.Data.SqlClient.SortOrder));//new List<String>(GeoAPI.DataStructures.Enumerable.ToArray<String> Enum.GetNames(SortOrder));
+                dgvc.DataSource = Enum.GetNames(typeof (SortOrder));
+                    //new List<String>(GeoAPI.DataStructures.Enumerable.ToArray<String> Enum.GetNames(SortOrder));
                 dgvColumns.Columns.Add(dgvc);
 
                 dgvColumns.Columns[0].Visible = false;
@@ -236,7 +242,7 @@ namespace MapViewer.DataSource
 
             setOidColumn(-1);
             foreach (DataGridViewRow dgvr in dgvColumns.Rows)
-                if ((bool)dgvr.Cells[4].Value)
+                if ((bool) dgvr.Cells[4].Value)
                 {
                     setOidColumn(dgvr.Index);
                     break;
@@ -244,19 +250,18 @@ namespace MapViewer.DataSource
 
             dgvColumns.Enabled = true;
 
-            lbSRID.Text = string.Format("SRID: {0}", ((DataRowView)cbTables.SelectedItem)["SRID"]);
+            lbSRID.Text = string.Format("SRID: {0}", ((DataRowView) cbTables.SelectedItem)["SRID"]);
         }
 
         private void setOidColumn(int rowindex)
         {
-
             if (oidcolumn == rowindex) return;
-            var fnt = dgvColumns.DefaultCellStyle.Font;
+            Font fnt = dgvColumns.DefaultCellStyle.Font;
 
             if (oidcolumn >= 0)
             {
                 dgvColumns.Rows[oidcolumn].Cells[2].Style.Font =
-                new System.Drawing.Font(fnt.FontFamily.Name, fnt.SizeInPoints, System.Drawing.FontStyle.Bold);
+                    new Font(fnt.FontFamily.Name, fnt.SizeInPoints, FontStyle.Bold);
 
                 dgvColumns.Rows[oidcolumn].Cells[5].Value = false;
             }
@@ -264,7 +269,8 @@ namespace MapViewer.DataSource
             if (rowindex >= 0)
             {
                 dgvColumns.Rows[rowindex].Cells[2].Style.Font =
-                    new System.Drawing.Font(fnt.FontFamily.Name, fnt.SizeInPoints, System.Drawing.FontStyle.Regular); ;
+                    new Font(fnt.FontFamily.Name, fnt.SizeInPoints, FontStyle.Regular);
+                ;
                 dgvColumns.Rows[rowindex].Cells[5].Value = true;
             }
             oidcolumn = rowindex;

@@ -33,11 +33,6 @@ namespace MapViewer.DataSource
             cbDataBases.MouseDown += cbDataBases_MouseDown;
         }
 
-        public string ProviderName
-        {
-            get { return ((string)cbTable.SelectedItem).Split('|')[0]; }
-        }
-
         protected string ServerConnectionString
         {
             get
@@ -51,6 +46,11 @@ namespace MapViewer.DataSource
 
         #region ICreateDataProvider Members
 
+        public string ProviderName
+        {
+            get { return ((string) cbTable.SelectedItem).Split('|')[0]; }
+        }
+
         public virtual IFeatureProvider GetProvider()
         {
             if (EnsureTables())
@@ -59,7 +59,7 @@ namespace MapViewer.DataSource
 
                 conn += string.Format("initial catalog={0};", cbDataBases.SelectedItem);
 
-                string[] prts = ((string)cbTable.SelectedItem).Split('|');
+                string[] prts = ((string) cbTable.SelectedItem).Split('|');
 
                 string geomColumn = prts[1];
 
@@ -98,7 +98,7 @@ namespace MapViewer.DataSource
 
             conn += "initial catalog=master;";
 
-            using (var c = new SqlConnection(conn))
+            using (SqlConnection c = new SqlConnection(conn))
             {
                 using (SqlCommand cmd = c.CreateCommand())
                 {
@@ -108,12 +108,12 @@ namespace MapViewer.DataSource
 
                     try
                     {
-                        var lst = new List<string>();
+                        List<string> lst = new List<string>();
                         c.Open();
                         using (SqlDataReader dr = cmd.ExecuteReader())
                         {
                             while (dr.Read())
-                                lst.Add((string)dr["name"]);
+                                lst.Add((string) dr["name"]);
                             cbDataBases.DataSource = lst;
                         }
                         return true;
@@ -149,7 +149,7 @@ namespace MapViewer.DataSource
 
             conn += string.Format("initial catalog={0};", cbDataBases.SelectedItem);
 
-            using (var c = new SqlConnection(conn))
+            using (SqlConnection c = new SqlConnection(conn))
             {
                 using (SqlCommand cmd = c.CreateCommand())
                 {
@@ -167,7 +167,7 @@ END";
                         c.Open();
                         using (SqlDataReader dr = cmd.ExecuteReader())
                         {
-                            var lst = new List<string>();
+                            List<string> lst = new List<string>();
                             while (dr.Read())
                                 lst.Add(string.Format("{0}.{1}|{2}", dr["schema"], dr["name"], dr["GeomColumn"]));
 
@@ -187,7 +187,7 @@ END";
         private bool EnsureConnection()
         {
             bool ok = true;
-            var message = new StringBuilder();
+            StringBuilder message = new StringBuilder();
             if (string.IsNullOrEmpty(tbServer.Text))
             {
                 ok = false;
@@ -208,7 +208,7 @@ END";
                 return ok;
             }
 
-            using (var conn = new SqlConnection(ServerConnectionString))
+            using (SqlConnection conn = new SqlConnection(ServerConnectionString))
             {
                 try
                 {

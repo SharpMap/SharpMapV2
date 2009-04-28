@@ -26,10 +26,10 @@ namespace SharpMap.Presentation.AspNet.MVP
     public class WebMapView : IMapView2D, IDisposable
     {
         private readonly IWebMap _webMap;
+        private Boolean _disposed;
         private Boolean _enabled = true;
         private MapPresenter _presenter;
         private Boolean _visible = true;
-        private Boolean _disposed;
 
         public WebMapView(IWebMap webMap)
         {
@@ -272,19 +272,13 @@ namespace SharpMap.Presentation.AspNet.MVP
         public Boolean Visible
         {
             get { return _visible; }
-            set
-            {
-                _visible = value;
-            }
+            set { _visible = value; }
         }
 
         public Boolean Enabled
         {
             get { return _enabled; }
-            set
-            {
-                _enabled = value;
-            }
+            set { _enabled = value; }
         }
 
         public void Hide()
@@ -317,7 +311,7 @@ namespace SharpMap.Presentation.AspNet.MVP
 
             if (e != null)
             {
-                var args =
+                MapViewPropertyChangeEventArgs<ICoordinate> args =
                     new MapViewPropertyChangeEventArgs<ICoordinate>(current, requested);
 
                 e(this, args);
@@ -330,7 +324,7 @@ namespace SharpMap.Presentation.AspNet.MVP
 
             if (e != null)
             {
-                var args =
+                MapViewPropertyChangeEventArgs<double> args =
                     new MapViewPropertyChangeEventArgs<Double>(current, requested);
 
                 e(this, args);
@@ -343,7 +337,7 @@ namespace SharpMap.Presentation.AspNet.MVP
 
             if (e != null)
             {
-                var args =
+                MapViewPropertyChangeEventArgs<double> args =
                     new MapViewPropertyChangeEventArgs<Double>(current, requested);
 
                 e(this, args);
@@ -356,7 +350,7 @@ namespace SharpMap.Presentation.AspNet.MVP
 
             if (e != null)
             {
-                var args = new LocationEventArgs(location);
+                LocationEventArgs args = new LocationEventArgs(location);
                 e(this, args);
             }
         }
@@ -367,7 +361,7 @@ namespace SharpMap.Presentation.AspNet.MVP
 
             if (e != null)
             {
-                var args =
+                MapViewPropertyChangeEventArgs<Point2D> args =
                     new MapViewPropertyChangeEventArgs<Point2D>(Point2D.Zero, offset);
 
                 e(this, args);
@@ -380,7 +374,7 @@ namespace SharpMap.Presentation.AspNet.MVP
 
             if (e != null)
             {
-                var args =
+                MapViewPropertyChangeEventArgs<IExtents2D> args =
                     new MapViewPropertyChangeEventArgs<IExtents2D>(current, requested);
 
                 e(this, args);
@@ -393,7 +387,7 @@ namespace SharpMap.Presentation.AspNet.MVP
 
             if (e != null)
             {
-                var args =
+                MapViewPropertyChangeEventArgs<double> args =
                     new MapViewPropertyChangeEventArgs<Double>(current, requested);
 
                 e(this, args);
@@ -416,7 +410,7 @@ namespace SharpMap.Presentation.AspNet.MVP
 
             if (e != null)
             {
-                var args =
+                MapViewPropertyChangeEventArgs<Rectangle2D> args =
                     new MapViewPropertyChangeEventArgs<Rectangle2D>(
                         new Rectangle2D(0, 0, ViewSize.Width, ViewSize.Height), viewBounds);
 
@@ -430,7 +424,7 @@ namespace SharpMap.Presentation.AspNet.MVP
 
             if (e != null)
             {
-                var args =
+                MapViewPropertyChangeEventArgs<IExtents2D> args =
                     new MapViewPropertyChangeEventArgs<IExtents2D>(ViewEnvelope, zoomBox);
 
                 e(this, args);
@@ -443,7 +437,7 @@ namespace SharpMap.Presentation.AspNet.MVP
 
             if (e != null)
             {
-                var args =
+                MapViewPropertyChangeEventArgs<double> args =
                     new MapViewPropertyChangeEventArgs<Double>(WorldWidth, newWorldWidth);
 
                 e(this, args);

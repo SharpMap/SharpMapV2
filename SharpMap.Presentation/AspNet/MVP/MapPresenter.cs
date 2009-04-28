@@ -177,13 +177,13 @@ namespace SharpMap.Presentation.AspNet.MVP
 
         protected override void RenderFeatureLayer(IFeatureLayer layer, RenderPhase phase)
         {
-            var renderer = GetRenderer<IFeatureRenderer>(layer);
+            IFeatureRenderer renderer = GetRenderer<IFeatureRenderer>(layer);
             renderer.RenderTransform = ToViewTransform;
 
             Debug.Assert(renderer != null);
 
             Debug.Assert(layer.Style is FeatureStyle);
-            var layerStyle = layer.Style as FeatureStyle;
+            FeatureStyle layerStyle = layer.Style as FeatureStyle;
 
             switch (phase)
             {

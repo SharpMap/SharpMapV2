@@ -88,7 +88,7 @@ namespace MapViewer.DataSource
 
             conn += string.Format("initial catalog={0};", cbDataBases.SelectedItem);
 
-            using (var c = new SqlConnection(conn))
+            using (SqlConnection c = new SqlConnection(conn))
             {
                 using (SqlCommand cmd = c.CreateCommand())
                 {
@@ -111,7 +111,7 @@ order by tbls.name";
                         c.Open();
                         using (SqlDataReader dr = cmd.ExecuteReader())
                         {
-                            var lst = new List<string>();
+                            List<string> lst = new List<string>();
                             while (dr.Read())
                                 lst.Add(string.Format("{0}.{1}|{2}|{3}|{4}", dr["schemaName"], dr["TableName"],
                                                       dr["GeometryColumn"], dr["OIDType"], dr["OIDColumn"]));

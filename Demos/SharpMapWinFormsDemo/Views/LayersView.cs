@@ -13,8 +13,6 @@ namespace MapViewer.Views
 {
     public partial class LayersView : UserControl, ILayersView
     {
-        public ContextMenuStrip LayersContextMenu { get; set; }
-
         private LayersPresenter _presenter;
 
         public LayersView()
@@ -23,6 +21,8 @@ namespace MapViewer.Views
             layersTree1.RequestLayerEnabledChange += layersTree1_RequestLayerEnabledChange;
             layersTree1.LayerNodeClick += layersTree1_LayerNodeClick;
         }
+
+        public ContextMenuStrip LayersContextMenu { get; set; }
 
         public Map Map
         {
@@ -105,7 +105,7 @@ namespace MapViewer.Views
         {
             get
             {
-                var lst = new List<string>();
+                List<string> lst = new List<string>();
                 if (!DesignMode)
                     foreach (ILayer l in _presenter.Map.SelectedLayers)
                         lst.Add(l.LayerName);

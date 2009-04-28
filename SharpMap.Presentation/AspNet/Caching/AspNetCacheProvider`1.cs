@@ -46,8 +46,8 @@ namespace SharpMap.Presentation.AspNet.Caching
         {
             if (ExistsInCache(config))
             {
-                var bytes = (byte[]) Cache[config.CacheKey];
-                var ms = new MemoryStream(bytes);
+                byte[] bytes = (byte[]) Cache[config.CacheKey];
+                MemoryStream ms = new MemoryStream(bytes);
                 ms.Position = 0;
                 return ms;
             }
@@ -58,7 +58,7 @@ namespace SharpMap.Presentation.AspNet.Caching
         {
             data.Position = 0;
             byte[] b;
-            var br = new BinaryReader(data);
+            BinaryReader br = new BinaryReader(data);
             b = br.ReadBytes((int) data.Length);
             data.Position = 0;
 

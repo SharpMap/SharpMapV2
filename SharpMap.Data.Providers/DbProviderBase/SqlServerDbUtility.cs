@@ -49,7 +49,7 @@ namespace SharpMap.Data.Providers.Db
 
         public IDbDataAdapter CreateAdapter(IDbCommand cmd)
         {
-            return new SqlDataAdapter((SqlCommand)cmd);
+            return new SqlDataAdapter((SqlCommand) cmd);
         }
 
         public IDataParameter CreateParameter(string parameterName, Type netType,
@@ -61,8 +61,8 @@ namespace SharpMap.Data.Providers.Db
         public IDataParameter CreateParameter(string parameterName, SqlDbType dbType,
                                               ParameterDirection parameterDirection)
         {
-            var p = new SqlParameter(parameterName.StartsWith("@") ? parameterName : "@" + parameterName,
-                                     dbType, GetDbSize(dbType)) { Direction = parameterDirection };
+            SqlParameter p = new SqlParameter(parameterName.StartsWith("@") ? parameterName : "@" + parameterName,
+                                              dbType, GetDbSize(dbType)) {Direction = parameterDirection};
             return p;
         }
 
@@ -96,37 +96,79 @@ namespace SharpMap.Data.Providers.Db
             return GetDbSize(dbType);
         }
 
+        string IDbUtility<SqlDbType>.GetFullTypeString(SqlDbType dbType, int size)
+        {
+            return GetFullTypeString(dbType, size);
+        }
+
+        string IDbUtility<SqlDbType>.GetFullTypeString(Type netType, int size)
+        {
+            return GetFullTypeString(netType, size);
+        }
+
+        string IDbUtility<SqlDbType>.GetFullTypeString(SqlDbType dbType)
+        {
+            return GetFullTypeString(dbType);
+        }
+
+        string IDbUtility<SqlDbType>.GetFullTypeString(Type netType)
+        {
+            return GetFullTypeString(netType);
+        }
+
+        int IDbUtility<SqlDbType>.GetDbSize(Type dbType)
+        {
+            return GetDbSize(dbType);
+        }
+
+        public IDataParameter CreateParameter(string parameterName, object value, ParameterDirection paramDirection)
+        {
+            Type t = value.GetType();
+            //pesky unsigned integers!
+            if (t == typeof (UInt32))
+                value = Convert.ToInt32(value);
+
+            if (t == typeof (UInt64))
+                value = Convert.ToInt64(value);
+
+            if (t == typeof (Int16))
+                value = Convert.ToInt16(value);
+
+            return new SqlParameter(parameterName.StartsWith("@") ? parameterName : "@" + parameterName, value)
+                       {Direction = paramDirection};
+        }
+
         #endregion
 
         public static SqlDbType GetDbType<TValue>()
         {
-            return GetDbType(typeof(TValue));
+            return GetDbType(typeof (TValue));
         }
 
         public static SqlDbType GetDbType(Type netType)
         {
-            if (netType == typeof(Int16) || netType == typeof(UInt16))
+            if (netType == typeof (Int16) || netType == typeof (UInt16))
                 return SqlDbType.SmallInt;
-            if (netType == typeof(Int32) || netType == typeof(UInt32))
+            if (netType == typeof (Int32) || netType == typeof (UInt32))
                 return SqlDbType.Int;
-            if (netType == typeof(Int64) || netType == typeof(UInt64))
+            if (netType == typeof (Int64) || netType == typeof (UInt64))
                 return SqlDbType.BigInt;
-            if (netType == typeof(string))
+            if (netType == typeof (string))
                 return SqlDbType.NVarChar;
-            if (netType == typeof(Guid))
+            if (netType == typeof (Guid))
                 return SqlDbType.UniqueIdentifier;
-            if (netType == typeof(Single))
+            if (netType == typeof (Single))
                 return SqlDbType.Real;
-            if (netType == typeof(Double))
+            if (netType == typeof (Double))
                 return SqlDbType.Float;
-            if (netType == typeof(Decimal))
+            if (netType == typeof (Decimal))
                 return SqlDbType.Decimal;
-            if (netType == typeof(byte[]))
+            if (netType == typeof (byte[]))
                 return SqlDbType.VarBinary;
-            if (netType == typeof(Boolean))
+            if (netType == typeof (Boolean))
                 return SqlDbType.Bit;
-            if (netType == typeof(DateTime))
-                return SqlDbType.DateTime; 
+            if (netType == typeof (DateTime))
+                return SqlDbType.DateTime;
 
             throw new NotImplementedException();
         }
@@ -278,9 +320,6 @@ namespace SharpMap.Data.Providers.Db
             return GetTypeString(GetDbType(netType));
         }
 
-        #region IDbUtility<SqlDbType> Members
-
-
         public static string GetFullTypeString(SqlDbType dbType, int size)
         {
             switch (dbType)
@@ -289,7 +328,8 @@ namespace SharpMap.Data.Providers.Db
                     return "bigint";
                 case SqlDbType.Binary:
                     return string.Format("binary({0})", size);
-                case SqlDbType.Bit: return "bit";
+                case SqlDbType.Bit:
+                    return "bit";
                 case SqlDbType.Char:
                     return string.Format("char({0})", size);
                 case SqlDbType.Date:
@@ -366,74 +406,9 @@ namespace SharpMap.Data.Providers.Db
             return GetFullTypeString(GetDbType(netType));
         }
 
-        #endregion
-
-        #region IDbUtility<SqlDbType> Members
-
-
-        string IDbUtility<SqlDbType>.GetFullTypeString(SqlDbType dbType, int size)
-        {
-            return GetFullTypeString(dbType, size);
-        }
-
-        string IDbUtility<SqlDbType>.GetFullTypeString(Type netType, int size)
-        {
-            return GetFullTypeString(netType, size);
-        }
-
-        string IDbUtility<SqlDbType>.GetFullTypeString(SqlDbType dbType)
-        {
-            return GetFullTypeString(dbType);
-        }
-
-        string IDbUtility<SqlDbType>.GetFullTypeString(Type netType)
-        {
-            return GetFullTypeString(netType);
-        }
-
-        #endregion
-
-        #region IDbUtility<SqlDbType> Members
-
-
         public static int GetDbSize(Type dbType)
         {
             return GetDbSize(GetDbType(dbType));
         }
-
-        #endregion
-
-        #region IDbUtility<SqlDbType> Members
-
-
-        int IDbUtility<SqlDbType>.GetDbSize(Type dbType)
-        {
-            return GetDbSize(dbType);
-        }
-
-
-
-        #endregion
-
-        #region IDbUtility Members
-
-
-        public IDataParameter CreateParameter(string parameterName, object value, ParameterDirection paramDirection)
-        {
-            Type t = value.GetType();
-            //pesky unsigned integers!
-            if (t == typeof(UInt32))
-                value = Convert.ToInt32(value);
-
-            if (t == typeof(UInt64))
-                value = Convert.ToInt64(value);
-
-            if (t == typeof(Int16))
-                value = Convert.ToInt16(value);
-
-            return new SqlParameter(parameterName.StartsWith("@") ? parameterName : "@" + parameterName, value) { Direction = paramDirection };
-        }
-
-        #endregion
     }
 }

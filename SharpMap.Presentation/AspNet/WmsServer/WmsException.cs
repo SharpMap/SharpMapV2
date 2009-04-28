@@ -59,7 +59,7 @@ namespace SharpMap.Presentation.AspNet.WmsServer
 
         private string CreateXmlString()
         {
-            var sb = new StringBuilder();
+            StringBuilder sb = new StringBuilder();
 
             sb.Append("<?xml version=\"1.0\" encoding=\"utf-8\" ?>\n");
             sb.Append(

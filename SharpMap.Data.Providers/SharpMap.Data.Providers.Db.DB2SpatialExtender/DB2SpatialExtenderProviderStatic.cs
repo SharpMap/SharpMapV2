@@ -89,7 +89,7 @@ namespace SharpMap.Data.Providers
             Double smallRasterSize, Double mediumRasterSize, Double largeRasterSize
             )
         {
-            var conn = new DB2Connection(connectionString);
+            DB2Connection conn = new DB2Connection(connectionString);
             if (conn.State == ConnectionState.Closed) conn.Open();
 
             string srid = featureDataTable.GeometryFactory.Srid ?? DefaultSrid;
@@ -121,9 +121,10 @@ namespace SharpMap.Data.Providers
                         db2crsname = "DEFAULT_SRS";
 
                     //register spatial column
-                    var cmd = new DB2Command(String.Format("CALL \"{0}\".ST_REGISTER_SPATIAL_COLUMN(?,?,?,?,?,?);",
-                                                           DefaultSpatialSchema),
-                                             conn);
+                    DB2Command cmd =
+                        new DB2Command(String.Format("CALL \"{0}\".ST_REGISTER_SPATIAL_COLUMN(?,?,?,?,?,?);",
+                                                     DefaultSpatialSchema),
+                                       conn);
                     //cmd.CommandType = CommandType.StoredProcedure;
 
                     //input parameters
@@ -170,7 +171,7 @@ namespace SharpMap.Data.Providers
             conn.Close();
             conn = null;
 
-            var prov = new DB2SpatialExtenderProvider<TOid>(
+            DB2SpatialExtenderProvider<TOid> prov = new DB2SpatialExtenderProvider<TOid>(
                 featureDataTable.GeometryFactory, connectionString, DefaultSpatialSchema, tableName,
                 featureDataTable.Columns[0].ColumnName, geometryColumnName);
 
@@ -199,7 +200,7 @@ namespace SharpMap.Data.Providers
 
         private static String ColumnsClause(DataColumnCollection dcc, ConstraintCollection ccc)
         {
-            var columns = new String[dcc.Count];
+            string[] columns = new String[dcc.Count];
 
             Int32 index = 0;
             foreach (DataColumn dc in dcc)
@@ -221,10 +222,10 @@ namespace SharpMap.Data.Providers
             }
             index = 0;
 
-            var constraints = new String[ccc.Count];
+            string[] constraints = new String[ccc.Count];
             foreach (Constraint c in ccc)
             {
-                var uc = c as UniqueConstraint;
+                UniqueConstraint uc = c as UniqueConstraint;
                 if (uc != null)
                 {
                     if (uc.IsPrimaryKey)
@@ -331,7 +332,7 @@ namespace SharpMap.Data.Providers
             Boolean result = false;
             try
             {
-                using (var conn = new DB2Connection(connectionString))
+                using (DB2Connection conn = new DB2Connection(connectionString))
                 {
                     conn.Open();
 

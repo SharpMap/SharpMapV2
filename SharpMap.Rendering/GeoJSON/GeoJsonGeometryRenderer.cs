@@ -16,11 +16,9 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using GeoAPI.Geometries;
 using SharpMap.Data;
 using SharpMap.Layers;
 using SharpMap.Rendering.Rendering2D;
-using SharpMap.Rendering.Thematics;
 using SharpMap.Styles;
 
 namespace SharpMap.Rendering.GeoJson
@@ -34,7 +32,7 @@ namespace SharpMap.Rendering.GeoJson
         public GeoJsonGeometryRenderer(VectorRenderer2D<TRenderObject> vectorRenderer)
             : base(vectorRenderer)
         {
-            if (typeof(TRenderObject) != typeof(GeoJsonRenderObject))
+            if (typeof (TRenderObject) != typeof (GeoJsonRenderObject))
                 throw new ArgumentException("TRenderObject must be of type GeoJsonRenderObject");
         }
 
@@ -51,12 +49,12 @@ namespace SharpMap.Rendering.GeoJson
                 throw new InvalidOperationException("Feature must have a geometry to be rendered.");
             }
 
-         
 
-            var sb = new StringBuilder();
+            StringBuilder sb = new StringBuilder();
 
-            GeoJsonFeatureWriter.WriteFeature(sb, style,feature);
-            yield return (TRenderObject)(object)(new GeoJsonRenderObject(sb.ToString())); /* oh dear - i feel very dirty now */
+            GeoJsonFeatureWriter.WriteFeature(sb, style, feature);
+            yield return (TRenderObject) (object) (new GeoJsonRenderObject(sb.ToString()));
+                /* oh dear - i feel very dirty now */
         }
     }
 }

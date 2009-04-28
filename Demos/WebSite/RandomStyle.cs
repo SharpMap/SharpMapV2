@@ -51,7 +51,7 @@ namespace SharpMap.Presentation.AspNet.Demo
 
         private static List<Symbol2D> CreateSymbols()
         {
-            var symbols = new List<Symbol2D>();
+            List<Symbol2D> symbols = new List<Symbol2D>();
             for (int i = 0; i < 20; i++)
                 symbols.Add(CreateRandomSymbol());
             return symbols;
@@ -64,7 +64,7 @@ namespace SharpMap.Presentation.AspNet.Demo
         /// <returns></returns>
         public static GeoJsonGeometryStyle RandomGeometryStyle()
         {
-            var vs = new GeoJsonGeometryStyle();
+            GeoJsonGeometryStyle vs = new GeoJsonGeometryStyle();
 
             vs.EnableOutline = random.Next(0, 2) == 1;
 
@@ -86,13 +86,12 @@ namespace SharpMap.Presentation.AspNet.Demo
             vs.SelectSymbol = RandomSymbol();
 
 
-
             return vs;
         }
 
         private static Symbol2D RandomSymbol()
         {
-            return (Symbol2D)Symbols[random.Next(19)].Clone();
+            return (Symbol2D) Symbols[random.Next(19)].Clone();
         }
 
 
@@ -105,7 +104,7 @@ namespace SharpMap.Presentation.AspNet.Demo
         private static Stream RandomIcon(out Size2D sz)
         {
             sz = RandomSymbolSize();
-            var b = new Bitmap((int)sz.Width, (int)sz.Height);
+            Bitmap b = new Bitmap((int) sz.Width, (int) sz.Height);
 
             Graphics g = Graphics.FromImage(b);
             g.Clear(Color.Transparent);
@@ -117,9 +116,9 @@ namespace SharpMap.Presentation.AspNet.Demo
                 case 0:
                     {
                         StylePen p = RandomPen();
-                        g.DrawEllipse(ViewConverter.Convert(p), (int)Math.Ceiling(p.Width / 2),
-                                      (int)Math.Ceiling(p.Width / 2), b.Width - (int)p.Width,
-                                      b.Height - (int)p.Width);
+                        g.DrawEllipse(ViewConverter.Convert(p), (int) Math.Ceiling(p.Width/2),
+                                      (int) Math.Ceiling(p.Width/2), b.Width - (int) p.Width,
+                                      b.Height - (int) p.Width);
                         break;
                     }
                 case 1:
@@ -130,9 +129,9 @@ namespace SharpMap.Presentation.AspNet.Demo
                 case 2:
                     {
                         StylePen p = RandomPen();
-                        g.DrawRectangle(ViewConverter.Convert(p), (int)Math.Ceiling(p.Width / 2),
-                                        (int)Math.Ceiling(p.Width / 2), b.Width - (int)p.Width,
-                                        b.Height - (int)p.Width);
+                        g.DrawRectangle(ViewConverter.Convert(p), (int) Math.Ceiling(p.Width/2),
+                                        (int) Math.Ceiling(p.Width/2), b.Width - (int) p.Width,
+                                        b.Height - (int) p.Width);
                         break;
                     }
                 case 3:
@@ -142,23 +141,23 @@ namespace SharpMap.Presentation.AspNet.Demo
                     {
                         StylePen p = RandomPen();
                         g.FillEllipse(ViewConverter.Convert(RandomBrush()), 0, 0, b.Width, b.Height);
-                        g.DrawEllipse(ViewConverter.Convert(p), (int)Math.Ceiling(p.Width / 2),
-                                      (int)Math.Ceiling(p.Width / 2), b.Width - (int)p.Width,
-                                      b.Height - (int)p.Width);
+                        g.DrawEllipse(ViewConverter.Convert(p), (int) Math.Ceiling(p.Width/2),
+                                      (int) Math.Ceiling(p.Width/2), b.Width - (int) p.Width,
+                                      b.Height - (int) p.Width);
                         break;
                     }
                 case 5:
                     {
                         StylePen p = RandomPen();
                         g.FillRectangle(ViewConverter.Convert(RandomBrush()), 0, 0, b.Width, b.Height);
-                        g.DrawRectangle(ViewConverter.Convert(p), (int)Math.Ceiling(p.Width / 2),
-                                        (int)Math.Ceiling(p.Width / 2), b.Width - (int)p.Width,
-                                        b.Height - (int)p.Width);
+                        g.DrawRectangle(ViewConverter.Convert(p), (int) Math.Ceiling(p.Width/2),
+                                        (int) Math.Ceiling(p.Width/2), b.Width - (int) p.Width,
+                                        b.Height - (int) p.Width);
                         break;
                     }
             }
 
-            var ms = new MemoryStream();
+            MemoryStream ms = new MemoryStream();
             b.Save(ms, ImageFormat.Png);
             return ms;
         }
@@ -172,14 +171,14 @@ namespace SharpMap.Presentation.AspNet.Demo
 
         public static StylePen RandomPen()
         {
-            var p = new StylePen(RandomColor(), random.Next(1, 5))
-                        {
-                            Alignment = StylePenAlignment.Center,
-                            LineJoin = StyleLineJoin.MiterClipped,
-                            MiterLimit = 2,
-                            StartCap = StyleLineCap.NoAnchor,
-                            EndCap = StyleLineCap.NoAnchor
-                        };
+            StylePen p = new StylePen(RandomColor(), random.Next(1, 5))
+                             {
+                                 Alignment = StylePenAlignment.Center,
+                                 LineJoin = StyleLineJoin.MiterClipped,
+                                 MiterLimit = 2,
+                                 StartCap = StyleLineCap.NoAnchor,
+                                 EndCap = StyleLineCap.NoAnchor
+                             };
             return p;
         }
 

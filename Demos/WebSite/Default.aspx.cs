@@ -28,7 +28,7 @@ namespace SharpMap.Presentation.AspNet.Demo
 
         private void BindRepeater()
         {
-            var di = new DirectoryInfo(Server.MapPath("~/Maps"));
+            DirectoryInfo di = new DirectoryInfo(Server.MapPath("~/Maps"));
             FileInfo[] files = di.GetFiles();
 
             repDemos.DataSource = files;

@@ -43,7 +43,7 @@ namespace SharpMap.Expressions
     public abstract class ProviderPropertyExpression<TValue> : ProviderPropertyExpression
     {
         public ProviderPropertyExpression(PropertyNameExpression propertyNameExpression,
-                                           LiteralExpression<TValue> value)
+                                          LiteralExpression<TValue> value)
             : base(propertyNameExpression, value)
         {
         }
@@ -51,17 +51,18 @@ namespace SharpMap.Expressions
         public ProviderPropertyExpression(string propertyName,
                                           TValue value)
             : this(new PropertyNameExpression(propertyName), new LiteralExpression<TValue>(value))
-        { }
+        {
+        }
 
 
         public new LiteralExpression<TValue> PropertyValueExpression
         {
-            get { return (LiteralExpression<TValue>)base.PropertyValueExpression; }
+            get { return (LiteralExpression<TValue>) base.PropertyValueExpression; }
         }
 
         public override bool Equals(Expression other)
         {
-            var pp2 = other as ProviderPropertyExpression<TValue>;
+            ProviderPropertyExpression<TValue> pp2 = other as ProviderPropertyExpression<TValue>;
 
             return !Equals(null, pp2)
                    && Equals(pp2.PropertyNameExpression, PropertyNameExpression)

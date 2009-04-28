@@ -51,7 +51,7 @@ namespace MapViewer
 
         private static List<Symbol2D> CreateSymbols()
         {
-            var symbols = new List<Symbol2D>();
+            List<Symbol2D> symbols = new List<Symbol2D>();
             for (int i = 0; i < 20; i++)
                 symbols.Add(CreateRandomSymbol());
             return symbols;
@@ -64,7 +64,7 @@ namespace MapViewer
         /// <returns></returns>
         public static GeometryStyle RandomGeometryStyle()
         {
-            var vs = new GeometryStyle();
+            GeometryStyle vs = new GeometryStyle();
 
             vs.EnableOutline = random.Next(0, 2) == 1;
 
@@ -104,7 +104,7 @@ namespace MapViewer
         private static Stream RandomIcon(out Size2D sz)
         {
             sz = RandomSymbolSize();
-            var b = new Bitmap((int) sz.Width, (int) sz.Height);
+            Bitmap b = new Bitmap((int) sz.Width, (int) sz.Height);
 
             Graphics g = Graphics.FromImage(b);
             g.Clear(Color.Transparent);
@@ -157,7 +157,7 @@ namespace MapViewer
                     }
             }
 
-            var ms = new MemoryStream();
+            MemoryStream ms = new MemoryStream();
             b.Save(ms, ImageFormat.Png);
             return ms;
         }
@@ -171,14 +171,14 @@ namespace MapViewer
 
         public static StylePen RandomPen()
         {
-            var p = new StylePen(RandomColor(), random.Next(1, 5))
-                        {
-                            Alignment = StylePenAlignment.Center,
-                            LineJoin = StyleLineJoin.MiterClipped,
-                            MiterLimit = 2,
-                            StartCap = StyleLineCap.NoAnchor,
-                            EndCap = StyleLineCap.NoAnchor
-                        };
+            StylePen p = new StylePen(RandomColor(), random.Next(1, 5))
+                             {
+                                 Alignment = StylePenAlignment.Center,
+                                 LineJoin = StyleLineJoin.MiterClipped,
+                                 MiterLimit = 2,
+                                 StartCap = StyleLineCap.NoAnchor,
+                                 EndCap = StyleLineCap.NoAnchor
+                             };
             return p;
         }
 

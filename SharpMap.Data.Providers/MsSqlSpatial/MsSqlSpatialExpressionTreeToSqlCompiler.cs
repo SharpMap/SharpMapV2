@@ -32,14 +32,14 @@ namespace SharpMap.Data.Providers.MsSqlSpatial
 
         protected new MsSqlSpatialProvider Provider
         {
-            get { return (MsSqlSpatialProvider)base.Provider; }
+            get { return (MsSqlSpatialProvider) base.Provider; }
         }
 
         public bool WithNoLock
         {
             get
             {
-                var props = new List<ProviderPropertyExpression>();
+                List<ProviderPropertyExpression> props = new List<ProviderPropertyExpression>();
                 SpatialDbProviderBase<long>.MergeProviderProperties(ProviderProperties,
                                                                     Provider.DefaultProviderProperties.
                                                                         ProviderProperties.Collection);
@@ -53,7 +53,7 @@ namespace SharpMap.Data.Providers.MsSqlSpatial
         /// Much Much Much faster than the alternative...
         /// </remarks>
         protected override void WriteSpatialGeometryExpressionSqlInternal(StringBuilder builder, SpatialOperation op,
-                                                                  IGeometry geom)
+                                                                          IGeometry geom)
         {
             if (geom.IsRectangle)
             {
@@ -74,7 +74,7 @@ namespace SharpMap.Data.Providers.MsSqlSpatial
                                         CreateParameter(Provider.Table).ParameterName,
                                         CreateParameter(Provider.GeometryColumn).ParameterName,
                                         CreateParameter(geom).ParameterName,
-                                        CreateParameter(Enum.GetName(typeof(SpatialOperation), op)).ParameterName,
+                                        CreateParameter(Enum.GetName(typeof (SpatialOperation), op)).ParameterName,
                                         TableJoinStrings.Count,
                                         Provider.QualifyColumnName(Provider.OidColumn),
                                         Provider.OidColumn,
@@ -84,9 +84,9 @@ namespace SharpMap.Data.Providers.MsSqlSpatial
         }
 
         protected override void WriteSpatialExtentsExpressionSqlInternal(StringBuilder builder,
-                                                                 SpatialOperation spatialOperation, IExtents ext)
+                                                                         SpatialOperation spatialOperation, IExtents ext)
         {
-            var exts = (IExtents2D)ext;
+            IExtents2D exts = (IExtents2D) ext;
             switch (spatialOperation)
             {
                 case SpatialOperation.Intersects:

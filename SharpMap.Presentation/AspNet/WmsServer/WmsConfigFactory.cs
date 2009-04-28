@@ -32,7 +32,7 @@ namespace SharpMap.Presentation.AspNet.WmsServer
 
         public virtual WmsMapRequestConfig CreateConfig(HttpContext context)
         {
-            var config = new WmsMapRequestConfig();
+            WmsMapRequestConfig config = new WmsMapRequestConfig();
             config.ServiceDescription = Description;
 
             config.CacheKey = CreateCacheKey(context);
@@ -50,7 +50,7 @@ namespace SharpMap.Presentation.AspNet.WmsServer
                     WmsException.ThrowWmsException("Only version 1.3.0 supported");
             }
             else
-            //Version is mandatory if REQUEST!=GetCapabilities. Check if this is a capabilities request, since VERSION is null
+                //Version is mandatory if REQUEST!=GetCapabilities. Check if this is a capabilities request, since VERSION is null
             {
                 if (String.Compare(context.Request.Params["REQUEST"], "GetCapabilities", ignorecase) != 0)
                     WmsException.ThrowWmsException("VERSION parameter not supplied");

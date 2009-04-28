@@ -39,7 +39,7 @@ namespace SharpMap.Data.Providers
         public IDbConnection CreateConnection(string connectionString)
         {
             String cns = connectionString.ToLower();
-            var cn = new DB2Connection(connectionString);
+            DB2Connection cn = new DB2Connection(connectionString);
             cn.CacheData = true;
 #if DEBUG
             cn.DebugOn = true;

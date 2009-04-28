@@ -22,9 +22,9 @@ namespace SharpMap.Demo.FormatConverter
         private static void Main(string[] args)
         {
             SridMap.DefaultInstance =
-                new SridMap(new[] { new SridProj4Strategy(0, new GeometryServices().CoordinateSystemFactory) });
+                new SridMap(new[] {new SridProj4Strategy(0, new GeometryServices().CoordinateSystemFactory)});
 
-            var c = new Converter();
+            Converter c = new Converter();
             while (c.Run())
             {
                 //do nothing;

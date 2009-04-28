@@ -19,7 +19,6 @@ using GeoAPI.Geometries;
 using SharpMap.Data;
 using SharpMap.Layers;
 using SharpMap.Rendering.Rendering2D;
-using SharpMap.Rendering.Thematics;
 using SharpMap.Styles;
 
 namespace SharpMap.Rendering.GeoJson
@@ -48,12 +47,12 @@ namespace SharpMap.Rendering.GeoJson
                                                                             GeoJsonLabelStyle style,
                                                                             RenderState state, ILayer layer)
         {
-            var fdr = (FeatureDataRow)feature;
+            FeatureDataRow fdr = (FeatureDataRow) feature;
 
             string text = fdr.Evaluate(style.LabelExpression);
 
 
-            var sb = new StringBuilder();
+            StringBuilder sb = new StringBuilder();
             sb.Append("{");
             sb.Append(JsonUtility.FormatJsonAttribute("type", "Label"));
             sb.Append(",");

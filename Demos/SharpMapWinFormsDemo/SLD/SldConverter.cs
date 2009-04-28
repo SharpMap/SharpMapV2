@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Xml;
+using GeoAPI.DataStructures;
 using SharpMap.Rendering.Rendering2D;
 using SharpMap.Styles;
 #if DOTNET35
@@ -11,10 +12,9 @@ using Processor = System.Linq.Enumerable;
 using Enumerable = System.Linq.Enumerable;
 using Caster = System.Linq.Enumerable;
 #else
-using Processor = GeoAPI.DataStructures.Processor;
-using Enumerable = GeoAPI.DataStructures.Enumerable;
-using Caster = GeoAPI.DataStructures.Caster;
+
 #endif
+
 namespace MapViewer.SLD
 {
     public class SldConverter
@@ -40,7 +40,7 @@ namespace MapViewer.SLD
                 {
                     switch (polygonFillSymbol.GetAttribute("name"))
                     {
-                        //polygon
+                            //polygon
                         case "fill":
                             fill = polygonFillSymbol.InnerXml;
                             break;
@@ -80,7 +80,7 @@ namespace MapViewer.SLD
                 {
                     switch (polygonStrokeSymbol.GetAttribute("name"))
                     {
-                        // line 
+                            // line 
                         case "stroke":
                             stroke = polygonStrokeSymbol.InnerXml;
                             break;
@@ -189,15 +189,14 @@ namespace MapViewer.SLD
 
         public IDictionary<string, GeometryStyle> ParseFeatureStyle(XmlDocument doc)
         {
-            var styles = new Dictionary<string, GeometryStyle>();
+            Dictionary<string, GeometryStyle> styles = new Dictionary<string, GeometryStyle>();
 
             // Load SLD file
-            var nt = new NameTable();
-            var nsm = new XmlNamespaceManager(nt);
+            NameTable nt = new NameTable();
+            XmlNamespaceManager nsm = new XmlNamespaceManager(nt);
             nsm.AddNamespace("sld", "http://www.opengis.net/sld");
             nsm.AddNamespace("ogc", "http://www.opengis.net/ogc");
             nsm.AddNamespace("xlink", "http://www.w3.org/1999/xlink");
-
 
 
             XmlDocument sldConfig = new XmlDocument(nt);
@@ -209,19 +208,17 @@ namespace MapViewer.SLD
 
             foreach (XmlElement featTypeStyle in featureTypeStyleEls)
             {
-
-                XmlElement el = (XmlElement)featTypeStyle.SelectSingleNode("sld:FeatureTypeName", nsm);
+                XmlElement el = (XmlElement) featTypeStyle.SelectSingleNode("sld:FeatureTypeName", nsm);
                 string mainName = el != null ? el.InnerText : "";
                 XmlNodeList rules = featTypeStyle.SelectNodes("sld:Rule", nsm);
 
                 foreach (XmlElement rule in rules)
                 {
-                    el = (XmlElement)rule.SelectSingleNode("sld:Name", nsm);
+                    el = (XmlElement) rule.SelectSingleNode("sld:Name", nsm);
                     string name = el != null ? el.InnerText : "";
-                    var style = new GeometryStyle();
+                    GeometryStyle style = new GeometryStyle();
                     SetSymbologyForRule(style, rule, nsm);
                     styles.Add(mainName + ":" + name, style);
-
                 }
             }
 
@@ -271,7 +268,7 @@ namespace MapViewer.SLD
 
                 if (!String.IsNullOrEmpty(strokeOpacity))
                 {
-                    opacity = Convert.ToInt32(Math.Round(Convert.ToDouble(strokeOpacity) / 0.0039215, 0));
+                    opacity = Convert.ToInt32(Math.Round(Convert.ToDouble(strokeOpacity)/0.0039215, 0));
                     if (opacity > 255)
                         opacity = 255;
                 }
@@ -284,7 +281,7 @@ namespace MapViewer.SLD
                 StyleBrush brush =
                     new SolidStyleBrush(new StyleColor(Convert.ToInt32(color.B), Convert.ToInt32(color.G),
                                                        Convert.ToInt32(color.R), opacity));
-                var pen = new StylePen(brush, width);
+                StylePen pen = new StylePen(brush, width);
 
                 if (!String.IsNullOrEmpty(strokeLinejoin))
                 {
@@ -300,9 +297,9 @@ namespace MapViewer.SLD
                             pen.LineJoin = StyleLineJoin.Bevel;
                             break;
 
-                        //case "miterclipped": // Not in SLD
-                        //    pen.LineJoin = StyleLineJoin.MiterClipped;
-                        //    break;
+                            //case "miterclipped": // Not in SLD
+                            //    pen.LineJoin = StyleLineJoin.MiterClipped;
+                            //    break;
                     }
                 }
 
@@ -323,7 +320,7 @@ namespace MapViewer.SLD
                             pen.EndCap = StyleLineCap.Square;
                             break;
 
-                        // N.B. Loads of others not used in SLD
+                            // N.B. Loads of others not used in SLD
                     }
                 }
 
@@ -355,7 +352,7 @@ namespace MapViewer.SLD
 
                 if (!String.IsNullOrEmpty(fillOpacity))
                 {
-                    opacity = Convert.ToInt32(Math.Round(Convert.ToDouble(fillOpacity) / 0.0039215, 0));
+                    opacity = Convert.ToInt32(Math.Round(Convert.ToDouble(fillOpacity)/0.0039215, 0));
                     if (opacity > 255)
                         opacity = 255;
                 }
@@ -370,13 +367,13 @@ namespace MapViewer.SLD
 
             if (!String.IsNullOrEmpty(pointSymbolPath))
             {
-                var source = new Uri(pointSymbolPath);
+                Uri source = new Uri(pointSymbolPath);
 
                 if (source.IsFile && File.Exists(source.AbsolutePath))
                 {
-                    var b = new Bitmap(source.AbsolutePath);
+                    Bitmap b = new Bitmap(source.AbsolutePath);
 
-                    var ms = new MemoryStream();
+                    MemoryStream ms = new MemoryStream();
                     b.Save(ms, ImageFormat.Png);
                     ms.Seek(0, SeekOrigin.Begin);
 

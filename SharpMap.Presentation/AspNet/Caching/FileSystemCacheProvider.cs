@@ -41,7 +41,7 @@ namespace SharpMap.Presentation.AspNet.Caching
                 {
                     EnsurePath(Path.GetDirectoryName(path));
 
-                    var buf = new byte[data.Length];
+                    byte[] buf = new byte[data.Length];
                     data.Read(buf, 0, buf.Length);
                     File.WriteAllBytes(path, buf);
                 }
@@ -89,13 +89,13 @@ namespace SharpMap.Presentation.AspNet.Caching
 
         private void EnsurePath(string dirpath)
         {
-            var di = new DirectoryInfo(dirpath);
+            DirectoryInfo di = new DirectoryInfo(dirpath);
             if (di.Exists)
                 return;
 
             lock (dirpath)
             {
-                var stk = new Stack<DirectoryInfo>();
+                Stack<DirectoryInfo> stk = new Stack<DirectoryInfo>();
 
 
                 for (DirectoryInfo d = di; d != null && !d.Exists; d = d.Parent)

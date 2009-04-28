@@ -22,7 +22,6 @@ using SharpMap.Data.Providers;
 using SharpMap.Layers;
 using SharpMap.Presentation.AspNet.MVP;
 using SharpMap.Utilities;
-using GeoAPI.Diagnostics;
 
 namespace SharpMap.Presentation.AspNet.Handlers
 {
@@ -68,12 +67,11 @@ namespace SharpMap.Presentation.AspNet.Handlers
                         SetCacheability(context.Response);
                         s.Position = 0;
 
-                        using (var br = new BinaryReader(s))
+                        using (BinaryReader br = new BinaryReader(s))
                         {
-                            using (var outStream = new BinaryWriter(context.Response.OutputStream))
+                            using (BinaryWriter outStream = new BinaryWriter(context.Response.OutputStream))
                             {
-
-                                outStream.Write(br.ReadBytes((Int32)s.Length), 0, (Int32)s.Length);
+                                outStream.Write(br.ReadBytes((Int32) s.Length), 0, (Int32) s.Length);
                                 outStream.Flush();
                             }
 
@@ -81,7 +79,6 @@ namespace SharpMap.Presentation.AspNet.Handlers
                         }
                     }
                 }
-
             }
             catch (ClientDisconnectedException)
             {
@@ -91,8 +88,8 @@ namespace SharpMap.Presentation.AspNet.Handlers
             {
                 Debug.WriteLine(String.Format("{0}\n{1}",
                                               ex.InnerException == null
-                                                    ? ex.Message
-                                                    : ex.InnerException.Message,
+                                                  ? ex.Message
+                                                  : ex.InnerException.Message,
                                               ex.StackTrace));
 
                 if (context.Response.IsClientConnected)
@@ -102,7 +99,7 @@ namespace SharpMap.Presentation.AspNet.Handlers
                     context.Response.Status = "500 Internal Server Error";
                     context.Response.StatusDescription = "An error occured.";
                     context.Response.ContentType = "text/xml";
-                    using (var sw = new StreamWriter(context.Response.OutputStream))
+                    using (StreamWriter sw = new StreamWriter(context.Response.OutputStream))
                     {
                         sw.Write(ex.XmlExceptionString);
                         sw.Flush();
@@ -432,7 +429,7 @@ namespace SharpMap.Presentation.AspNet.Handlers
             {
                 if ((l.DataSource is AppStateMonitoringFeatureProvider))
                 {
-                    ((AppStateMonitoringFeatureProvider)l.DataSource).Monitor = monitor;
+                    ((AppStateMonitoringFeatureProvider) l.DataSource).Monitor = monitor;
                 }
                 else if (l.DataSource is AsyncFeatureProviderAdapter)
                 {

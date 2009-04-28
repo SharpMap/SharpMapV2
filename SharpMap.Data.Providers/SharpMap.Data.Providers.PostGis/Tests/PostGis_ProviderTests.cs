@@ -1,12 +1,11 @@
-﻿
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Data;
-using DBFile = System.IO.File;
-using System.Text;
-
+using System.Data.SqlClient;
+using System.Diagnostics;
+using GeoAPI.Geometries;
+using GeoAPI.IO.WellKnownText;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-
+using Npgsql;
 using SharpMap.Data;
 using SharpMap.Data.Providers;
 using SharpMap.Data.Providers.Db.Expressions;
@@ -15,35 +14,20 @@ using SharpMap.Expressions;
 using SharpMap.Layers;
 using SharpMap.Utilities;
 using SharpMap.Utilities.SridUtility;
+using DBFile = System.IO.File;
 
-using NetTopologySuite.Coordinates;
-using GisSharpBlog.NetTopologySuite.Geometries;
-using ProjNet.CoordinateSystems;
-using GeoAPI.Geometries;
-using GeoAPI.Coordinates;
-using GeoAPI.CoordinateSystems;
-
-using Npgsql;
-using NpgsqlTypes;
 /*
  *
  * These tests will not work with the current version of SharpMap 2.0
  * Felix Obermaier
  *
  */
- 
+
 namespace SharpMap.Tests.Data.Providers.PostGis
 {
     [TestClass]
     public class PostGis_ProviderTests
     {
-        /// <summary>
-        ///Gets or sets the test context which provides
-        ///information about and functionality for the current test run.
-        ///</summary>
-        public TestContext TestContext { get; set; }
-
-        private static IGeometryFactory _geometryFactory;
         private const String connectionString =
             "Server=127.0.0.1;Port=5432;" +
             "Userid=obe;Password=obe;database=obe;" +
@@ -52,10 +36,17 @@ namespace SharpMap.Tests.Data.Providers.PostGis
             "Encoding=UNICODE;Timeout=15;SslMode=Disable;" +
             "Enlist=true;";
 
+        private static IGeometryFactory _geometryFactory;
+
+        /// <summary>
+        ///Gets or sets the test context which provides
+        ///information about and functionality for the current test run.
+        ///</summary>
+        public TestContext TestContext { get; set; }
+
         [ClassInitialize]
         public static void PostGis_ProviderTestsInitialize(TestContext testContext)
         {
-            
             try
             {
                 //Delete working table
@@ -67,8 +58,10 @@ namespace SharpMap.Tests.Data.Providers.PostGis
                 }
             }
             catch
-            { }
-            SridMap.DefaultInstance = new SridMap(new[] { new SridProj4Strategy(0, new GeometryServices().CoordinateSystemFactory) });
+            {
+            }
+            SridMap.DefaultInstance =
+                new SridMap(new[] {new SridProj4Strategy(0, new GeometryServices().CoordinateSystemFactory)});
             _geometryFactory = new GeometryServices().DefaultGeometryFactory;
         }
 
@@ -77,7 +70,7 @@ namespace SharpMap.Tests.Data.Providers.PostGis
         {
             _geometryFactory = null;
         }
-        
+
         [TestMethod]
         public void RunTests()
         {
@@ -94,25 +87,26 @@ namespace SharpMap.Tests.Data.Providers.PostGis
         [TestMethod]
         public void T11_JD_Test()
         {
-            var search = new PostGisProvider<Int32>(_geometryFactory,
-                                                  connectionString, "public",
-                                                  "vw_osm_germany_line", "osm_id", "way");
+            PostGisProvider<int> search = new PostGisProvider<Int32>(_geometryFactory,
+                                                                     connectionString, "public",
+                                                                     "vw_osm_germany_line", "osm_id", "way");
 
-            var binaryExpression =
+            BinaryExpression binaryExpression =
                 new BinaryExpression(new PropertyNameExpression("z_order"),
                                      BinaryOperator.Equals, new LiteralExpression<int>(0));
 
-            var providerProps =
+            ProviderPropertiesExpression providerProps =
                 new ProviderPropertiesExpression(
-                    new ProviderPropertyExpression[] { });
+                    new ProviderPropertyExpression[] {});
 
 
-            var prov = new ProviderQueryExpression(null as ProviderPropertiesExpression, new AllAttributesExpression(), binaryExpression);
+            ProviderQueryExpression prov = new ProviderQueryExpression(null as ProviderPropertiesExpression,
+                                                                       new AllAttributesExpression(), binaryExpression);
 
             object obj = search.ExecuteQuery(prov);
 
             Assert.IsNotNull(obj);
-            var sfdr = obj as PostGisFeatureDataReader;
+            PostGisFeatureDataReader sfdr = obj as PostGisFeatureDataReader;
             Assert.IsNotNull(sfdr);
             Int64 numRows = 0;
             while (sfdr.Read())
@@ -124,12 +118,12 @@ namespace SharpMap.Tests.Data.Providers.PostGis
                     new ProviderPropertyExpression[]
                         {
                             new OrderByCollectionExpression(
-                                new OrderByExpression("z_order", System.Data.SqlClient.SortOrder.Descending)),
+                                new OrderByExpression("z_order", SortOrder.Descending)),
                             new DataPageSizeExpression(10),
-                            new DataPageNumberExpression(5) 
-
+                            new DataPageNumberExpression(5)
                         });
-            var ape = new AttributesProjectionExpression(new String[] { "osm_id", "name", "z_order", "way" });
+            AttributesProjectionExpression ape =
+                new AttributesProjectionExpression(new[] {"osm_id", "name", "z_order", "way"});
 
             prov = new ProviderQueryExpression(providerProps, ape, null);
 
@@ -138,7 +132,7 @@ namespace SharpMap.Tests.Data.Providers.PostGis
             numRows = 0;
             while (sfdr.Read()) numRows++;
             Assert.AreEqual(10, numRows);
-            System.Diagnostics.Debug.WriteLine("\r\n*** T11 passed!");
+            Debug.WriteLine("\r\n*** T11 passed!");
         }
 
         [TestMethod]
@@ -158,7 +152,6 @@ namespace SharpMap.Tests.Data.Providers.PostGis
             Assert.AreEqual(PostGisProviderStatic.DefaultSrid, prov.Srid);
             Assert.AreEqual(fdt.PrimaryKey[0].ColumnName.ToLower(), prov.OidColumn);
             Assert.AreEqual(PostGisProviderStatic.DefaultGeometryColumnName, prov.GeometryColumn);
-
         }
 
         [TestMethod]
@@ -167,7 +160,7 @@ namespace SharpMap.Tests.Data.Providers.PostGis
             PostGisProvider<Int64> prov = new PostGisProvider<Int64>(
                 _geometryFactory, connectionString, "TestFeatureDataTable");
 
-            SharpMap.Layers.GeometryLayer gl = new SharpMap.Layers.GeometryLayer("test", prov);
+            GeometryLayer gl = new GeometryLayer("test", prov);
             Assert.IsNotNull(gl);
             Assert.AreEqual("test", gl.LayerName);
             Assert.AreEqual(prov.Srid, gl.Srid);
@@ -191,7 +184,7 @@ namespace SharpMap.Tests.Data.Providers.PostGis
                     new ExtentsExpression(prov.GeometryFactory.CreateExtents2D(-1, -1, 1, 1)),
                     SpatialOperation.Contains,
                     new ThisExpression())
-                    );
+                );
             Assert.AreEqual(1, gl.Features.Rows.Count);
 
             gl = new GeometryLayer(prov);
@@ -200,7 +193,7 @@ namespace SharpMap.Tests.Data.Providers.PostGis
                     new GeometryExpression(prov.GeometryFactory.WktReader.Read(("POLYGON((-1 -1, 0 1, 1 -1, -1 -1))"))),
                     SpatialOperation.Contains,
                     new ThisExpression())
-                    );
+                );
             //SELECT testfeaturedatatable.poid,testfeaturedatatable.label,ST_AsBinary(xgeometryx)::bytea AS xgeometryx FROM public.testfeaturedatatable   WHERE  ( ST_Contains( ST_GeomFromWKB(:iparam0, -1), xgeometryx ))
             //SELECT testfeaturedatatable.poid,testfeaturedatatable.label,ST_AsBinary(xgeometryx)::bytea AS xgeometryx FROM public.testfeaturedatatable   WHERE  ( ST_Contains( ST_GeomFromText('POLYGON((-1 -1, 0 1, 1 -1, -1 -1))', -1), xgeometryx ))
             Assert.AreEqual(1, gl.Features.Rows.Count);
@@ -208,10 +201,11 @@ namespace SharpMap.Tests.Data.Providers.PostGis
             gl = new GeometryLayer(prov);
             gl.Select(
                 new SpatialBinaryExpression(
-                    new GeometryExpression(prov.GeometryFactory.WktReader.Read(("POLYGON((-1 -1, -1 1, 0 1, 0 -1, -1 -1))"))),
+                    new GeometryExpression(
+                        prov.GeometryFactory.WktReader.Read(("POLYGON((-1 -1, -1 1, 0 1, 0 -1, -1 -1))"))),
                     SpatialOperation.Touches,
                     new ThisExpression())
-                    );
+                );
             Assert.AreEqual(1, gl.Features.Rows.Count);
 
             //gl = new GeometryLayer(prov);
@@ -222,7 +216,6 @@ namespace SharpMap.Tests.Data.Providers.PostGis
             //        new GeometryExpression(prov.GeometryFactory.WktReader.Read("POLYGON((-1 -1, 0 1, 1 -1, -1 -1))")))
             //        );
             //Assert.AreEqual(0, gl.Features.Rows.Count);
-
         }
 
         [TestMethod]
@@ -245,7 +238,7 @@ namespace SharpMap.Tests.Data.Providers.PostGis
 
             GeometryLayer gl = new GeometryLayer(prov);
             gl.Select(new SpatialBinaryExpression(
-                new ExtentsExpression(prov.GetExtents()), SpatialOperation.Contains, new ThisExpression()));
+                          new ExtentsExpression(prov.GetExtents()), SpatialOperation.Contains, new ThisExpression()));
             gl.Features.AcceptChanges();
 
             //gl.Features.RemoveRow(gl.Features[4]);
@@ -256,14 +249,12 @@ namespace SharpMap.Tests.Data.Providers.PostGis
 
             gl = new GeometryLayer(prov);
             gl.Select(new SpatialBinaryExpression(
-                new ExtentsExpression(prov.GetExtents()), SpatialOperation.Contains, new ThisExpression()));
+                          new ExtentsExpression(prov.GetExtents()), SpatialOperation.Contains, new ThisExpression()));
             gl.Features.AcceptChanges();
             //Assert.AreEqual(4, gl.Features.Rows.Count);
-
         }
 
         [TestMethod]
-
         public void T04_InsertInDataSource()
         {
             PostGisProvider<Int64> prov = new PostGisProvider<Int64>(
@@ -291,7 +282,6 @@ namespace SharpMap.Tests.Data.Providers.PostGis
 
             fdr = gl.Features.Find(999);
             Assert.IsNotNull(fdr);
-
         }
 
         private static FeatureDataTable createFeatureDataTable()
@@ -301,10 +291,10 @@ namespace SharpMap.Tests.Data.Providers.PostGis
             dc.AutoIncrementSeed = 1001;
             dc.AutoIncrementStep = 1;
             dc.AutoIncrement = true;
-            fdt.Columns.Add("LABEL", typeof(String));
+            fdt.Columns.Add("LABEL", typeof (String));
 
             FeatureDataRow fdr = null;
-            GeoAPI.IO.WellKnownText.IWktGeometryReader wktReader = fdt.GeometryFactory.WktReader;
+            IWktGeometryReader wktReader = fdt.GeometryFactory.WktReader;
 
             fdr = fdt.NewRow();
             fdr.Geometry = wktReader.Read("POINT (0 0)");
@@ -331,18 +321,18 @@ namespace SharpMap.Tests.Data.Providers.PostGis
 
         private static void alterFeatureDataTable(FeatureDataTable featureTable)
         {
-            GeoAPI.IO.WellKnownText.IWktGeometryReader wktReader = featureTable.GeometryFactory.WktReader;
+            IWktGeometryReader wktReader = featureTable.GeometryFactory.WktReader;
 
-            FeatureDataRow fdr = (FeatureDataRow)featureTable.Rows[1];
+            FeatureDataRow fdr = (FeatureDataRow) featureTable.Rows[1];
             fdr.Geometry = wktReader.Read("LINESTRING(0 0, 10 20, 15 7, 7 -3)");
             fdr[1] = fdrLabel(fdr);
-            ((FeatureDataRow)featureTable.Rows[1])[1] = "modified";
+            (featureTable.Rows[1])[1] = "modified";
         }
 
         private static String fdrLabel(FeatureDataRow fdr)
         {
             return String.Format("Feature {0} with GeometryType {1}: {2}",
-              fdr.GetOid(), fdr.Geometry.GeometryTypeName, fdr.Geometry.ToString());
+                                 fdr.GetOid(), fdr.Geometry.GeometryTypeName, fdr.Geometry);
         }
 
         [TestMethod]
@@ -361,7 +351,7 @@ namespace SharpMap.Tests.Data.Providers.PostGis
                 NpgsqlParameter par = new NpgsqlParameter(":p0", DbType.Binary);
                 par.Value = prov.GeometryFactory.WktReader.Read("POLYGON((-1 -1, 0 1, 1 -1, -1 -1))").AsBinary();
                 cm.Parameters.Add(par);
-                System.Diagnostics.Debug.Write(cm.ExecuteScalar());
+                Debug.Write(cm.ExecuteScalar());
             }
         }
     }

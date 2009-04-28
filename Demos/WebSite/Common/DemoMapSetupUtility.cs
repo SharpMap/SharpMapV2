@@ -16,11 +16,9 @@ using System.Configuration;
 using System.Web;
 using SharpMap.Data.Providers;
 using SharpMap.Data.Providers.Db.Expressions;
-using SharpMap.Data.Providers.MsSqlServer2008.Expressions;
 using SharpMap.Data.Providers.ShapeFile;
 using SharpMap.Expressions;
 using SharpMap.Layers;
-using SharpMap.Rendering.Rendering2D;
 using SharpMap.Styles;
 using SharpMap.Utilities;
 using SharpMap.Utilities.SridUtility;
@@ -41,9 +39,10 @@ namespace SharpMap.Presentation.AspNet.Demo.Common
         private static void setupShapefile(HttpContext context, Map m)
         {
             GeometryServices geometryServices = new GeometryServices();
-            ShapeFileProvider shapeFile = new ShapeFileProvider(context.Server.MapPath("~/App_Data/Shapefiles/BCRoads.shp"),
-                                                                geometryServices.DefaultGeometryFactory,
-                                                                geometryServices.CoordinateSystemFactory, false);
+            ShapeFileProvider shapeFile =
+                new ShapeFileProvider(context.Server.MapPath("~/App_Data/Shapefiles/BCRoads.shp"),
+                                      geometryServices.DefaultGeometryFactory,
+                                      geometryServices.CoordinateSystemFactory, false);
             shapeFile.IsSpatiallyIndexed = false;
 
             AppStateMonitoringFeatureProvider provider = new AppStateMonitoringFeatureProvider(shapeFile);
@@ -63,12 +62,12 @@ namespace SharpMap.Presentation.AspNet.Demo.Common
 
         private static void setupMsSqlSpatial(Map m)
         {
-            var layernames = new[]
-                                 {
-                                     "Countries",
-                                     "Rivers",
-                                     "Cities"
-                                 };
+            string[] layernames = new[]
+                                      {
+                                          "Countries",
+                                          "Rivers",
+                                          "Cities"
+                                      };
 
             string sridstr = SridMap.DefaultInstance.Process(4326, "");
 
@@ -77,7 +76,7 @@ namespace SharpMap.Presentation.AspNet.Demo.Common
                 string tbl = lyrname;
 
 
-                var provider = new AppStateMonitoringFeatureProvider(
+                AppStateMonitoringFeatureProvider provider = new AppStateMonitoringFeatureProvider(
                     new MsSqlSpatialProvider(
                         new GeometryServices()[sridstr],
                         ConfigurationManager.ConnectionStrings["db"].ConnectionString,
@@ -95,15 +94,15 @@ namespace SharpMap.Presentation.AspNet.Demo.Common
                                     })
                         });
 
-                
-                var style = new GeoJsonGeometryStyle();
+
+                GeoJsonGeometryStyle style = new GeoJsonGeometryStyle();
 
                 switch (tbl)
                 {
                     case "Rivers":
                         {
                             StyleBrush brush = new SolidStyleBrush(new StyleColor(255, 255, 0, 255));
-                            var pen = new StylePen(brush, 1);
+                            StylePen pen = new StylePen(brush, 1);
                             style.Enabled = true;
                             style.EnableOutline = true;
                             style.Line = pen;
@@ -114,7 +113,7 @@ namespace SharpMap.Presentation.AspNet.Demo.Common
                     case "Countries":
                         {
                             StyleBrush brush = new SolidStyleBrush(new StyleColor(0, 0, 0, 255));
-                            var pen = new StylePen(brush, 2);
+                            StylePen pen = new StylePen(brush, 2);
                             StyleBrush trans = new SolidStyleBrush(new StyleColor(255, 255, 255, 0));
                             style.Enabled = true;
                             style.EnableOutline = true;
@@ -138,7 +137,7 @@ namespace SharpMap.Presentation.AspNet.Demo.Common
                 style.IncludeBBox = true;
                 style.PreProcessGeometries = false;
                 style.CoordinateNumberFormatString = "{0:F}";
-                var layer = new GeometryLayer(tbl, style, provider);
+                GeometryLayer layer = new GeometryLayer(tbl, style, provider);
                 layer.Features.IsSpatiallyIndexed = false;
                 layer.AddProperty(AppStateMonitoringFeatureLayerProperties.AppStateMonitor, provider.Monitor);
                 m.AddLayer(layer);

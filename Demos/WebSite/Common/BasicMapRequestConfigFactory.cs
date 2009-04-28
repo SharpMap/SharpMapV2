@@ -26,7 +26,7 @@ namespace SharpMap.Presentation.AspNet.Demo.Common
 
         public BasicMapRequestConfig CreateConfig(HttpContext context)
         {
-            var config = new BasicMapRequestConfig();
+            BasicMapRequestConfig config = new BasicMapRequestConfig();
 
             string soutputsize = context.Request.QueryString["outputsize"];
 

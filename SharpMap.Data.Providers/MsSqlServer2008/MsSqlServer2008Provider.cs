@@ -21,6 +21,7 @@ using System.Globalization;
 using System.Text;
 using GeoAPI.Coordinates;
 using GeoAPI.CoordinateSystems;
+using GeoAPI.DataStructures;
 using GeoAPI.Geometries;
 using SharpMap.Data.Providers.Db;
 using SharpMap.Data.Providers.Db.Expressions;
@@ -28,15 +29,12 @@ using SharpMap.Data.Providers.MsSqlServer2008;
 using SharpMap.Data.Providers.MsSqlServer2008.Expressions;
 using SharpMap.Expressions;
 using SharpMap.Utilities.SridUtility;
-
 #if DOTNET35
 using Processor = System.Linq.Enumerable;
 using Enumerable = System.Linq.Enumerable;
 using Caster = System.Linq.Enumerable;
 #else
-using Processor = GeoAPI.DataStructures.Processor ;
-using Enumerable = GeoAPI.DataStructures.Enumerable;
-using Caster = GeoAPI.DataStructures.Caster;
+
 #endif
 
 namespace SharpMap.Data.Providers
@@ -220,7 +218,7 @@ namespace SharpMap.Data.Providers
                                                                         CollectionExpression<OrderByExpression>>(
                                                                         properties,
                                                                         new CollectionExpression<OrderByExpression>(
-                                                                            new OrderByExpression[] { })),
+                                                                            new OrderByExpression[] {})),
                                                                     delegate(OrderByExpression o)
                                                                         {
                                                                             return "[" +
@@ -263,7 +261,7 @@ namespace SharpMap.Data.Providers
                                                                         CollectionExpression<OrderByExpression>>(
                                                                         properties,
                                                                         new CollectionExpression<OrderByExpression>(
-                                                                            new OrderByExpression[] { })),
+                                                                            new OrderByExpression[] {})),
                                                                     delegate(OrderByExpression o)
                                                                         {
                                                                             return "[" +
@@ -277,8 +275,8 @@ namespace SharpMap.Data.Providers
 
             orderByCols = string.IsNullOrEmpty(orderByCols) ? OidColumn : orderByCols;
 
-            int startRecord = (pageNumber * pageSize) + 1;
-            int endRecord = (pageNumber + 1) * pageSize;
+            int startRecord = (pageNumber*pageSize) + 1;
+            int endRecord = (pageNumber + 1)*pageSize;
 
             string mainQueryColumns = string.Join(",", Enumerable.ToArray(
                                                            FormatColumnNames(true, true,
@@ -324,7 +322,7 @@ WHERE rownumber BETWEEN {9} AND {10} ",
             bool withNoLock = GetProviderPropertyValue<WithNoLockExpression, bool>(properties, false);
 
             IEnumerable<string> indexNames = GetProviderPropertyValue<IndexNamesExpression, IEnumerable<string>>(
-                properties, new string[] { });
+                properties, new string[] {});
 
 
             bool forceIndex = Enumerable.Count(indexNames) > 0 &&
@@ -376,21 +374,21 @@ WHERE rownumber BETWEEN {9} AND {10} ",
         {
             Func<SqlServer2008SpatialIndexGridDensity, string> dlgtName =
                 delegate(SqlServer2008SpatialIndexGridDensity o)
-                {
-                    switch (o)
                     {
-                        case SqlServer2008SpatialIndexGridDensity.Low:
-                            return "LOW";
-                        case SqlServer2008SpatialIndexGridDensity.Medium:
-                            return "MEDIUM";
-                        default:
-                            return "HIGH";
-                    }
-                };
+                        switch (o)
+                        {
+                            case SqlServer2008SpatialIndexGridDensity.Low:
+                                return "LOW";
+                            case SqlServer2008SpatialIndexGridDensity.Medium:
+                                return "MEDIUM";
+                            default:
+                                return "HIGH";
+                        }
+                    };
 
-            var ext = GetExtents() as IExtents2D;
+            IExtents2D ext = GetExtents() as IExtents2D;
 
-            var sb = new StringBuilder();
+            StringBuilder sb = new StringBuilder();
 
             string ndxName = string.Format("[sidx_{0}_{1}]", Table, GeometryColumn);
 
@@ -450,7 +448,7 @@ END
 
         protected internal void CreateIndex(IDbConnection conn, string indexName, IEnumerable<string> columnNames)
         {
-            var sb = new StringBuilder();
+            StringBuilder sb = new StringBuilder();
             sb.AppendFormat(
                 @"IF EXISTS (SELECT * FROM sys.indexes WHERE name = '{0}' and object_id = object_id('{1}'))
 BEGIN
@@ -491,7 +489,7 @@ END
                    maxX = string.Format("{0}_Envelope_MaxX", GeometryColumn),
                    maxY = string.Format("{0}_Envelope_MaxY", GeometryColumn);
 
-            var sb = new StringBuilder();
+            StringBuilder sb = new StringBuilder();
 
             Action<string> dlgtDrop = delegate(string colName)
                                           {
@@ -540,10 +538,10 @@ END
                 cmd.ExecuteNonQuery();
             }
 
-            CreateIndex(conn, string.Format("ndx_{0}_{1}", Table, minX), new[] { minX });
-            CreateIndex(conn, string.Format("ndx_{0}_{1}", Table, minY), new[] { minY });
-            CreateIndex(conn, string.Format("ndx_{0}_{1}", Table, maxX), new[] { maxX });
-            CreateIndex(conn, string.Format("ndx_{0}_{1}", Table, maxY), new[] { maxY });
+            CreateIndex(conn, string.Format("ndx_{0}_{1}", Table, minX), new[] {minX});
+            CreateIndex(conn, string.Format("ndx_{0}_{1}", Table, minY), new[] {minY});
+            CreateIndex(conn, string.Format("ndx_{0}_{1}", Table, maxX), new[] {maxX});
+            CreateIndex(conn, string.Format("ndx_{0}_{1}", Table, maxY), new[] {maxY});
         }
 
 
@@ -564,7 +562,8 @@ END
             {
                 if (!DatabaseHasGeometryColumnsTable(conn, TableSchema))
                     CreateGeometryColumnsTable(conn, TableSchema);
-                RegisterInGeometryColumnsTable(conn, DbUtility, TableSchema, Table, GeometryColumn, 2, SridInt.HasValue ? SridInt.Value : 0, "GEOMETRY");
+                RegisterInGeometryColumnsTable(conn, DbUtility, TableSchema, Table, GeometryColumn, 2,
+                                               SridInt.HasValue ? SridInt.Value : 0, "GEOMETRY");
             }
         }
 
@@ -584,13 +583,16 @@ END
             }
         }
 
-        public static void RegisterInGeometryColumnsTable(IDbConnection conn, IDbUtility dbUtility, string schema, string tableName, string geometryColumn, int coordDimension, int srid, string geometryType)
+        public static void RegisterInGeometryColumnsTable(IDbConnection conn, IDbUtility dbUtility, string schema,
+                                                          string tableName, string geometryColumn, int coordDimension,
+                                                          int srid, string geometryType)
         {
             CreateTableHelper.RegisterInGeometryColumns(conn, dbUtility, schema, tableName, geometryColumn,
                                                         coordDimension, srid, geometryType);
         }
 
-        public static void CreateSridConstraint(IDbConnection conn, string schema, string tableName, string geometryColumn, int srid)
+        public static void CreateSridConstraint(IDbConnection conn, string schema, string tableName,
+                                                string geometryColumn, int srid)
         {
             CreateTableHelper.CreateSridConstraint(conn, schema, tableName, geometryColumn, srid);
         }
@@ -615,7 +617,8 @@ END
                     cmd.Connection = conn;
                     cmd.CommandType = CommandType.Text;
                     cmd.CommandText =
-                        string.Format(@"
+                        string.Format(
+                            @"
 DECLARE @found bit 
 set @found = 0; 
 IF EXISTS(select * from sys.objects where object_id = object_id(@p1 + '.Geometry_Columns'))
@@ -629,7 +632,8 @@ IF EXISTS(select * from sys.objects where object_id = object_id(@p1 + '.Geometry
 IF @found = 0
     BEGIN
         SELECT DISTINCT [{0}].STSrid FROM [{1}].[{2}] 
-    END", GeometryColumn, TableSchema, Table);
+    END",
+                            GeometryColumn, TableSchema, Table);
                     cmd.Parameters.Add(DbUtility.CreateParameter("p0", conn.Database, ParameterDirection.Input));
                     cmd.Parameters.Add(DbUtility.CreateParameter("p1", TableSchema, ParameterDirection.Input));
                     cmd.Parameters.Add(DbUtility.CreateParameter("p2", Table, ParameterDirection.Input));
@@ -649,7 +653,7 @@ IF @found = 0
                             object v = reader[0];
                             if (v is int)
                             {
-                                int isrid = (int)v;
+                                int isrid = (int) v;
                                 cs = SridMap.DefaultInstance.Process(isrid, default(ICoordinateSystem));
                                 srid = !Equals(cs, default(ICoordinateSystem))
                                            ? SridMap.DefaultInstance.Process(cs, "")
@@ -659,7 +663,6 @@ IF @found = 0
                             }
                         }
                     }
-
                 }
             }
             cs = default(ICoordinateSystem);
@@ -716,7 +719,7 @@ END
 	", schema, objectName);
             cmd.CommandType = CommandType.Text;
             EnsureOpenConnection(cmd);
-            return (int)cmd.ExecuteScalar() == 1;
+            return (int) cmd.ExecuteScalar() == 1;
         }
 
         internal static bool CheckProviderCompatibility<TOid>(IDbConnection connection,
@@ -726,12 +729,12 @@ END
                                                               FeatureDataTable model,
                                                               out MsSqlServer2008Provider<TOid> provider)
         {
-            var p = new MsSqlServer2008Provider<TOid>(geometryFactory,
-                                                      connection.ConnectionString,
-                                                      schema,
-                                                      tableName,
-                                                      model.PrimaryKey[0].ColumnName,
-                                                      "Geom");
+            MsSqlServer2008Provider<TOid> p = new MsSqlServer2008Provider<TOid>(geometryFactory,
+                                                                                connection.ConnectionString,
+                                                                                schema,
+                                                                                tableName,
+                                                                                model.PrimaryKey[0].ColumnName,
+                                                                                "Geom");
 
             FeatureDataTable fdt = p.CreateNewTable();
 
@@ -809,10 +812,10 @@ END
         }
 
         internal static MsSqlServer2008Provider<TOid> Create<TOid>(string connectionString,
-                                                                         IGeometryFactory geometryFactory,
-                                                                         string schema,
-                                                                         string tableName,
-                                                                         FeatureDataTable model)
+                                                                   IGeometryFactory geometryFactory,
+                                                                   string schema,
+                                                                   string tableName,
+                                                                   FeatureDataTable model)
         {
             using (IDbConnection conn = new SqlServerDbUtility().CreateConnection(connectionString))
             {
@@ -836,10 +839,10 @@ END
                 string oidColumn, geometryColumn;
                 CreateDatabaseObjects(conn, schema, tableName, model, out oidColumn, out geometryColumn);
 
-                var prov = new MsSqlServer2008Provider<TOid>(geometryFactory,
-                                                             connectionString, schema,
-                                                             tableName, oidColumn,
-                                                             geometryColumn);
+                MsSqlServer2008Provider<TOid> prov = new MsSqlServer2008Provider<TOid>(geometryFactory,
+                                                                                       connectionString, schema,
+                                                                                       tableName, oidColumn,
+                                                                                       geometryColumn);
 
 
                 //    tran.Commit();
@@ -858,9 +861,9 @@ END
                                                    FeatureDataTable model, out string oidColumn,
                                                    out string geometryColumn)
         {
-            var util = new SqlServerDbUtility();
+            SqlServerDbUtility util = new SqlServerDbUtility();
             string oidCol = model.PrimaryKey[0].ColumnName, geomCol = "Geom";
-            var sb = new StringBuilder();
+            StringBuilder sb = new StringBuilder();
             sb.AppendFormat("CREATE TABLE  [{0}].[{1}] (", schema, tableName);
             foreach (DataColumn column in model.Columns)
             {
@@ -884,7 +887,7 @@ END
         internal static void CreateGeometryColumnsTable(IDbConnection conn, string schema)
         {
             string sql = string.Format(
-@"CREATE TABLE [{0}].[Geometry_Columns](
+                @"CREATE TABLE [{0}].[Geometry_Columns](
     [F_Table_Catalog] [varchar](255) NOT NULL,
     [F_Table_Schema] [varchar](20) NOT NULL,
     [F_Table_Name] [varchar](255) NOT NULL,
@@ -904,7 +907,8 @@ END
 
 
 ALTER TABLE [dbo].[Geometry_Columns] ADD  CONSTRAINT [DF_Geometry_Columns_Geometry_Type]  DEFAULT ('Geometry') FOR [Geometry_Type]
-", schema);
+",
+                schema);
 
             using (IDbCommand cmd = conn.CreateCommand())
             {
@@ -914,10 +918,12 @@ ALTER TABLE [dbo].[Geometry_Columns] ADD  CONSTRAINT [DF_Geometry_Columns_Geomet
             }
         }
 
-        internal static void RegisterInGeometryColumns(IDbConnection conn, IDbUtility dbUtility, string schema, string tableName, string geometryColumnName, int coordDimension, int srid, string geometryType)
+        internal static void RegisterInGeometryColumns(IDbConnection conn, IDbUtility dbUtility, string schema,
+                                                       string tableName, string geometryColumnName, int coordDimension,
+                                                       int srid, string geometryType)
         {
             string sql = string.Format(
-@"IF EXISTS(SELECT * FROM [{0}].[Geometry_Columns] 
+                @"IF EXISTS(SELECT * FROM [{0}].[Geometry_Columns] 
             WHERE 
                 F_Table_Catalog = @pCatalog 
                 AND  F_Table_Schema = @pSchema 
@@ -974,15 +980,17 @@ ELSE
             }
         }
 
-        internal static void CreateSridConstraint(IDbConnection conn, string schema, string tableName, string geometryColumnName, int srid)
+        internal static void CreateSridConstraint(IDbConnection conn, string schema, string tableName,
+                                                  string geometryColumnName, int srid)
         {
             DropSridConstraint(conn, schema, tableName, geometryColumnName);
 
             string name = string.Format("ck_{0}_{1}_{2}_STSrid", schema, tableName, geometryColumnName);
 
             string sql = string.Format(
-@"ALTER TABLE [{0}].[{1}] ADD CONSTRAINT {2}
-	CHECK ([{3}].STSrid = {4})", schema, tableName, name, geometryColumnName, srid);
+                @"ALTER TABLE [{0}].[{1}] ADD CONSTRAINT {2}
+	CHECK ([{3}].STSrid = {4})", schema, tableName, name,
+                geometryColumnName, srid);
 
             using (IDbCommand cmd = conn.CreateCommand())
             {
@@ -990,19 +998,20 @@ ELSE
                 cmd.CommandType = CommandType.Text;
                 ExecuteNoQuery(cmd);
             }
-
         }
 
-        internal static void DropSridConstraint(IDbConnection conn, string schema, string tableName, string geometryColumnName)
+        internal static void DropSridConstraint(IDbConnection conn, string schema, string tableName,
+                                                string geometryColumnName)
         {
             string name = string.Format("ck_{0}_{1}_{2}_STSrid", schema, tableName, geometryColumnName);
 
             string sql = string.Format(
-@"IF EXISTS(SELECT * FROM sys.check_constraints where object_id = object_id('{0}'))
+                @"IF EXISTS(SELECT * FROM sys.check_constraints where object_id = object_id('{0}'))
     BEGIN
         ALTER TABLE [{1}].[{2}]
         DROP CONSTRAINT [{0}]
-    END", name, schema, tableName);
+    END",
+                name, schema, tableName);
 
             using (IDbCommand cmd = conn.CreateCommand())
             {
@@ -1024,7 +1033,6 @@ ELSE
                 cmd.Connection.Open();
         }
     }
-
 
 
     public class IncompatibleSchemaException : Exception

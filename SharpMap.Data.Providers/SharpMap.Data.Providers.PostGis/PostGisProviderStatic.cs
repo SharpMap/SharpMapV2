@@ -44,23 +44,26 @@ namespace SharpMap.Data.Providers
         //private static readonly System.Globalization.CultureInfo
 
         /// <summary>
-        /// Name used when no geometry column is supplied with constructor of PostGisProvider(TOid)
-        /// </summary>
-        public static String DefaultGeometryColumnName = "XGeometryX";
-
-        /// <summary>
         /// Autority and SridInt assumed when it cannot be optained throug parsing
         /// srtext.
         /// </summary>
         public static String DefaultAuthority = "EPSG";
+
+        /// <summary>
+        /// Name used when no geometry column is supplied with constructor of PostGisProvider(TOid)
+        /// </summary>
+        public static String DefaultGeometryColumnName = "XGeometryX";
+
         public static Int32 DefaultSridInt = 4326;
+
         /// <summary>
         /// Srid assumed when no Srid is mentioned or cannot be optained
         /// </summary>
         public static String DefaultSrid
         {
-            get { return string.Format( "{0}:{1}", DefaultAuthority, DefaultSridInt ); }
+            get { return string.Format("{0}:{1}", DefaultAuthority, DefaultSridInt); }
         }
+
         /// <summary>
         /// Creates a spatially enabled database on the via connectionString specified Database;
         /// </summary>
@@ -85,26 +88,25 @@ namespace SharpMap.Data.Providers
                                   OgcGeometryType.Geometry);
         }
 
-        internal static bool Has_X_Privilege( NpgsqlConnection conn,
-            string objectName, string name, string requestedPrivilege )
+        internal static bool Has_X_Privilege(NpgsqlConnection conn,
+                                             string objectName, string name, string requestedPrivilege)
         {
-            if ( conn == null ) return false;
+            if (conn == null) return false;
 
             try
             {
-                if ( conn.State != ConnectionState.Open ) return false;
+                if (conn.State != ConnectionState.Open) return false;
 
                 string select = string.Format(
                     "SELECT has_{0}_privilege( $${1}$$, '{2}');",
-                    objectName, name, requestedPrivilege );
+                    objectName, name, requestedPrivilege);
 
-                return (bool)new NpgsqlCommand( select, conn ).ExecuteScalar();
+                return (bool) new NpgsqlCommand(select, conn).ExecuteScalar();
             }
             catch
             {
                 return false;
             }
-
         }
 
         public static void CreateDataTable<TOid>(
@@ -116,15 +118,15 @@ namespace SharpMap.Data.Providers
             OgcGeometryType geometryType)
         {
             string srid = featureDataTable.GeometryFactory.SpatialReference != null
-                ? 
-                    featureDataTable.GeometryFactory.SpatialReference.AuthorityCode
-                :
-                    DefaultSridInt.ToString();
+                              ?
+                                  featureDataTable.GeometryFactory.SpatialReference.AuthorityCode
+                              :
+                                  DefaultSridInt.ToString();
 
             NpgsqlConnectionStringBuilder csb = new NpgsqlConnectionStringBuilder(connectionString);
 
             PostGisDbUtility util = new PostGisDbUtility();
-            var conn = ( NpgsqlConnection) util.CreateConnection(connectionString);
+            NpgsqlConnection conn = (NpgsqlConnection) util.CreateConnection(connectionString);
 
             if (conn != null)
             {
@@ -132,18 +134,17 @@ namespace SharpMap.Data.Providers
                 {
                     if (conn.State == ConnectionState.Closed) conn.Open();
 
-                    if (!Has_X_Privilege(conn,"database", csb.Database, "CREATE"))
+                    if (!Has_X_Privilege(conn, "database", csb.Database, "CREATE"))
                         throw new PostGisException("Insufficient rights to create table!");
 
                     if (!Has_X_Privilege(conn,
-                        "function", 
-                        "addgeometrycolumn(character varying, character varying, int, character varying, int)", 
-                        "EXECUTE"))
+                                         "function",
+                                         "addgeometrycolumn(character varying, character varying, int, character varying, int)",
+                                         "EXECUTE"))
                         throw new PostGisException("Insufficient rights to access addgeometrycolumn function!");
 
                     string createTableClause = string.Format(
                         "CREATE TABLE {0}.\"{1}\" ({2}) WITH(OIDS=FALSE);",
-
                         schemaName,
                         tableName,
                         ColumnsClause(tableName, featureDataTable.Columns,
@@ -171,7 +172,6 @@ namespace SharpMap.Data.Providers
                                                     tableName,
                                                     geometryColumnName),
                                       conn).ExecuteNonQuery();
-
                 }
                 catch (NpgsqlException ex)
                 {
@@ -186,7 +186,7 @@ namespace SharpMap.Data.Providers
             conn.Close();
             conn = null;
 
-            var prov = new PostGisProvider<TOid>(
+            PostGisProvider<TOid> prov = new PostGisProvider<TOid>(
                 featureDataTable.GeometryFactory, connectionString, schemaName, tableName,
                 featureDataTable.Columns[0].ColumnName, geometryColumnName);
 
@@ -197,7 +197,7 @@ namespace SharpMap.Data.Providers
 
         private static String ColumnsClause(string tableName, DataColumnCollection dcc, ConstraintCollection ccc)
         {
-            var columns = new String[dcc.Count];
+            string[] columns = new String[dcc.Count];
 
             Int32 index = 0;
             foreach (DataColumn dc in dcc)
@@ -218,10 +218,10 @@ namespace SharpMap.Data.Providers
             }
             index = 0;
 
-            var constraints = new String[ccc.Count];
+            string[] constraints = new String[ccc.Count];
             foreach (Constraint c in ccc)
             {
-                var uc = c as UniqueConstraint;
+                UniqueConstraint uc = c as UniqueConstraint;
                 if (uc != null)
                 {
                     if (uc.IsPrimaryKey)
@@ -240,13 +240,13 @@ namespace SharpMap.Data.Providers
                     }
                 }
 
-                var fc = c as ForeignKeyConstraint;
+                ForeignKeyConstraint fc = c as ForeignKeyConstraint;
                 if (fc != null)
                 {
                     constraints[index++] =
                         String.Format(
                             " CONSTRAINT \"{0}\" FOREIGN KEY ({1}) REFERENCES {2} ({3}) MATCH FULL ON UPDATE {4} ON DELETE {5}",
-                            String.Format("FK_{0}_{1}_{3}", tableName,fc.RelatedTable.TableName, uc.ConstraintName),
+                            String.Format("FK_{0}_{1}_{3}", tableName, fc.RelatedTable.TableName, uc.ConstraintName),
                             ColumnNamesToCommaSeparatedString(fc.Columns),
                             fc.RelatedTable.TableName,
                             ColumnNamesToCommaSeparatedString(fc.RelatedColumns),

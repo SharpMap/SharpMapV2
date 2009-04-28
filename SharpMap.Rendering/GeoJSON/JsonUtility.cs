@@ -16,20 +16,26 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
-using System.Web;
+using GeoAPI.DataStructures;
 #if DOTNET35
 using Enumerable = System.Linq.Enumerable;
 using Caster = System.Linq.Enumerable;
 #else
-using Enumerable = GeoAPI.DataStructures.Enumerable;
-using Caster = GeoAPI.DataStructures.Caster;
+
 #endif
+
 namespace SharpMap.Rendering.GeoJson
 {
     public static class JsonUtility
     {
-        private static readonly Type[] FloatingPointTypes = new[] { typeof(float), typeof(double), typeof(decimal) };
-        private static readonly Type[] IntegralTypes = new[] { typeof(UInt16), typeof(UInt32), typeof(UInt64), typeof(Int16), typeof(Int32), typeof(Int64) };
+        private static readonly Type[] FloatingPointTypes = new[] {typeof (float), typeof (double), typeof (decimal)};
+
+        private static readonly Type[] IntegralTypes = new[]
+                                                           {
+                                                               typeof (UInt16), typeof (UInt32), typeof (UInt64),
+                                                               typeof (Int16), typeof (Int32), typeof (Int64)
+                                                           };
+
         public static string FormatJsonAttribute(string name, object value)
         {
             return string.Format("\"{0}\":{1}", name, FormatJsonValue(value));
@@ -42,15 +48,15 @@ namespace SharpMap.Rendering.GeoJson
 
             Type tval = v.GetType();
 
-            if (tval != typeof(string) && typeof(IEnumerable).IsAssignableFrom(tval))
+            if (tval != typeof (string) && typeof (IEnumerable).IsAssignableFrom(tval))
             {
-                var sb = new StringBuilder();
+                StringBuilder sb = new StringBuilder();
 
                 sb.Append("[");
 
                 IList<string> store = new List<string>();
 
-                foreach (object o in (IEnumerable)v)
+                foreach (object o in (IEnumerable) v)
                     store.Add(FormatJsonValue(o));
 
                 for (int i = 0; i < store.Count; i++)
@@ -67,8 +73,7 @@ namespace SharpMap.Rendering.GeoJson
 
             if (tval.IsPrimitive)
             {
-
-                if (tval == typeof(bool))
+                if (tval == typeof (bool))
                     return v.ToString().ToLower();
 
                 if (Enumerable.Contains(IntegralTypes, tval))
@@ -79,8 +84,8 @@ namespace SharpMap.Rendering.GeoJson
             }
 
 
-            if (tval == typeof(string) || tval == typeof(Char))
-                return string.Format("\"{0}\"", HttpUtility.HtmlEncode((string)v));
+            if (tval == typeof (string) || tval == typeof (Char))
+                return string.Format("\"{0}\"", HttpUtility.HtmlEncode((string) v));
 
 
             ///todo : more complex classes

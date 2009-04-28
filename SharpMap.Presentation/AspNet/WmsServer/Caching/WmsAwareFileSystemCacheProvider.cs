@@ -28,7 +28,7 @@ namespace SharpMap.Presentation.AspNet.WmsServer.Caching
                 return Path.Combine(caps, GetCacheFileName(config));
             }
 
-            var layerNames = new string[config.EnabledLayerNames.Count];
+            string[] layerNames = new string[config.EnabledLayerNames.Count];
             config.EnabledLayerNames.CopyTo(layerNames, 0);
 
             Array.Sort(layerNames);
@@ -52,10 +52,12 @@ namespace SharpMap.Presentation.AspNet.WmsServer.Caching
 
             /* Windows file sytems dont like to have too many files in any given directory so we will try and limit the size of any directory*/
             string xy = string.Format("{0}\\{1}\\{2}\\{3}",
-                /* group by x in chunks of 10Km  (assuming meters) */ (int)Math.Floor(config.RealWorldBounds.XMin / 10000),
-                /* then by the actual MinX coordinate of the tile */ config.RealWorldBounds.XMin,
-                /* group by y in chunks of 10Km (assuming meters) */ (int)Math.Floor(config.RealWorldBounds.YMin / 10000),
-                /* then by the actual MinY coordinate of the tile */ config.RealWorldBounds.YMin);
+                                      /* group by x in chunks of 10Km  (assuming meters) */
+                                      (int) Math.Floor(config.RealWorldBounds.XMin/10000),
+                                      /* then by the actual MinX coordinate of the tile */ config.RealWorldBounds.XMin,
+                                      /* group by y in chunks of 10Km (assuming meters) */
+                                      (int) Math.Floor(config.RealWorldBounds.YMin/10000),
+                                      /* then by the actual MinY coordinate of the tile */ config.RealWorldBounds.YMin);
 
             path = Path.Combine(path, xy);
 

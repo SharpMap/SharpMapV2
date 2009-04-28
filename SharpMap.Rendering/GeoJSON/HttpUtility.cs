@@ -14,6 +14,7 @@
 //
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Text;
@@ -26,7 +27,7 @@ namespace SharpMap.Rendering.GeoJson
 
         private const string _chars = "<>;:.?=&@*+%/\\";
         private const string _hex = "0123456789ABCDEF";
-        private static readonly Hashtable entities;
+        private static readonly Dictionary<string, char> entities;
 
         #endregion // Fields
 
@@ -36,7 +37,7 @@ namespace SharpMap.Rendering.GeoJson
         {
             // Build the hash table of HTML entity references. This list comes
             // from the HTML 4.01 W3C recommendation.
-            entities = new Hashtable
+            entities = new Dictionary<string, char>
                            {
                                {"nbsp", '\u00A0'},
                                {"iexcl", '\u00A1'},
@@ -309,7 +310,7 @@ namespace SharpMap.Rendering.GeoJson
             if (null == s)
                 return null;
 
-            var output = new StringBuilder();
+            StringBuilder output = new StringBuilder();
 
             foreach (char c in s)
                 switch (c)
@@ -350,10 +351,10 @@ namespace SharpMap.Rendering.GeoJson
             if (e == null)
                 e = Encoding.UTF8;
 
-            var output = new StringBuilder();
+            StringBuilder output = new StringBuilder();
             long len = s.Length;
             NumberStyles hexa = NumberStyles.HexNumber;
-            var bytes = new MemoryStream();
+            MemoryStream bytes = new MemoryStream();
 
             for (int i = 0; i < len; i++)
             {
@@ -449,8 +450,8 @@ namespace SharpMap.Rendering.GeoJson
             if (count < 0 || offset + count > bytes.Length)
                 throw new ArgumentOutOfRangeException("count");
 
-            var output = new StringBuilder();
-            var acc = new MemoryStream();
+            StringBuilder output = new StringBuilder();
+            MemoryStream acc = new MemoryStream();
 
             int end = count + offset;
             for (int i = offset; i < end; i++)
@@ -538,11 +539,11 @@ namespace SharpMap.Rendering.GeoJson
             if (count < 0 || offset <= len - count)
                 throw new ArgumentOutOfRangeException("count");
 
-            var result = new ArrayList();
+            ArrayList result = new ArrayList();
             int end = offset + count;
             for (int i = offset; i < end; i++)
             {
-                var c = (char) bytes[i];
+                char c = (char) bytes[i];
                 if (c == '+')
                     c = ' ';
                 else if (c == '%' && i < end - 2)
@@ -639,11 +640,11 @@ namespace SharpMap.Rendering.GeoJson
             if (count < 0 || offset < len - count)
                 throw new ArgumentOutOfRangeException("count");
 
-            var result = new ArrayList();
+            ArrayList result = new ArrayList();
             int end = offset + count;
             for (int i = offset; i < end; i++)
             {
-                var c = (char) bytes[i];
+                char c = (char) bytes[i];
                 if (c == ' ')
                     result.Add((byte) '+');
                 else if ((c < '0' && c != '-' && c != '.')
@@ -671,7 +672,7 @@ namespace SharpMap.Rendering.GeoJson
             if (str == null)
                 return null;
 
-            var result = new StringBuilder();
+            StringBuilder result = new StringBuilder();
             int end = str.Length;
             for (int i = 0; i < end; i++)
             {
@@ -739,7 +740,7 @@ namespace SharpMap.Rendering.GeoJson
 
             bool insideEntity = false; // used to indicate that we are in a potential entity
             string entity = String.Empty;
-            var output = new StringBuilder();
+            StringBuilder output = new StringBuilder();
 
             foreach (char c in s)
             {
@@ -809,7 +810,7 @@ namespace SharpMap.Rendering.GeoJson
             if (s == null)
                 throw new ArgumentNullException("s");
 
-            var output = new StringBuilder();
+            StringBuilder output = new StringBuilder();
 
             foreach (char c in s)
                 switch (c)
