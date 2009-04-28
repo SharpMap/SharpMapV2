@@ -97,12 +97,16 @@
     <None Include="OpenLayers\OpenLayersSource\examples\proxy.cgi" />
     <None Include="OpenLayers\OpenLayersSource\tests\manual\arkansas.rss" />
     <None Include="OpenLayers\OpenLayersSource\tests\selenium\remotecontrol\config.cfg" />
+    <None Include="OpenLayers\OpenLayersSource\tools\jsmin.pyc" />
+    <None Include="OpenLayers\OpenLayersSource\tools\mergejs.pyc" />
     <None Include="OpenLayers\OpenLayersSource\tools\release.sh" />
+    <None Include="OpenLayers\OpenLayersSource\tools\toposort.pyc" />
     <None Include="OpenLayers\OpenLayersSource\tools\update_dev_dir.sh" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BuilderParamsBase.cs" />
     <Compile Include="BuilderParamsJavascriptConverter.cs" />
+    <Compile Include="ChildControlCollection.cs" />
     <Compile Include="ClientEvalScript.cs" />
     <Compile Include="CollectionBase.cs" />
     <Compile Include="ComponentBase.cs" />
@@ -207,6 +211,7 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Controls\Measure\MeasureTool.js" />
+    <EmbeddedResource Include="Controls\Measure\MeasureToolButton.js" />
     <Content Include="OpenLayers\Build\build.py" />
     <Content Include="OpenLayers\Build\buildUncompressed.py" />
     <Content Include="OpenLayers\Build\license.txt" />
@@ -467,6 +472,8 @@
     <Content Include="OpenLayers\OpenLayersSource\lib\OpenLayers\Filter\Logical.js" />
     <Content Include="OpenLayers\OpenLayersSource\lib\OpenLayers\Filter\Spatial.js" />
     <Content Include="OpenLayers\OpenLayersSource\lib\OpenLayers\Format.js" />
+    <Content Include="OpenLayers\OpenLayersSource\lib\OpenLayers\Format\ArcXML.js" />
+    <Content Include="OpenLayers\OpenLayersSource\lib\OpenLayers\Format\ArcXML\Features.js" />
     <Content Include="OpenLayers\OpenLayersSource\lib\OpenLayers\Format\Filter.js" />
     <Content Include="OpenLayers\OpenLayersSource\lib\OpenLayers\Format\Filter\v1.js" />
     <Content Include="OpenLayers\OpenLayersSource\lib\OpenLayers\Format\Filter\v1_0_0.js" />
@@ -486,6 +493,10 @@
     <Content Include="OpenLayers\OpenLayersSource\lib\OpenLayers\Format\SLD\v1_0_0.js" />
     <Content Include="OpenLayers\OpenLayersSource\lib\OpenLayers\Format\Text.js" />
     <Content Include="OpenLayers\OpenLayersSource\lib\OpenLayers\Format\WFS.js" />
+    <Content Include="OpenLayers\OpenLayersSource\lib\OpenLayers\Format\WFSCapabilities.js" />
+    <Content Include="OpenLayers\OpenLayersSource\lib\OpenLayers\Format\WFSCapabilities\v1.js" />
+    <Content Include="OpenLayers\OpenLayersSource\lib\OpenLayers\Format\WFSCapabilities\v1_0_0.js" />
+    <Content Include="OpenLayers\OpenLayersSource\lib\OpenLayers\Format\WFSCapabilities\v1_1_0.js" />
     <Content Include="OpenLayers\OpenLayersSource\lib\OpenLayers\Format\WFSDescribeFeatureType.js" />
     <Content Include="OpenLayers\OpenLayersSource\lib\OpenLayers\Format\WFST.js" />
     <Content Include="OpenLayers\OpenLayersSource\lib\OpenLayers\Format\WFST\v1.js" />
@@ -496,6 +507,12 @@
     <Content Include="OpenLayers\OpenLayersSource\lib\OpenLayers\Format\WMC\v1.js" />
     <Content Include="OpenLayers\OpenLayersSource\lib\OpenLayers\Format\WMC\v1_0_0.js" />
     <Content Include="OpenLayers\OpenLayersSource\lib\OpenLayers\Format\WMC\v1_1_0.js" />
+    <Content Include="OpenLayers\OpenLayersSource\lib\OpenLayers\Format\WMSCapabilities.js" />
+    <Content Include="OpenLayers\OpenLayersSource\lib\OpenLayers\Format\WMSCapabilities\v1_1.js" />
+    <Content Include="OpenLayers\OpenLayersSource\lib\OpenLayers\Format\WMSCapabilities\v1_1_0.js" />
+    <Content Include="OpenLayers\OpenLayersSource\lib\OpenLayers\Format\WMSCapabilities\v1_1_1.js" />
+    <Content Include="OpenLayers\OpenLayersSource\lib\OpenLayers\Format\WMSDescribeLayer.js" />
+    <Content Include="OpenLayers\OpenLayersSource\lib\OpenLayers\Format\WMSDescribeLayer\v1_1.js" />
     <Content Include="OpenLayers\OpenLayersSource\lib\OpenLayers\Format\WMSGetFeatureInfo.js" />
     <Content Include="OpenLayers\OpenLayersSource\lib\OpenLayers\Format\XML.js" />
     <Content Include="OpenLayers\OpenLayersSource\lib\OpenLayers\Geometry.js" />
@@ -541,6 +558,7 @@
     <Content Include="OpenLayers\OpenLayersSource\lib\OpenLayers\Lang\zh-TW.js" />
     <Content Include="OpenLayers\OpenLayersSource\lib\OpenLayers\Layer.js" />
     <Content Include="OpenLayers\OpenLayersSource\lib\OpenLayers\Layer\ArcGIS93Rest.js" />
+    <Content Include="OpenLayers\OpenLayersSource\lib\OpenLayers\Layer\ArcIMS.js" />
     <Content Include="OpenLayers\OpenLayersSource\lib\OpenLayers\Layer\Boxes.js" />
     <Content Include="OpenLayers\OpenLayersSource\lib\OpenLayers\Layer\EventPane.js" />
     <Content Include="OpenLayers\OpenLayersSource\lib\OpenLayers\Layer\FixedZoomLevels.js" />
@@ -569,6 +587,7 @@
     <Content Include="OpenLayers\OpenLayersSource\lib\OpenLayers\Layer\WMS.js" />
     <Content Include="OpenLayers\OpenLayersSource\lib\OpenLayers\Layer\WMS\Untiled.js" />
     <Content Include="OpenLayers\OpenLayersSource\lib\OpenLayers\Layer\WorldWind.js" />
+    <Content Include="OpenLayers\OpenLayersSource\lib\OpenLayers\Layer\XYZ.js" />
     <Content Include="OpenLayers\OpenLayersSource\lib\OpenLayers\Layer\Yahoo.js" />
     <Content Include="OpenLayers\OpenLayersSource\lib\OpenLayers\Map.js" />
     <Content Include="OpenLayers\OpenLayersSource\lib\OpenLayers\Marker.js" />

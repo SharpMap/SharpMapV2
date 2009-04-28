@@ -125,7 +125,8 @@ namespace SharpMap.Utilities.SridUtility
         private TOutput ProcessInternal<TInput, TOutput>(TInput input, TOutput defaultOutput)
         {
             return new Chain.StrategyProcessor<TInput, TOutput>(
-                Processor.Select(_strategies, o => (Chain.IStrategy<TInput, TOutput>)o)).Process(input, defaultOutput);
+                Processor.Select(_strategies,
+                                 delegate(SridMapStrategyBase o) { return (Chain.IStrategy<TInput, TOutput>) o; })).Process(input, defaultOutput);
 
         }
 

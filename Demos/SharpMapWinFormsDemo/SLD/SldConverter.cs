@@ -331,7 +331,7 @@ namespace MapViewer.SLD
                 {
                     string[] Numbers = strokeDasharray.Split(Char.Parse(" "));
 
-                    IEnumerable<float> dbls = Processor.Select(Numbers, o => float.Parse(o));
+                    IEnumerable<float> dbls = Processor.Select(Numbers, delegate(string o) { return float.Parse(o); });
                     pen.DashPattern = Enumerable.ToArray(dbls);
                 }
 

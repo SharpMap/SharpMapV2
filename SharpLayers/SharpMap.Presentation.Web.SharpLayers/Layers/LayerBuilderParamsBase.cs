@@ -20,8 +20,10 @@ namespace SharpMap.Presentation.Web.SharpLayers.Layers
 {
     public class LayerBuilderParamsBase : ILayerBuilderParams
     {
-        private readonly CollectionBase<DoubleValue> _resolutions = new CollectionBase<DoubleValue>((a, b) => a != b);
-        private readonly CollectionBase<DoubleValue> _scales = new CollectionBase<DoubleValue>((a, b) => a != b);
+        private readonly CollectionBase<DoubleValue> _resolutions = new CollectionBase<DoubleValue>(
+            delegate(DoubleValue a, DoubleValue b) { return a != b; });
+        private readonly CollectionBase<DoubleValue> _scales = new CollectionBase<DoubleValue>(
+            delegate(DoubleValue a, DoubleValue b) { return a != b; });
 
         #region ILayerBuilderParams Members
 

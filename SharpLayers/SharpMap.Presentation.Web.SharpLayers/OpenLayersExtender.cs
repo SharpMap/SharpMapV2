@@ -15,11 +15,14 @@
 using System.ComponentModel;
 using System.Web.UI;
 using AjaxControlToolkit;
+
 #if DEBUG
+
 [assembly: WebResource("SharpMap.Presentation.Web.SharpLayers.OpenLayers.OpenLayers_debug.js", "text/javascript")]
 #else
 [assembly: WebResource("SharpMap.Presentation.Web.SharpLayers.OpenLayers.OpenLayers.js", "text/javascript")]
 #endif
+
 [assembly: WebResource("SharpMap.Presentation.Web.SharpLayers.OpenLayersBehavior.js", "text/javascript")]
 
 namespace SharpMap.Presentation.Web.SharpLayers

@@ -219,7 +219,7 @@ namespace SharpMap.Data.Providers
             public MonitoringFeatureDataReader(IFeatureDataReader innerReader, Action monitor)
             {
                 InnerReader = innerReader;
-                Monitor = monitor ?? new Action(() => { });
+                Monitor = monitor ?? new Action(delegate { });
             }
 
             private IFeatureDataReader InnerReader { get; set; }

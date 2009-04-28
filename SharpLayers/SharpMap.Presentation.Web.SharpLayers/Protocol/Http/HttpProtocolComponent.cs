@@ -38,7 +38,7 @@ namespace SharpMap.Presentation.Web.SharpLayers.Protocol.Http
         public override void Init(TemplateParser parser, ControlBuilder parentBuilder, Type type, string tagName,
                                   string id, IDictionary attribs)
         {
-            var formatType = (string) attribs["FormatType"];
+            string formatType = (string) attribs["FormatType"];
             Type t = Type.GetType(formatType);
 
             Type buildType = typeof (HttpProtocolComponent).MakeGenericType(t);

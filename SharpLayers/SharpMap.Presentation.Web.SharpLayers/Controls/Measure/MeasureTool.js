@@ -20,13 +20,9 @@ SharpMap.Presentation.Web.SharpLayers.Controls.Measure.MeasureTool = function(el
 SharpMap.Presentation.Web.SharpLayers.Controls.Measure.MeasureTool.prototype = {
     initialize: function() {
         SharpMap.Presentation.Web.SharpLayers.Controls.Measure.MeasureTool.callBaseMethod(this, 'initialize');
-
-        // TODO: Add your initalization code here
     },
 
     dispose: function() {
-        // TODO: Add your cleanup code here
-
         SharpMap.Presentation.Web.SharpLayers.Controls.Measure.MeasureTool.callBaseMethod(this, 'dispose');
     },
     _toolBuilderDelegate: function() {
@@ -37,6 +33,8 @@ SharpMap.Presentation.Web.SharpLayers.Controls.Measure.MeasureTool.prototype = {
         var styleMap;
         var selector;
         var sld;
+        var div;
+        delete options.div;
         if ((options.styleSelector)) {
             selector = eval(options.styleSelector);
             delete options.styleSelectror;
@@ -58,13 +56,17 @@ SharpMap.Presentation.Web.SharpLayers.Controls.Measure.MeasureTool.prototype = {
         delete options.onClientMeasure;
 
         options.type = OpenLayers.Control.TYPE_TOOL;
+        options.displayClass = "";
 
         call = (call) ? call : function(e) { alert(e); };
 
         var m = new OpenLayers.Control.Measure(handler, options);
 
         m.events.on({ "measure": call });
-        return m;
+
+        var button = new SharpMap.Presentation.Web.SharpLayers.Controls.Measure.MeasureToolButton(m, { });
+
+        return button;
     }
 
 }

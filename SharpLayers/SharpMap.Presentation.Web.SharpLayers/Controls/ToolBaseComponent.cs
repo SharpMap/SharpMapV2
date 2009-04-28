@@ -14,6 +14,7 @@
  */
 using System.Web.UI;
 using AjaxControlToolkit;
+using SharpMap.Presentation.Web.SharpLayers.Controls.Containers;
 
 [assembly: WebResource("SharpMap.Presentation.Web.SharpLayers.Controls.ToolBaseComponent.js", "text/javascript")]
 
@@ -31,7 +32,11 @@ namespace SharpMap.Presentation.Web.SharpLayers.Controls
         [ComponentReference]
         public string TargetMapHost
         {
-            get { return Parent.ClientID; }
+            get
+            {
+                Control c = GetParent<ToolPanel>(this);
+                return c != null ? c.ClientID : GetParent<MapHostExtender>(this).ClientID;
+            }
         }
 
         #region IToolComponent<TBuilderParams> Members
@@ -43,5 +48,15 @@ namespace SharpMap.Presentation.Web.SharpLayers.Controls
         }
 
         #endregion
+
+        protected static Control GetParent<TContainer>(Control tool)
+        {
+            for (Control c = tool; c != null; c = c.Parent)
+            {
+                if (c is TContainer)
+                    return c;
+            }
+            return null;
+        }
     }
 }

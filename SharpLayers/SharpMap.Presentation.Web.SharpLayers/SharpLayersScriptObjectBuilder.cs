@@ -35,16 +35,17 @@ namespace SharpMap.Presentation.Web.SharpLayers
             MessageId = "System.DateTime.ToString(System.String)", Justification = "Avoiding possibly breaking change")]
         static SharpLayersScriptObjectBuilder()
         {
-            CustomConverters.Add(typeof(Color), value => ColorTranslator.ToHtml((Color)value));
+            CustomConverters.Add(typeof (Color),
+                                 delegate(object value) { return ColorTranslator.ToHtml((Color) value); });
             Converter<object, string> dateTimeConverter = delegate(object value)
                                                               {
-                                                                  var date = (DateTime?)value;
+                                                                  DateTime? date = (DateTime?) value;
                                                                   return (date != null)
                                                                              ? date.Value.ToUniversalTime().ToString("r")
                                                                              : null;
                                                               };
-            CustomConverters.Add(typeof(DateTime), dateTimeConverter);
-            CustomConverters.Add(typeof(DateTime?), dateTimeConverter);
+            CustomConverters.Add(typeof (DateTime), dateTimeConverter);
+            CustomConverters.Add(typeof (DateTime?), dateTimeConverter);
         }
 
         /// <summary>
@@ -93,11 +94,11 @@ namespace SharpMap.Presentation.Web.SharpLayers
                 string propertyName = prop.Name;
 
                 // Try getting a property attribute
-                propAttr = (ExtenderControlPropertyAttribute)prop.Attributes[typeof(ExtenderControlPropertyAttribute)];
+                propAttr = (ExtenderControlPropertyAttribute) prop.Attributes[typeof (ExtenderControlPropertyAttribute)];
                 if (propAttr == null || !propAttr.IsScriptProperty)
                 {
                     // Try getting an event attribute
-                    eventAttr = (ExtenderControlEventAttribute)prop.Attributes[typeof(ExtenderControlEventAttribute)];
+                    eventAttr = (ExtenderControlEventAttribute) prop.Attributes[typeof (ExtenderControlEventAttribute)];
                     if (eventAttr == null || !eventAttr.IsScriptEvent)
                     {
                         continue;
@@ -105,7 +106,8 @@ namespace SharpMap.Presentation.Web.SharpLayers
                 }
 
                 // attempt to rename the property/event
-                var nameAttr = (ClientPropertyNameAttribute)prop.Attributes[typeof(ClientPropertyNameAttribute)];
+                ClientPropertyNameAttribute nameAttr =
+                    (ClientPropertyNameAttribute) prop.Attributes[typeof (ClientPropertyNameAttribute)];
                 if (!string.IsNullOrEmpty(nameAttr.PropertyName))
                 {
                     propertyName = nameAttr.PropertyName;
@@ -126,7 +128,7 @@ namespace SharpMap.Presentation.Web.SharpLayers
 
 
                     // convert and resolve the value
-                    if (eventAttr != null && prop.PropertyType != typeof(String))
+                    if (eventAttr != null && prop.PropertyType != typeof (String))
                     {
                         throw new InvalidOperationException(
                             "ExtenderControlEventAttribute can only be applied to a property with a PropertyType of System.String.");
@@ -142,7 +144,7 @@ namespace SharpMap.Presentation.Web.SharpLayers
                             Converter<object, string> customConverter = null;
                             if (!_customConverters.TryGetValue(prop.PropertyType, out customConverter))
                             {
-                                foreach (var pair in _customConverters)
+                                foreach (KeyValuePair<Type, Converter<object, string>> pair in _customConverters)
                                 {
                                     if (prop.PropertyType.IsSubclassOf(pair.Key))
                                     {
@@ -165,15 +167,15 @@ namespace SharpMap.Presentation.Web.SharpLayers
                                 {
                                     if (value is IEnumerable)
                                     {
-                                        var lst = new List<object>();
-                                        foreach (object a in (IEnumerable)value)
+                                        List<object> lst = new List<object>();
+                                        foreach (object a in (IEnumerable) value)
                                         {
                                             object b;
                                             Type typ = a.GetType();
                                             if (a as IUICollectionItem != null)
                                                 b = a is UriValue
-                                                        ? urlResolver.ResolveClientUrl(((UriValue)a).Value.ToString())
-                                                        : ((IUICollectionItem)a).Value;
+                                                        ? urlResolver.ResolveClientUrl(((UriValue) a).Value.ToString())
+                                                        : ((IUICollectionItem) a).Value;
                                             else if (typ.IsPrimitive || typ.IsValueType)
                                                 b = a;
                                             else
@@ -185,7 +187,8 @@ namespace SharpMap.Presentation.Web.SharpLayers
                                             value = lst;
                                     }
                                     else if (value.GetType().IsPrimitive || value.GetType().IsValueType)
-                                    { }
+                                    {
+                                    }
                                     else
                                         value = BuildGraph(value, urlResolver, controlResolver);
                                     // Use ASP.NET JSON serialization
@@ -198,39 +201,39 @@ namespace SharpMap.Presentation.Web.SharpLayers
                                 }
                             }
                         }
-                        if (prop.Attributes[typeof(IDReferencePropertyAttribute)] != null && controlResolver != null)
+                        if (prop.Attributes[typeof (IDReferencePropertyAttribute)] != null && controlResolver != null)
                         {
-                            c = controlResolver.ResolveControl((string)value);
+                            c = controlResolver.ResolveControl((string) value);
                         }
-                        if (prop.Attributes[typeof(UrlPropertyAttribute)] != null && urlResolver != null)
+                        if (prop.Attributes[typeof (UrlPropertyAttribute)] != null && urlResolver != null)
                         {
-                            value = urlResolver.ResolveClientUrl((string)value);
+                            value = urlResolver.ResolveClientUrl((string) value);
                         }
                     }
 
                     // add the value as an appropriate description
                     if (eventAttr != null)
                     {
-                        descriptor.AddEvent(propertyName, (string)value);
+                        descriptor.AddEvent(propertyName, (string) value);
                     }
-                    else if (prop.Attributes[typeof(ElementReferenceAttribute)] != null)
+                    else if (prop.Attributes[typeof (ElementReferenceAttribute)] != null)
                     {
-                        if (c == null && controlResolver != null) c = controlResolver.ResolveControl((string)value);
+                        if (c == null && controlResolver != null) c = controlResolver.ResolveControl((string) value);
                         if (c != null) value = c.ClientID;
-                        descriptor.AddElementProperty(propertyName, (string)value);
+                        descriptor.AddElementProperty(propertyName, (string) value);
                     }
-                    else if (prop.Attributes[typeof(ComponentReferenceAttribute)] != null)
+                    else if (prop.Attributes[typeof (ComponentReferenceAttribute)] != null)
                     {
-                        if (c == null && controlResolver != null) c = controlResolver.ResolveControl((string)value);
+                        if (c == null && controlResolver != null) c = controlResolver.ResolveControl((string) value);
                         if (c != null)
                         {
-                            var ex = c as ExtenderControlBase;
+                            ExtenderControlBase ex = c as ExtenderControlBase;
                             if (ex != null && ex.BehaviorID.Length > 0)
                                 value = ex.BehaviorID;
                             else
                                 value = c.ClientID;
                         }
-                        descriptor.AddComponentProperty(propertyName, (string)value);
+                        descriptor.AddComponentProperty(propertyName, (string) value);
                     }
                     else
                     {
@@ -246,16 +249,16 @@ namespace SharpMap.Presentation.Web.SharpLayers
                 MethodInfo method in
                     instance.GetType().GetMethods(BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public))
             {
-                var methAttr =
+                ExtenderControlMethodAttribute methAttr =
                     (ExtenderControlMethodAttribute)
-                    Attribute.GetCustomAttribute(method, typeof(ExtenderControlMethodAttribute));
+                    Attribute.GetCustomAttribute(method, typeof (ExtenderControlMethodAttribute));
                 if (methAttr == null || !methAttr.IsScriptMethod)
                 {
                     continue;
                 }
 
                 // We only need to support emitting the callback target and registering the WebForms.js script if there is at least one valid method
-                var control = instance as Control;
+                Control control = instance as Control;
                 if (control != null)
                 {
                     // Force WebForms.js
@@ -270,25 +273,25 @@ namespace SharpMap.Presentation.Web.SharpLayers
 
         private static T GetAttribute<T>(PropertyDescriptor d) where T : Attribute
         {
-            return (T)d.Attributes[typeof(T)];
+            return (T) d.Attributes[typeof (T)];
         }
 
         private static Dictionary<string, object> BuildGraph(object obj, IUrlResolutionService uriResolver,
                                                              IControlResolver controlResolver)
         {
-            var dict = new Dictionary<string, object>();
+            Dictionary<string, object> dict = new Dictionary<string, object>();
             PropertyDescriptorCollection pdc = TypeDescriptor.GetProperties(obj);
             foreach (PropertyDescriptor pd in pdc)
             {
-                var ecpa = GetAttribute<ExtenderControlPropertyAttribute>(pd);
+                ExtenderControlPropertyAttribute ecpa = GetAttribute<ExtenderControlPropertyAttribute>(pd);
 
-                var cpna = GetAttribute<ClientPropertyNameAttribute>(pd);
-                var idr = GetAttribute<IDReferencePropertyAttribute>(pd);
-                var ura = GetAttribute<UrlPropertyAttribute>(pd);
-                var ecma = GetAttribute<ExtenderControlMethodAttribute>(pd);
-                var ecea = GetAttribute<ExtenderControlEventAttribute>(pd);
-                var era = GetAttribute<ElementReferenceAttribute>(pd);
-                var cra = GetAttribute<ComponentReferenceAttribute>(pd);
+                ClientPropertyNameAttribute cpna = GetAttribute<ClientPropertyNameAttribute>(pd);
+                IDReferencePropertyAttribute idr = GetAttribute<IDReferencePropertyAttribute>(pd);
+                UrlPropertyAttribute ura = GetAttribute<UrlPropertyAttribute>(pd);
+                ExtenderControlMethodAttribute ecma = GetAttribute<ExtenderControlMethodAttribute>(pd);
+                ExtenderControlEventAttribute ecea = GetAttribute<ExtenderControlEventAttribute>(pd);
+                ElementReferenceAttribute era = GetAttribute<ElementReferenceAttribute>(pd);
+                ComponentReferenceAttribute cra = GetAttribute<ComponentReferenceAttribute>(pd);
                 if (ecpa == null && cra == null && cpna == null && era == null)
                     continue;
 
@@ -307,45 +310,46 @@ namespace SharpMap.Presentation.Web.SharpLayers
                 if (value == null)
                     continue;
 
-                if (value as IClientClass != null && ((IClientClass)value).NotSet)
+                if (value as IClientClass != null && ((IClientClass) value).NotSet)
                     continue;
 
                 if (value as ClientEvalScript != null && string.IsNullOrEmpty((value as ClientEvalScript).ClientScript))
                     continue;
 
-                if (pd.PropertyType == typeof(string))
+                if (pd.PropertyType == typeof (string))
                 {
                     o = value;
                     if (ura != null)
                     {
-                        o = uriResolver.ResolveClientUrl((string)o);
+                        o = uriResolver.ResolveClientUrl((string) o);
                     }
                     else if (idr != null || cra != null)
                     {
                         o = BuildGraph(new Reference
                                            {
                                                ReferenceType = ReferenceType.Component,
-                                               ClientId = controlResolver.ResolveControl((string)o).ClientID
+                                               ClientId = controlResolver.ResolveControl((string) o).ClientID
                                            }, uriResolver, controlResolver);
                     }
                     else if (era != null)
                     {
-                        Control c = controlResolver.ResolveControl((string)o);
+                        Control c = controlResolver.ResolveControl((string) o);
                         o = BuildGraph(
-                            new Reference { ReferenceType = ReferenceType.Element, ClientId = c == null ? (string)o : c.ClientID },
+                            new Reference
+                                {ReferenceType = ReferenceType.Element, ClientId = c == null ? (string) o : c.ClientID},
                             uriResolver, controlResolver);
                     }
                 }
                 else if (value is IEnumerable)
                 {
-                    var lst = new List<object>();
-                    foreach (object a in (IEnumerable)value)
+                    List<object> lst = new List<object>();
+                    foreach (object a in (IEnumerable) value)
                     {
                         object b;
                         if (a as IUICollectionItem != null)
                             b = a is UriValue
-                                    ? uriResolver.ResolveClientUrl(((UriValue)a).Value.ToString())
-                                    : ((IUICollectionItem)a).Value;
+                                    ? uriResolver.ResolveClientUrl(((UriValue) a).Value.ToString())
+                                    : ((IUICollectionItem) a).Value;
                         else
                             b = BuildGraph(a, uriResolver, controlResolver);
                         if (b != null)
@@ -422,7 +426,7 @@ namespace SharpMap.Presentation.Web.SharpLayers
                 bool addIt = true; // looking for this stylesheet already in the header
                 foreach (Control c in header.Controls)
                 {
-                    var l = c as HtmlLink;
+                    HtmlLink l = c as HtmlLink;
                     if (null != l && styleSheet.Equals(l.Href, StringComparison.OrdinalIgnoreCase))
                     {
                         addIt = false;
@@ -432,7 +436,7 @@ namespace SharpMap.Presentation.Web.SharpLayers
 
                 if (addIt)
                 {
-                    var link = new HtmlLink();
+                    HtmlLink link = new HtmlLink();
                     link.Href = styleSheet;
                     link.Attributes.Add("type", "text/css");
                     link.Attributes.Add("rel", "stylesheet");
@@ -478,16 +482,16 @@ namespace SharpMap.Presentation.Web.SharpLayers
             Type controlType = control.GetType();
 
             // Deserialize the callback JSON into CLR objects
-            var js = new JavaScriptSerializer();
-            var callInfo = js.DeserializeObject(callbackArgument) as Dictionary<string, object>;
+            JavaScriptSerializer js = new JavaScriptSerializer();
+            Dictionary<string, object> callInfo = js.DeserializeObject(callbackArgument) as Dictionary<string, object>;
 
             // Get the call information
-            var methodName = (string)callInfo["name"];
-            var args = (object[])callInfo["args"];
-            var clientState = (string)callInfo["state"];
+            string methodName = (string) callInfo["name"];
+            object[] args = (object[]) callInfo["args"];
+            string clientState = (string) callInfo["state"];
 
             // Attempt to load the client state
-            var csm = control as IClientStateManager;
+            IClientStateManager csm = control as IClientStateManager;
             if (csm != null && csm.SupportsClientState)
             {
                 csm.LoadClientState(clientState);
@@ -508,9 +512,9 @@ namespace SharpMap.Presentation.Web.SharpLayers
 
                 // Verify that the method has the corrent number of parameters as well as the ExtenderControlMethodAttribute
                 ParameterInfo[] methodParams = mi.GetParameters();
-                var methAttr =
+                ExtenderControlMethodAttribute methAttr =
                     (ExtenderControlMethodAttribute)
-                    Attribute.GetCustomAttribute(mi, typeof(ExtenderControlMethodAttribute));
+                    Attribute.GetCustomAttribute(mi, typeof (ExtenderControlMethodAttribute));
                 if (methAttr == null || !methAttr.IsScriptMethod || args.Length != methodParams.Length)
                 {
                     throw new MissingMethodException(controlType.FullName, methodName);
@@ -518,7 +522,7 @@ namespace SharpMap.Presentation.Web.SharpLayers
 
                 // Convert each argument to the parameter type if possible
                 // NOTE: I'd rather have the ObjectConverter from within System.Web.Script.Serialization namespace for this
-                var targetArgs = new object[args.Length];
+                object[] targetArgs = new object[args.Length];
                 for (int i = 0; i < targetArgs.Length; i++)
                 {
                     if (args[i] == null)
@@ -539,7 +543,7 @@ namespace SharpMap.Presentation.Web.SharpLayers
             }
 
             // return the result
-            var resultInfo = new Dictionary<string, object>();
+            Dictionary<string, object> resultInfo = new Dictionary<string, object>();
             if (error == null)
             {
                 resultInfo["result"] = result;
@@ -613,10 +617,10 @@ namespace SharpMap.Presentation.Web.SharpLayers
                         entries = new List<ResourceEntry>();
 
                         // Get the required scripts by type
-                        var requiredScripts = new List<RequiredScriptAttribute>();
+                        List<RequiredScriptAttribute> requiredScripts = new List<RequiredScriptAttribute>();
                         foreach (
                             RequiredScriptAttribute attr in
-                                type.GetCustomAttributes(typeof(RequiredScriptAttribute), true))
+                                type.GetCustomAttributes(typeof (RequiredScriptAttribute), true))
                         {
                             requiredScripts.Add(attr);
                         }
@@ -638,9 +642,9 @@ namespace SharpMap.Presentation.Web.SharpLayers
 
                         // create a new list so we can sort it independently.
                         //
-                        var newEntries = new List<ResourceEntry>();
+                        List<ResourceEntry> newEntries = new List<ResourceEntry>();
                         for (Type current = type;
-                             current != null && current != typeof(object);
+                             current != null && current != typeof (object);
                              current = current.BaseType)
                         {
                             if (ignoreStartingTypeReferences && (current == type))
@@ -650,12 +654,12 @@ namespace SharpMap.Presentation.Web.SharpLayers
                             }
 
                             object[] attrs = Attribute.GetCustomAttributes(current,
-                                                                           typeof(ClientScriptResourceAttribute), false);
+                                                                           typeof (ClientScriptResourceAttribute), false);
                             order -= attrs.Length;
 
                             foreach (ClientScriptResourceAttribute attr in attrs)
                             {
-                                var re = new ResourceEntry(attr.ResourcePath, current, order + attr.LoadOrder);
+                                ResourceEntry re = new ResourceEntry(attr.ResourcePath, current, order + attr.LoadOrder);
 
                                 // check for dups in the list.
                                 //
@@ -724,12 +728,12 @@ namespace SharpMap.Presentation.Web.SharpLayers
                     }
 
                     // build the reference list
-                    var referenceList = new List<string>();
+                    List<string> referenceList = new List<string>();
 
                     // Get the required scripts by type
-                    var requiredScripts = new List<RequiredScriptAttribute>();
+                    List<RequiredScriptAttribute> requiredScripts = new List<RequiredScriptAttribute>();
                     foreach (
-                        RequiredScriptAttribute attr in type.GetCustomAttributes(typeof(RequiredScriptAttribute), true)
+                        RequiredScriptAttribute attr in type.GetCustomAttributes(typeof (RequiredScriptAttribute), true)
                         )
                     {
                         requiredScripts.Add(attr);
@@ -746,11 +750,11 @@ namespace SharpMap.Presentation.Web.SharpLayers
                     }
 
                     // Get the client script resource values for this type
-                    var entries = new List<ResourceEntry>();
+                    List<ResourceEntry> entries = new List<ResourceEntry>();
                     int order = 0;
-                    for (Type current = type; current != null && current != typeof(object); current = current.BaseType)
+                    for (Type current = type; current != null && current != typeof (object); current = current.BaseType)
                     {
-                        object[] attrs = Attribute.GetCustomAttributes(current, typeof(ClientCssResourceAttribute),
+                        object[] attrs = Attribute.GetCustomAttributes(current, typeof (ClientCssResourceAttribute),
                                                                        false);
                         order -= attrs.Length;
 
@@ -767,8 +771,8 @@ namespace SharpMap.Presentation.Web.SharpLayers
                     }
 
                     // Remove duplicates from reference list
-                    var cookies = new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase);
-                    var newReferenceList = new List<string>();
+                    Dictionary<string, object> cookies = new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase);
+                    List<string> newReferenceList = new List<string>();
                     foreach (string refr in referenceList)
                     {
                         if (cookies.ContainsKey(refr))
@@ -848,7 +852,7 @@ namespace SharpMap.Presentation.Web.SharpLayers
 
             public ScriptReference ToScriptReference()
             {
-                var refr = new ScriptReference();
+                ScriptReference refr = new ScriptReference();
                 refr.Assembly = AssemblyName;
                 refr.Name = ResourcePath;
                 return refr;
@@ -856,7 +860,7 @@ namespace SharpMap.Presentation.Web.SharpLayers
 
             public override bool Equals(object obj)
             {
-                var other = (ResourceEntry)obj;
+                ResourceEntry other = (ResourceEntry) obj;
                 return ResourcePath.Equals(other.ResourcePath, StringComparison.OrdinalIgnoreCase)
                        && AssemblyName.Equals(other.AssemblyName, StringComparison.OrdinalIgnoreCase);
             }

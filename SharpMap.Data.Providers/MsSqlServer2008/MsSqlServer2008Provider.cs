@@ -221,9 +221,15 @@ namespace SharpMap.Data.Providers
                                                                         properties,
                                                                         new CollectionExpression<OrderByExpression>(
                                                                             new OrderByExpression[] { })),
-                                                                    o =>
-                                                                    "[" + o.PropertyNameExpression.PropertyName + "] " +
-                                                                    (o.Direction == SortOrder.Ascending ? "ASC" : "DESC"))));
+                                                                    delegate(OrderByExpression o)
+                                                                        {
+                                                                            return "[" +
+                                                                                   o.PropertyNameExpression.PropertyName +
+                                                                                   "] " +
+                                                                                   (o.Direction == SortOrder.Ascending
+                                                                                        ? "ASC"
+                                                                                        : "DESC");
+                                                                        })));
 
 
             string orderByClause = string.IsNullOrEmpty(orderByCols) ? "" : " ORDER BY " + orderByCols;
@@ -258,9 +264,15 @@ namespace SharpMap.Data.Providers
                                                                         properties,
                                                                         new CollectionExpression<OrderByExpression>(
                                                                             new OrderByExpression[] { })),
-                                                                    o =>
-                                                                    "[" + o.PropertyNameExpression.PropertyName + "] " +
-                                                                    (o.Direction == SortOrder.Ascending ? "ASC" : "DESC"))));
+                                                                    delegate(OrderByExpression o)
+                                                                        {
+                                                                            return "[" +
+                                                                                   o.PropertyNameExpression.PropertyName +
+                                                                                   "] " +
+                                                                                   (o.Direction == SortOrder.Ascending
+                                                                                        ? "ASC"
+                                                                                        : "DESC");
+                                                                        })));
 
 
             orderByCols = string.IsNullOrEmpty(orderByCols) ? OidColumn : orderByCols;

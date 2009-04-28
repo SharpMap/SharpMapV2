@@ -31,7 +31,9 @@ using Processor = System.Linq.Enumerable;
 using Enumerable = System.Linq.Enumerable;
 using Caster = System.Linq.Enumerable;
 #else
-
+using Processor = GeoAPI.DataStructures.Processor;
+using Enumerable = GeoAPI.DataStructures.Enumerable;
+using Caster = GeoAPI.DataStructures.Caster;
 #endif
 
 namespace SharpMap.Data.Providers
@@ -148,9 +150,15 @@ namespace SharpMap.Data.Providers
                                                                         properties,
                                                                         new CollectionExpression<OrderByExpression>(
                                                                             new OrderByExpression[] { })),
-                                                                    o =>
-                                                                    "[" + o.PropertyNameExpression.PropertyName + "] " +
-                                                                    (o.Direction == SortOrder.Ascending ? "ASC" : "DESC"))));
+                                                                    delegate(OrderByExpression o)
+                                                                        {
+                                                                            return "[" +
+                                                                                   o.PropertyNameExpression.PropertyName +
+                                                                                   "] " +
+                                                                                   (o.Direction == SortOrder.Ascending
+                                                                                        ? "ASC"
+                                                                                        : "DESC");
+                                                                        })));
 
             string orderByClause = string.IsNullOrEmpty(orderByCols) ? "" : " ORDER BY " + orderByCols;
 
@@ -185,9 +193,11 @@ namespace SharpMap.Data.Providers
                                                          properties,
                                                          new CollectionExpression<OrderByExpression>(
                                                              new[] { new OrderByExpression(OidColumn), })),
-                                                     o =>
-                                                     "[" + o.PropertyNameExpression.PropertyName + "] " +
-                                                     (o.Direction == SortOrder.Ascending ? "ASC" : "DESC"))));
+                                                     delegate(OrderByExpression o)
+                                                         {
+                                                             return "[" + o.PropertyNameExpression.PropertyName + "] " +
+                                                                    (o.Direction == SortOrder.Ascending ? "ASC" : "DESC");
+                                                         })));
 
             orderByCols = string.IsNullOrEmpty(orderByCols) ? OidColumn : orderByCols;
 

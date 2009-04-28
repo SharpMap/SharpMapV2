@@ -7,11 +7,12 @@ namespace SharpMap.Presentation.Web.SharpLayers.Styles
 {
     public class SldBuilderParams : BuilderParamsBase
     {
+        private string _sldDocumentPath;
+
         [ExtenderControlProperty(true)]
         [ClientPropertyName("sldDocumentXml"),
          PersistenceMode(PersistenceMode.InnerProperty)]
         public string SldDocumentXml { get; set; }
-        private string _sldDocumentPath;
 
 
         public string SldDocumentPath
@@ -28,6 +29,5 @@ namespace SharpMap.Presentation.Web.SharpLayers.Styles
         {
             return File.ReadAllText(HttpContext.Current.Server.MapPath(uri));
         }
-
     }
 }

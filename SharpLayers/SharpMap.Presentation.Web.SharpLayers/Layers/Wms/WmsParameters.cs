@@ -23,9 +23,10 @@ namespace SharpMap.Presentation.Web.SharpLayers.Layers.Wms
     public class WmsParameters
     {
         private readonly CollectionBase<StringValue> _layers =
-            new CollectionBase<StringValue>((a, b) => a.Value != b.Value);
+            new CollectionBase<StringValue>(delegate(StringValue a, StringValue b) { return a.Value != b.Value; });
 
-        private readonly CollectionBase<UriValue> _urls = new CollectionBase<UriValue>((a, b) => a.Value != b.Value);
+        private readonly CollectionBase<UriValue> _urls = new CollectionBase<UriValue>(
+            delegate(UriValue a, UriValue b) { return a.Value != b.Value; });
         private string _imageMimeType = "image/png";
         private bool _transaparent = true;
         private string _wmsVersion = "1.3.0";

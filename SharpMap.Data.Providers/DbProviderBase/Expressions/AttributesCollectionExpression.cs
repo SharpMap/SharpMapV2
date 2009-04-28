@@ -10,7 +10,7 @@ namespace SharpMap.Data.Providers.Db.Expressions
         ProviderPropertyExpression<CollectionExpression<PropertyNameExpression>>
     {
         public AttributesCollectionExpression(IEnumerable<String> names)
-            : this(Processor.Transform(names, o => new PropertyNameExpression(o)))
+            : this(Processor.Transform(names, delegate(string o) { return new PropertyNameExpression(o); }))
         {
         }
         public AttributesCollectionExpression(PropertyNameExpression attributeExpression)

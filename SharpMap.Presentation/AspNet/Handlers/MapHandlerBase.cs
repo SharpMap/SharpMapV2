@@ -420,7 +420,7 @@ namespace SharpMap.Presentation.AspNet.Handlers
         /// </summary>
         protected void AssignMonitorToDataProviders()
         {
-            Action monitor = () =>
+            Action monitor = delegate
                                  {
                                      if (MapView.ClientDisconnected)
                                      {

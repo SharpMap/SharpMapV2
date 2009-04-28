@@ -586,7 +586,13 @@ WHERE type='table' AND NOT( name like 'cache_%' ) AND NOT( name like 'sqlite%' )
                         ?
                             "*"
                         :
-                            string.Join(",", Enumerable.ToArray(Processor.Select(attributes, o => QualifyColumnName(o.PropertyName))));
+                            string.Join(",", Enumerable.ToArray(Processor.Select(attributes,
+                                                                                 delegate(PropertyNameExpression o)
+                                                                                     {
+                                                                                         return
+                                                                                             QualifyColumnName(
+                                                                                                 o.PropertyName);
+                                                                                     })));
 
                 if (columns != "*")
                 {
@@ -942,7 +948,8 @@ WHERE type='table' AND NOT( name like 'cache_%' ) AND NOT( name like 'sqlite%' )
                 string orderByCols = String.Join( ",",
                                                  Enumerable.ToArray( Processor.Select(
                                                      GetProviderPropertyValue<OrderByCollectionExpression, CollectionExpression<OrderByExpression>>(
-                                                         properties, new CollectionExpression<OrderByExpression>( new OrderByExpression[] { } ) ), o => o.ToString( "[{0}]" ) ) ) );
+                                                         properties, new CollectionExpression<OrderByExpression>( new OrderByExpression[] { } ) ),
+                                                     delegate(OrderByExpression o) { return o.ToString("[{0}]"); }) ) );
 
                 string orderByClause = string.IsNullOrEmpty( orderByCols ) ? "" : " ORDER BY " + orderByCols;
 
@@ -982,7 +989,8 @@ WHERE type='table' AND NOT( name like 'cache_%' ) AND NOT( name like 'sqlite%' )
             string orderByCols = String.Join( ",",
                                   Enumerable.ToArray( Processor.Select(
                                       GetProviderPropertyValue<OrderByCollectionExpression, CollectionExpression<OrderByExpression>>(
-                                          properties, new CollectionExpression<OrderByExpression>( new OrderByExpression[] { } ) ), o => o.ToString( "[{0}]" ) ) ) );
+                                          properties, new CollectionExpression<OrderByExpression>( new OrderByExpression[] { } ) ),
+                                      delegate(OrderByExpression o) { return o.ToString("[{0}]"); }) ) );
 
             string orderByClause = string.IsNullOrEmpty( orderByCols ) ? "ROWID" : " ORDER BY " + orderByCols;
 

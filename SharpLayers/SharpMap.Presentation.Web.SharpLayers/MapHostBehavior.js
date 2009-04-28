@@ -40,6 +40,9 @@ SharpMap.Presentation.Web.SharpLayers.MapHostBehavior.prototype = {
                             new OpenLayers.Control.KeyboardDefaults()];
 
         return new OpenLayers.Map(this.get_element(), options);
+    },
+    addControl: function(cntrl) {
+        this.get_hostedItem().addControl(cntrl);
     }
 
 }

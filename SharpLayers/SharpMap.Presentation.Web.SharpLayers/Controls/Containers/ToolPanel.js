@@ -43,6 +43,10 @@ SharpMap.Presentation.Web.SharpLayers.Controls.Containers.ToolPanel.prototype = 
         }
         p.addControls(childControls);
         return p;
+    },
+    addControl: function(cntrl) {
+        this.get_hostedItem().addControls([cntrl]);
+        cntrl.setMap(this.get_targetMapHost().get_hostedItem());
     }
 }
 SharpMap.Presentation.Web.SharpLayers.Controls.Containers.ToolPanel.registerClass('SharpMap.Presentation.Web.SharpLayers.Controls.Containers.ToolPanel', SharpMap.Presentation.Web.SharpLayers.Controls.ToolBaseComponent);

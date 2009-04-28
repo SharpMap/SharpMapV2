@@ -696,7 +696,8 @@ namespace SharpMap.Data.Providers.Db
             var list = new List<ProviderPropertyExpression>();
 
             Func<ProviderPropertyExpression, ProviderPropertyExpression, bool> predicate
-                = (prop1, prop2) => prop1.GetType() == prop2.GetType();
+                =
+                delegate(ProviderPropertyExpression prop1, ProviderPropertyExpression prop2) { return prop1.GetType() == prop2.GetType(); };
 
             foreach (ProviderPropertyExpression prop in primary)
                 AddToList(list, prop, predicate);
@@ -709,7 +710,7 @@ namespace SharpMap.Data.Providers.Db
 
         private static void AddToList<T>(IList<T> storage, T item, Func<T, T, bool> filter)
         {
-            if (Enumerable.Count(Processor.Where(storage, i => filter(i, item))) == 0)
+            if (Enumerable.Count(Processor.Where(storage, delegate(T i) { return filter(i, item); })) == 0)
                 storage.Add(item);
         }
 
@@ -847,7 +848,7 @@ namespace SharpMap.Data.Providers.Db
                                                                         properties,
                                                                         new CollectionExpression<OrderByExpression>(
                                                                             new OrderByExpression[] { })),
-                                                                    o => o.ToString())));
+                                                                    delegate(OrderByExpression o) { return o.ToString(); })));
 
             string orderByClause = string.IsNullOrEmpty(orderByCols) ? "" : " ORDER BY " + orderByCols;
 

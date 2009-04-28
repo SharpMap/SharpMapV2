@@ -25,7 +25,7 @@ namespace SharpMap.Presentation.Web.SharpLayers.Controls.Containers
     public class ToolPanel : ToolBaseComponent<ToolPanelBuilderParams>, INamingContainer
     {
         private readonly CollectionBase<IToolComponent> _childTools =
-            new CollectionBase<IToolComponent>((o, a) => o.ID != a.ID);
+            new CollectionBase<IToolComponent>(delegate(IToolComponent o, IToolComponent a) { return o.ID != a.ID; });
 
         public ToolPanel()
         {

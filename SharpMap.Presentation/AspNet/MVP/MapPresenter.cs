@@ -21,8 +21,6 @@ using SharpMap.Data;
 using SharpMap.Layers;
 using SharpMap.Presentation.Presenters;
 using SharpMap.Rendering;
-using SharpMap.Rendering.Gdi;
-using SharpMap.Rendering.GeoJson;
 using SharpMap.Rendering.Rendering2D;
 using SharpMap.Styles;
 
@@ -80,27 +78,21 @@ namespace SharpMap.Presentation.AspNet.MVP
             get { return WebMapView.WebMapRenderer; }
         }
 
+        protected override Type GeometryRendererType
+        {
+            get { return WebMapRenderer.GeometryRendererType; }
+        }
+
+        protected override Type LabelRendererType
+        {
+            get { return WebMapRenderer.LabelRendererType; }
+        }
+
         protected override void OnRenderedLayerPhase(ILayer layer, RenderPhase phase)
         {
             if (WebMapView.ClientDisconnected)
                 throw new ClientDisconnectedException();
             base.OnRenderedLayerPhase(layer, phase);
-        }
-
-        protected override Type GeometryRendererType
-        {
-            get
-            {
-                return WebMapRenderer.GeometryRendererType;
-            }
-        }
-
-        protected override Type LabelRendererType
-        {
-            get
-            {
-                return WebMapRenderer.LabelRendererType;
-            }
         }
 
         //protected override void CreateGeometryRenderer(Type renderObjectType)
@@ -186,11 +178,12 @@ namespace SharpMap.Presentation.AspNet.MVP
         protected override void RenderFeatureLayer(IFeatureLayer layer, RenderPhase phase)
         {
             var renderer = GetRenderer<IFeatureRenderer>(layer);
+            renderer.RenderTransform = ToViewTransform;
 
             Debug.Assert(renderer != null);
 
             Debug.Assert(layer.Style is FeatureStyle);
-            FeatureStyle layerStyle = layer.Style as FeatureStyle;
+            var layerStyle = layer.Style as FeatureStyle;
 
             switch (phase)
             {
@@ -201,7 +194,7 @@ namespace SharpMap.Presentation.AspNet.MVP
 
                     foreach (FeatureDataRow feature in features)
                     {
-                        FeatureStyle style = getStyleForFeature(layer, feature, layerStyle); 
+                        FeatureStyle style = getStyleForFeature(layer, feature, layerStyle);
 
                         IEnumerable renderedFeature = renderer.RenderFeature(feature,
                                                                              style,
@@ -216,7 +209,7 @@ namespace SharpMap.Presentation.AspNet.MVP
 
                     foreach (FeatureDataRow selectedFeature in selectedRows)
                     {
-                        FeatureStyle style = getStyleForFeature(layer, selectedFeature, layerStyle); 
+                        FeatureStyle style = getStyleForFeature(layer, selectedFeature, layerStyle);
 
                         IEnumerable renderedFeature = renderer.RenderFeature(selectedFeature,
                                                                              style,
@@ -231,7 +224,7 @@ namespace SharpMap.Presentation.AspNet.MVP
 
                     foreach (FeatureDataRow highlightedFeature in highlightedRows)
                     {
-                        FeatureStyle style = getStyleForFeature(layer, highlightedFeature, layerStyle); 
+                        FeatureStyle style = getStyleForFeature(layer, highlightedFeature, layerStyle);
 
                         IEnumerable renderedFeature = renderer.RenderFeature(highlightedFeature,
                                                                              style,

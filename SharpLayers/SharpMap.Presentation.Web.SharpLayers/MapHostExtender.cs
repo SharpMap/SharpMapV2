@@ -33,10 +33,10 @@ namespace SharpMap.Presentation.Web.SharpLayers
     public class MapHostExtender : HostBaseExtender<MapHostBuilderParams>
     {
         private readonly CollectionBase<ILayerComponent> _layerComponents =
-            new CollectionBase<ILayerComponent>((a, b) => a.ID != b.ID);
+            new CollectionBase<ILayerComponent>(delegate(ILayerComponent a, ILayerComponent b) { return a.ID != b.ID; });
 
         private readonly CollectionBase<IToolComponent> _toolComponents =
-            new CollectionBase<IToolComponent>((a, b) => a.ID != b.ID);
+            new CollectionBase<IToolComponent>(delegate(IToolComponent a, IToolComponent b) { return a.ID != b.ID; });
 
         public MapHostExtender()
         {
@@ -81,13 +81,13 @@ namespace SharpMap.Presentation.Web.SharpLayers
         private void _toolComponents_ItemRemoved(object sender, CollectionBase<IToolComponent>.ItemEventArgs e)
         {
             if (Controls.Contains((Control) e.Item))
-                Controls.Add((Control) e.Item);
+                Controls.Remove((Control) e.Item);
         }
 
         private void _toolComponents_ItemAdded(object sender, CollectionBase<IToolComponent>.ItemEventArgs e)
         {
             if (!Controls.Contains((Control) e.Item))
-                Controls.Remove((Control) e.Item);
+                Controls.Add((Control) e.Item);
         }
 
         protected override void CreateChildControls()

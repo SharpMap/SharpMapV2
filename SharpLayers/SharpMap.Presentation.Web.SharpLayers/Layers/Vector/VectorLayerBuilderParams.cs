@@ -23,7 +23,9 @@ namespace SharpMap.Presentation.Web.SharpLayers.Layers.Vector
     {
         private readonly CollectionBase<IStrategy> _strategies =
             new CollectionBase<IStrategy>(
-                (item, check) => false);
+                delegate { return false; });
+
+        private string sld;
 
         [ExtenderControlProperty]
         [ClientPropertyName("geometryType")]
@@ -42,8 +44,6 @@ namespace SharpMap.Presentation.Web.SharpLayers.Layers.Vector
         [ComponentReference]
         [ClientPropertyName("protocol")]
         public string Protocol { get; set; }
-
-        private string sld;
 
         [ExtenderControlProperty]
         [ClientPropertyName("sld")]

@@ -115,7 +115,7 @@ namespace MapViewer
             IFeatureLayer l =
                 Enumerable.FirstOrDefault(
                 Caster.Cast<IFeatureLayer>(
-                    Processor.Where(Map.SelectedLayers, o => o as IFeatureLayer != null)));
+                    Processor.Where(Map.SelectedLayers, delegate(ILayer o) { return o as IFeatureLayer != null; })));
 
             if (l != null)
             {

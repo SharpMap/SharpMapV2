@@ -12,9 +12,6 @@
 *  Author: John Diss 2008
 * 
 */
-using System;
-using System.IO;
-using System.Web;
 using System.Web.UI;
 using AjaxControlToolkit;
 
@@ -24,13 +21,9 @@ namespace SharpMap.Presentation.Web.SharpLayers.Styles
 {
     [ClientScriptResource("SharpMap.Presentation.Web.SharpLayers.Styles.SldComponent",
         "SharpMap.Presentation.Web.SharpLayers.Styles.SldComponent.js")]
-    [TargetControlType(typeof(Control))]
+    [TargetControlType(typeof (Control))]
     public class SldComponent : ComponentBase<SldBuilderParams>
     {
-
-        
-
-
         protected override string ScriptComponentName
         {
             get { return "SharpMap.Presentation.Web.SharpLayers.Styles.SldComponent"; }

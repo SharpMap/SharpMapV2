@@ -24,10 +24,10 @@ SharpMap.Presentation.Web.SharpLayers.Controls.ToolBaseComponent.prototype = {
         this._builderDelegate = Function.createDelegate(this, this._toolBuilderDelegate);
         SharpMap.Presentation.Web.SharpLayers.Controls.ToolBaseComponent.callBaseMethod(this, 'initialize');
 
-        var mapHost = this.get_targetMapHost();
+        var mapHost = this.get_targetMapHost(); //this should be either a maphost or a toolPanel
         var _this = this;
         var f = function() {
-            mapHost.get_hostedItem().addControl(_this.get_hostedItem());
+            mapHost.addControl(_this.get_hostedItem());
         };
         SharpMap.Presentation.Web.SharpLayers.InitSync.addLoad(f);
 

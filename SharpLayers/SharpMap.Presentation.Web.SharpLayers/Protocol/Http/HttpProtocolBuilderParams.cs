@@ -46,7 +46,8 @@ namespace SharpMap.Presentation.Web.SharpLayers.Protocol.Http
 
     public class ProtocolBuilderParamsBase : BuilderParamsBase, IProtocolBuilderParams
     {
-        private readonly CollectionBase<IFormat> _formats = new CollectionBase<IFormat>((a, b) => !Equals(a, b));
+        private readonly CollectionBase<IFormat> _formats = new CollectionBase<IFormat>(
+            delegate(IFormat a, IFormat b) { return !Equals(a, b); });
 
         [ExtenderControlProperty]
         [ClientPropertyName("formats")]

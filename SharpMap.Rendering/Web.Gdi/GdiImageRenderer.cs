@@ -109,7 +109,8 @@ namespace SharpMap.Rendering.Web
             Bitmap bmp = new Bitmap(Width, Height, PixelFormat);
             Graphics g = Graphics.FromImage(bmp);
             g.SmoothingMode = SmoothingMode.AntiAlias;
-            g.Transform = GetGdiViewTransform();
+              
+            //g.Transform = GetGdiViewTransform();
             if (!MapView.Presenter.IsRenderingSelection)
                 g.Clear(ViewConverter.Convert(MapView.BackgroundColor));
 
@@ -222,7 +223,7 @@ namespace SharpMap.Rendering.Web
                     {
                         RectangleF newBounds = AdjustForLabel(g, ro);
                         g.DrawString(ro.Text, ro.Font, ro.Fill, newBounds.Location);
-                        g.Transform = GetGdiViewTransform();
+                        //g.Transform = GetGdiViewTransform();
                     }
 
                     break;
@@ -249,7 +250,7 @@ namespace SharpMap.Rendering.Web
                     {
                         RectangleF newBounds = AdjustForLabel(g, ro);
                         g.DrawString(ro.Text, ro.Font, ro.HighlightFill, newBounds);
-                        g.Transform = GetGdiViewTransform();
+                        //g.Transform = GetGdiViewTransform();
                     }
 
                     break;
@@ -276,7 +277,7 @@ namespace SharpMap.Rendering.Web
                     {
                         RectangleF newBounds = AdjustForLabel(g, ro);
                         g.DrawString(ro.Text, ro.Font, ro.SelectFill, newBounds);
-                        g.Transform = GetGdiViewTransform();
+                        //g.Transform = GetGdiViewTransform();
                     }
                     break;
                 default:
@@ -337,6 +338,7 @@ namespace SharpMap.Rendering.Web
             return new Rectangle(new Point(0, 0), sz);
         }
 
+        [Obsolete]
         private GdiMatrix GetGdiViewTransform()
         {
             if (_gdiViewMatrix == null)

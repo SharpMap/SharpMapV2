@@ -18,17 +18,22 @@ namespace SharpMap.Presentation.Web.SharpLayers.Controls.Measure
 {
     public enum MeasureToolMode
     {
-        Area, Distance
+        Area,
+        Distance
     }
 
     public enum MeasureToolUnits
     {
-        English, Metric, Geographic
+        English,
+        Metric,
+        Geographic
     }
 
     public class MeasureToolBuilderParams : ToolBuilderParamsBase
     {
         private MeasureToolMode _mode = MeasureToolMode.Distance;
+        private MeasureToolUnits _unit = MeasureToolUnits.Metric;
+
         public MeasureToolMode Mode
         {
             get { return _mode; }
@@ -39,24 +44,13 @@ namespace SharpMap.Presentation.Web.SharpLayers.Controls.Measure
         [ClientPropertyName("handler")]
         public string Handler
         {
-            get
-            {
-                return Mode == MeasureToolMode.Distance ? "OpenLayers.Handler.Path" : "OpenLayers.Handler.Polygon"; 
-            }
+            get { return Mode == MeasureToolMode.Distance ? "OpenLayers.Handler.Path" : "OpenLayers.Handler.Polygon"; }
         }
 
-        private MeasureToolUnits _unit = MeasureToolUnits.Metric;
- 
         public MeasureToolUnits Units
         {
-            get
-            {
-                return _unit;
-            }
-            set
-            {
-                _unit = value;
-            }
+            get { return _unit; }
+            set { _unit = value; }
         }
 
         [ExtenderControlProperty]
@@ -69,7 +63,7 @@ namespace SharpMap.Presentation.Web.SharpLayers.Controls.Measure
                 {
                     case MeasureToolUnits.English:
                         return "english";
-                    case MeasureToolUnits.Geographic :
+                    case MeasureToolUnits.Geographic:
                         return "geographic";
                     default:
                         return "metric";
@@ -80,40 +74,24 @@ namespace SharpMap.Presentation.Web.SharpLayers.Controls.Measure
 
         [ExtenderControlProperty]
         [ClientPropertyName("geodesic")]
-        public bool IsGeodesic
-        {
-            get; set;
-        }
+        public bool IsGeodesic { get; set; }
 
 
         [ExtenderControlProperty]
         [ClientPropertyName("persist")]
-        public bool Persist
-        {
-            get;
-            set;
-        }
+        public bool Persist { get; set; }
 
         [ExtenderControlProperty]
         [ClientPropertyName("sld")]
         [ComponentReference]
-        public string Sld
-        {
-            get; set;
-        }
+        public string Sld { get; set; }
 
         [ExtenderControlProperty]
         [ClientPropertyName("styleSelector")]
-        public string StyleSelector
-        {
-            get; set;
-        }
+        public string StyleSelector { get; set; }
 
         [ExtenderControlProperty]
         [ClientPropertyName("onClientMeasure")]
-        public string OnClientMeasure
-        {
-            get; set;
-        }
+        public string OnClientMeasure { get; set; }
     }
 }

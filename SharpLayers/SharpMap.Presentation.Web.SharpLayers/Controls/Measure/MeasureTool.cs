@@ -21,11 +21,15 @@ using AjaxControlToolkit;
 #endregion
 
 [assembly: WebResource("SharpMap.Presentation.Web.SharpLayers.Controls.Measure.MeasureTool.js", "text/javascript")]
+[assembly: WebResource("SharpMap.Presentation.Web.SharpLayers.Controls.Measure.MeasureToolButton.js", "text/javascript")
+]
 
 namespace SharpMap.Presentation.Web.SharpLayers.Controls.Measure
 {
     [ClientScriptResource("SharpMap.Presentation.Web.SharpLayers.Controls.Measure.MeasureTool",
         "SharpMap.Presentation.Web.SharpLayers.Controls.Measure.MeasureTool.js")]
+    [ClientScriptResource("SharpMap.Presentation.Web.SharpLayers.Controls.Measure.MeasureToolButton",
+        "SharpMap.Presentation.Web.SharpLayers.Controls.Measure.MeasureToolButton.js")]
     [TargetControlType(typeof (Control))]
     public class MeasureTool : ToolBaseComponent<MeasureToolBuilderParams>
     {

@@ -20,7 +20,8 @@ namespace SharpMap.Presentation.Web.SharpLayers.Layers.Tms
 {
     public class TmsLayerBuilderParams : LayerBuilderParamsBase, IGridBasedLayerBuilderParams
     {
-        private readonly CollectionBase<UriValue> _urls = new CollectionBase<UriValue>((a, b) => a.Value != b.Value);
+        private readonly CollectionBase<UriValue> _urls = new CollectionBase<UriValue>(
+            delegate(UriValue a, UriValue b) { return a.Value != b.Value; });
 
         [ExtenderControlProperty]
         [ClientPropertyName("layername")]

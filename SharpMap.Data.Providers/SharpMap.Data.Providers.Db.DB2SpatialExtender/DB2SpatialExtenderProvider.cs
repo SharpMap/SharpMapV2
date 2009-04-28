@@ -469,7 +469,7 @@ SELECT COLS.COLUMN_NAME
                                                                         properties,
                                                                         new CollectionExpression<OrderByExpression>(
                                                                             new OrderByExpression[] {})),
-                                                                    o => o.ToString("\"{0}\""))));
+                                                                    delegate(OrderByExpression o) { return o.ToString("\"{0}\""); })));
 
 
             string orderByClause = string.IsNullOrEmpty(orderByCols) ? "" : " ORDER BY " + orderByCols;

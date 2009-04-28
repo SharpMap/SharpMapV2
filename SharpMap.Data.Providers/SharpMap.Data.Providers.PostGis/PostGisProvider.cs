@@ -329,7 +329,13 @@ LIMIT 1;";
                     ?
                         "*"
                     :
-                        string.Join(",", Enumerable.ToArray(Processor.Select(attributes, o => QualifyColumnName(o.PropertyName))));
+                        string.Join(",", Enumerable.ToArray(Processor.Select(attributes,
+                                                                             delegate(PropertyNameExpression o)
+                                                                                 {
+                                                                                     return
+                                                                                         QualifyColumnName(
+                                                                                             o.PropertyName);
+                                                                                 })));
 
                 if (columns != "*")
                 {
@@ -448,7 +454,7 @@ where ns.nspname=:p0::text and cls.relname=:p1::text and cls.relkind='r';";
                                                                             properties,
                                                                             new CollectionExpression<OrderByExpression>(
                                                                                 new OrderByExpression[] {})),
-                                                                        o => o.ToString("\"{0}\""))));
+                                                                        delegate(OrderByExpression o) { return o.ToString("\"{0}\""); })));
 
 
                 string orderByClause = string.IsNullOrEmpty(orderByCols) ? "" : " ORDER BY " + orderByCols;
@@ -500,7 +506,7 @@ where ns.nspname=:p0::text and cls.relname=:p1::text and cls.relkind='r';";
                                                                         properties,
                                                                         new CollectionExpression<OrderByExpression>(
                                                                             new OrderByExpression[] {})),
-                                                                    o => o.ToString("\"{0}\""))));
+                                                                    delegate(OrderByExpression o) { return o.ToString("\"{0}\""); })));
 
 
             orderByCols = string.IsNullOrEmpty(orderByCols) ? QualifyColumnName(OidColumn) : orderByCols;

@@ -11,7 +11,7 @@ namespace SharpMap.Data.Providers.Db.Expressions
         : ProviderPropertyExpression<CollectionExpression<OrderByExpression>>
     {
         public OrderByCollectionExpression(IEnumerable<string> names)
-            : this(Processor.Transform(names, o => new OrderByExpression(o)))
+            : this(Processor.Transform(names, delegate(string o) { return new OrderByExpression(o); }))
         { }
 
         public OrderByCollectionExpression(string name, SortOrder direction)
