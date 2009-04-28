@@ -105,21 +105,23 @@
     </When>
     <Otherwise>
       <ItemGroup>
-        <Reference Include="Rhino.Mocks, Version=3.1.0.584, Culture=neutral, PublicKeyToken=0b3305902db7183f, processorArchitecture=MSIL">
-          <SpecificVersion>False</SpecificVersion>
-          <HintPath>..\ExternalReferences\Rhino.Mocks.dll</HintPath>
-        </Reference>
+
         <Reference Include="System" />
         <Reference Include="System.Data" />
         <Reference Include="System.Xml" />
-        <Reference Include="xunit, Version=1.0.3.1299, Culture=neutral, PublicKeyToken=8d05b1bb7a6fdb6c, processorArchitecture=MSIL">
-          <SpecificVersion>False</SpecificVersion>
-          <HintPath>..\ExternalReferences\xunit.dll</HintPath>
-        </Reference>
+
       </ItemGroup>
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Reference Include="Rhino.Mocks, Version=3.1.0.584, Culture=neutral, PublicKeyToken=0b3305902db7183f, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\ExternalReferences\Rhino.Mocks.dll</HintPath>
+    </Reference>
+    <Reference Include="xunit, Version=1.0.3.1299, Culture=neutral, PublicKeyToken=8d05b1bb7a6fdb6c, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\ExternalReferences\xunit.dll</HintPath>
+    </Reference>
     <ProjectReference Include="..\GeoAPI\src\GeoAPI\GeoAPI.Net.csproj">
       <Project>{FFB69466-79DE-466A-ADA7-5C47C5C5CA3A}</Project>
       <Name>GeoAPI.Net</Name>

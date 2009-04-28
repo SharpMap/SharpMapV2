@@ -21,7 +21,6 @@ using System.Globalization;
 using System.Text;
 using GeoAPI.Coordinates;
 using GeoAPI.CoordinateSystems;
-using GeoAPI.DataStructures;
 using GeoAPI.Geometries;
 using SharpMap.Data.Providers.Db;
 using SharpMap.Data.Providers.Db.Expressions;
@@ -32,9 +31,11 @@ using SharpMap.Utilities.SridUtility;
 #if DOTNET35
 using Processor = System.Linq.Enumerable;
 using Enumerable = System.Linq.Enumerable;
-using Caster = System.Linq.Enumerable;
+using Caster = GeoAPI.DataStructures.Caster;
 #else
-
+using Processor = GeoAPI.DataStructures.Processor;
+using Caster = GeoAPI.DataStructures.Caster;
+using Enumerable = GeoAPI.DataStructures.Enumerable;
 #endif
 
 namespace SharpMap.Data.Providers

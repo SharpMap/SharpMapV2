@@ -40,7 +40,7 @@ using ByteEncoder = GeoAPI.DataStructures.ByteEncoder;
 #if DOTNET35
 using Processor = System.Linq.Enumerable;
 using Enumerable = System.Linq.Enumerable;
-using Caster = System.Linq.Enumerable;
+using Caster = GeoAPI.DataStructures.Caster;
 #else
 using Processor = GeoAPI.DataStructures.Processor;
 using Caster = GeoAPI.DataStructures.Caster;

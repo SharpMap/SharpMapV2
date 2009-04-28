@@ -20,16 +20,17 @@ using System.Reflection;
 using System.Reflection.Emit;
 using System.Text;
 using GeoAPI.CoordinateSystems.Transformations;
-using GeoAPI.DataStructures;
 using GeoAPI.Geometries;
 using SharpMap.Expressions;
 #if DOTNET35
+using Processor = System.Linq.Enumerable;
 using Enumerable = System.Linq.Enumerable;
-using Caster = System.Linq.Enumerable;
+using Caster = GeoAPI.DataStructures.Caster;
 #else
-
+using Processor = GeoAPI.DataStructures.Processor;
+using Caster = GeoAPI.DataStructures.Caster;
+using Enumerable = GeoAPI.DataStructures.Enumerable;
 #endif
-
 namespace SharpMap.Data.Providers.Db
 {
     public abstract class ExpressionTreeToSqlCompilerBase<TOid>
@@ -381,7 +382,7 @@ namespace SharpMap.Data.Providers.Db
             if (exp == null)
                 return;
 
-            if (Enumerable.Count(exp.Right.Collection) == 0)
+            if (Enumerable.Count(Caster.Cast<object>(exp.Right.Collection)) == 0)
                 return;
 
             StringBuilder sb = new StringBuilder();

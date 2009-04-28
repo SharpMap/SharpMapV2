@@ -28,7 +28,6 @@ using System.Diagnostics;
 using System.Globalization;
 using GeoAPI.CoordinateSystems;
 using GeoAPI.CoordinateSystems.Transformations;
-using GeoAPI.DataStructures;
 using GeoAPI.Geometries;
 using SharpMap.Data.Providers.Db.Expressions;
 using SharpMap.Expressions;
@@ -38,7 +37,9 @@ using Processor = System.Linq.Enumerable;
 using Enumerable = System.Linq.Enumerable;
 using Caster = GeoAPI.DataStructures.Caster;
 #else
-
+using Processor = GeoAPI.DataStructures.Processor;
+using Caster = GeoAPI.DataStructures.Caster;
+using Enumerable = GeoAPI.DataStructures.Enumerable;
 #endif
 
 namespace SharpMap.Data.Providers.Db

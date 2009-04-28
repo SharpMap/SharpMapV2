@@ -19,11 +19,13 @@ using System;
 using System.Collections;
 
 #if DOTNET35
+using Processor = System.Linq.Enumerable;
 using Enumerable = System.Linq.Enumerable;
-using Caster = System.Linq.Enumerable;
-#else
-using Enumerable = GeoAPI.DataStructures.Enumerable;
 using Caster = GeoAPI.DataStructures.Caster;
+#else
+using Processor = GeoAPI.DataStructures.Processor;
+using Caster = GeoAPI.DataStructures.Caster;
+using Enumerable = GeoAPI.DataStructures.Enumerable;
 #endif
 
 namespace SharpMap.Expressions
