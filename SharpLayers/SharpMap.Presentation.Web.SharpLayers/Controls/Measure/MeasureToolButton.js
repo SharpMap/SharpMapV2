@@ -1,4 +1,6 @@
-﻿SharpMap.Presentation.Web.SharpLayers.Controls.Measure.MeasureToolButton = OpenLayers.Class(OpenLayers.Control.Measure, {
+﻿Type.registerNamespace("SharpMap.Presentation.Web.SharpLayers.Controls.Measure");
+
+SharpMap.Presentation.Web.SharpLayers.Controls.Measure.MeasureToolButton = OpenLayers.Class(OpenLayers.Control.Measure, {
     type: OpenLayers.Control.TYPE_TOOL,
 
     draw: function(px) {
