@@ -48,8 +48,7 @@ SharpMap.Presentation.Web.SharpLayers.Controls.Measure.MeasureTool.prototype = {
 
         if ((selector) && (sld))
             styleMap = selector(sld.get_hostedItem());
-
-        options.handlerOptions = { "styleMap": styleMap };
+        options.handlerOptions = { "layerOptions": { "styleMap": styleMap} };
 
         var handler = eval(options.handler);
         delete options.handler;
@@ -59,16 +58,34 @@ SharpMap.Presentation.Web.SharpLayers.Controls.Measure.MeasureTool.prototype = {
 
         options.type = OpenLayers.Control.TYPE_TOOL;
         options.displayClass = (options.displayClass) || "olControlMeasure";
-        call = (call) ? call : function(e) { alert(e); };
+        call = (call) ? call : function(e) { alert(Math.round(e.measure) + e.units); };
+
+
 
         var m = new SharpMap.Presentation.Web.SharpLayers.Controls.Measure.MeasureToolButton(handler, options);
 
         m.events.on({ "measure": call });
 
-        debugger;
 
-        var p = new OpenLayers.Control.Panel({ "div": div });
+
+        var p = new OpenLayers.Control.Panel({ "div": div, "displayClass": "" });
+
+        //jd: following needs to be moved out
+        p._destroy = p.destroy;
+        p.destroy = function() {
+            Array.remove(OpenLayers.Control.Panel.panels, this);
+            this._destroy();
+        }
+
+        OpenLayers.Control.Panel.panels.push(p);
+        p._onClick = p.onClick;
+        p.onClick = function(ctl, evt) {
+            OpenLayers.Control.Panel.onPanelActivated(this);
+            return this._onClick(ctl, evt);
+        };
+
         p.addControls([m]);
+
 
         return p;
 
