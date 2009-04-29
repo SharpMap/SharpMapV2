@@ -1,31 +1,27 @@
-﻿SharpMap.Presentation.Web.SharpLayers.Controls.Measure.MeasureToolButton = OpenLayers.Class(OpenLayers.Control, {
+﻿SharpMap.Presentation.Web.SharpLayers.Controls.Measure.MeasureToolButton = OpenLayers.Class(OpenLayers.Control.Measure, {
     type: OpenLayers.Control.TYPE_TOOL,
-    innerTool: null,
 
-    initialize: function(innerTool, options) {
-        OpenLayers.Control.prototype.initialize.apply(this, [options]);
-        this.innerTool = innerTool;
-    },
-    
-    destroy: function() {
-        this.innerTool.destroy();
-        OpenLayers.Control.prototype.destroy.apply(this, arguments);
+    draw: function(px) {
+        if (this.div == null) {
+            this.div = OpenLayers.Util.createDiv(this.id);
+        }
+
+        this.div.className = this.displayClass + (this.active ? "Active" : "Inactive");
+        if (!this.allowSelection) {
+            this.div.className += " olControlNoSelect";
+            this.div.setAttribute("unselectable", "on", 0);
+            this.div.onselectstart = function() { return (false); };
+        }
+        if (this.title != "") {
+            this.div.title = this.title;
+        }
+
+        if (px != null) {
+            this.position = px.clone();
+        }
+        this.moveTo(this.position);
+        return this.div;
     },
 
-    activate: function() {
-        this.innerTool.activate();
-        return OpenLayers.Control.prototype.activate.apply(this, arguments);
-    },
-
-    deactivate: function() {
-        this.innerTool.deactivate();
-        return OpenLayers.Control.prototype.deactivate.apply(this, arguments);
-    },
-
-    setMap: function(map) {
-        this.innerTool.setMap(map);
-        OpenLayers.Control.prototype.setMap.apply(this, arguments);
-    },
-    
-    CLASS_NAME: "HowlingAtTheMoon"
+    CLASS_NAME: "SharpMap.Presentation.Web.SharpLayers.Controls.Measure.MeasureToolButton"
 });

@@ -34,10 +34,12 @@ SharpMap.Presentation.Web.SharpLayers.Controls.Measure.MeasureTool.prototype = {
         var selector;
         var sld;
         var div;
+
+        div = options.div;
         delete options.div;
         if ((options.styleSelector)) {
             selector = eval(options.styleSelector);
-            delete options.styleSelectror;
+            delete options.styleSelector;
         }
         if ((options.sld)) {
             sld = options.sld;
@@ -56,17 +58,20 @@ SharpMap.Presentation.Web.SharpLayers.Controls.Measure.MeasureTool.prototype = {
         delete options.onClientMeasure;
 
         options.type = OpenLayers.Control.TYPE_TOOL;
-        options.displayClass = "";
-
+        options.displayClass = (options.displayClass) || "olControlMeasure";
         call = (call) ? call : function(e) { alert(e); };
 
-        var m = new OpenLayers.Control.Measure(handler, options);
+        var m = new SharpMap.Presentation.Web.SharpLayers.Controls.Measure.MeasureToolButton(handler, options);
 
         m.events.on({ "measure": call });
 
-        var button = new SharpMap.Presentation.Web.SharpLayers.Controls.Measure.MeasureToolButton(m, { });
+        debugger;
 
-        return button;
+        var p = new OpenLayers.Control.Panel({ "div": div });
+        p.addControls([m]);
+
+        return p;
+
     }
 
 }
