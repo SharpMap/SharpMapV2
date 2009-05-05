@@ -386,8 +386,35 @@ SharpMap.Presentation.Web.SharpLayers.Utility = {
 
 
         return object;
+    },
+    zoomToFeature: function(map, feature) {
+        map = map || feature.layer.map;
+        if (feature.bbox && (feature.bbox.getWidth() > 0 || feature.bbox.getHeight() > 0)) {
+            map.zoomToExtent(feature.bbox, true)
+        }
+        else {
+            if (feature.geometry.CLASS_NAME == "OpenLayers.Geometry.Point"
+            || (feature.geometry.getBounds().getWidth() == 0 && feature.geometry.getBounds().getHeight() == 0))
+                map.setCenter(feature.geometry.getBounds().getCenterLonLat(), map.getZoomForResolution(map.resolutions[map.resolutions.length - 1], true));
+            else {
+                map.zoomToExtent(feature.geometry.getBounds(), true)
+            }
+        }
+    },
+    panToFeature: function(map, feature) {
+        map = map || feature;
+        var p;
+        if (feature.bbox && (feature.bbox.getWidth() > 0 || feature.bbox.getHeight() > 0)) {
+            p = feature.bbox.getCenterLonLat();
+        }
+        else {
+            var b = feature.geometry.getBounds();
+            p = b.getCenterLonLat();
+        }
+        map.setCenter(p);
     }
 };
+
 
 $olRegistry = SharpMap.Presentation.Web.SharpLayers.OpenLayersRegistry;
 $olRegItem = SharpMap.Presentation.Web.SharpLayers.OpenLayersRegistryItem;

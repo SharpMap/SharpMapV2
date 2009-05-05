@@ -83,7 +83,7 @@ SharpMap.Presentation.Web.SharpLayers.Controls.Measure.MeasureTool.prototype = {
             OpenLayers.Control.Panel.onPanelActivated(this);
             return this._onClick(ctl, evt);
         };
-
+        
         p.addControls([m]);
 
 

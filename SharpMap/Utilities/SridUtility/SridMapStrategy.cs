@@ -15,111 +15,28 @@
 
 // This file Copyright Newgrove Consultants Ltd 2008
 // Author: John Diss
-
 using System;
 using System.Collections.Generic;
 using GeoAPI.CoordinateSystems;
 using Proj4Utility;
 #if DOTNET35
+
 using Processor = System.Linq.Enumerable;
 using Enumerable = System.Linq.Enumerable;
 using Caster = System.Linq.Enumerable;
+
 #else
 using Processor = GeoAPI.DataStructures.Processor;
 using Enumerable = GeoAPI.DataStructures.Enumerable;
 using Caster = GeoAPI.DataStructures.Caster;
 #endif
+
 namespace SharpMap.Utilities.SridUtility
 {
     public class SridMapStrategy : SridMapStrategyBase
     {
-        protected interface IKey
-        {
-            string Authority { get; set; }
-            object Code { get; set; }
-        }
-
-        protected interface IKey<TCode> : IKey
-        {
-            new TCode Code { get; set; }
-        }
-
-        private struct StringKey : IKey<String>
-        {
-
-            #region IKey<string> Members
-
-            public string Code
-            {
-                get;
-                set;
-            }
-
-            #endregion
-
-            #region IKey Members
-
-            public string Authority
-            {
-                get;
-                set;
-            }
-
-            object IKey.Code
-            {
-                get
-                {
-                    return Code;
-                }
-                set
-                {
-                    Code = (string)value;
-                }
-            }
-
-            #endregion
-        }
-
-        private struct LongKey : IKey<long>
-        {
-
-            #region IKey<long> Members
-
-            public long Code
-            {
-                get;
-                set;
-            }
-
-            #endregion
-
-            #region IKey Members
-
-            public string Authority
-            {
-                get;
-                set;
-            }
-
-            object IKey.Code
-            {
-                get
-                {
-                    return Code;
-                }
-                set
-                {
-                    Code = (long)value;
-                }
-            }
-
-            #endregion
-        }
-
-
-        //protected readonly IEnumerable<ICoordinateSystem> _coordinateSystems;
-        protected readonly IDictionary<IKey, ICoordinateSystem> _map = new Dictionary<IKey, ICoordinateSystem>();
         protected readonly IDictionary<int, IKey> _hashMap = new Dictionary<int, IKey>();
+        protected readonly IDictionary<IKey, ICoordinateSystem> _map = new Dictionary<IKey, ICoordinateSystem>();
 
         public SridMapStrategy(int priority, ICoordinateSystemFactory csFactory, IEnumerable<ICoordinateSystem> systems)
             : base(priority, csFactory)
@@ -131,25 +48,22 @@ namespace SharpMap.Utilities.SridUtility
                 long code;
                 if (long.TryParse(cs.AuthorityCode, out code))
                 {
-                    key = new LongKey() { Authority = cs.Authority, Code = code };
+                    key = new LongKey {Authority = cs.Authority, Code = code};
                 }
                 else
                 {
-                    key = new StringKey() { Authority = cs.Authority, Code = cs.AuthorityCode };
+                    key = new StringKey {Authority = cs.Authority, Code = cs.AuthorityCode};
                 }
                 if (!_map.ContainsKey(key))
                     _map.Add(key, cs);
-                else
-                    if (!cs.EqualParams(_map[key]))
-                        throw new ApplicationException();
+                else if (!cs.EqualParams(_map[key]))
+                    throw new ApplicationException();
 
                 int csKey = HashCoordSystem(cs);
                 if (!_hashMap.ContainsKey(csKey))
                     _hashMap.Add(csKey, key);
-                else
-                    if (!cs.EqualParams(_map[_hashMap[csKey]]))
-                        throw new ApplicationException();
-
+                else if (!cs.EqualParams(_map[_hashMap[csKey]]))
+                    throw new ApplicationException();
             }
         }
 
@@ -169,7 +83,7 @@ namespace SharpMap.Utilities.SridUtility
         private int HashGeocentricCoordinateSystem(IGeocentricCoordinateSystem sys)
         {
             return sys.HorizontalDatum.GetHashCode() ^ sys.PrimeMeridian.GetHashCode() ^ sys.Dimension.GetHashCode() ^
-              sys.LinearUnit.GetHashCode();
+                   sys.LinearUnit.GetHashCode();
         }
 
         private int HashGeographicCoordinateSystem(IGeographicCoordinateSystem sys)
@@ -203,14 +117,13 @@ namespace SharpMap.Utilities.SridUtility
                 IKey key = _hashMap[hash];
                 if (key is IKey<long>)
                 {
-                    output = (int)((IKey<long>)_hashMap[hash]).Code;
+                    output = (int) ((IKey<long>) _hashMap[hash]).Code;
                     return true;
                 }
 
                 //we found a matching hash but it has a string key.. hmmm
                 output = null;
                 return false;
-
             }
 
             foreach (KeyValuePair<IKey, ICoordinateSystem> kvp in _map)
@@ -220,10 +133,9 @@ namespace SharpMap.Utilities.SridUtility
                     IKey key = kvp.Key;
                     if (key is IKey<long>)
                     {
-                        output = (int)((IKey<long>)key).Code;
+                        output = (int) ((IKey<long>) key).Code;
                         return true;
                     }
-
                 }
             }
             output = null;
@@ -243,7 +155,7 @@ namespace SharpMap.Utilities.SridUtility
                 if (key is IKey<long>)
                 {
                     IKey<long> longKey = key as IKey<long>;
-                    if (longKey.Code == (long)input)
+                    if (longKey.Code == (long) input)
                     {
                         output = _map[longKey];
                         return true;
@@ -264,11 +176,11 @@ namespace SharpMap.Utilities.SridUtility
                 long code;
                 if (long.TryParse(prts[1], out code))
                 {
-                    key = new LongKey() { Authority = prts[0], Code = code };
+                    key = new LongKey {Authority = prts[0], Code = code};
                 }
                 else
                 {
-                    key = new StringKey() { Authority = prts[0], Code = prts[1] };
+                    key = new StringKey {Authority = prts[0], Code = prts[1]};
                 }
 
                 if (_map.ContainsKey(key))
@@ -293,8 +205,64 @@ namespace SharpMap.Utilities.SridUtility
                 output = null;
                 return false;
             }
-
         }
+
+        #region Nested type: IKey
+
+        protected interface IKey
+        {
+            string Authority { get; set; }
+            object Code { get; set; }
+        }
+
+        protected interface IKey<TCode> : IKey
+        {
+            new TCode Code { get; set; }
+        }
+
+        #endregion
+
+        #region Nested type: LongKey
+
+        private struct LongKey : IKey<long>
+        {
+            #region IKey<long> Members
+
+            public long Code { get; set; }
+
+            public string Authority { get; set; }
+
+            object IKey.Code
+            {
+                get { return Code; }
+                set { Code = (long) value; }
+            }
+
+            #endregion
+        }
+
+        #endregion
+
+        #region Nested type: StringKey
+
+        private struct StringKey : IKey<String>
+        {
+            #region IKey<string> Members
+
+            public string Code { get; set; }
+
+            public string Authority { get; set; }
+
+            object IKey.Code
+            {
+                get { return Code; }
+                set { Code = (string) value; }
+            }
+
+            #endregion
+        }
+
+        #endregion
     }
 
 
@@ -303,7 +271,6 @@ namespace SharpMap.Utilities.SridUtility
         public SridProj4Strategy(int priority, ICoordinateSystemFactory csFactory)
             : base(priority, csFactory, GetList(csFactory))
         {
-
         }
 
         private static IEnumerable<ICoordinateSystem> GetList(ICoordinateSystemFactory fact)
