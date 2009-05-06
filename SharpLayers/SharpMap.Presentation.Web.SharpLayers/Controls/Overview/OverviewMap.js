@@ -26,10 +26,14 @@ SharpMap.Presentation.Web.SharpLayers.Controls.Overview.OverviewMap.prototype = 
     dispose: function() {
         SharpMap.Presentation.Web.SharpLayers.Controls.Overview.OverviewMap.callBaseMethod(this, 'dispose');
     },
+
     _toolBuilderDelegate: function() {
         var options = this.get_builderParams();
         var mapHost = this.get_targetMapHost();
+        options = (options) ? options : {};
         options.mapOptions = mapHost.get_builderParams();
+        if ((options.mapOptions.controls))
+            delete options.mapOptions.controls;
         return new OpenLayers.Control.OverviewMap(options);
     }
 }

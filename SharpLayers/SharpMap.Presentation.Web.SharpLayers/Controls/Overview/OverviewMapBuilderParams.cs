@@ -24,14 +24,14 @@ namespace SharpMap.Presentation.Web.SharpLayers.Controls.Overview
 
         [ExtenderControlProperty]
         [ClientPropertyName("minRectSize")]
-        public int MinimumRectangleSize { get; set; }
+        public int? MinimumRectangleSize { get; set; }
 
         [ExtenderControlProperty]
         [ClientPropertyName("minRatio")]
-        public int MinRatio { get; set; }
+        public int? MinRatio { get; set; }
 
         [ExtenderControlProperty]
         [ClientPropertyName("maxRatio")]
-        public int MaxRatio { get; set; }
+        public int? MaxRatio { get; set; }
     }
 }

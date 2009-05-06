@@ -29,8 +29,11 @@ SharpMap.Presentation.Web.SharpLayers.Controls.ToolBaseComponent.prototype = {
         var f = function() {
             mapHost.addControl(_this.get_hostedItem());
         };
-        SharpMap.Presentation.Web.SharpLayers.InitSync.addLoad(f);
 
+        this.scheduleAddToMap(f);
+    },
+    scheduleAddToMap: function(func) {
+        SharpMap.Presentation.Web.SharpLayers.InitSync.addLoad(func);
     },
 
     dispose: function() {
