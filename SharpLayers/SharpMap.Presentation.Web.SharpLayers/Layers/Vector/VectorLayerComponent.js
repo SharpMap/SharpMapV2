@@ -41,10 +41,12 @@ SharpMap.Presentation.Web.SharpLayers.Layers.Vector.VectorLayerComponent.prototy
             if (typeof options.styleSelector == "string")
             options.styleSelector = eval(options.styleSelector);
 
-        if (options["sld"] != null && options["styleSelector"] != null) 
+        if (options["sld"] != null && options["styleSelector"] != null)
             options.styleMap = options.styleSelector(options.sld.get_hostedItem());
- 
-
+        if ((options.sld))
+            delete options.sld;
+        if ((options.styleSelector))
+            delete options.styleSelector;
 
         return new OpenLayers.Layer.Vector(this.get_name(), options);
     }

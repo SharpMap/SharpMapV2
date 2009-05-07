@@ -39,7 +39,9 @@ SharpMap.Presentation.Web.SharpLayers.MapHostBehavior.prototype = {
                             new OpenLayers.Control.Attribution(),
                             new OpenLayers.Control.KeyboardDefaults()];
 
-        return new OpenLayers.Map(this.get_element(), options);
+        var map = new OpenLayers.Map(this.get_element(), options);
+        map.options = options; //hack to aid serialization
+        return map;
     },
     addControl: function(cntrl) {
         this.get_hostedItem().addControl(cntrl);
