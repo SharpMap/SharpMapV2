@@ -58,7 +58,7 @@ SharpMap.Presentation.Web.SharpLayers.Controls.Measure.MeasureTool.prototype = {
 
         options.type = OpenLayers.Control.TYPE_TOOL;
         options.displayClass = (options.displayClass) || "olControlMeasure";
-        call = (call) ? call : function(e) { alert(Math.round(e.measure) + e.units); };
+        call = (call) ? call : function(e) { alert(Math.round(e.measure) + e.units, "Measurement"); };
 
 
 
