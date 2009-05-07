@@ -33,5 +33,9 @@ namespace SharpMap.Presentation.Web.SharpLayers.Controls.Overview
         [ExtenderControlProperty]
         [ClientPropertyName("maxRatio")]
         public int? MaxRatio { get; set; }
+
+        [ExtenderControlProperty]
+        [ClientPropertyName("autoPan")]
+        public bool AutoPan { get; set; }
     }
 }
