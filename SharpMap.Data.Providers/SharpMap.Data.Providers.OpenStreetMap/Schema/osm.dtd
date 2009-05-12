@@ -1,0 +1,82 @@
+<!ELEMENT osm (user|preferences|gpx_file|api|changeset|(node|way|relation)+)>
+<!ATTLIST osm version            CDATA #FIXED "0.6">
+<!ATTLIST osm generator          CDATA #IMPLIED>
+
+<!--response to request message api/0.6/user/details -->
+<!ELEMENT user (home?)>
+<!ATTLIST user display_name      CDATA #REQUIRED>
+<!ATTLIST user account_created   CDATA #REQUIRED>
+
+<!ELEMENT home EMPTY>
+<!ATTLIST home lat               CDATA #REQUIRED>
+<!ATTLIST home lon               CDATA #REQUIRED>
+<!ATTLIST home zoom              CDATA #REQUIRED>
+
+<!--response to request message api/0.6/user/preferences -->
+<!ELEMENT preferences (tag*)>
+
+<!--response to request message api/0.6/user/gpx -->
+<!ELEMENT gpx_file EMPTY>
+<!ATTLIST gpx_file id            CDATA #REQUIRED>
+<!ATTLIST gpx_file name          CDATA #REQUIRED>
+<!ATTLIST gpx_file lat           CDATA #REQUIRED>
+<!ATTLIST gpx_file lon           CDATA #REQUIRED>
+<!ATTLIST gpx_file user          CDATA #REQUIRED>
+<!ATTLIST gpx_file public        (true|false) "false">
+<!ATTLIST gpx_file pending       (true|false) "false">
+<!ATTLIST gpx_file timestamp     CDATA #REQUIRED>
+
+<!--response to request message api/capabilities -->
+<!ELEMENT api (version, area, tracepoints, waynodes)>
+
+<!ELEMENT version EMPTY>
+<!ATTLIST version minimum        CDATA #REQUIRED>
+<!ATTLIST version maximum        CDATA #REQUIRED>
+
+<!ELEMENT area EMPTY>
+<!ATTLIST area maximum           CDATA #REQUIRED>
+
+<!ELEMENT tracepoints EMPTY>
+<!ATTLIST tracepoints per_page   CDATA #REQUIRED>
+
+<!ELEMENT waynodes EMPTY>
+<!ATTLIST waynodes maximum       CDATA #REQUIRED>
+
+<!--response to request message api/0.6/changeset/*tbd* -->
+<!ELEMENT changeset (tag*)>
+
+<!--response to various request messages api/0.6/(create|delete|update)/ *tbd* -->
+<!ELEMENT node (tag*)>
+<!ATTLIST node id                CDATA #REQUIRED>
+<!ATTLIST node lat               CDATA #REQUIRED>
+<!ATTLIST node lon               CDATA #REQUIRED>
+<!ATTLIST node changeset         CDATA #IMPLIED>
+<!ATTLIST node visible           (true|false) #REQUIRED>
+<!ATTLIST node user              CDATA #IMPLIED>
+<!ATTLIST node timestamp         CDATA #IMPLIED>
+
+<!ELEMENT way (tag*,nd,tag*,nd,(tag|nd)*)>
+<!ATTLIST way id                 CDATA #REQUIRED>
+<!ATTLIST way changeset          CDATA #IMPLIED>
+<!ATTLIST way visible            (true|false) #REQUIRED>
+<!ATTLIST way user               CDATA #IMPLIED>
+<!ATTLIST way timestamp          CDATA #IMPLIED>
+
+<!ELEMENT nd EMPTY>
+<!ATTLIST nd ref                 CDATA #REQUIRED>
+
+<!ELEMENT relation ((tag|member)*)>
+<!ATTLIST relation id            CDATA #REQUIRED>
+<!ATTLIST relation changeset     CDATA #IMPLIED>
+<!ATTLIST relation visible       CDATA #IMPLIED>
+<!ATTLIST relation user          CDATA #IMPLIED>
+<!ATTLIST relation timestamp     CDATA #IMPLIED>
+
+<!ELEMENT member EMPTY>
+<!ATTLIST member type            (way|node|relation) #REQUIRED>
+<!ATTLIST member ref             CDATA  #REQUIRED>
+<!ATTLIST member role            CDATA  #IMPLIED>
+
+<!ELEMENT tag EMPTY>
+<!ATTLIST tag  k                 CDATA #REQUIRED>
+<!ATTLIST tag  v                 CDATA #REQUIRED>
