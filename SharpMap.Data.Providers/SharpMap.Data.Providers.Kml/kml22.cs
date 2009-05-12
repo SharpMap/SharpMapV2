@@ -19,7 +19,7 @@ using System.Diagnostics;
 using System.Xml;
 using System.Xml.Serialization;
 
-namespace SharpMap.Data.Providers.Kml
+namespace Ogc.Kml
 {
     /// <remarks/>
     [GeneratedCode("xsd", "2.0.50727.3038")]
