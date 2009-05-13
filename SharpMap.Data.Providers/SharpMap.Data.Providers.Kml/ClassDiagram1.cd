@@ -1,0 +1,1306 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="SharpMap.Entities.Atom.Link" Collapsed="true">
+    <Position X="108.75" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ABAAACCAAIAGAkAAAAAAAABAAAACAABAAQAAAAAAAAA=</HashCode>
+      <FileName>Entities\Atom\link.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Entities.Atom.Person" Collapsed="true">
+    <Position X="105.25" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAgAACAAAAACAAAAAABAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Entities\Atom\Person.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Entities.Ogc.Kml.Alias" Collapsed="true">
+    <Position X="14" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAASAAAAAAAAAAAAAAAAAEAACAAAEAACAABAAgAA=</HashCode>
+      <FileName>Entities\Kml\Alias.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Entities.Ogc.Kml.BalloonStyle" Collapsed="true">
+    <Position X="18.5" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IADAAABAGAAAEAABAAABCAAEAAAkAAAIAAAgAAAAAAA=</HashCode>
+      <FileName>Entities\Kml\BalloonStyle.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Entities.Ogc.Kml.BasicLink" Collapsed="true">
+    <Position X="56.75" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAACMAACAAQAAAAAQAAAAAA=</HashCode>
+      <FileName>Entities\Kml\BasicLink.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Entities.Ogc.Kml.Boundary" Collapsed="true">
+    <Position X="94.75" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAQQAAAAAAAAAAAAAAAAAAAAAAAAABgAiAAAAAAAAA=</HashCode>
+      <FileName>Entities\Kml\Boundary.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Entities.Ogc.Kml.Camera" Collapsed="true">
+    <Position X="86" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IgIBQAAAAEAAACAA4AAAAAQkCIIIIAAAKAIkAABSCAA=</HashCode>
+      <FileName>Entities\Kml\Camera.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Entities.Ogc.Kml.Change" Collapsed="true">
+    <Position X="98.25" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAgAACAAAAACAAAAAABAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Entities\Kml\Change.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Entities.Ogc.Kml.ColorStyleBase" Collapsed="true">
+    <Position X="24" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AIAAgAIAAAAAAAAAAAAgAABAAFACAACAAAAAAAAIAAA=</HashCode>
+      <FileName>Entities\Kml\ColorStyleBase.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Entities.Ogc.Kml.ContainerBase" Collapsed="true">
+    <Position X="48.75" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAIAAgAAA=</HashCode>
+      <FileName>Entities\Kml\ContainerBase.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Entities.Ogc.Kml.Create" Collapsed="true">
+    <Position X="101.75" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAACAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Entities\Kml\Create.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Entities.Ogc.Kml.Data" Collapsed="true">
+    <Position X="0.5" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AEBAAAAAABAAAAAAAIAAAACAAAAGACAAAAAAAAAAAAA=</HashCode>
+      <FileName>Entities\Kml\Data.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Entities.Ogc.Kml.Delete" Collapsed="true">
+    <Position X="103.5" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAACAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Entities\Kml\Delete.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Entities.Ogc.Kml.Document" Collapsed="true">
+    <Position X="47.75" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAACAAAAACgAAAAAAAAAEAAAAAAAAAAIQAAAMAAA=</HashCode>
+      <FileName>Entities\Kml\Document.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Entities.Ogc.Kml.ExtendedData" Collapsed="true">
+    <Position X="96.5" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IAAQAAAAAAEAAAAAAAAAAAAAAAAAABAAAAAAAAAAKAA=</HashCode>
+      <FileName>Entities\Kml\ExtendedData.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Entities.Ogc.Kml.FeatureBase" Collapsed="true">
+    <Position X="45.5" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAJHAEGAgIACCAABIaCgAIEEQEIsgAAgBAAgABRAAEI=</HashCode>
+      <FileName>Entities\Kml\FeatureBase.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Entities.Ogc.Kml.Folder" Collapsed="true">
+    <Position X="50" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAACAAIAACAAAAAQgAAAAAAAAAAAAABAAAAAAAAA=</HashCode>
+      <FileName>Entities\Kml\Folder.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Entities.Ogc.Kml.GeometryBase" Collapsed="true">
+    <Position X="66.75" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAABAgAAEAAAAAAAAAAAAAAAAAIAAAAA=</HashCode>
+      <FileName>Entities\Kml\GeometryBase.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Entities.Ogc.Kml.GroundOverlay" Collapsed="true">
+    <Position X="43.25" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QAABEAAAAABQEAAAIAAAACAAAIAAAAAAAAAgAAACAAg=</HashCode>
+      <FileName>Entities\Kml\GroundOverlay.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Entities.Ogc.Kml.IconStyle" Collapsed="true">
+    <Position X="25.25" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IAAAJAABAAAACAAAQAAAAAACAAoAEAAGAAAgAAEACIA=</HashCode>
+      <FileName>Entities\Kml\IconStyle.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Entities.Ogc.Kml.ImagePyramid" Collapsed="true">
+    <Position X="88.25" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EAAYgAQAIQIBAACAAABAIAAAAFAAAAAARAACEAAAQQA=</HashCode>
+      <FileName>Entities\Kml\ImagePyramid.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Entities.Ogc.Kml.ItemIconType" Collapsed="true">
+    <Position X="2.75" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IAAAAEAAAAEAAAAAEAACAAAAAAACAAAEAAAAQAAAAAA=</HashCode>
+      <FileName>Entities\Kml\ItemIconType.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Entities.Ogc.Kml.KmlObjectBase" Collapsed="true">
+    <Position X="45.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAIAAAAAAAQQAAAAAAAAAAAAAACAAAAAAAAAAIgA=</HashCode>
+      <FileName>Entities\Kml\KmlObjectBase.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Entities.Ogc.Kml.KmlRoot" Collapsed="true">
+    <Position X="101.75" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAEAAAAFKAEIEAAAAAAAIAgAAAAAAA=</HashCode>
+      <FileName>Entities\Kml\KmlRoot.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Entities.Ogc.Kml.LabelStyle" Collapsed="true">
+    <Position X="23" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAABCAAAAAACAAAAAAAAAECAAAAAAAAAAAoAAAAAQA=</HashCode>
+      <FileName>Entities\Kml\LabelStyle.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Entities.Ogc.Kml.LatLonAltBox" Collapsed="true">
+    <Position X="74.75" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAABAABCAAMAIAIAEAAAAACAAgAAkAACgAAA=</HashCode>
+      <FileName>Entities\Kml\LatLonAltBox.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Entities.Ogc.Kml.LatLonBox" Collapsed="true">
+    <Position X="77" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AIAAQAAAAAAAAAAAAACAAQAAAAACAAAAAAAIAAAQACA=</HashCode>
+      <FileName>Entities\Kml\LatLonBox.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Entities.Ogc.Kml.LatLonBoxBase" Collapsed="true">
+    <Position X="75.75" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAEgAAAIAAAAABQAAAAQEAACAAAAAYBABABAVBAgoAA=</HashCode>
+      <FileName>Entities\Kml\LatLonBoxBase.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Entities.Ogc.Kml.LinearRing" Collapsed="true">
+    <Position X="68" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAIAAQAIACgAAAAAAgIAAEAAAoAEQQAAAiAAIAAAA=</HashCode>
+      <FileName>Entities\Kml\LinearRing.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Entities.Ogc.Kml.LineString" Collapsed="true">
+    <Position X="70.25" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAQAIACgAAgCAAgIBAEEAAgAAAQAAAiAAIAAAA=</HashCode>
+      <FileName>Entities\Kml\LineString.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Entities.Ogc.Kml.LineStyle" Collapsed="true">
+    <Position X="27.5" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AEAAAAAAAAEAAAAAYAADAAAAgAAAAAAAEAAAAAAAAAA=</HashCode>
+      <FileName>Entities\Kml\LineStyle.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Entities.Ogc.Kml.LinkType" Collapsed="true">
+    <Position X="56.75" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>BAoABEAAQAAIQCAAIAAIDQEAhCQEABEBgAAIAAAUACA=</HashCode>
+      <FileName>Entities\Kml\LinkType.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Entities.Ogc.Kml.ListStyle" Collapsed="true">
+    <Position X="29.75" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ECAQAAAACACEABIAiAAAAAAAAAAAAAEQAAACAAUAEAA=</HashCode>
+      <FileName>Entities\Kml\ListStyle.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Entities.Ogc.Kml.Location" Collapsed="true">
+    <Position X="5" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IAIBQAAAAAAAgAAAgAAAAAAACIgBAAAADAAkAAACAAA=</HashCode>
+      <FileName>Entities\Kml\Location.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Entities.Ogc.Kml.Lod" Collapsed="true">
+    <Position X="7.25" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>DABEAAQQAAAABAAAAAGCAAAAAQIEAAIAAAFACACIABA=</HashCode>
+      <FileName>Entities\Kml\Lod.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Entities.Ogc.Kml.LookAt" Collapsed="true">
+    <Position X="83.75" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ooIBQAAIQEAAACAA5AEAAAAECIIAAAAACAAkAAACCAA=</HashCode>
+      <FileName>Entities\Kml\LookAt.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Entities.Ogc.Kml.Metadata" Collapsed="true">
+    <Position X="101.75" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Entities\Kml\Metadata.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Entities.Ogc.Kml.Model" Collapsed="true">
+    <Position X="63.5" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAQQAAAAAAQAIACAAEAAAhAAAAAAAgQAAgCQA=</HashCode>
+      <FileName>Entities\Kml\Model.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Entities.Ogc.Kml.MultiGeometry" Collapsed="true">
+    <Position X="65.75" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAACAABAACAAAABAAAAAACAAAAAAAAAAAAAAgAAA=</HashCode>
+      <FileName>Entities\Kml\MultiGeometry.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Entities.Ogc.Kml.NetworkLink" Collapsed="true">
+    <Position X="38.75" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ACAAAAQBAEgACAAAAAAAAIQFAAQAAAAAAQggAAAADAA=</HashCode>
+      <FileName>Entities\Kml\NetworkLink.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Entities.Ogc.Kml.NetworkLinkControl" Collapsed="true">
+    <Position X="103.5" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EMwEDgIAAAAAIAAAABCAAAAEIAAgIAYBABAgAAAJBCA=</HashCode>
+      <FileName>Entities\Kml\NetworkLinkControl.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Entities.Ogc.Kml.Orientation" Collapsed="true">
+    <Position X="79.25" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IgAAIAAAAEAAACAAYAAAAAQgCAIAIAAAIQAAAAAACAA=</HashCode>
+      <FileName>Entities\Kml\Orientation.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Entities.Ogc.Kml.OverlayBase" Collapsed="true">
+    <Position X="43.25" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAICBAAAAAAAEAAAAgAAIAgAAAAQCBAAAAIAEAAAA=</HashCode>
+      <FileName>Entities\Kml\OverlayBase.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Entities.Ogc.Kml.Pair" Collapsed="true">
+    <Position X="81.5" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAACAAAAAAIAAAAAQkEAAAEQAAAAAAAAAAgAAAhQAA=</HashCode>
+      <FileName>Entities\Kml\Pair.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Entities.Ogc.Kml.PhotoOverlay" Collapsed="true">
+    <Position X="45.5" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AIAAIAAAEAAAgAAAAgCAAQAAAAAAAAAAMCFBEAAABKg=</HashCode>
+      <FileName>Entities\Kml\PhotoOverlay.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Entities.Ogc.Kml.Placemark" Collapsed="true">
+    <Position X="52.25" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>YAAAAAAAAAAAAAAAAAAAAAAEAAAAgAEAAAAgAAAAAAA=</HashCode>
+      <FileName>Entities\Kml\Placemark.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Entities.Ogc.Kml.Point" Collapsed="true">
+    <Position X="72.5" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAACgAAAAAAgAAAEAAAhAAAQAAAgAAYAAAA=</HashCode>
+      <FileName>Entities\Kml\Point.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Entities.Ogc.Kml.Polygon" Collapsed="true">
+    <Position X="61.25" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAQAMACAAAAAAAAJQAEAAAggAAQBAgiAAIAAgg=</HashCode>
+      <FileName>Entities\Kml\Polygon.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Entities.Ogc.Kml.PolyStyle" Collapsed="true">
+    <Position X="20.75" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EAAAAAAIAAABAQAQIAAAAAAAAABAAEAIAIgAAAAAAgA=</HashCode>
+      <FileName>Entities\Kml\PolyStyle.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Entities.Ogc.Kml.Region" Collapsed="true">
+    <Position X="16.25" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IAAAAABAAAAAAAYAAAAAAAAAAAgAAAAAQAAACQAAAAA=</HashCode>
+      <FileName>Entities\Kml\Region.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Entities.Ogc.Kml.ResourceMap" Collapsed="true">
+    <Position X="32" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAICAAAAAAAAAAAAAAAIAGABAAAAAAAAAAA=</HashCode>
+      <FileName>Entities\Kml\ResourceMap.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Entities.Ogc.Kml.Scale" Collapsed="true">
+    <Position X="54.5" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAgAQAABAAAAAAYAAABoAAAAAZAAAIEABgAQAAAAA=</HashCode>
+      <FileName>Entities\Kml\Scale.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Entities.Ogc.Kml.SchemaData" Collapsed="true">
+    <Position X="59" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAABAAAAAAIAAAAAAAAAIAAAAAAAQAAAAAAAAAAAACE=</HashCode>
+      <FileName>Entities\Kml\SchemaData.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Entities.Ogc.Kml.SchemaType" Collapsed="true">
+    <Position X="100" Y="7.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAACAAAAhAAAIAAAAAAAAAEACAAAAAAAAAAIgA=</HashCode>
+      <FileName>Entities\Kml\SchemaType.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Entities.Ogc.Kml.ScreenOverlay" Collapsed="true">
+    <Position X="41" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AoAAAAAAEAAAIAAACICAAwAAAAAUAAAAAAABAACAgGA=</HashCode>
+      <FileName>Entities\Kml\ScreenOverlay.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Entities.Ogc.Kml.SimpleData" Collapsed="true">
+    <Position X="101.75" Y="7.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAIAAAAAAAAAGAAAAAAAgAAAAAAA=</HashCode>
+      <FileName>Entities\Kml\SimpleData.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Entities.Ogc.Kml.SimpleField" Collapsed="true">
+    <Position X="103.5" Y="7.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AEAAAAAAABACAgAAAIAAAAgAAAAFAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Entities\Kml\SimpleField.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Entities.Ogc.Kml.Snippet" Collapsed="true">
+    <Position X="105.25" Y="7.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAACAAAAAAAAAAAAAAAAAACAgAAAAAgAAAAAAA=</HashCode>
+      <FileName>Entities\Kml\Snippet.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Entities.Ogc.Kml.Style" Collapsed="true">
+    <Position X="11.75" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AEAAAQAIIAQQAAiQABAAAAECACAEAAAACIAAAAAAAAA=</HashCode>
+      <FileName>Entities\Kml\Style.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Entities.Ogc.Kml.StyleMap" Collapsed="true">
+    <Position X="9.5" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAEAAAgAAAQBAAAAAAAAAAAAAAAAAAAAAAAiAAA=</HashCode>
+      <FileName>Entities\Kml\StyleMap.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Entities.Ogc.Kml.StyleSelectorBase" Collapsed="true">
+    <Position X="10.5" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>CAAAABAAAAAAAAAAAIAAAAAAAAAAAAAAAAAIAAAAAAA=</HashCode>
+      <FileName>Entities\Kml\StyleSelectorBase.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Entities.Ogc.Kml.SubStyleBase" Collapsed="true">
+    <Position X="24" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EAAAAAAAAAAAAABACAAAAAAAAAAAAAAAAAAAAAAAAEA=</HashCode>
+      <FileName>Entities\Kml\SubStyleBase.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Entities.Ogc.Kml.TimePrimitiveBase" Collapsed="true">
+    <Position X="35.25" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAIAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAACIAAAAAA=</HashCode>
+      <FileName>Entities\Kml\TimePrimitiveBase.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Entities.Ogc.Kml.TimeSpan" Collapsed="true">
+    <Position X="34.25" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAQACAAAAAAAAAAAAAAAQAAIAAIAAEAAAAEAAAAQ=</HashCode>
+      <FileName>Entities\Kml\TimeSpan.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Entities.Ogc.Kml.TimeStamp" Collapsed="true">
+    <Position X="36.5" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAgAgABAAAAAAAAAAAAAQAAAIAAAAQAA=</HashCode>
+      <FileName>Entities\Kml\TimeStamp.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Entities.Ogc.Kml.Update" Collapsed="true">
+    <Position X="105.25" Y="9.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAACAAAAACAAAAAAAAAAAAEAAAAAEAACAAAAAEAA=</HashCode>
+      <FileName>Entities\Kml\Update.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Entities.Ogc.Kml.Vector2" Collapsed="true">
+    <Position X="107" Y="9.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAEAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAYAA=</HashCode>
+      <FileName>Entities\Kml\Vector2.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Entities.Ogc.Kml.ViewBase" Collapsed="true">
+    <Position X="84.75" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAEABAAAAAAAAAAAgAAAAAAAAAACAAAAAAAAAA=</HashCode>
+      <FileName>Entities\Kml\ViewBase.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Entities.Ogc.Kml.ViewVolume" Collapsed="true">
+    <Position X="90.5" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAQIAGCACAACQAIAwBAAAAQAAAAABKQBgAAIgQEAA=</HashCode>
+      <FileName>Entities\Kml\ViewVolume.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Entities.xAl.AddressDetails" Collapsed="true">
+    <Position X="93" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IIAQAQABAAgBEAAAAAAgACAEAgBBgAAEAEAgAARAAAA=</HashCode>
+      <FileName>Entities\xAl\AddressDetails.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Entities.xAl.AddressDetailsAddress" Collapsed="true">
+    <Position X="94.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAABAAAACAAAAAAAgACAAAAAAAAAEAUAACAAAAAA=</HashCode>
+      <FileName>Entities\xAl\AddressDetailsAddress.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Entities.xAl.AddressDetailsCountry" Collapsed="true">
+    <Position X="96.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IAAQAAAAAIEAAAAAAAAACCAEAAAAQAAAAEAgAAAQAAA=</HashCode>
+      <FileName>Entities\xAl\AddressDetailsCountry.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Entities.xAl.AddressDetailsCountryCountryNameCode" Collapsed="true">
+    <Position X="98.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAABAAAAAAAAAAAAgACAEAAAAAAAEAEIACAAAAAA=</HashCode>
+      <FileName>Entities\xAl\AddressDetailsCountryCountryNameCode.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Entities.xAl.AddressDetailsPostalServiceElements" Collapsed="true">
+    <Position X="100" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>MBAQABAEAgEqQACAAJCQACAAAQAhAAAEAUAAAAAAAAI=</HashCode>
+      <FileName>Entities\xAl\AddressDetailsPostalServiceElements.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Entities.xAl.AddressDetailsPostalServiceElementsAddressIdentifier" Collapsed="true">
+    <Position X="101.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAABAAAACAAAAgAAgACAAAAAAAAAEAWAACAAAAAA=</HashCode>
+      <FileName>Entities\xAl\AddressDetailsPostalServiceElementsAddressIdentifier.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Entities.xAl.AddressDetailsPostalServiceElementsAddressLatitude" Collapsed="true">
+    <Position X="103.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAABAAAACAAAAAAAgACAAAAAAAAAEAUAACAAAAAA=</HashCode>
+      <FileName>Entities\xAl\AddressDetailsPostalServiceElementsAddressLatitude.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Entities.xAl.AddressDetailsPostalServiceElementsAddressLatitudeDirection" Collapsed="true">
+    <Position X="105.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAABAAAACAAAAAAAgACAAAAAAAAAEAUAACAAAAAA=</HashCode>
+      <FileName>Entities\xAl\AddressDetailsPostalServiceElementsAddressLatitudeDirection.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Entities.xAl.AddressDetailsPostalServiceElementsAddressLongitude" Collapsed="true">
+    <Position X="107" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAABAAAACAAAAAAAgACAAAAAAAAAEAUAACAAAAAA=</HashCode>
+      <FileName>Entities\xAl\AddressDetailsPostalServiceElementsAddressLongitude.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Entities.xAl.AddressDetailsPostalServiceElementsAddressLongitudeDirection" Collapsed="true">
+    <Position X="108.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAABAAAACAAAAAAAgACAAAAAAAAAEAUAACAAAAAA=</HashCode>
+      <FileName>Entities\xAl\AddressDetailsPostalServiceElementsAddressLongitudeDirection.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Entities.xAl.AddressDetailsPostalServiceElementsBarcode" Collapsed="true">
+    <Position X="93" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAABAAAACAAAAAAAgACAAAAAAAAAEAUAACAAAAAA=</HashCode>
+      <FileName>Entities\xAl\AddressDetailsPostalServiceElementsBarcode.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Entities.xAl.AddressDetailsPostalServiceElementsEndorsementLineCode" Collapsed="true">
+    <Position X="94.75" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAABAAAACAAAAAAAgACAAAAAAAAAEAUAACAAAAAA=</HashCode>
+      <FileName>Entities\xAl\AddressDetailsPostalServiceElementsEndorsementLineCode.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Entities.xAl.AddressDetailsPostalServiceElementsKeyLineCode" Collapsed="true">
+    <Position X="96.5" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAABAAAACAAAAAAAgACAAAAAAAAAEAUAACAAAAAA=</HashCode>
+      <FileName>Entities\xAl\AddressDetailsPostalServiceElementsKeyLineCode.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Entities.xAl.AddressDetailsPostalServiceElementsSortingCode" Collapsed="true">
+    <Position X="98.25" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAACAAAAAAAgAAAAAAAAAAAEAQAAAAAAAAA=</HashCode>
+      <FileName>Entities\xAl\AddressDetailsPostalServiceElementsSortingCode.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Entities.xAl.AddressDetailsPostalServiceElementsSupplementaryPostalServiceData" Collapsed="true">
+    <Position X="100" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAABAAAACAAAAAAAgACAAAAAAAAAEAUAACAAAAAA=</HashCode>
+      <FileName>Entities\xAl\AddressDetailsPostalServiceElementsSupplementaryPostalServiceData.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Entities.xAl.AddressLine" Collapsed="true">
+    <Position X="101.75" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAABAAAACAAAAAAAgACAAAAAAAAAEAUAACAAAAAA=</HashCode>
+      <FileName>Entities\xAl\AddressLine.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Entities.xAl.AddressLinesType" Collapsed="true">
+    <Position X="103.5" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IAAQAAAAAAAAAAAAAAAAACAAAAAAQAAAAEAAAAAQAAA=</HashCode>
+      <FileName>Entities\xAl\AddressLinesType.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Entities.xAl.AdministrativeArea" Collapsed="true">
+    <Position X="105.25" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IABQAAAAAAACJCAAAAAAACAEAAAAQAAAAVCgIAAQAAA=</HashCode>
+      <FileName>Entities\xAl\AdministrativeArea.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Entities.xAl.AdministrativeAreaAdministrativeAreaName" Collapsed="true">
+    <Position X="107" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAABAAAACAAAAAAAgACAAAAAAAAAEAUAACAAAAAA=</HashCode>
+      <FileName>Entities\xAl\AdministrativeAreaAdministrativeAreaName.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Entities.xAl.AdministrativeAreaSubAdministrativeArea" Collapsed="true">
+    <Position X="108.75" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IAQQAAAAAAACJAAAIAAAACAEAAAAQAAAAVAgIAAQAAA=</HashCode>
+      <FileName>Entities\xAl\AdministrativeAreaSubAdministrativeArea.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Entities.xAl.AdministrativeAreaSubAdministrativeAreaSubAdministrativeAreaName" Collapsed="true">
+    <Position X="93" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAABAAAACAAAAAAAgACAAAAAAAAAEAUAACAAAAAA=</HashCode>
+      <FileName>Entities\xAl\AdministrativeAreaSubAdministrativeAreaSubAdministrativeAreaName.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Entities.xAl.BuildingNameType" Collapsed="true">
+    <Position X="96.5" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QEAAAABAAIACAAAAAAAgACAAAAAAAAAEAUAACAAAABA=</HashCode>
+      <FileName>Entities\xAl\BuildingNameType.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Entities.xAl.CountryName" Collapsed="true">
+    <Position X="100" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAABAAAACAAAAAAAgACAAAAAAAAAEAUAACAAAAAA=</HashCode>
+      <FileName>Entities\xAl\CountryName.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Entities.xAl.Department" Collapsed="true">
+    <Position X="105.25" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IAQQAAAAAAACAAQAIAAAACAAAAAAQAAAAUABAAAQAAE=</HashCode>
+      <FileName>Entities\xAl\Department.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Entities.xAl.DepartmentDepartmentName" Collapsed="true">
+    <Position X="107" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAABAAAACAAAAAAAgACAAAAAAAAAEAUAACAAAAAA=</HashCode>
+      <FileName>Entities\xAl\DepartmentDepartmentName.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Entities.xAl.DependentLocalityType" Collapsed="true">
+    <Position X="108.75" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IACQAAAAGAAKJAGIIAAAECAFAAAQQAAEAVAgIAAQAAE=</HashCode>
+      <FileName>Entities\xAl\DependentLocalityType.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Entities.xAl.DependentLocalityTypeDependentLocalityName" Collapsed="true">
+    <Position X="93" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAABAAAACAAAAAAAgACAAAAAAAAAEAUAACAAAAAA=</HashCode>
+      <FileName>Entities\xAl\DependentLocalityTypeDependentLocalityName.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Entities.xAl.DependentLocalityTypeDependentLocalityNumber" Collapsed="true">
+    <Position X="94.75" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAABAAAAAAAAAAAEgACAAACAAAACEAMAACAAAAAA=</HashCode>
+      <FileName>Entities\xAl\DependentLocalityTypeDependentLocalityNumber.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Entities.xAl.FirmType" Collapsed="true">
+    <Position X="98.25" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IAAQAAAAAAECAAQAIAAIACAAEAAAQAAAAUABAEAQAAE=</HashCode>
+      <FileName>Entities\xAl\FirmType.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Entities.xAl.FirmTypeFirmName" Collapsed="true">
+    <Position X="100" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAABAAAACAAAAAAAgACAAAAAAAAAEAUAACAAAAAA=</HashCode>
+      <FileName>Entities\xAl\FirmTypeFirmName.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Entities.xAl.LargeMailUserType" Collapsed="true">
+    <Position X="103.5" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>YAAQAAAAAAAKIAAAIAIIACChEAAASAAAAUAAAAIQAAU=</HashCode>
+      <FileName>Entities\xAl\LargeMailUserType.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Entities.xAl.LargeMailUserTypeLargeMailUserIdentifier" Collapsed="true">
+    <Position X="105.25" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAABAAAACIAAAAAAgACAAAAAAAAAEAVAACAAAAAA=</HashCode>
+      <FileName>Entities\xAl\LargeMailUserTypeLargeMailUserIdentifier.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Entities.xAl.LargeMailUserTypeLargeMailUserName" Collapsed="true">
+    <Position X="107" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAABAAAACAAAAAAAgACAAAAAAAAAEAUAACAAAAAA=</HashCode>
+      <FileName>Entities\xAl\LargeMailUserTypeLargeMailUserName.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Entities.xAl.Locality" Collapsed="true">
+    <Position X="93" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IAAUAAAACAAKJAEAIAAAECAFAAAAQgAEAVAgIAAQAAE=</HashCode>
+      <FileName>Entities\xAl\Locality.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Entities.xAl.LocalityLocalityName" Collapsed="true">
+    <Position X="94.75" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAABAAAACAAAAAAAgACAAAAAAAAAEAUAACAAAAAA=</HashCode>
+      <FileName>Entities\xAl\LocalityLocalityName.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Entities.xAl.MailStopType" Collapsed="true">
+    <Position X="96.5" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IAAQAAAAAAICAAAAEAAAACAAAAAAQAAACWAAAAAQAAA=</HashCode>
+      <FileName>Entities\xAl\MailStopType.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Entities.xAl.MailStopTypeMailStopName" Collapsed="true">
+    <Position X="98.25" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAABAAAACAAAAAAAgACAAAAAAAAAEAUAACAAAAAA=</HashCode>
+      <FileName>Entities\xAl\MailStopTypeMailStopName.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Entities.xAl.MailStopTypeMailStopNumber" Collapsed="true">
+    <Position X="100" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAEAAABAAAAAAAAAAAAgACAAAAAAAAAEAEAACAAIAAA=</HashCode>
+      <FileName>Entities\xAl\MailStopTypeMailStopNumber.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Entities.xAl.PostalCode" Collapsed="true">
+    <Position X="107" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IAAQAAAAAAACAAAAAAAAAjEIQABAQAAAAUAAAAAQAAA=</HashCode>
+      <FileName>Entities\xAl\PostalCode.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Entities.xAl.PostalCodePostalCodeNumber" Collapsed="true">
+    <Position X="108.75" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAABAAAACAAAAAAAgACAAAAAAAAAEAUAACAAAAAA=</HashCode>
+      <FileName>Entities\xAl\PostalCodePostalCodeNumber.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Entities.xAl.PostalCodePostalCodeNumberExtension" Collapsed="true">
+    <Position X="93" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAIAAABAAAACAAAAAAAgACAAQAAAAAAEAUAACAAAAAA=</HashCode>
+      <FileName>Entities\xAl\PostalCodePostalCodeNumberExtension.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Entities.xAl.PostalCodePostTown" Collapsed="true">
+    <Position X="94.75" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAECAAAAAAABACAAAAAAQAgAAUAAQAAQAAA=</HashCode>
+      <FileName>Entities\xAl\PostalCodePostTown.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Entities.xAl.PostalCodePostTownPostTownName" Collapsed="true">
+    <Position X="96.5" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAABAAAACAAAAAAAgACAAAAAAAAAEAUAACAAAAAA=</HashCode>
+      <FileName>Entities\xAl\PostalCodePostTownPostTownName.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Entities.xAl.PostalCodePostTownPostTownSuffix" Collapsed="true">
+    <Position X="98.25" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAABAAAAAAAAAAAAgACAAAAAAAAAEAEAACAAAAAA=</HashCode>
+      <FileName>Entities\xAl\PostalCodePostTownPostTownSuffix.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Entities.xAl.PostalRouteType" Collapsed="true">
+    <Position X="100" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>YAAQAACAAAACCAAAAAAAACAAAAAAQAAAAUAAAAIQAAA=</HashCode>
+      <FileName>Entities\xAl\PostalRouteType.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Entities.xAl.PostalRouteTypePostalRouteName" Collapsed="true">
+    <Position X="101.75" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAABAAAACAAAAAAAgACAAAAAAAAAEAUAACAAAAAA=</HashCode>
+      <FileName>Entities\xAl\PostalRouteTypePostalRouteName.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Entities.xAl.PostalRouteTypePostalRouteNumber" Collapsed="true">
+    <Position X="103.5" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAABAAAAAAAAAAAAgACAAAAAAAAAEAEAACAAAAAA=</HashCode>
+      <FileName>Entities\xAl\PostalRouteTypePostalRouteNumber.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Entities.xAl.PostBox" Collapsed="true">
+    <Position X="105.25" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ICIxAAAgQAACIAAAIAIAACAAAAAARAAEAVAAAAAQABE=</HashCode>
+      <FileName>Entities\xAl\PostBox.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Entities.xAl.PostBoxPostBoxNumber" Collapsed="true">
+    <Position X="107" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAABAAAAAAAAAAAAgACAAAAAAAAAEAEAACAAAAAA=</HashCode>
+      <FileName>Entities\xAl\PostBoxPostBoxNumber.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Entities.xAl.PostBoxPostBoxNumberExtension" Collapsed="true">
+    <Position X="108.75" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAIAAABAAAAAAAAAAAAAACAAQAAAAAAAAEAACAAAAAA=</HashCode>
+      <FileName>Entities\xAl\PostBoxPostBoxNumberExtension.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Entities.xAl.PostBoxPostBoxNumberPrefix" Collapsed="true">
+    <Position X="93" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAABABAAAAAAAAAAAAgAiAAAAAAAAAEAEAACAAAAAA=</HashCode>
+      <FileName>Entities\xAl\PostBoxPostBoxNumberPrefix.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Entities.xAl.PostBoxPostBoxNumberSuffix" Collapsed="true">
+    <Position X="94.75" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EAAAAABAAAAAAAAAAAAiACAAAAAAAAAEAEAACAAAAAA=</HashCode>
+      <FileName>Entities\xAl\PostBoxPostBoxNumberSuffix.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Entities.xAl.PostOffice" Collapsed="true">
+    <Position X="96.5" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>YAAQAACAAAACKABAIAAAACAAEAAAQAAAAVAAAAIQAAE=</HashCode>
+      <FileName>Entities\xAl\PostOffice.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Entities.xAl.PostOfficePostOfficeName" Collapsed="true">
+    <Position X="98.25" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAABAAAACAAAAAAAgACAAAAAAAAAEAUAACAAAAAA=</HashCode>
+      <FileName>Entities\xAl\PostOfficePostOfficeName.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Entities.xAl.PostOfficePostOfficeNumber" Collapsed="true">
+    <Position X="100" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAABAAAAAIAIAAAAgACgAAAAAAQAECFAACAAAAAA=</HashCode>
+      <FileName>Entities\xAl\PostOfficePostOfficeNumber.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Entities.xAl.Premise" Collapsed="true">
+    <Position X="101.75" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>oAAQwCCAAAACKAQAIIAAQCAgAAAARQACAUABhAEQBAU=</HashCode>
+      <FileName>Entities\xAl\Premise.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Entities.xAl.PremiseNumber" Collapsed="true">
+    <Position X="103.5" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAQBABAQCKAIAAAAgACgBAAAAAQAECVAACAAAAAQ=</HashCode>
+      <FileName>Entities\xAl\PremiseNumber.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Entities.xAl.PremiseNumberPrefix" Collapsed="true">
+    <Position X="105.25" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAABAAAAAACAAAAAAAgAiAAAAACAAAEAUAgAAAAAAA=</HashCode>
+      <FileName>Entities\xAl\PremiseNumberPrefix.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Entities.xAl.PremiseNumberSuffix" Collapsed="true">
+    <Position X="107" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EAAAAABAAAACAAAAAAAiACAAAAAAAAAEAUAACAAAAAA=</HashCode>
+      <FileName>Entities\xAl\PremiseNumberSuffix.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Entities.xAl.PremisePremiseLocation" Collapsed="true">
+    <Position X="108.75" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAABAAAAAAAAAAAAgACAAAAAAAAAEAEAACAAAAAA=</HashCode>
+      <FileName>Entities\xAl\PremisePremiseLocation.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Entities.xAl.PremisePremiseName" Collapsed="true">
+    <Position X="93" Y="7.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QEAAAABAAIACAAAAAAAgACAAAAAAAAAEAUAACAAAABA=</HashCode>
+      <FileName>Entities\xAl\PremisePremiseName.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Entities.xAl.PremisePremiseNumberRange" Collapsed="true">
+    <Position X="94.75" Y="7.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AABEQAAEAAAjIAAAAAJAAABAAQAAARIAARAAIAAAAAI=</HashCode>
+      <FileName>Entities\xAl\PremisePremiseNumberRange.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Entities.xAl.PremisePremiseNumberRangePremiseNumberRangeFrom" Collapsed="true">
+    <Position X="96.5" Y="7.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAIAAAAAAAAAAAAAAQQAAAAAAAhAEQAAA=</HashCode>
+      <FileName>Entities\xAl\PremisePremiseNumberRangePremiseNumberRangeFrom.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Entities.xAl.PremisePremiseNumberRangePremiseNumberRangeTo" Collapsed="true">
+    <Position X="98.25" Y="7.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAIAAAAAAAAAAAAAAQQAAAAAAAhAEQAAA=</HashCode>
+      <FileName>Entities\xAl\PremisePremiseNumberRangePremiseNumberRangeTo.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Entities.xAl.SubPremiseType" Collapsed="true">
+    <Position X="107" Y="7.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IAAQAiCCAAACCAQAIAIAACQgAQAARAEAAUABAAAQACU=</HashCode>
+      <FileName>Entities\xAl\SubPremiseType.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Entities.xAl.SubPremiseTypeSubPremiseLocation" Collapsed="true">
+    <Position X="108.75" Y="7.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAABAAAAAAAAAAAAgAAAAAAAAAAAEAAAACAAAAAA=</HashCode>
+      <FileName>Entities\xAl\SubPremiseTypeSubPremiseLocation.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Entities.xAl.SubPremiseTypeSubPremiseName" Collapsed="true">
+    <Position X="93" Y="8.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QEAAAABAAIACAAAAAAAgACAAAAAAAAAEAUAACAAAABA=</HashCode>
+      <FileName>Entities\xAl\SubPremiseTypeSubPremiseName.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Entities.xAl.SubPremiseTypeSubPremiseNumber" Collapsed="true">
+    <Position X="94.75" Y="8.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAQBABAACKAIAAAAgCCgAAAAAAQAECVAACAAAAAQ=</HashCode>
+      <FileName>Entities\xAl\SubPremiseTypeSubPremiseNumber.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Entities.xAl.SubPremiseTypeSubPremiseNumberPrefix" Collapsed="true">
+    <Position X="96.5" Y="8.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAABABAAAACAAAAAAAgAiAAAAAAAAAEAUAACAAAAAA=</HashCode>
+      <FileName>Entities\xAl\SubPremiseTypeSubPremiseNumberPrefix.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Entities.xAl.SubPremiseTypeSubPremiseNumberSuffix" Collapsed="true">
+    <Position X="98.25" Y="8.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EAAAAABAAAACAAAAAAAiACAAAAAAAAAEAUAACAAAAAA=</HashCode>
+      <FileName>Entities\xAl\SubPremiseTypeSubPremiseNumberSuffix.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Entities.xAl.Thoroughfare" Collapsed="true">
+    <Position X="100" Y="8.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>KAAQAAHoAEgWCYQAAABCECIEAAgAyAAAAUBgAAAQiJA=</HashCode>
+      <FileName>Entities\xAl\Thoroughfare.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Entities.xAl.ThoroughfareDependentThoroughfare" Collapsed="true">
+    <Position X="101.75" Y="8.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IAAQAAAoAAACAYAAAAACECIAAAAAQAAAAUBgAAAQABA=</HashCode>
+      <FileName>Entities\xAl\ThoroughfareDependentThoroughfare.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Entities.xAl.ThoroughfareLeadingTypeType" Collapsed="true">
+    <Position X="103.5" Y="8.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAABAAAACAAAAAAAgACAAAAAAAAAEAUAACAAAAAA=</HashCode>
+      <FileName>Entities\xAl\ThoroughfareLeadingTypeType.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Entities.xAl.ThoroughfareNameType" Collapsed="true">
+    <Position X="105.25" Y="8.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAABAAAACAAAAAAAgACAAAAAAAAAEAUAACAAAAAA=</HashCode>
+      <FileName>Entities\xAl\ThoroughfareNameType.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Entities.xAl.ThoroughfareNumber" Collapsed="true">
+    <Position X="107" Y="8.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAACBAAAQCIAIAAAAgACgBAAAAAQAECVAICCAAQAA=</HashCode>
+      <FileName>Entities\xAl\ThoroughfareNumber.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Entities.xAl.ThoroughfareNumberPrefix" Collapsed="true">
+    <Position X="108.75" Y="8.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAABABAAAACAAAAAAAgAiAAAAAAAAAEAUAACAAAAAA=</HashCode>
+      <FileName>Entities\xAl\ThoroughfareNumberPrefix.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Entities.xAl.ThoroughfareNumberSuffix" Collapsed="true">
+    <Position X="93" Y="9.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EAAAAABAAAACAAAAAAAiACAAAAAAAAAEAUAACAAAAAA=</HashCode>
+      <FileName>Entities\xAl\ThoroughfareNumberSuffix.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Entities.xAl.ThoroughfarePostDirectionType" Collapsed="true">
+    <Position X="94.75" Y="9.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAABAAAACAAAAAAAgACAAAAAAAAAEAUAACAAAAAA=</HashCode>
+      <FileName>Entities\xAl\ThoroughfarePostDirectionType.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Entities.xAl.ThoroughfarePreDirectionType" Collapsed="true">
+    <Position X="96.5" Y="9.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAABAAAACAAAAAAAgACAAAAAAAAAEAUAACAAAAAA=</HashCode>
+      <FileName>Entities\xAl\ThoroughfarePreDirectionType.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Entities.xAl.ThoroughfareThoroughfareNumberRange" Collapsed="true">
+    <Position X="98.25" Y="9.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAIERAAAAgACIAIAAAAgACgAIAAFQRIECdAAAAAQABI=</HashCode>
+      <FileName>Entities\xAl\ThoroughfareThoroughfareNumberRange.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Entities.xAl.ThoroughfareThoroughfareNumberRangeThoroughfareNumberFrom" Collapsed="true">
+    <Position X="100" Y="9.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAEAFAAAAEAAAAAAAgACCAAAAASAAEAEAACAAQCAA=</HashCode>
+      <FileName>Entities\xAl\ThoroughfareThoroughfareNumberRangeThoroughfareNumberFrom.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Entities.xAl.ThoroughfareThoroughfareNumberRangeThoroughfareNumberTo" Collapsed="true">
+    <Position X="101.75" Y="9.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAEAFAAAAEAAAAAAAgACCAAAAASAAEAEAACAAQCAA=</HashCode>
+      <FileName>Entities\xAl\ThoroughfareThoroughfareNumberRangeThoroughfareNumberTo.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Entities.xAl.ThoroughfareTrailingTypeType" Collapsed="true">
+    <Position X="103.5" Y="9.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAABAAAACAAAAAAAgACAAAAAAAAAEAUAACAAAAAA=</HashCode>
+      <FileName>Entities\xAl\ThoroughfareTrailingTypeType.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharpMap.Entities.xAl.xAL" Collapsed="true">
+    <Position X="108.75" Y="9.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IAIQAAAAAABAAAAAAAAAACAAAAAAAAAgAEAAAAAAAAA=</HashCode>
+      <FileName>Entities\xAl\xAL.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Enum Name="SharpMap.Entities.Atom.ItemsChoiceType" Collapsed="true">
+    <Position X="107" Y="10.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAgAAAAAAAAAAAMAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Entities\Atom\ItemsChoiceType.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="SharpMap.Entities.Ogc.Kml.AltitudeMode" Collapsed="true">
+    <Position X="93" Y="10.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ACAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAACAAAAA=</HashCode>
+      <FileName>Entities\Kml\AltitudeMode.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="SharpMap.Entities.Ogc.Kml.ColorMode" Collapsed="true">
+    <Position X="96.5" Y="10.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAIBAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Entities\Kml\ColorMode.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="SharpMap.Entities.Ogc.Kml.DisplayMode" Collapsed="true">
+    <Position X="100" Y="10.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAEAAAIAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Entities\Kml\DisplayMode.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="SharpMap.Entities.Ogc.Kml.GridOrigin" Collapsed="true">
+    <Position X="101.75" Y="10.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAgAAAAAAAA=</HashCode>
+      <FileName>Entities\Kml\GridOrigin.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="SharpMap.Entities.Ogc.Kml.ColorChoice" Collapsed="true">
+    <Position X="103.5" Y="10.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAAAAEAAAA=</HashCode>
+      <FileName>Entities\Kml\ColorChoice.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="SharpMap.Entities.Ogc.Kml.UrlType" Collapsed="true">
+    <Position X="105.25" Y="10.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAQAAAAAA=</HashCode>
+      <FileName>Entities\Kml\UrlType.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="SharpMap.Entities.Ogc.Kml.ItemsChoiceType1" Collapsed="true">
+    <Position X="108.75" Y="10.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAgQsAAAQAYAIAAAAAAAgAABAQCCEAQAEAAAA=</HashCode>
+      <FileName>Entities\Kml\ItemsChoiceType1.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="SharpMap.Entities.Ogc.Kml.ListItemType" Collapsed="true">
+    <Position X="93" Y="11.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAgAAABIAAAAAAAAAAACAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Entities\Kml\ListItemType.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="SharpMap.Entities.Ogc.Kml.RefreshMode" Collapsed="true">
+    <Position X="107" Y="11.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAQAAAAAAAAAAAAAEAAAAAAAAAAAAAIAAAAA=</HashCode>
+      <FileName>Entities\Kml\RefreshMode.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="SharpMap.Entities.Ogc.Kml.ShapeType" Collapsed="true">
+    <Position X="108.75" Y="11.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAQAAAAAAAAgAAAAAAQAAAAAAAA=</HashCode>
+      <FileName>Entities\Kml\ShapeType.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="SharpMap.Entities.Ogc.Kml.StyleState" Collapsed="true">
+    <Position X="93" Y="12.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAIAEAAAAAAAAAAAAA=</HashCode>
+      <FileName>Entities\Kml\StyleState.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="SharpMap.Entities.Ogc.Kml.Unit" Collapsed="true">
+    <Position X="94.75" Y="13" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAABAAAAAAAAAAEAAAAAAAAAAAA=</HashCode>
+      <FileName>Entities\Kml\Unit.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="SharpMap.Entities.Ogc.Kml.ViewRefreshMode" Collapsed="true">
+    <Position X="96.5" Y="13" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAEAAAAAAAAAAEAAAAAAAAAAAAAAEIAAAAAAAA=</HashCode>
+      <FileName>Entities\Kml\ViewRefreshMode.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="SharpMap.Entities.xAl.BuildingNameTypeTypeOccurrence" Collapsed="true">
+    <Position X="94.75" Y="10.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAQAA=</HashCode>
+      <FileName>Entities\xAl\BuildingNameTypeTypeOccurrence.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="SharpMap.Entities.xAl.DependentLocalityTypeDependentLocalityNumberNameNumberOccurrence" Collapsed="true">
+    <Position X="98.25" Y="10.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAQAA=</HashCode>
+      <FileName>Entities\xAl\DependentLocalityTypeDependentLocalityNumberNameNumberOccurrence.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="SharpMap.Entities.xAl.PostOfficePostOfficeNumberIndicatorOccurrence" Collapsed="true">
+    <Position X="94.75" Y="11.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAQAA=</HashCode>
+      <FileName>Entities\xAl\PostOfficePostOfficeNumberIndicatorOccurrence.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="SharpMap.Entities.xAl.PremiseNumberIndicatorOccurrence" Collapsed="true">
+    <Position X="96.5" Y="11.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAQAA=</HashCode>
+      <FileName>Entities\xAl\PremiseNumberIndicatorOccurrence.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="SharpMap.Entities.xAl.PremiseNumberNumberType" Collapsed="true">
+    <Position X="98.25" Y="11.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAACAAAAAAAAACAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Entities\xAl\PremiseNumberNumberType.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="SharpMap.Entities.xAl.PremiseNumberNumberTypeOccurrence" Collapsed="true">
+    <Position X="100" Y="11.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAQAA=</HashCode>
+      <FileName>Entities\xAl\PremiseNumberNumberTypeOccurrence.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="SharpMap.Entities.xAl.PremisePremiseNameTypeOccurrence" Collapsed="true">
+    <Position X="101.75" Y="11.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAQAA=</HashCode>
+      <FileName>Entities\xAl\PremisePremiseNameTypeOccurrence.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="SharpMap.Entities.xAl.PremisePremiseNumberRangeIndicatorOccurence" Collapsed="true">
+    <Position X="103.5" Y="11.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAQAA=</HashCode>
+      <FileName>Entities\xAl\PremisePremiseNumberRangeIndicatorOccurence.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="SharpMap.Entities.xAl.PremisePremiseNumberRangeNumberRangeOccurence" Collapsed="true">
+    <Position X="105.25" Y="11.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAIEAAAAAAAAAAAAAAAAAAABAAAAAAAAQA=</HashCode>
+      <FileName>Entities\xAl\PremisePremiseNumberRangeNumberRangeOccurence.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="SharpMap.Entities.xAl.SubPremiseTypeSubPremiseNameTypeOccurrence" Collapsed="true">
+    <Position X="94.75" Y="12.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAQAA=</HashCode>
+      <FileName>Entities\xAl\SubPremiseTypeSubPremiseNameTypeOccurrence.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="SharpMap.Entities.xAl.SubPremiseTypeSubPremiseNumberIndicatorOccurrence" Collapsed="true">
+    <Position X="96.5" Y="12.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAQAA=</HashCode>
+      <FileName>Entities\xAl\SubPremiseTypeSubPremiseNumberIndicatorOccurrence.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="SharpMap.Entities.xAl.SubPremiseTypeSubPremiseNumberNumberTypeOccurrence" Collapsed="true">
+    <Position X="98.25" Y="12.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAQAA=</HashCode>
+      <FileName>Entities\xAl\SubPremiseTypeSubPremiseNumberNumberTypeOccurrence.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="SharpMap.Entities.xAl.ThoroughfareDependentThoroughfares" Collapsed="true">
+    <Position X="100" Y="12.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAQAAAAAAAAAAAAACAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Entities\xAl\ThoroughfareDependentThoroughfares.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="SharpMap.Entities.xAl.ThoroughfareNumberIndicatorOccurrence" Collapsed="true">
+    <Position X="101.75" Y="12.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAQAA=</HashCode>
+      <FileName>Entities\xAl\ThoroughfareNumberIndicatorOccurrence.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="SharpMap.Entities.xAl.ThoroughfareNumberNumberOccurrence" Collapsed="true">
+    <Position X="103.5" Y="12.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAIEAAAAAAAAAAAAAAAAAAABAAAAAAAAQA=</HashCode>
+      <FileName>Entities\xAl\ThoroughfareNumberNumberOccurrence.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="SharpMap.Entities.xAl.ThoroughfareNumberNumberType" Collapsed="true">
+    <Position X="105.25" Y="12.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAACAAAAAAAAACAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Entities\xAl\ThoroughfareNumberNumberType.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="SharpMap.Entities.xAl.ThoroughfareThoroughfareNumberRangeIndicatorOccurrence" Collapsed="true">
+    <Position X="107" Y="12.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAQAA=</HashCode>
+      <FileName>Entities\xAl\ThoroughfareThoroughfareNumberRangeIndicatorOccurrence.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="SharpMap.Entities.xAl.ThoroughfareThoroughfareNumberRangeNumberRangeOccurrence" Collapsed="true">
+    <Position X="108.75" Y="12.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAIEAAAAAAAAAAAAAAAAAAABAAAAAAAAQA=</HashCode>
+      <FileName>Entities\xAl\ThoroughfareThoroughfareNumberRangeNumberRangeOccurrence.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="SharpMap.Entities.xAl.ThoroughfareThoroughfareNumberRangeRangeType" Collapsed="true">
+    <Position X="93" Y="13" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AIAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Entities\xAl\ThoroughfareThoroughfareNumberRangeRangeType.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>
