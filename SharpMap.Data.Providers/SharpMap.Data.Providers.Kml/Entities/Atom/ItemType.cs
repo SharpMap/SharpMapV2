@@ -20,15 +20,15 @@ namespace SharpMap.Entities.Atom
     /// <remarks/>
     [Serializable]
     [XmlType(Namespace = "http://www.w3.org/2005/Atom", IncludeInSchema = false)]
-    public enum ItemsChoiceType
+    public enum ItemType
     {
         /// <remarks/>
-        email,
+       [XmlEnum("email")] Email,
 
         /// <remarks/>
-        name,
+       [XmlEnum("name")] Name,
 
         /// <remarks/>
-        uri,
+        [XmlEnum("uri")]Uri,
     }
 }

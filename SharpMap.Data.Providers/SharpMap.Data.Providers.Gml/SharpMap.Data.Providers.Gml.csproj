@@ -71,6 +71,9 @@
     <None Include="Schema\measures.xsd" />
     <None Include="Schema\observation.xsd" />
     <None Include="Schema\referenceSystems.xsd" />
+    <None Include="Schema\smil20-language.xsd" />
+    <None Include="Schema\smil20-layout.xsd" />
+    <None Include="Schema\smil20.xsd" />
     <None Include="Schema\temporal.xsd" />
     <None Include="Schema\temporalReferenceSystems.xsd" />
     <None Include="Schema\temporalTopology.xsd" />
@@ -78,6 +81,8 @@
     <None Include="Schema\units.xsd" />
     <None Include="Schema\valueObjects.xsd" />
     <None Include="Schema\xlinks.xsd" />
+    <None Include="Schema\xml-mod.xsd" />
+    <None Include="Schema\xsd.bat" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

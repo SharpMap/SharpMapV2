@@ -111,7 +111,7 @@
     <Compile Include="Entities\Kml\ColorChoice.cs" />
     <Compile Include="Entities\Kml\UrlType.cs" />
     <Compile Include="Entities\Kml\ItemIconType.cs" />
-    <Compile Include="Entities\Atom\ItemsChoiceType.cs" />
+    <Compile Include="Entities\Atom\ItemType.cs" />
     <Compile Include="Entities\Kml\ItemsChoiceType1.cs" />
     <Compile Include="Entities\xAl\xAL.cs" />
     <Compile Include="Entities\Kml\KmlRoot.cs" />

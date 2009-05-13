@@ -1071,11 +1071,11 @@
       <FileName>Entities\xAl\xAL.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Enum Name="SharpMap.Entities.Atom.ItemsChoiceType" Collapsed="true">
+  <Enum Name="SharpMap.Entities.Atom.ItemType" Collapsed="true">
     <Position X="107" Y="10.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAgAAAAAAAAAAAMAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Entities\Atom\ItemsChoiceType.cs</FileName>
+      <HashCode>AAAAAAAAACAAAAAAAAAAAAQAAAAAAAAACAAAAAAAAAA=</HashCode>
+      <FileName>Entities\Atom\ItemType.cs</FileName>
     </TypeIdentifier>
   </Enum>
   <Enum Name="SharpMap.Entities.Ogc.Kml.AltitudeMode" Collapsed="true">

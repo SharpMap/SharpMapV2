@@ -25,7 +25,7 @@ namespace Osm
     [Serializable]
     [DebuggerStepThrough]
     [DesignerCategory("code")]
-    [XmlRoot(Namespace = "", IsNullable = false)]
+    [XmlRoot(ElementName = "osm", Namespace = "", IsNullable = false)]
     public class osm
     {
         private string generatorField;
@@ -40,14 +40,14 @@ namespace Osm
         }
 
         /// <remarks/>
-        [XmlElement("api", typeof (api))]
-        [XmlElement("changeset", typeof (changeset))]
-        [XmlElement("gpx_file", typeof (gpx_file))]
-        [XmlElement("node", typeof (node))]
-        [XmlElement("preferences", typeof (preferences))]
-        [XmlElement("relation", typeof (relation))]
-        [XmlElement("user", typeof (user))]
-        [XmlElement("way", typeof (way))]
+        [XmlElement("api", typeof(api))]
+        [XmlElement("changeset", typeof(changeset))]
+        [XmlElement("gpx_file", typeof(gpx_file))]
+        [XmlElement("node", typeof(node))]
+        [XmlElement("preferences", typeof(preferences))]
+        [XmlElement("relation", typeof(relation))]
+        [XmlElement("user", typeof(user))]
+        [XmlElement("way", typeof(way))]
         [XmlChoiceIdentifier("ItemsElementName")]
         public object[] Items
         {
@@ -86,7 +86,7 @@ namespace Osm
     [Serializable]
     [DebuggerStepThrough]
     [DesignerCategory("code")]
-    [XmlRoot(Namespace = "", IsNullable = false)]
+    [XmlRoot(ElementName = "api", Namespace = "", IsNullable = false)]
     public class api
     {
         private area areaField;
@@ -130,7 +130,7 @@ namespace Osm
     [Serializable]
     [DebuggerStepThrough]
     [DesignerCategory("code")]
-    [XmlRoot(Namespace = "", IsNullable = false)]
+    [XmlRoot(ElementName = "version", Namespace = "", IsNullable = false)]
     public class version
     {
         private string maximumField;
@@ -158,7 +158,7 @@ namespace Osm
     [Serializable]
     [DebuggerStepThrough]
     [DesignerCategory("code")]
-    [XmlRoot(Namespace = "", IsNullable = false)]
+    [XmlRoot(ElementName = "area", Namespace = "", IsNullable = false)]
     public class area
     {
         private string maximumField;
@@ -177,7 +177,7 @@ namespace Osm
     [Serializable]
     [DebuggerStepThrough]
     [DesignerCategory("code")]
-    [XmlRoot(Namespace = "", IsNullable = false)]
+    [XmlRoot(ElementName = "tracepoints", Namespace = "", IsNullable = false)]
     public class tracepoints
     {
         private string per_pageField;
@@ -196,7 +196,7 @@ namespace Osm
     [Serializable]
     [DebuggerStepThrough]
     [DesignerCategory("code")]
-    [XmlRoot(Namespace = "", IsNullable = false)]
+    [XmlRoot(ElementName = "waynodes", Namespace = "", IsNullable = false)]
     public class waynodes
     {
         private string maximumField;
@@ -215,7 +215,7 @@ namespace Osm
     [Serializable]
     [DebuggerStepThrough]
     [DesignerCategory("code")]
-    [XmlRoot(Namespace = "", IsNullable = false)]
+    [XmlRoot(ElementName = "changeset", Namespace = "", IsNullable = false)]
     public class changeset
     {
         private tag[] tagField;
@@ -234,7 +234,7 @@ namespace Osm
     [Serializable]
     [DebuggerStepThrough]
     [DesignerCategory("code")]
-    [XmlRoot(Namespace = "", IsNullable = false)]
+    [XmlRoot(ElementName = "tag", Namespace = "", IsNullable = false)]
     public class tag
     {
         private string kField;
@@ -263,7 +263,7 @@ namespace Osm
     [Serializable]
     [DebuggerStepThrough]
     [DesignerCategory("code")]
-    [XmlRoot(Namespace = "", IsNullable = false)]
+    [XmlRoot(ElementName = "gpx_file", Namespace = "", IsNullable = false)]
     public class gpx_file
     {
         private string idField;
@@ -383,7 +383,7 @@ namespace Osm
     [Serializable]
     [DebuggerStepThrough]
     [DesignerCategory("code")]
-    [XmlRoot(Namespace = "", IsNullable = false)]
+    [XmlRoot(ElementName = "node", Namespace = "", IsNullable = false)]
     public class node
     {
         private string changesetField;
@@ -481,7 +481,7 @@ namespace Osm
     [Serializable]
     [DebuggerStepThrough]
     [DesignerCategory("code")]
-    [XmlRoot(Namespace = "", IsNullable = false)]
+    [XmlRoot(ElementName = "preferences", Namespace = "", IsNullable = false)]
     public class preferences
     {
         private tag[] tagField;
@@ -500,7 +500,7 @@ namespace Osm
     [Serializable]
     [DebuggerStepThrough]
     [DesignerCategory("code")]
-    [XmlRoot(Namespace = "", IsNullable = false)]
+    [XmlRoot(ElementName = "code", Namespace = "", IsNullable = false)]
     public class relation
     {
         private string changesetField;
@@ -512,8 +512,8 @@ namespace Osm
         private string visibleField;
 
         /// <remarks/>
-        [XmlElement("member", typeof (member))]
-        [XmlElement("tag", typeof (tag))]
+        [XmlElement("member", typeof(member))]
+        [XmlElement("tag", typeof(tag))]
         public object[] Items
         {
             get { return itemsField; }
@@ -566,7 +566,7 @@ namespace Osm
     [Serializable]
     [DebuggerStepThrough]
     [DesignerCategory("code")]
-    [XmlRoot(Namespace = "", IsNullable = false)]
+    [XmlRoot(ElementName = "member", Namespace = "", IsNullable = false)]
     public class member
     {
         private string refField;
@@ -620,7 +620,7 @@ namespace Osm
     [Serializable]
     [DebuggerStepThrough]
     [DesignerCategory("code")]
-    [XmlRoot(Namespace = "", IsNullable = false)]
+    [XmlRoot(ElementName = "user", Namespace = "", IsNullable = false)]
     public class user
     {
         private string account_createdField;
@@ -656,7 +656,7 @@ namespace Osm
     [Serializable]
     [DebuggerStepThrough]
     [DesignerCategory("code")]
-    [XmlRoot(Namespace = "", IsNullable = false)]
+    [XmlRoot(ElementName = "home", Namespace = "", IsNullable = false)]
     public class home
     {
         private string latField;
@@ -695,7 +695,7 @@ namespace Osm
     [Serializable]
     [DebuggerStepThrough]
     [DesignerCategory("code")]
-    [XmlRoot(Namespace = "", IsNullable = false)]
+    [XmlRoot(ElementName = "way", Namespace = "", IsNullable = false)]
     public class way
     {
         private string changesetField;
@@ -744,8 +744,8 @@ namespace Osm
         }
 
         /// <remarks/>
-        [XmlElement("nd", typeof (nd), Order = 4)]
-        [XmlElement("tag", typeof (tag), Order = 4)]
+        [XmlElement("nd", typeof(nd), Order = 4)]
+        [XmlElement("tag", typeof(tag), Order = 4)]
         public object[] Items
         {
             get { return itemsField; }
@@ -798,7 +798,7 @@ namespace Osm
     [Serializable]
     [DebuggerStepThrough]
     [DesignerCategory("code")]
-    [XmlRoot(Namespace = "", IsNullable = false)]
+    [XmlRoot(ElementName = "nd", Namespace = "", IsNullable = false)]
     public class nd
     {
         private string refField;

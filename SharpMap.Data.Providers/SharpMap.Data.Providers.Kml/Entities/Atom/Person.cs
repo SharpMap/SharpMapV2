@@ -23,7 +23,7 @@ namespace SharpMap.Entities.Atom
     [XmlRoot("author", Namespace = "http://www.w3.org/2005/Atom", IsNullable = false)]
     public class Person
     {
-        private ItemsChoiceType[] itemsElementNameField;
+        private ItemType[] itemsElementNameField;
         private string[] itemsField;
 
         /// <remarks/>
@@ -40,7 +40,7 @@ namespace SharpMap.Entities.Atom
         /// <remarks/>
         [XmlElement("ItemsElementName")]
         [XmlIgnore]
-        public ItemsChoiceType[] ItemsElementName
+        public ItemType[] ItemsElementName
         {
             get { return itemsElementNameField; }
             set { itemsElementNameField = value; }
