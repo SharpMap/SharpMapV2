@@ -23,7 +23,6 @@ namespace SharpMap.Entities.xAl
     [XmlType(Namespace = "urn:oasis:names:tc:ciq:xsdschema:xAL:2.0")]
     public class LargeMailUserType
     {
-        private AddressLine[] addressLineField;
         private XmlAttribute[] anyAttrField;
         private XmlElement[] anyField;
 
@@ -31,7 +30,6 @@ namespace SharpMap.Entities.xAl
 
         private Department departmentField;
         private LargeMailUserTypeLargeMailUserIdentifier largeMailUserIdentifierField;
-        private LargeMailUserTypeLargeMailUserName[] largeMailUserNameField;
         private PostalCode postalCodeField;
 
         private PostBox postBoxField;
@@ -42,19 +40,11 @@ namespace SharpMap.Entities.xAl
 
         /// <remarks/>
         [XmlElement("AddressLine")]
-        public AddressLine[] AddressLine
-        {
-            get { return addressLineField; }
-            set { addressLineField = value; }
-        }
+        public xAlTypedElementBase[] AddressLine { get; set; }
 
         /// <remarks/>
         [XmlElement("LargeMailUserName")]
-        public LargeMailUserTypeLargeMailUserName[] LargeMailUserName
-        {
-            get { return largeMailUserNameField; }
-            set { largeMailUserNameField = value; }
-        }
+        public xAlTypedElementBase[] LargeMailUserName { get; set; }
 
         /// <remarks/>
         public LargeMailUserTypeLargeMailUserIdentifier LargeMailUserIdentifier

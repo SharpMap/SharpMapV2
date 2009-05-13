@@ -24,9 +24,6 @@ namespace SharpMap.Entities.xAl
     [XmlRoot(Namespace = "urn:oasis:names:tc:ciq:xsdschema:xAL:2.0", IsNullable = false)]
     public class AdministrativeArea
     {
-        private AddressLine[] addressLineField;
-
-        private AdministrativeAreaAdministrativeAreaName[] administrativeAreaNameField;
         private XmlAttribute[] anyAttrField;
 
         private XmlElement[] anyField;
@@ -40,19 +37,11 @@ namespace SharpMap.Entities.xAl
 
         /// <remarks/>
         [XmlElement("AddressLine")]
-        public AddressLine[] AddressLine
-        {
-            get { return addressLineField; }
-            set { addressLineField = value; }
-        }
+        public xAlTypedElementBase[] AddressLine { get; set; }
 
         /// <remarks/>
         [XmlElement("AdministrativeAreaName")]
-        public AdministrativeAreaAdministrativeAreaName[] AdministrativeAreaName
-        {
-            get { return administrativeAreaNameField; }
-            set { administrativeAreaNameField = value; }
-        }
+        public xAlTypedElementBase[] AdministrativeAreaName { get; set; }
 
         /// <remarks/>
         public AdministrativeAreaSubAdministrativeArea SubAdministrativeArea

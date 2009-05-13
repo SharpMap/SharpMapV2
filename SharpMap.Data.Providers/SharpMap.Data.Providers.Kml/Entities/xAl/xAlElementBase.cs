@@ -1,6 +1,6 @@
-// /*
+﻿// /*
 //  *  The attached / following is part of SharpMap.Data.Providers.Kml
-//  *  SharpMap.Data.Providers.Kml is free software � 2008 Newgrove Consultants Limited, 
+//  *  SharpMap.Data.Providers.Kml is free software © 2008 Newgrove Consultants Limited, 
 //  *  www.newgrove.com; you can redistribute it and/or modify it under the terms 
 //  *  of the current GNU Lesser General Public License (LGPL) as published by and 
 //  *  available from the Free Software Foundation, Inc., 
@@ -18,47 +18,19 @@ using System.Xml.Serialization;
 
 namespace SharpMap.Entities.xAl
 {
-    /// <remarks/>
     [Serializable]
     [XmlType(AnonymousType = true, Namespace = "urn:oasis:names:tc:ciq:xsdschema:xAL:2.0")]
-    public class PostalRouteTypePostalRouteName
+    public abstract class xAlElementBase
     {
-        private XmlAttribute[] anyAttrField;
-        private string codeField;
-
-        private string[] textField;
-        private string typeField;
-
-        /// <remarks/>
         [XmlAttribute]
-        public string Type
-        {
-            get { return typeField; }
-            set { typeField = value; }
-        }
-
-        /// <remarks/>
-        [XmlAttribute]
-        public string Code
-        {
-            get { return codeField; }
-            set { codeField = value; }
-        }
+        public string Code { get; set; }
 
         /// <remarks/>
         [XmlAnyAttribute]
-        public XmlAttribute[] AnyAttr
-        {
-            get { return anyAttrField; }
-            set { anyAttrField = value; }
-        }
+        public XmlAttribute[] AnyAttr { get; set; }
 
         /// <remarks/>
         [XmlText]
-        public string[] Text
-        {
-            get { return textField; }
-            set { textField = value; }
-        }
+        public string[] Text { get; set; }
     }
 }

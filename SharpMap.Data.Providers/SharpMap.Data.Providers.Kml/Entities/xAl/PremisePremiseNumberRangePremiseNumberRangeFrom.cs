@@ -22,8 +22,6 @@ namespace SharpMap.Entities.xAl
     [XmlType(AnonymousType = true, Namespace = "urn:oasis:names:tc:ciq:xsdschema:xAL:2.0")]
     public class PremisePremiseNumberRangePremiseNumberRangeFrom
     {
-        private AddressLine[] addressLineField;
-
         private PremiseNumber[] premiseNumberField;
         private PremiseNumberPrefix[] premiseNumberPrefixField;
 
@@ -31,11 +29,7 @@ namespace SharpMap.Entities.xAl
 
         /// <remarks/>
         [XmlElement("AddressLine")]
-        public AddressLine[] AddressLine
-        {
-            get { return addressLineField; }
-            set { addressLineField = value; }
-        }
+        public xAlTypedElementBase[] AddressLine { get; set; }
 
         /// <remarks/>
         [XmlElement("PremiseNumberPrefix")]

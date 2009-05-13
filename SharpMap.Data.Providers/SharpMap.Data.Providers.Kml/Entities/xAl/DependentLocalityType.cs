@@ -23,13 +23,10 @@ namespace SharpMap.Entities.xAl
     [XmlType(Namespace = "urn:oasis:names:tc:ciq:xsdschema:xAL:2.0")]
     public class DependentLocalityType
     {
-        private AddressLine[] addressLineField;
         private XmlAttribute[] anyAttrField;
         private XmlElement[] anyField;
         private string connectorField;
         private DependentLocalityType dependentLocalityField;
-
-        private DependentLocalityTypeDependentLocalityName[] dependentLocalityNameField;
 
         private DependentLocalityTypeDependentLocalityNumber dependentLocalityNumberField;
         private string indicatorField;
@@ -46,19 +43,11 @@ namespace SharpMap.Entities.xAl
 
         /// <remarks/>
         [XmlElement("AddressLine")]
-        public AddressLine[] AddressLine
-        {
-            get { return addressLineField; }
-            set { addressLineField = value; }
-        }
+        public xAlTypedElementBase[] AddressLine { get; set; }
 
         /// <remarks/>
         [XmlElement("DependentLocalityName")]
-        public DependentLocalityTypeDependentLocalityName[] DependentLocalityName
-        {
-            get { return dependentLocalityNameField; }
-            set { dependentLocalityNameField = value; }
-        }
+        public xAlTypedElementBase[] DependentLocalityName { get; set; }
 
         /// <remarks/>
         public DependentLocalityTypeDependentLocalityNumber DependentLocalityNumber

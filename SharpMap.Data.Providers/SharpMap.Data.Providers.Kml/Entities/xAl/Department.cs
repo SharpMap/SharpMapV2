@@ -24,11 +24,9 @@ namespace SharpMap.Entities.xAl
     [XmlRoot(Namespace = "urn:oasis:names:tc:ciq:xsdschema:xAL:2.0", IsNullable = false)]
     public class Department
     {
-        private AddressLine[] addressLineField;
         private XmlAttribute[] anyAttrField;
         private XmlElement[] anyField;
 
-        private DepartmentDepartmentName[] departmentNameField;
 
         private MailStopType mailStopField;
 
@@ -38,19 +36,11 @@ namespace SharpMap.Entities.xAl
 
         /// <remarks/>
         [XmlElement("AddressLine")]
-        public AddressLine[] AddressLine
-        {
-            get { return addressLineField; }
-            set { addressLineField = value; }
-        }
+        public xAlTypedElementBase[] AddressLine { get; set; }
 
         /// <remarks/>
         [XmlElement("DepartmentName")]
-        public DepartmentDepartmentName[] DepartmentName
-        {
-            get { return departmentNameField; }
-            set { departmentNameField = value; }
-        }
+        public xAlTypedElementBase[] DepartmentName { get; set; }
 
         /// <remarks/>
         public MailStopType MailStop

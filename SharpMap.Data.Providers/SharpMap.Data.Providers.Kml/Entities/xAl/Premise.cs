@@ -24,7 +24,6 @@ namespace SharpMap.Entities.xAl
     [XmlRoot(Namespace = "urn:oasis:names:tc:ciq:xsdschema:xAL:2.0", IsNullable = false)]
     public class Premise
     {
-        private AddressLine[] addressLineField;
         private XmlAttribute[] anyAttrField;
         private XmlElement[] anyField;
 
@@ -52,11 +51,7 @@ namespace SharpMap.Entities.xAl
 
         /// <remarks/>
         [XmlElement("AddressLine")]
-        public AddressLine[] AddressLine
-        {
-            get { return addressLineField; }
-            set { addressLineField = value; }
-        }
+        public xAlTypedElementBase[] AddressLine { get; set; }
 
         /// <remarks/>
         [XmlElement("PremiseName")]

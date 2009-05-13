@@ -24,21 +24,21 @@ namespace SharpMap.Entities.xAl
     public class AddressDetailsPostalServiceElements
     {
         private AddressDetailsPostalServiceElementsAddressIdentifier[] addressIdentifierField;
-        private AddressDetailsPostalServiceElementsAddressLatitudeDirection addressLatitudeDirectionField;
-        private AddressDetailsPostalServiceElementsAddressLatitude addressLatitudeField;
-        private AddressDetailsPostalServiceElementsAddressLongitudeDirection addressLongitudeDirectionField;
-        private AddressDetailsPostalServiceElementsAddressLongitude addressLongitudeField;
+        private xAlTypedElementBase addressLatitudeDirectionField;
+        private xAlTypedElementBase addressLatitudeField;
+        private xAlTypedElementBase addressLongitudeDirectionField;
+        private xAlTypedElementBase addressLongitudeField;
         private XmlAttribute[] anyAttrField;
         private XmlElement[] anyField;
-        private AddressDetailsPostalServiceElementsBarcode barcodeField;
+        private xAlTypedElementBase barcodeField;
 
-        private AddressDetailsPostalServiceElementsEndorsementLineCode endorsementLineCodeField;
+        private xAlTypedElementBase endorsementLineCodeField;
 
-        private AddressDetailsPostalServiceElementsKeyLineCode keyLineCodeField;
+        private xAlTypedElementBase keyLineCodeField;
 
         private AddressDetailsPostalServiceElementsSortingCode sortingCodeField;
 
-        private AddressDetailsPostalServiceElementsSupplementaryPostalServiceData[] supplementaryPostalServiceDataField;
+        private xAlTypedElementBase[] supplementaryPostalServiceDataField;
 
         private string typeField;
 
@@ -51,21 +51,21 @@ namespace SharpMap.Entities.xAl
         }
 
         /// <remarks/>
-        public AddressDetailsPostalServiceElementsEndorsementLineCode EndorsementLineCode
+        public xAlTypedElementBase EndorsementLineCode
         {
             get { return endorsementLineCodeField; }
             set { endorsementLineCodeField = value; }
         }
 
         /// <remarks/>
-        public AddressDetailsPostalServiceElementsKeyLineCode KeyLineCode
+        public xAlTypedElementBase KeyLineCode
         {
             get { return keyLineCodeField; }
             set { keyLineCodeField = value; }
         }
 
         /// <remarks/>
-        public AddressDetailsPostalServiceElementsBarcode Barcode
+        public xAlTypedElementBase Barcode
         {
             get { return barcodeField; }
             set { barcodeField = value; }
@@ -79,28 +79,28 @@ namespace SharpMap.Entities.xAl
         }
 
         /// <remarks/>
-        public AddressDetailsPostalServiceElementsAddressLatitude AddressLatitude
+        public xAlTypedElementBase AddressLatitude
         {
             get { return addressLatitudeField; }
             set { addressLatitudeField = value; }
         }
 
         /// <remarks/>
-        public AddressDetailsPostalServiceElementsAddressLatitudeDirection AddressLatitudeDirection
+        public xAlTypedElementBase AddressLatitudeDirection
         {
             get { return addressLatitudeDirectionField; }
             set { addressLatitudeDirectionField = value; }
         }
 
         /// <remarks/>
-        public AddressDetailsPostalServiceElementsAddressLongitude AddressLongitude
+        public xAlTypedElementBase AddressLongitude
         {
             get { return addressLongitudeField; }
             set { addressLongitudeField = value; }
         }
 
         /// <remarks/>
-        public AddressDetailsPostalServiceElementsAddressLongitudeDirection AddressLongitudeDirection
+        public xAlTypedElementBase AddressLongitudeDirection
         {
             get { return addressLongitudeDirectionField; }
             set { addressLongitudeDirectionField = value; }
@@ -108,7 +108,7 @@ namespace SharpMap.Entities.xAl
 
         /// <remarks/>
         [XmlElement("SupplementaryPostalServiceData")]
-        public AddressDetailsPostalServiceElementsSupplementaryPostalServiceData[] SupplementaryPostalServiceData
+        public xAlTypedElementBase[] SupplementaryPostalServiceData
         {
             get { return supplementaryPostalServiceDataField; }
             set { supplementaryPostalServiceDataField = value; }

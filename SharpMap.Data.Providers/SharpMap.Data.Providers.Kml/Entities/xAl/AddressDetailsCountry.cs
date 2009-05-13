@@ -23,23 +23,17 @@ namespace SharpMap.Entities.xAl
     [XmlType(AnonymousType = true, Namespace = "urn:oasis:names:tc:ciq:xsdschema:xAL:2.0")]
     public class AddressDetailsCountry
     {
-        private AddressLine[] addressLineField;
         private XmlAttribute[] anyAttrField;
         private XmlElement[] anyField;
 
         private AddressDetailsCountryCountryNameCode[] countryNameCodeField;
 
-        private CountryName[] countryNameField;
 
         private object itemField;
 
         /// <remarks/>
         [XmlElement("AddressLine")]
-        public AddressLine[] AddressLine
-        {
-            get { return addressLineField; }
-            set { addressLineField = value; }
-        }
+        public xAlTypedElementBase[] AddressLine { get; set; }
 
         /// <remarks/>
         [XmlElement("CountryNameCode")]
@@ -51,11 +45,7 @@ namespace SharpMap.Entities.xAl
 
         /// <remarks/>
         [XmlElement("CountryName")]
-        public CountryName[] CountryName
-        {
-            get { return countryNameField; }
-            set { countryNameField = value; }
-        }
+        public xAlTypedElementBase[] CountryName { get; set; }
 
         /// <remarks/>
         [XmlElement("AdministrativeArea", typeof (AdministrativeArea))]

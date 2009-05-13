@@ -23,13 +23,11 @@ namespace SharpMap.Entities.xAl
     [XmlType(AnonymousType = true, Namespace = "urn:oasis:names:tc:ciq:xsdschema:xAL:2.0")]
     public class AdministrativeAreaSubAdministrativeArea
     {
-        private AddressLine[] addressLineField;
         private XmlAttribute[] anyAttrField;
 
         private XmlElement[] anyField;
         private string indicatorField;
         private object itemField;
-        private AdministrativeAreaSubAdministrativeAreaSubAdministrativeAreaName[] subAdministrativeAreaNameField;
 
         private string typeField;
 
@@ -37,19 +35,11 @@ namespace SharpMap.Entities.xAl
 
         /// <remarks/>
         [XmlElement("AddressLine")]
-        public AddressLine[] AddressLine
-        {
-            get { return addressLineField; }
-            set { addressLineField = value; }
-        }
+        public xAlTypedElementBase[] AddressLine { get; set; }
 
         /// <remarks/>
         [XmlElement("SubAdministrativeAreaName")]
-        public AdministrativeAreaSubAdministrativeAreaSubAdministrativeAreaName[] SubAdministrativeAreaName
-        {
-            get { return subAdministrativeAreaNameField; }
-            set { subAdministrativeAreaNameField = value; }
-        }
+        public xAlTypedElementBase[] SubAdministrativeAreaName { get; set; }
 
         /// <remarks/>
         [XmlElement("Locality", typeof (Locality))]

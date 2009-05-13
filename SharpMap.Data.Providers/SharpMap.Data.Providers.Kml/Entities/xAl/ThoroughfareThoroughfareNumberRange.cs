@@ -23,7 +23,6 @@ namespace SharpMap.Entities.xAl
     [XmlType(AnonymousType = true, Namespace = "urn:oasis:names:tc:ciq:xsdschema:xAL:2.0")]
     public class ThoroughfareThoroughfareNumberRange
     {
-        private AddressLine[] addressLineField;
         private XmlAttribute[] anyAttrField;
         private string codeField;
 
@@ -48,11 +47,7 @@ namespace SharpMap.Entities.xAl
 
         /// <remarks/>
         [XmlElement("AddressLine")]
-        public AddressLine[] AddressLine
-        {
-            get { return addressLineField; }
-            set { addressLineField = value; }
-        }
+        public xAlTypedElementBase[] AddressLine { get; set; }
 
         /// <remarks/>
         public ThoroughfareThoroughfareNumberRangeThoroughfareNumberFrom ThoroughfareNumberFrom

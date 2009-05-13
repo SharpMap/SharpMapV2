@@ -24,12 +24,10 @@ namespace SharpMap.Entities.xAl
     [XmlRoot(Namespace = "urn:oasis:names:tc:ciq:xsdschema:xAL:2.0", IsNullable = false)]
     public class PostalCode
     {
-        private AddressLine[] addressLineField;
         private XmlAttribute[] anyAttrField;
         private XmlElement[] anyField;
 
         private PostalCodePostalCodeNumberExtension[] postalCodeNumberExtensionField;
-        private PostalCodePostalCodeNumber[] postalCodeNumberField;
 
         private PostalCodePostTown postTownField;
 
@@ -37,19 +35,11 @@ namespace SharpMap.Entities.xAl
 
         /// <remarks/>
         [XmlElement("AddressLine")]
-        public AddressLine[] AddressLine
-        {
-            get { return addressLineField; }
-            set { addressLineField = value; }
-        }
+        public xAlTypedElementBase[] AddressLine { get; set; }
 
         /// <remarks/>
         [XmlElement("PostalCodeNumber")]
-        public PostalCodePostalCodeNumber[] PostalCodeNumber
-        {
-            get { return postalCodeNumberField; }
-            set { postalCodeNumberField = value; }
-        }
+        public xAlTypedElementBase[] PostalCodeNumber { get; set; }
 
         /// <remarks/>
         [XmlElement("PostalCodeNumberExtension")]

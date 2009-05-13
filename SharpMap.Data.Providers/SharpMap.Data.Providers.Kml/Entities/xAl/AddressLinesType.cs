@@ -23,18 +23,12 @@ namespace SharpMap.Entities.xAl
     [XmlType(Namespace = "urn:oasis:names:tc:ciq:xsdschema:xAL:2.0")]
     public class AddressLinesType
     {
-        private AddressLine[] addressLineField;
-
         private XmlAttribute[] anyAttrField;
         private XmlElement[] anyField;
 
         /// <remarks/>
         [XmlElement("AddressLine")]
-        public AddressLine[] AddressLine
-        {
-            get { return addressLineField; }
-            set { addressLineField = value; }
-        }
+        public xAlTypedElementBase[] AddressLine { get; set; }
 
         /// <remarks/>
         [XmlAnyElement]

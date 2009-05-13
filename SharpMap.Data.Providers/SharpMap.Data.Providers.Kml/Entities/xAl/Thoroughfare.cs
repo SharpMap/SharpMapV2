@@ -24,7 +24,6 @@ namespace SharpMap.Entities.xAl
     [XmlRoot(Namespace = "urn:oasis:names:tc:ciq:xsdschema:xAL:2.0", IsNullable = false)]
     public class Thoroughfare
     {
-        private AddressLine[] addressLineField;
         private XmlAttribute[] anyAttrField;
         private XmlElement[] anyField;
         private ThoroughfareDependentThoroughfare dependentThoroughfareField;
@@ -38,28 +37,16 @@ namespace SharpMap.Entities.xAl
         private object itemField;
 
         private object[] itemsField;
-        private ThoroughfareLeadingTypeType thoroughfareLeadingTypeField;
-
-        private ThoroughfareNameType[] thoroughfareNameField;
 
         private ThoroughfareNumberPrefix[] thoroughfareNumberPrefixField;
 
         private ThoroughfareNumberSuffix[] thoroughfareNumberSuffixField;
-        private ThoroughfarePostDirectionType thoroughfarePostDirectionField;
-
-        private ThoroughfarePreDirectionType thoroughfarePreDirectionField;
-
-        private ThoroughfareTrailingTypeType thoroughfareTrailingTypeField;
 
         private string typeField;
 
         /// <remarks/>
         [XmlElement("AddressLine")]
-        public AddressLine[] AddressLine
-        {
-            get { return addressLineField; }
-            set { addressLineField = value; }
-        }
+        public xAlTypedElementBase[] AddressLine { get; set; }
 
         /// <remarks/>
         [XmlElement("ThoroughfareNumber", typeof (ThoroughfareNumber))]
@@ -87,40 +74,20 @@ namespace SharpMap.Entities.xAl
         }
 
         /// <remarks/>
-        public ThoroughfarePreDirectionType ThoroughfarePreDirection
-        {
-            get { return thoroughfarePreDirectionField; }
-            set { thoroughfarePreDirectionField = value; }
-        }
+        public xAlTypedElementBase ThoroughfarePreDirection { get; set; }
 
         /// <remarks/>
-        public ThoroughfareLeadingTypeType ThoroughfareLeadingType
-        {
-            get { return thoroughfareLeadingTypeField; }
-            set { thoroughfareLeadingTypeField = value; }
-        }
+        public xAlTypedElementBase ThoroughfareLeadingType { get; set; }
 
         /// <remarks/>
         [XmlElement("ThoroughfareName")]
-        public ThoroughfareNameType[] ThoroughfareName
-        {
-            get { return thoroughfareNameField; }
-            set { thoroughfareNameField = value; }
-        }
+        public xAlTypedElementBase[] ThoroughfareName { get; set; }
 
         /// <remarks/>
-        public ThoroughfareTrailingTypeType ThoroughfareTrailingType
-        {
-            get { return thoroughfareTrailingTypeField; }
-            set { thoroughfareTrailingTypeField = value; }
-        }
+        public xAlTypedElementBase ThoroughfareTrailingType { get; set; }
 
         /// <remarks/>
-        public ThoroughfarePostDirectionType ThoroughfarePostDirection
-        {
-            get { return thoroughfarePostDirectionField; }
-            set { thoroughfarePostDirectionField = value; }
-        }
+        public xAlTypedElementBase ThoroughfarePostDirection { get; set; }
 
         /// <remarks/>
         public ThoroughfareDependentThoroughfare DependentThoroughfare

@@ -23,11 +23,9 @@ namespace SharpMap.Entities.xAl
     [XmlType(Namespace = "urn:oasis:names:tc:ciq:xsdschema:xAL:2.0")]
     public class MailStopType
     {
-        private AddressLine[] addressLineField;
         private XmlAttribute[] anyAttrField;
         private XmlElement[] anyField;
 
-        private MailStopTypeMailStopName mailStopNameField;
 
         private MailStopTypeMailStopNumber mailStopNumberField;
 
@@ -35,18 +33,10 @@ namespace SharpMap.Entities.xAl
 
         /// <remarks/>
         [XmlElement("AddressLine")]
-        public AddressLine[] AddressLine
-        {
-            get { return addressLineField; }
-            set { addressLineField = value; }
-        }
+        public xAlTypedElementBase[] AddressLine { get; set; }
 
         /// <remarks/>
-        public MailStopTypeMailStopName MailStopName
-        {
-            get { return mailStopNameField; }
-            set { mailStopNameField = value; }
-        }
+        public xAlTypedElementBase MailStopName { get; set; }
 
         /// <remarks/>
         public MailStopTypeMailStopNumber MailStopNumber

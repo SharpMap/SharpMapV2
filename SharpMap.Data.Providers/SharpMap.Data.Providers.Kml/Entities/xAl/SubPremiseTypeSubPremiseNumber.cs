@@ -13,7 +13,6 @@
 //  * 
 //  */
 using System;
-using System.Xml;
 using System.Xml.Serialization;
 
 namespace SharpMap.Entities.xAl
@@ -21,10 +20,8 @@ namespace SharpMap.Entities.xAl
     /// <remarks/>
     [Serializable]
     [XmlType(AnonymousType = true, Namespace = "urn:oasis:names:tc:ciq:xsdschema:xAL:2.0")]
-    public class SubPremiseTypeSubPremiseNumber
+    public class SubPremiseTypeSubPremiseNumber : xAlTypedElementBase
     {
-        private XmlAttribute[] anyAttrField;
-        private string codeField;
         private string indicatorField;
 
         private SubPremiseTypeSubPremiseNumberIndicatorOccurrence indicatorOccurrenceField;
@@ -36,9 +33,6 @@ namespace SharpMap.Entities.xAl
         private bool numberTypeOccurrenceFieldSpecified;
 
         private string premiseNumberSeparatorField;
-
-        private string[] textField;
-        private string typeField;
 
         /// <remarks/>
         [XmlAttribute]
@@ -86,38 +80,6 @@ namespace SharpMap.Entities.xAl
         {
             get { return premiseNumberSeparatorField; }
             set { premiseNumberSeparatorField = value; }
-        }
-
-        /// <remarks/>
-        [XmlAttribute]
-        public string Type
-        {
-            get { return typeField; }
-            set { typeField = value; }
-        }
-
-        /// <remarks/>
-        [XmlAttribute]
-        public string Code
-        {
-            get { return codeField; }
-            set { codeField = value; }
-        }
-
-        /// <remarks/>
-        [XmlAnyAttribute]
-        public XmlAttribute[] AnyAttr
-        {
-            get { return anyAttrField; }
-            set { anyAttrField = value; }
-        }
-
-        /// <remarks/>
-        [XmlText]
-        public string[] Text
-        {
-            get { return textField; }
-            set { textField = value; }
         }
     }
 }

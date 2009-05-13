@@ -13,7 +13,6 @@
 //  * 
 //  */
 using System;
-using System.Xml;
 using System.Xml.Serialization;
 
 namespace SharpMap.Entities.xAl
@@ -21,13 +20,8 @@ namespace SharpMap.Entities.xAl
     /// <remarks/>
     [Serializable]
     [XmlType(AnonymousType = true, Namespace = "urn:oasis:names:tc:ciq:xsdschema:xAL:2.0")]
-    public class ThoroughfareThoroughfareNumberRangeThoroughfareNumberFrom
+    public class ThoroughfareThoroughfareNumberRangeThoroughfareNumberFrom : xAlElementBase
     {
-        private AddressLine[] addressLineField;
-        private XmlAttribute[] anyAttrField;
-        private string codeField;
-        private string[] textField;
-
         private ThoroughfareNumber[] thoroughfareNumberField;
         private ThoroughfareNumberPrefix[] thoroughfareNumberPrefixField;
 
@@ -35,11 +29,7 @@ namespace SharpMap.Entities.xAl
 
         /// <remarks/>
         [XmlElement("AddressLine")]
-        public AddressLine[] AddressLine
-        {
-            get { return addressLineField; }
-            set { addressLineField = value; }
-        }
+        public xAlTypedElementBase[] AddressLine { get; set; }
 
         /// <remarks/>
         [XmlElement("ThoroughfareNumberPrefix")]
@@ -63,30 +53,6 @@ namespace SharpMap.Entities.xAl
         {
             get { return thoroughfareNumberSuffixField; }
             set { thoroughfareNumberSuffixField = value; }
-        }
-
-        /// <remarks/>
-        [XmlText]
-        public string[] Text
-        {
-            get { return textField; }
-            set { textField = value; }
-        }
-
-        /// <remarks/>
-        [XmlAttribute]
-        public string Code
-        {
-            get { return codeField; }
-            set { codeField = value; }
-        }
-
-        /// <remarks/>
-        [XmlAnyAttribute]
-        public XmlAttribute[] AnyAttr
-        {
-            get { return anyAttrField; }
-            set { anyAttrField = value; }
         }
     }
 }

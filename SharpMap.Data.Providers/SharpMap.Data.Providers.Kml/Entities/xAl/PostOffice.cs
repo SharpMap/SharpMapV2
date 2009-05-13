@@ -24,7 +24,6 @@ namespace SharpMap.Entities.xAl
     [XmlRoot(Namespace = "urn:oasis:names:tc:ciq:xsdschema:xAL:2.0", IsNullable = false)]
     public class PostOffice
     {
-        private AddressLine[] addressLineField;
         private XmlAttribute[] anyAttrField;
         private XmlElement[] anyField;
         private string indicatorField;
@@ -40,14 +39,10 @@ namespace SharpMap.Entities.xAl
 
         /// <remarks/>
         [XmlElement("AddressLine")]
-        public AddressLine[] AddressLine
-        {
-            get { return addressLineField; }
-            set { addressLineField = value; }
-        }
+        public xAlTypedElementBase[] AddressLine { get; set; }
 
         /// <remarks/>
-        [XmlElement("PostOfficeName", typeof (PostOfficePostOfficeName))]
+        [XmlElement("PostOfficeName", typeof (xAlTypedElementBase))]
         [XmlElement("PostOfficeNumber", typeof (PostOfficePostOfficeNumber))]
         public object[] Items
         {

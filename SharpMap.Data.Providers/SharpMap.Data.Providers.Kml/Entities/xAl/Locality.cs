@@ -24,14 +24,12 @@ namespace SharpMap.Entities.xAl
     [XmlRoot(Namespace = "urn:oasis:names:tc:ciq:xsdschema:xAL:2.0", IsNullable = false)]
     public class Locality
     {
-        private AddressLine[] addressLineField;
         private XmlAttribute[] anyAttrField;
         private XmlElement[] anyField;
 
         private DependentLocalityType dependentLocalityField;
         private string indicatorField;
         private object itemField;
-        private LocalityLocalityName[] localityNameField;
 
         private PostalCode postalCodeField;
         private Premise premiseField;
@@ -43,19 +41,11 @@ namespace SharpMap.Entities.xAl
 
         /// <remarks/>
         [XmlElement("AddressLine")]
-        public AddressLine[] AddressLine
-        {
-            get { return addressLineField; }
-            set { addressLineField = value; }
-        }
+        public xAlTypedElementBase[] AddressLine { get; set; }
 
         /// <remarks/>
         [XmlElement("LocalityName")]
-        public LocalityLocalityName[] LocalityName
-        {
-            get { return localityNameField; }
-            set { localityNameField = value; }
-        }
+        public xAlTypedElementBase[] LocalityName { get; set; }
 
         /// <remarks/>
         [XmlElement("LargeMailUser", typeof (LargeMailUserType))]

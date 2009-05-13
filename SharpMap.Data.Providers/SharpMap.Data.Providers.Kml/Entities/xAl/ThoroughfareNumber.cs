@@ -13,7 +13,6 @@
 //  * 
 //  */
 using System;
-using System.Xml;
 using System.Xml.Serialization;
 
 namespace SharpMap.Entities.xAl
@@ -22,10 +21,8 @@ namespace SharpMap.Entities.xAl
     [Serializable]
     [XmlType(AnonymousType = true, Namespace = "urn:oasis:names:tc:ciq:xsdschema:xAL:2.0")]
     [XmlRoot(Namespace = "urn:oasis:names:tc:ciq:xsdschema:xAL:2.0", IsNullable = false)]
-    public class ThoroughfareNumber
+    public class ThoroughfareNumber : xAlTypedElementBase
     {
-        private XmlAttribute[] anyAttrField;
-        private string codeField;
         private string indicatorField;
 
         private ThoroughfareNumberIndicatorOccurrence indicatorOccurrenceField;
@@ -39,8 +36,6 @@ namespace SharpMap.Entities.xAl
 
         private bool numberTypeFieldSpecified;
 
-        private string[] textField;
-        private string typeField;
 
         /// <remarks/>
         [XmlAttribute]
@@ -56,14 +51,6 @@ namespace SharpMap.Entities.xAl
         {
             get { return numberTypeFieldSpecified; }
             set { numberTypeFieldSpecified = value; }
-        }
-
-        /// <remarks/>
-        [XmlAttribute]
-        public string Type
-        {
-            get { return typeField; }
-            set { typeField = value; }
         }
 
         /// <remarks/>
@@ -104,30 +91,6 @@ namespace SharpMap.Entities.xAl
         {
             get { return numberOccurrenceFieldSpecified; }
             set { numberOccurrenceFieldSpecified = value; }
-        }
-
-        /// <remarks/>
-        [XmlAttribute]
-        public string Code
-        {
-            get { return codeField; }
-            set { codeField = value; }
-        }
-
-        /// <remarks/>
-        [XmlAnyAttribute]
-        public XmlAttribute[] AnyAttr
-        {
-            get { return anyAttrField; }
-            set { anyAttrField = value; }
-        }
-
-        /// <remarks/>
-        [XmlText]
-        public string[] Text
-        {
-            get { return textField; }
-            set { textField = value; }
         }
     }
 }
