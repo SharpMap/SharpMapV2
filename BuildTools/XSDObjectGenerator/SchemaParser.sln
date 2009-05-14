@@ -1,0 +1,43 @@
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{054D24AA-84DD-4A8F-AFA3-46D11EC30202}"
+	ProjectSection(SolutionItems) = preProject
+		localtestrun.testrunconfig = localtestrun.testrunconfig
+		SchemaParser.vsmdi = SchemaParser.vsmdi
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XSDObjectGenLib", "XSDObjectGenLib\XSDObjectGenLib.csproj", "{58389447-7A24-47B3-B60D-AC52065D99CC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XSDObjectGen", "XSDObjectGen\XSDObjectGen.csproj", "{25C27ACD-4F73-40D2-BAF2-8BD6D365A640}"
+EndProject
+Global
+	GlobalSection(TeamFoundationVersionControl) = preSolution
+		SccNumberOfProjects = 3
+		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
+		SccTeamFoundationServer = https://tfs06.codeplex.com/
+		SccLocalPath0 = .
+		SccProjectUniqueName1 = XSDObjectGenLib\\XSDObjectGenLib.csproj
+		SccProjectName1 = XSDObjectGenLib
+		SccLocalPath1 = XSDObjectGenLib
+		SccProjectUniqueName2 = XSDObjectGen\\XSDObjectGen.csproj
+		SccProjectName2 = XSDObjectGen
+		SccLocalPath2 = XSDObjectGen
+	EndGlobalSection
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{58389447-7A24-47B3-B60D-AC52065D99CC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{58389447-7A24-47B3-B60D-AC52065D99CC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{58389447-7A24-47B3-B60D-AC52065D99CC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{58389447-7A24-47B3-B60D-AC52065D99CC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{25C27ACD-4F73-40D2-BAF2-8BD6D365A640}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{25C27ACD-4F73-40D2-BAF2-8BD6D365A640}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{25C27ACD-4F73-40D2-BAF2-8BD6D365A640}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{25C27ACD-4F73-40D2-BAF2-8BD6D365A640}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
