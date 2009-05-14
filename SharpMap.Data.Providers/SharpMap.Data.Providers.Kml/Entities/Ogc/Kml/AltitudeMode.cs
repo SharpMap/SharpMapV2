@@ -18,9 +18,10 @@ using System.Xml.Serialization;
 namespace SharpMap.Entities.Ogc.Kml
 {
     [Serializable]
-    public enum displayModeEnumType
+    public enum AltitudeMode
     {
-        [XmlEnum(Name = "default")] @default,
-        [XmlEnum(Name = "hide")] hide
+        [XmlEnum(Name = "clampToGround")] ClampToGround,
+        [XmlEnum(Name = "relativeToGround")] RelativeToGround,
+        [XmlEnum(Name = "absolute")] Absolute
     }
 }

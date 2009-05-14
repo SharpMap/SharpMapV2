@@ -45,7 +45,7 @@ namespace SharpMap.Entities.Ogc.Kml
     {
         [XmlIgnore] private byte[] __bgColor;
         [XmlIgnore] private List<ItemIcon> __ItemIcon;
-        [XmlIgnore] private listItemTypeEnumType __listItemType;
+        [XmlIgnore] private ListItemType __listItemType;
 
         [XmlIgnore] public bool __listItemTypeSpecified;
         [XmlIgnore] private List<ListStyleObjectExtensionGroup> __ListStyleObjectExtensionGroup;
@@ -56,14 +56,14 @@ namespace SharpMap.Entities.Ogc.Kml
 
         public ListStyleType()
         {
-            listItemType = listItemTypeEnumType.check;
+            listItemType = ListItemType.Check;
             maxSnippetLines = 2;
         }
 
 
         [XmlElement(ElementName = "listItemType", IsNullable = false, Form = XmlSchemaForm.Qualified,
             Namespace = Declarations.SchemaVersion)]
-        public listItemTypeEnumType listItemType
+        public ListItemType listItemType
         {
             get { return __listItemType; }
             set

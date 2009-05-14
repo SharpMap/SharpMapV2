@@ -18,10 +18,9 @@ using System.Xml.Serialization;
 namespace SharpMap.Entities.Ogc.Kml
 {
     [Serializable]
-    public enum unitsEnumType
+    public enum ColorMode
     {
-        [XmlEnum(Name = "fraction")] fraction,
-        [XmlEnum(Name = "pixels")] pixels,
-        [XmlEnum(Name = "insetPixels")] insetPixels
+        [XmlEnum(Name = "normal")] Normal,
+        [XmlEnum(Name = "random")] Random
     }
 }

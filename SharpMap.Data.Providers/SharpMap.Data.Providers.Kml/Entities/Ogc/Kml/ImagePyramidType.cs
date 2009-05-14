@@ -43,7 +43,7 @@ namespace SharpMap.Entities.Ogc.Kml
     [XmlInclude(typeof (ViewVolumeType))]
     public class ImagePyramidType : AbstractObjectType
     {
-        [XmlIgnore] private gridOriginEnumType __gridOrigin;
+        [XmlIgnore] private GridOrigin __gridOrigin;
 
         [XmlIgnore] public bool __gridOriginSpecified;
         [XmlIgnore] private List<ImagePyramidObjectExtensionGroup> __ImagePyramidObjectExtensionGroup;
@@ -63,7 +63,7 @@ namespace SharpMap.Entities.Ogc.Kml
             tileSize = 256;
             maxWidth = 0;
             maxHeight = 0;
-            gridOrigin = gridOriginEnumType.lowerLeft;
+            gridOrigin = GridOrigin.LowerLeft;
         }
 
 
@@ -108,7 +108,7 @@ namespace SharpMap.Entities.Ogc.Kml
 
         [XmlElement(ElementName = "gridOrigin", IsNullable = false, Form = XmlSchemaForm.Qualified,
             Namespace = Declarations.SchemaVersion)]
-        public gridOriginEnumType gridOrigin
+        public GridOrigin gridOrigin
         {
             get { return __gridOrigin; }
             set

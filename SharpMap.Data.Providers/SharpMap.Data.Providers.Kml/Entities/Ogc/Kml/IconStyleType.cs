@@ -46,7 +46,7 @@ namespace SharpMap.Entities.Ogc.Kml
         [XmlIgnore] private double __heading;
 
         [XmlIgnore] public bool __headingSpecified;
-        [XmlIgnore] private hotSpot __hotSpot;
+        [XmlIgnore] private HotSpot __hotSpot;
         [XmlIgnore] private Icon __Icon;
         [XmlIgnore] private List<IconStyleObjectExtensionGroup> __IconStyleObjectExtensionGroup;
         [XmlIgnore] private List<string> __IconStyleSimpleExtensionGroup;
@@ -98,13 +98,13 @@ namespace SharpMap.Entities.Ogc.Kml
             set { __Icon = value; }
         }
 
-        [XmlElement(Type = typeof (hotSpot), ElementName = "hotSpot", IsNullable = false, Form = XmlSchemaForm.Qualified
+        [XmlElement(Type = typeof (HotSpot), ElementName = "hotSpot", IsNullable = false, Form = XmlSchemaForm.Qualified
             , Namespace = Declarations.SchemaVersion)]
-        public hotSpot hotSpot
+        public HotSpot hotSpot
         {
             get
             {
-                if (__hotSpot == null) __hotSpot = new hotSpot();
+                if (__hotSpot == null) __hotSpot = new HotSpot();
                 return __hotSpot;
             }
             set { __hotSpot = value; }

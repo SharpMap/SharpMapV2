@@ -18,11 +18,8 @@ using System.Xml.Serialization;
 namespace SharpMap.Entities.Ogc.Kml
 {
     [XmlRoot(ElementName = "overlayXY", Namespace = Declarations.SchemaVersion, IsNullable = false), Serializable]
-    public class overlayXY : vec2Type
+    public class OverlayXY : Vector2
     {
-        public new void MakeSchemaCompliant()
-        {
-            base.MakeSchemaCompliant();
-        }
+
     }
 }

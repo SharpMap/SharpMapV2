@@ -18,9 +18,9 @@ using System.Xml.Serialization;
 namespace SharpMap.Entities.Ogc.Kml
 {
     [Serializable]
-    public enum colorModeEnumType
+    public enum StyleState
     {
-        [XmlEnum(Name = "normal")] normal,
-        [XmlEnum(Name = "random")] random
+        [XmlEnum(Name = "normal")] Normal,
+        [XmlEnum(Name = "highlight")] Highlight
     }
 }

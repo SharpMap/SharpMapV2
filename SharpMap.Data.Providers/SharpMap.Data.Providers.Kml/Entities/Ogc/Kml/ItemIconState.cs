@@ -18,10 +18,13 @@ using System.Xml.Serialization;
 namespace SharpMap.Entities.Ogc.Kml
 {
     [Serializable]
-    public enum shapeEnumType
+    public enum ItemIconState
     {
-        [XmlEnum(Name = "rectangle")] rectangle,
-        [XmlEnum(Name = "cylinder")] cylinder,
-        [XmlEnum(Name = "sphere")] sphere
+        [XmlEnum(Name = "open")] Open,
+        [XmlEnum(Name = "closed")] Closed,
+        [XmlEnum(Name = "error")] Error,
+        [XmlEnum(Name = "fetching0")] Fetching0,
+        [XmlEnum(Name = "fetching1")] Fetching1,
+        [XmlEnum(Name = "fetching2")] Fetching2
     }
 }

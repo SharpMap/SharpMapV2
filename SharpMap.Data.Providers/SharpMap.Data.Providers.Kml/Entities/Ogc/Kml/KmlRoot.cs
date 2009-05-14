@@ -19,7 +19,8 @@ using System.Xml.Serialization;
 
 namespace SharpMap.Entities.Ogc.Kml
 {
-    [XmlType(TypeName = "KmlType", Namespace = Declarations.SchemaVersion), Serializable]
+    [XmlRoot(ElementName = "kml", Namespace = Declarations.SchemaVersion, IsNullable = false), Serializable]
+    [XmlType(TypeName = "KmlType", Namespace = Declarations.SchemaVersion)]
     [XmlInclude(typeof (AbstractContainerType))]
     [XmlInclude(typeof (PlacemarkType))]
     [XmlInclude(typeof (NetworkLinkType))]
@@ -45,20 +46,20 @@ namespace SharpMap.Entities.Ogc.Kml
     [XmlInclude(typeof (ScaleType))]
     [XmlInclude(typeof (LodType))]
     [XmlInclude(typeof (ViewVolumeType))]
-    public class KmlType
+    public class KmlRoot
     {
-        [XmlIgnore] private AbstractFeatureGroup __AbstractFeatureGroup;
-        [XmlIgnore] private string __hint;
-        [XmlIgnore] private List<KmlObjectExtensionGroup> __KmlObjectExtensionGroup;
-        [XmlIgnore] private List<string> __KmlSimpleExtensionGroup;
+        [XmlIgnore] private AbstractFeatureGroup _abstractFeatureGroup;
+        [XmlIgnore] private string _hint;
+        [XmlIgnore] private List<KmlObjectExtensionGroup> _kmlObjectExtensionGroup;
+        [XmlIgnore] private List<string> _kmlSimpleExtensionGroup;
 
-        [XmlIgnore] private NetworkLinkControl __NetworkLinkControl;
+        [XmlIgnore] private NetworkLinkControl _networkLinkControl;
 
         [XmlAttribute(AttributeName = "hint", DataType = "string")]
-        public string hint
+        public string Hint
         {
-            get { return __hint; }
-            set { __hint = value; }
+            get { return _hint; }
+            set { _hint = value; }
         }
 
         [XmlElement(Type = typeof (NetworkLinkControl), ElementName = "NetworkLinkControl", IsNullable = false,
@@ -67,18 +68,18 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (__NetworkLinkControl == null) __NetworkLinkControl = new NetworkLinkControl();
-                return __NetworkLinkControl;
+                if (_networkLinkControl == null) _networkLinkControl = new NetworkLinkControl();
+                return _networkLinkControl;
             }
-            set { __NetworkLinkControl = value; }
+            set { _networkLinkControl = value; }
         }
 
         [XmlElement(Type = typeof (AbstractFeatureGroup), ElementName = "AbstractFeatureGroup", IsNullable = false,
             Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public AbstractFeatureGroup AbstractFeatureGroup
         {
-            get { return __AbstractFeatureGroup; }
-            set { __AbstractFeatureGroup = value; }
+            get { return _abstractFeatureGroup; }
+            set { _abstractFeatureGroup = value; }
         }
 
         [XmlElement(Type = typeof (string), ElementName = "KmlSimpleExtensionGroup", IsNullable = false,
@@ -87,10 +88,10 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (__KmlSimpleExtensionGroup == null) __KmlSimpleExtensionGroup = new List<string>();
-                return __KmlSimpleExtensionGroup;
+                if (_kmlSimpleExtensionGroup == null) _kmlSimpleExtensionGroup = new List<string>();
+                return _kmlSimpleExtensionGroup;
             }
-            set { __KmlSimpleExtensionGroup = value; }
+            set { _kmlSimpleExtensionGroup = value; }
         }
 
         [XmlElement(Type = typeof (KmlObjectExtensionGroup), ElementName = "KmlObjectExtensionGroup", IsNullable = false
@@ -99,13 +100,13 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (__KmlObjectExtensionGroup == null) __KmlObjectExtensionGroup = new List<KmlObjectExtensionGroup>();
-                return __KmlObjectExtensionGroup;
+                if (_kmlObjectExtensionGroup == null) _kmlObjectExtensionGroup = new List<KmlObjectExtensionGroup>();
+                return _kmlObjectExtensionGroup;
             }
-            set { __KmlObjectExtensionGroup = value; }
+            set { _kmlObjectExtensionGroup = value; }
         }
 
-        public void MakeSchemaCompliant()
+        public virtual void MakeSchemaCompliant()
         {
         }
     }

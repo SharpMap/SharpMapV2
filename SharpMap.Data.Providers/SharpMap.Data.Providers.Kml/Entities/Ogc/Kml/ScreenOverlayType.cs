@@ -43,65 +43,65 @@ namespace SharpMap.Entities.Ogc.Kml
     [XmlInclude(typeof (ViewVolumeType))]
     public class ScreenOverlayType : AbstractOverlayType
     {
-        [XmlIgnore] private overlayXY __overlayXY;
+        [XmlIgnore] private OverlayXY __overlayXY;
         [XmlIgnore] private double __rotation;
 
         [XmlIgnore] public bool __rotationSpecified;
-        [XmlIgnore] private rotationXY __rotationXY;
+        [XmlIgnore] private RotationXY __rotationXY;
         [XmlIgnore] private List<ScreenOverlayObjectExtensionGroup> __ScreenOverlayObjectExtensionGroup;
         [XmlIgnore] private List<string> __ScreenOverlaySimpleExtensionGroup;
 
-        [XmlIgnore] private screenXY __screenXY;
-        [XmlIgnore] private size __size;
+        [XmlIgnore] private ScreenXY __screenXY;
+        [XmlIgnore] private Size __size;
 
         public ScreenOverlayType()
         {
             rotation = 0.0;
         }
 
-        [XmlElement(Type = typeof (overlayXY), ElementName = "overlayXY", IsNullable = false,
+        [XmlElement(Type = typeof (OverlayXY), ElementName = "overlayXY", IsNullable = false,
             Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
-        public overlayXY overlayXY
+        public OverlayXY overlayXY
         {
             get
             {
-                if (__overlayXY == null) __overlayXY = new overlayXY();
+                if (__overlayXY == null) __overlayXY = new OverlayXY();
                 return __overlayXY;
             }
             set { __overlayXY = value; }
         }
 
-        [XmlElement(Type = typeof (screenXY), ElementName = "screenXY", IsNullable = false,
+        [XmlElement(Type = typeof (ScreenXY), ElementName = "screenXY", IsNullable = false,
             Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
-        public screenXY screenXY
+        public ScreenXY screenXY
         {
             get
             {
-                if (__screenXY == null) __screenXY = new screenXY();
+                if (__screenXY == null) __screenXY = new ScreenXY();
                 return __screenXY;
             }
             set { __screenXY = value; }
         }
 
-        [XmlElement(Type = typeof (rotationXY), ElementName = "rotationXY", IsNullable = false,
+        [XmlElement(Type = typeof (RotationXY), ElementName = "rotationXY", IsNullable = false,
             Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
-        public rotationXY rotationXY
+        public RotationXY rotationXY
         {
             get
             {
-                if (__rotationXY == null) __rotationXY = new rotationXY();
+                if (__rotationXY == null) __rotationXY = new RotationXY();
                 return __rotationXY;
             }
             set { __rotationXY = value; }
         }
 
-        [XmlElement(Type = typeof (size), ElementName = "size", IsNullable = false, Form = XmlSchemaForm.Qualified,
+        [XmlElement(Type = typeof (Size), ElementName = "size", IsNullable = false, Form = XmlSchemaForm.Qualified,
             Namespace = Declarations.SchemaVersion)]
-        public size size
+        public Size size
         {
             get
             {
-                if (__size == null) __size = new size();
+                if (__size == null) __size = new Size();
                 return __size;
             }
             set { __size = value; }

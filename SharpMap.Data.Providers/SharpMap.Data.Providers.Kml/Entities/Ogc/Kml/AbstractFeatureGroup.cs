@@ -17,13 +17,11 @@ using System.Xml.Serialization;
 
 namespace SharpMap.Entities.Ogc.Kml
 {
+    
     [XmlRoot(ElementName = "AbstractFeatureGroup", Namespace = Declarations.SchemaVersion, IsNullable = false),
      Serializable]
     public abstract class AbstractFeatureGroup : AbstractFeatureType
     {
-        public new void MakeSchemaCompliant()
-        {
-            base.MakeSchemaCompliant();
-        }
+
     }
 }

@@ -18,11 +18,9 @@ using System.Xml.Serialization;
 namespace SharpMap.Entities.Ogc.Kml
 {
     [Serializable]
-    public enum listItemTypeEnumType
+    public enum GridOrigin
     {
-        [XmlEnum(Name = "radioFolder")] radioFolder,
-        [XmlEnum(Name = "check")] check,
-        [XmlEnum(Name = "checkHideChildren")] checkHideChildren,
-        [XmlEnum(Name = "checkOffOnly")] checkOffOnly
+        [XmlEnum(Name = "lowerLeft")] LowerLeft,
+        [XmlEnum(Name = "upperLeft")] UpperLeft
     }
 }

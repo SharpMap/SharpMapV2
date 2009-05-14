@@ -82,7 +82,7 @@
     <Compile Include="Entities\Ogc\Kml\Alias.cs" />
     <Compile Include="Entities\Ogc\Kml\AliasObjectExtensionGroup.cs" />
     <Compile Include="Entities\Ogc\Kml\AliasType.cs" />
-    <Compile Include="Entities\Ogc\Kml\altitudeModeEnumType.cs" />
+    <Compile Include="Entities\Ogc\Kml\AltitudeMode.cs" />
     <Compile Include="Entities\Ogc\Kml\BalloonStyle.cs" />
     <Compile Include="Entities\Ogc\Kml\BalloonStyleObjectExtensionGroup.cs" />
     <Compile Include="Entities\Ogc\Kml\BalloonStyleType.cs" />
@@ -95,7 +95,7 @@
     <Compile Include="Entities\Ogc\Kml\CameraType.cs" />
     <Compile Include="Entities\Ogc\Kml\Change.cs" />
     <Compile Include="Entities\Ogc\Kml\ChangeType.cs" />
-    <Compile Include="Entities\Ogc\Kml\colorModeEnumType.cs" />
+    <Compile Include="Entities\Ogc\Kml\ColorMode.cs" />
     <Compile Include="Entities\Ogc\Kml\Create.cs" />
     <Compile Include="Entities\Ogc\Kml\CreateType.cs" />
     <Compile Include="Entities\Ogc\Kml\Data.cs" />
@@ -103,7 +103,7 @@
     <Compile Include="Entities\Ogc\Kml\Declarations.cs" />
     <Compile Include="Entities\Ogc\Kml\Delete.cs" />
     <Compile Include="Entities\Ogc\Kml\DeleteType.cs" />
-    <Compile Include="Entities\Ogc\Kml\displayModeEnumType.cs" />
+    <Compile Include="Entities\Ogc\Kml\DisplayMode.cs" />
     <Compile Include="Entities\Ogc\Kml\Document.cs" />
     <Compile Include="Entities\Ogc\Kml\DocumentObjectExtensionGroup.cs" />
     <Compile Include="Entities\Ogc\Kml\DocumentType.cs" />
@@ -112,7 +112,7 @@
     <Compile Include="Entities\Ogc\Kml\Folder.cs" />
     <Compile Include="Entities\Ogc\Kml\FolderObjectExtensionGroup.cs" />
     <Compile Include="Entities\Ogc\Kml\FolderType.cs" />
-    <Compile Include="Entities\Ogc\Kml\gridOriginEnumType.cs" />
+    <Compile Include="Entities\Ogc\Kml\GridOrigin.cs" />
     <Compile Include="Entities\Ogc\Kml\GroundOverlay.cs" />
     <Compile Include="Entities\Ogc\Kml\GroundOverlayObjectExtensionGroup.cs" />
     <Compile Include="Entities\Ogc\Kml\GroundOverlayType.cs" />
@@ -127,10 +127,10 @@
     <Compile Include="Entities\Ogc\Kml\innerBoundaryIs.cs" />
     <Compile Include="Entities\Ogc\Kml\ItemIcon.cs" />
     <Compile Include="Entities\Ogc\Kml\ItemIconObjectExtensionGroup.cs" />
-    <Compile Include="Entities\Ogc\Kml\itemIconStateEnumType.cs" />
+    <Compile Include="Entities\Ogc\Kml\ItemIconState.cs" />
     <Compile Include="Entities\Ogc\Kml\ItemIconType.cs" />
     <Compile Include="Entities\Ogc\Kml\KmlObjectExtensionGroup.cs" />
-    <Compile Include="Entities\Ogc\Kml\KmlType.cs" />
+    <Compile Include="Entities\Ogc\Kml\KmlRoot.cs" />
     <Compile Include="Entities\Ogc\Kml\LabelStyle.cs" />
     <Compile Include="Entities\Ogc\Kml\LabelStyleObjectExtensionGroup.cs" />
     <Compile Include="Entities\Ogc\Kml\LabelStyleType.cs" />
@@ -153,7 +153,7 @@
     <Compile Include="Entities\Ogc\Kml\LinkObjectExtensionGroup.cs" />
     <Compile Include="Entities\Ogc\Kml\linkSnippet.cs" />
     <Compile Include="Entities\Ogc\Kml\LinkType.cs" />
-    <Compile Include="Entities\Ogc\Kml\listItemTypeEnumType.cs" />
+    <Compile Include="Entities\Ogc\Kml\ListItemType.cs" />
     <Compile Include="Entities\Ogc\Kml\ListStyle.cs" />
     <Compile Include="Entities\Ogc\Kml\ListStyleObjectExtensionGroup.cs" />
     <Compile Include="Entities\Ogc\Kml\ListStyleType.cs" />
@@ -203,7 +203,7 @@
     <Compile Include="Entities\Ogc\Kml\PolyStyle.cs" />
     <Compile Include="Entities\Ogc\Kml\PolyStyleObjectExtensionGroup.cs" />
     <Compile Include="Entities\Ogc\Kml\PolyStyleType.cs" />
-    <Compile Include="Entities\Ogc\Kml\refreshModeEnumType.cs" />
+    <Compile Include="Entities\Ogc\Kml\RefreshMode.cs" />
     <Compile Include="Entities\Ogc\Kml\Region.cs" />
     <Compile Include="Entities\Ogc\Kml\RegionObjectExtensionGroup.cs" />
     <Compile Include="Entities\Ogc\Kml\RegionType.cs" />
@@ -222,7 +222,7 @@
     <Compile Include="Entities\Ogc\Kml\ScreenOverlayObjectExtensionGroup.cs" />
     <Compile Include="Entities\Ogc\Kml\ScreenOverlayType.cs" />
     <Compile Include="Entities\Ogc\Kml\screenXY.cs" />
-    <Compile Include="Entities\Ogc\Kml\shapeEnumType.cs" />
+    <Compile Include="Entities\Ogc\Kml\Shape.cs" />
     <Compile Include="Entities\Ogc\Kml\SimpleData.cs" />
     <Compile Include="Entities\Ogc\Kml\SimpleDataType.cs" />
     <Compile Include="Entities\Ogc\Kml\SimpleField.cs" />
@@ -235,7 +235,7 @@
     <Compile Include="Entities\Ogc\Kml\StyleMapObjectExtensionGroup.cs" />
     <Compile Include="Entities\Ogc\Kml\StyleMapType.cs" />
     <Compile Include="Entities\Ogc\Kml\StyleObjectExtensionGroup.cs" />
-    <Compile Include="Entities\Ogc\Kml\styleStateEnumType.cs" />
+    <Compile Include="Entities\Ogc\Kml\StyleState.cs" />
     <Compile Include="Entities\Ogc\Kml\StyleType.cs" />
     <Compile Include="Entities\Ogc\Kml\TimeSpan.cs" />
     <Compile Include="Entities\Ogc\Kml\TimeSpanObjectExtensionGroup.cs" />
@@ -243,12 +243,12 @@
     <Compile Include="Entities\Ogc\Kml\TimeStamp.cs" />
     <Compile Include="Entities\Ogc\Kml\TimeStampObjectExtensionGroup.cs" />
     <Compile Include="Entities\Ogc\Kml\TimeStampType.cs" />
-    <Compile Include="Entities\Ogc\Kml\unitsEnumType.cs" />
+    <Compile Include="Entities\Ogc\Kml\Unit.cs" />
     <Compile Include="Entities\Ogc\Kml\Update.cs" />
     <Compile Include="Entities\Ogc\Kml\UpdateType.cs" />
     <Compile Include="Entities\Ogc\Kml\Url.cs" />
-    <Compile Include="Entities\Ogc\Kml\vec2Type.cs" />
-    <Compile Include="Entities\Ogc\Kml\viewRefreshModeEnumType.cs" />
+    <Compile Include="Entities\Ogc\Kml\Vector2.cs" />
+    <Compile Include="Entities\Ogc\Kml\ViewRefreshMode.cs" />
     <Compile Include="Entities\Ogc\Kml\ViewVolume.cs" />
     <Compile Include="Entities\Ogc\Kml\ViewVolumeObjectExtensionGroup.cs" />
     <Compile Include="Entities\Ogc\Kml\ViewVolumeType.cs" />
@@ -343,7 +343,6 @@
     <Compile Include="Entities\xAl\ThoroughfareTrailingTypeType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Entities\Atom\Link.cs" />
-    <Compile Include="Entities\Ogc\Kml\Kml.cs" />
     <Compile Include="Entities\xAl\xAL.cs" />
   </ItemGroup>
   <ItemGroup>

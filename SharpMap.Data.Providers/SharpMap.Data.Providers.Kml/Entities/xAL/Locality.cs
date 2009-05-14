@@ -23,42 +23,42 @@ namespace SharpMap.Entities.xAL
     [XmlRoot(ElementName = "Locality", Namespace = Declarations.SchemaVersion, IsNullable = false), Serializable]
     public class Locality
     {
-        [XmlIgnore] private List<AddressLine> __AddressLine;
-        [XmlIgnore] private DependentLocalityType __DependentLocality;
-        [XmlIgnore] private string __Indicator;
-        [XmlIgnore] private LargeMailUserType __LargeMailUser;
-        [XmlIgnore] private List<LocalityName> __LocalityName;
-        [XmlIgnore] private PostalCode __PostalCode;
-        [XmlIgnore] private PostalRouteType __PostalRoute;
-        [XmlIgnore] private PostBox __PostBox;
-        [XmlIgnore] private PostOffice __PostOffice;
-        [XmlIgnore] private Premise __Premise;
-        [XmlIgnore] private Thoroughfare __Thoroughfare;
-        [XmlIgnore] private string __Type;
+        [XmlIgnore] private List<AddressLine> _addressLine;
+        [XmlIgnore] private DependentLocalityType _dependentLocality;
+        [XmlIgnore] private string _indicator;
+        [XmlIgnore] private LargeMailUserType _largeMailUser;
+        [XmlIgnore] private List<LocalityName> _localityName;
+        [XmlIgnore] private PostalCode _postalCode;
+        [XmlIgnore] private PostalRouteType _postalRoute;
+        [XmlIgnore] private PostBox _postBox;
+        [XmlIgnore] private PostOffice _postOffice;
+        [XmlIgnore] private Premise _premise;
+        [XmlIgnore] private Thoroughfare _thoroughfare;
+        [XmlIgnore] private string _type;
 
-        [XmlIgnore] private string __UsageType;
+        [XmlIgnore] private string _usageType;
         [XmlAnyElement] public XmlElement[] Any;
         [XmlAnyAttribute] public XmlAttribute[] AnyAttr;
 
         [XmlAttribute(AttributeName = "Type")]
         public string Type
         {
-            get { return __Type; }
-            set { __Type = value; }
+            get { return _type; }
+            set { _type = value; }
         }
 
         [XmlAttribute(AttributeName = "UsageType")]
         public string UsageType
         {
-            get { return __UsageType; }
-            set { __UsageType = value; }
+            get { return _usageType; }
+            set { _usageType = value; }
         }
 
         [XmlAttribute(AttributeName = "Indicator")]
         public string Indicator
         {
-            get { return __Indicator; }
-            set { __Indicator = value; }
+            get { return _indicator; }
+            set { _indicator = value; }
         }
 
         [XmlElement(Type = typeof (AddressLine), ElementName = "AddressLine", IsNullable = false,
@@ -67,10 +67,10 @@ namespace SharpMap.Entities.xAL
         {
             get
             {
-                if (__AddressLine == null) __AddressLine = new List<AddressLine>();
-                return __AddressLine;
+                if (_addressLine == null) _addressLine = new List<AddressLine>();
+                return _addressLine;
             }
-            set { __AddressLine = value; }
+            set { _addressLine = value; }
         }
 
         [XmlElement(Type = typeof (LocalityName), ElementName = "LocalityName", IsNullable = false,
@@ -79,10 +79,10 @@ namespace SharpMap.Entities.xAL
         {
             get
             {
-                if (__LocalityName == null) __LocalityName = new List<LocalityName>();
-                return __LocalityName;
+                if (_localityName == null) _localityName = new List<LocalityName>();
+                return _localityName;
             }
-            set { __LocalityName = value; }
+            set { _localityName = value; }
         }
 
         [XmlElement(Type = typeof (PostBox), ElementName = "PostBox", IsNullable = false, Form = XmlSchemaForm.Qualified
@@ -91,10 +91,10 @@ namespace SharpMap.Entities.xAL
         {
             get
             {
-                if (__PostBox == null) __PostBox = new PostBox();
-                return __PostBox;
+                if (_postBox == null) _postBox = new PostBox();
+                return _postBox;
             }
-            set { __PostBox = value; }
+            set { _postBox = value; }
         }
 
         [XmlElement(Type = typeof (LargeMailUserType), ElementName = "LargeMailUser", IsNullable = false,
@@ -103,10 +103,10 @@ namespace SharpMap.Entities.xAL
         {
             get
             {
-                if (__LargeMailUser == null) __LargeMailUser = new LargeMailUserType();
-                return __LargeMailUser;
+                if (_largeMailUser == null) _largeMailUser = new LargeMailUserType();
+                return _largeMailUser;
             }
-            set { __LargeMailUser = value; }
+            set { _largeMailUser = value; }
         }
 
         [XmlElement(Type = typeof (PostOffice), ElementName = "PostOffice", IsNullable = false,
@@ -115,10 +115,10 @@ namespace SharpMap.Entities.xAL
         {
             get
             {
-                if (__PostOffice == null) __PostOffice = new PostOffice();
-                return __PostOffice;
+                if (_postOffice == null) _postOffice = new PostOffice();
+                return _postOffice;
             }
-            set { __PostOffice = value; }
+            set { _postOffice = value; }
         }
 
         [XmlElement(Type = typeof (PostalRouteType), ElementName = "PostalRoute", IsNullable = false,
@@ -127,10 +127,10 @@ namespace SharpMap.Entities.xAL
         {
             get
             {
-                if (__PostalRoute == null) __PostalRoute = new PostalRouteType();
-                return __PostalRoute;
+                if (_postalRoute == null) _postalRoute = new PostalRouteType();
+                return _postalRoute;
             }
-            set { __PostalRoute = value; }
+            set { _postalRoute = value; }
         }
 
         [XmlElement(Type = typeof (Thoroughfare), ElementName = "Thoroughfare", IsNullable = false,
@@ -139,10 +139,10 @@ namespace SharpMap.Entities.xAL
         {
             get
             {
-                if (__Thoroughfare == null) __Thoroughfare = new Thoroughfare();
-                return __Thoroughfare;
+                if (_thoroughfare == null) _thoroughfare = new Thoroughfare();
+                return _thoroughfare;
             }
-            set { __Thoroughfare = value; }
+            set { _thoroughfare = value; }
         }
 
         [XmlElement(Type = typeof (Premise), ElementName = "Premise", IsNullable = false, Form = XmlSchemaForm.Qualified
@@ -151,10 +151,10 @@ namespace SharpMap.Entities.xAL
         {
             get
             {
-                if (__Premise == null) __Premise = new Premise();
-                return __Premise;
+                if (_premise == null) _premise = new Premise();
+                return _premise;
             }
-            set { __Premise = value; }
+            set { _premise = value; }
         }
 
         [XmlElement(Type = typeof (DependentLocalityType), ElementName = "DependentLocality", IsNullable = false,
@@ -163,10 +163,11 @@ namespace SharpMap.Entities.xAL
         {
             get
             {
-                if (__DependentLocality == null) __DependentLocality = new DependentLocalityType();
-                return __DependentLocality;
+                //jd: stack overflow awaits you when serializing
+                //if (_dependentLocality == null) _dependentLocality = new DependentLocalityType();
+                return _dependentLocality;
             }
-            set { __DependentLocality = value; }
+            set { _dependentLocality = value; }
         }
 
         [XmlElement(Type = typeof (PostalCode), ElementName = "PostalCode", IsNullable = false,
@@ -175,10 +176,10 @@ namespace SharpMap.Entities.xAL
         {
             get
             {
-                if (__PostalCode == null) __PostalCode = new PostalCode();
-                return __PostalCode;
+                if (_postalCode == null) _postalCode = new PostalCode();
+                return _postalCode;
             }
-            set { __PostalCode = value; }
+            set { _postalCode = value; }
         }
 
         public void MakeSchemaCompliant()

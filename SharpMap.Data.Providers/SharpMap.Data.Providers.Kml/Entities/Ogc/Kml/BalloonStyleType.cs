@@ -47,7 +47,7 @@ namespace SharpMap.Entities.Ogc.Kml
         [XmlIgnore] private List<string> __BalloonStyleSimpleExtensionGroup;
         [XmlIgnore] private byte[] __bgColor;
         [XmlIgnore] private byte[] __color;
-        [XmlIgnore] private displayModeEnumType __displayMode;
+        [XmlIgnore] private DisplayMode __displayMode;
 
         [XmlIgnore] public bool __displayModeSpecified;
         [XmlIgnore] private string __text;
@@ -55,7 +55,7 @@ namespace SharpMap.Entities.Ogc.Kml
 
         public BalloonStyleType()
         {
-            displayMode = displayModeEnumType.@default;
+            displayMode = DisplayMode.Default;
         }
 
         [XmlElement(ElementName = "color", IsNullable = false, Form = XmlSchemaForm.Qualified, DataType = "hexBinary",
@@ -93,7 +93,7 @@ namespace SharpMap.Entities.Ogc.Kml
 
         [XmlElement(ElementName = "displayMode", IsNullable = false, Form = XmlSchemaForm.Qualified,
             Namespace = Declarations.SchemaVersion)]
-        public displayModeEnumType displayMode
+        public DisplayMode displayMode
         {
             get { return __displayMode; }
             set

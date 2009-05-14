@@ -18,10 +18,10 @@ using System.Xml.Serialization;
 namespace SharpMap.Entities.Ogc.Kml
 {
     [Serializable]
-    public enum refreshModeEnumType
+    public enum RefreshMode
     {
-        [XmlEnum(Name = "onChange")] onChange,
-        [XmlEnum(Name = "onInterval")] onInterval,
-        [XmlEnum(Name = "onExpire")] onExpire
+        [XmlEnum(Name = "onChange")] OnChange,
+        [XmlEnum(Name = "onInterval")] OnInterval,
+        [XmlEnum(Name = "onExpire")] OnExpire
     }
 }

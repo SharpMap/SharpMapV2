@@ -22,70 +22,92 @@ using SharpMap.Entities.xAL;
 namespace SharpMap.Entities.Ogc.Kml
 {
     [XmlType(TypeName = "AbstractFeatureType", Namespace = Declarations.SchemaVersion), Serializable]
-    [XmlInclude(typeof (CameraType))]
-    [XmlInclude(typeof (LookAtType))]
-    [XmlInclude(typeof (TimeStampType))]
-    [XmlInclude(typeof (TimeSpanType))]
-    [XmlInclude(typeof (StyleMapType))]
-    [XmlInclude(typeof (StyleType))]
-    [XmlInclude(typeof (DataType))]
-    [XmlInclude(typeof (AbstractTimePrimitiveType))]
-    [XmlInclude(typeof (SchemaDataType))]
-    [XmlInclude(typeof (ItemIconType))]
-    [XmlInclude(typeof (AbstractLatLonBoxType))]
-    [XmlInclude(typeof (OrientationType))]
-    [XmlInclude(typeof (AbstractStyleSelectorType))]
-    [XmlInclude(typeof (ResourceMapType))]
-    [XmlInclude(typeof (LocationType))]
-    [XmlInclude(typeof (AbstractSubStyleType))]
-    [XmlInclude(typeof (RegionType))]
-    [XmlInclude(typeof (AliasType))]
-    [XmlInclude(typeof (AbstractViewType))]
-    [XmlInclude(typeof (AbstractFeatureType))]
-    [XmlInclude(typeof (AbstractGeometryType))]
-    [XmlInclude(typeof (BasicLinkType))]
-    [XmlInclude(typeof (PairType))]
-    [XmlInclude(typeof (ImagePyramidType))]
-    [XmlInclude(typeof (ScaleType))]
-    [XmlInclude(typeof (LodType))]
-    [XmlInclude(typeof (ViewVolumeType))]
+    [XmlInclude(typeof(CameraType))]
+    [XmlInclude(typeof(LookAtType))]
+    [XmlInclude(typeof(TimeStampType))]
+    [XmlInclude(typeof(TimeSpanType))]
+    [XmlInclude(typeof(StyleMapType))]
+    [XmlInclude(typeof(StyleType))]
+    [XmlInclude(typeof(DataType))]
+    [XmlInclude(typeof(AbstractTimePrimitiveType))]
+    [XmlInclude(typeof(SchemaDataType))]
+    [XmlInclude(typeof(ItemIconType))]
+    [XmlInclude(typeof(AbstractLatLonBoxType))]
+    [XmlInclude(typeof(OrientationType))]
+    [XmlInclude(typeof(AbstractStyleSelectorType))]
+    [XmlInclude(typeof(ResourceMapType))]
+    [XmlInclude(typeof(LocationType))]
+    [XmlInclude(typeof(AbstractSubStyleType))]
+    [XmlInclude(typeof(RegionType))]
+    [XmlInclude(typeof(AliasType))]
+    [XmlInclude(typeof(AbstractViewType))]
+    [XmlInclude(typeof(AbstractFeatureType))]
+    [XmlInclude(typeof(AbstractGeometryType))]
+    [XmlInclude(typeof(BasicLinkType))]
+    [XmlInclude(typeof(PairType))]
+    [XmlInclude(typeof(ImagePyramidType))]
+    [XmlInclude(typeof(ScaleType))]
+    [XmlInclude(typeof(LodType))]
+    [XmlInclude(typeof(ViewVolumeType))]
     public abstract class AbstractFeatureType : AbstractObjectType
     {
-        [XmlIgnore] private List<AbstractFeatureObjectExtensionGroup> __AbstractFeatureObjectExtensionGroup;
-        [XmlIgnore] private List<string> __AbstractFeatureSimpleExtensionGroup;
-        [XmlIgnore] private List<AbstractStyleSelectorGroup> __AbstractStyleSelectorGroup;
-        [XmlIgnore] private AbstractTimePrimitiveGroup __AbstractTimePrimitiveGroup;
-        [XmlIgnore] private AbstractViewGroup __AbstractViewGroup;
-        [XmlIgnore] private string __address;
-        [XmlIgnore] private AddressDetails __AddressDetails;
-        [XmlIgnore] private Author __author;
-        [XmlIgnore] private string __description;
-        [XmlIgnore] private ExtendedData __ExtendedData;
-        [XmlIgnore] private Atom.Link __link;
-        [XmlIgnore] private Metadata __Metadata;
-        [XmlIgnore] private string __name;
-        [XmlIgnore] private bool __open;
+        [XmlIgnore]
+        private List<AbstractFeatureObjectExtensionGroup> __AbstractFeatureObjectExtensionGroup;
+        [XmlIgnore]
+        private List<string> __AbstractFeatureSimpleExtensionGroup;
+        [XmlIgnore]
+        private List<AbstractStyleSelectorGroup> __AbstractStyleSelectorGroup;
+        [XmlIgnore]
+        private AbstractTimePrimitiveGroup __AbstractTimePrimitiveGroup;
+        [XmlIgnore]
+        private AbstractViewGroup __AbstractViewGroup;
+        [XmlIgnore]
+        private string __address;
+        [XmlIgnore]
+        private AddressDetails __AddressDetails;
+        [XmlIgnore]
+        private Author __author;
+        [XmlIgnore]
+        private string __description;
+        [XmlIgnore]
+        private ExtendedData __ExtendedData;
+        [XmlIgnore]
+        private Atom.Link __link;
+        [XmlIgnore]
+        private Metadata __Metadata;
+        [XmlIgnore]
+        private string __name;
+        [XmlIgnore]
+        private bool __open;
 
-        [XmlIgnore] public bool __openSpecified;
-        [XmlIgnore] private string __phoneNumber;
-        [XmlIgnore] private Region __Region;
-        [XmlIgnore] private string __snippet;
-        [XmlIgnore] private Snippet __Snippet;
-        [XmlIgnore] private string __styleUrl;
+        [XmlIgnore]
+        public bool __openSpecified;
+        [XmlIgnore]
+        private string __phoneNumber;
+        [XmlIgnore]
+        private Region __Region;
+        //[XmlIgnore]
+        //private string __snippet;
+        [XmlIgnore]
+        private Snippet __Snippet;
+        [XmlIgnore]
+        private string __styleUrl;
 
-        [XmlIgnore] private bool __visibility;
+        [XmlIgnore]
+        private bool __visibility;
 
-        [XmlIgnore] public bool __visibilitySpecified;
+        [XmlIgnore]
+        public bool __visibilitySpecified;
 
         public AbstractFeatureType()
         {
-            visibility = true;
-            open = false;
+            Visibility = true;
+            Open = false;
         }
 
         [XmlElement(ElementName = "name", IsNullable = false, Form = XmlSchemaForm.Qualified, DataType = "string",
             Namespace = Declarations.SchemaVersion)]
-        public string name
+        public string Name
         {
             get { return __name; }
             set { __name = value; }
@@ -94,7 +116,7 @@ namespace SharpMap.Entities.Ogc.Kml
 
         [XmlElement(ElementName = "visibility", IsNullable = false, Form = XmlSchemaForm.Qualified, DataType = "boolean"
             , Namespace = Declarations.SchemaVersion)]
-        public bool visibility
+        public bool Visibility
         {
             get { return __visibility; }
             set
@@ -107,7 +129,7 @@ namespace SharpMap.Entities.Ogc.Kml
 
         [XmlElement(ElementName = "open", IsNullable = false, Form = XmlSchemaForm.Qualified, DataType = "boolean",
             Namespace = Declarations.SchemaVersion)]
-        public bool open
+        public bool Open
         {
             get { return __open; }
             set
@@ -117,9 +139,9 @@ namespace SharpMap.Entities.Ogc.Kml
             }
         }
 
-        [XmlElement(Type = typeof (Author), ElementName = "author", IsNullable = false, Form = XmlSchemaForm.Qualified,
+        [XmlElement(Type = typeof(Author), ElementName = "author", IsNullable = false, Form = XmlSchemaForm.Qualified,
             Namespace = "http://www.w3.org/2005/Atom")]
-        public Author author
+        public Author Author
         {
             get
             {
@@ -129,9 +151,9 @@ namespace SharpMap.Entities.Ogc.Kml
             set { __author = value; }
         }
 
-        [XmlElement(Type = typeof (Atom.Link), ElementName = "link", IsNullable = false, Form = XmlSchemaForm.Qualified,
+        [XmlElement(Type = typeof(Atom.Link), ElementName = "link", IsNullable = false, Form = XmlSchemaForm.Qualified,
             Namespace = "http://www.w3.org/2005/Atom")]
-        public Atom.Link link
+        public Atom.Link Link
         {
             get
             {
@@ -143,13 +165,13 @@ namespace SharpMap.Entities.Ogc.Kml
 
         [XmlElement(ElementName = "address", IsNullable = false, Form = XmlSchemaForm.Qualified, DataType = "string",
             Namespace = Declarations.SchemaVersion)]
-        public string address
+        public string Address
         {
             get { return __address; }
             set { __address = value; }
         }
 
-        [XmlElement(Type = typeof (AddressDetails), ElementName = "AddressDetails", IsNullable = false,
+        [XmlElement(Type = typeof(AddressDetails), ElementName = "AddressDetails", IsNullable = false,
             Form = XmlSchemaForm.Qualified, Namespace = "urn:oasis:names:tc:ciq:xsdschema:xAL:2.0")]
         public AddressDetails AddressDetails
         {
@@ -163,13 +185,13 @@ namespace SharpMap.Entities.Ogc.Kml
 
         [XmlElement(ElementName = "phoneNumber", IsNullable = false, Form = XmlSchemaForm.Qualified, DataType = "string"
             , Namespace = Declarations.SchemaVersion)]
-        public string phoneNumber
+        public string PhoneNumber
         {
             get { return __phoneNumber; }
             set { __phoneNumber = value; }
         }
 
-        [XmlElement(Type = typeof (Snippet), ElementName = "Snippet", IsNullable = false, Form = XmlSchemaForm.Qualified
+        [XmlElement(Type = typeof(Snippet), ElementName = "Snippet", IsNullable = false, Form = XmlSchemaForm.Qualified
             , Namespace = Declarations.SchemaVersion)]
         public Snippet Snippet
         {
@@ -181,23 +203,23 @@ namespace SharpMap.Entities.Ogc.Kml
             set { __Snippet = value; }
         }
 
-        [XmlElement(ElementName = "snippet", IsNullable = false, Form = XmlSchemaForm.Qualified, DataType = "string",
-            Namespace = Declarations.SchemaVersion)]
-        public string snippet
-        {
-            get { return __snippet; }
-            set { __snippet = value; }
-        }
+        //[XmlElement(ElementName = "snippet", IsNullable = false, Form = XmlSchemaForm.Qualified, DataType = "string",
+        //    Namespace = Declarations.SchemaVersion)]
+        //public string snippet
+        //{
+        //    get { return __snippet; }
+        //    set { __snippet = value; }
+        //}
 
         [XmlElement(ElementName = "description", IsNullable = false, Form = XmlSchemaForm.Qualified, DataType = "string"
             , Namespace = Declarations.SchemaVersion)]
-        public string description
+        public string Description
         {
             get { return __description; }
             set { __description = value; }
         }
 
-        [XmlElement(Type = typeof (AbstractViewGroup), ElementName = "AbstractViewGroup", IsNullable = false,
+        [XmlElement(Type = typeof(AbstractViewGroup), ElementName = "AbstractViewGroup", IsNullable = false,
             Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public AbstractViewGroup AbstractViewGroup
         {
@@ -205,7 +227,7 @@ namespace SharpMap.Entities.Ogc.Kml
             set { __AbstractViewGroup = value; }
         }
 
-        [XmlElement(Type = typeof (AbstractTimePrimitiveGroup), ElementName = "AbstractTimePrimitiveGroup",
+        [XmlElement(Type = typeof(AbstractTimePrimitiveGroup), ElementName = "AbstractTimePrimitiveGroup",
             IsNullable = false, Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public AbstractTimePrimitiveGroup AbstractTimePrimitiveGroup
         {
@@ -215,13 +237,13 @@ namespace SharpMap.Entities.Ogc.Kml
 
         [XmlElement(ElementName = "styleUrl", IsNullable = false, Form = XmlSchemaForm.Qualified, DataType = "anyURI",
             Namespace = Declarations.SchemaVersion)]
-        public string styleUrl
+        public string StyleUrl
         {
             get { return __styleUrl; }
             set { __styleUrl = value; }
         }
 
-        [XmlElement(Type = typeof (AbstractStyleSelectorGroup), ElementName = "AbstractStyleSelectorGroup",
+        [XmlElement(Type = typeof(AbstractStyleSelectorGroup), ElementName = "AbstractStyleSelectorGroup",
             IsNullable = false, Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public List<AbstractStyleSelectorGroup> AbstractStyleSelectorGroup
         {
@@ -234,7 +256,7 @@ namespace SharpMap.Entities.Ogc.Kml
             set { __AbstractStyleSelectorGroup = value; }
         }
 
-        [XmlElement(Type = typeof (Region), ElementName = "Region", IsNullable = false, Form = XmlSchemaForm.Qualified,
+        [XmlElement(Type = typeof(Region), ElementName = "Region", IsNullable = false, Form = XmlSchemaForm.Qualified,
             Namespace = Declarations.SchemaVersion)]
         public Region Region
         {
@@ -246,7 +268,7 @@ namespace SharpMap.Entities.Ogc.Kml
             set { __Region = value; }
         }
 
-        [XmlElement(Type = typeof (Metadata), ElementName = "Metadata", IsNullable = false,
+        [XmlElement(Type = typeof(Metadata), ElementName = "Metadata", IsNullable = false,
             Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public Metadata Metadata
         {
@@ -258,7 +280,7 @@ namespace SharpMap.Entities.Ogc.Kml
             set { __Metadata = value; }
         }
 
-        [XmlElement(Type = typeof (ExtendedData), ElementName = "ExtendedData", IsNullable = false,
+        [XmlElement(Type = typeof(ExtendedData), ElementName = "ExtendedData", IsNullable = false,
             Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public ExtendedData ExtendedData
         {
@@ -270,7 +292,7 @@ namespace SharpMap.Entities.Ogc.Kml
             set { __ExtendedData = value; }
         }
 
-        [XmlElement(Type = typeof (string), ElementName = "AbstractFeatureSimpleExtensionGroup", IsNullable = false,
+        [XmlElement(Type = typeof(string), ElementName = "AbstractFeatureSimpleExtensionGroup", IsNullable = false,
             Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public List<string> AbstractFeatureSimpleExtensionGroup
         {
@@ -283,7 +305,7 @@ namespace SharpMap.Entities.Ogc.Kml
             set { __AbstractFeatureSimpleExtensionGroup = value; }
         }
 
-        [XmlElement(Type = typeof (AbstractFeatureObjectExtensionGroup),
+        [XmlElement(Type = typeof(AbstractFeatureObjectExtensionGroup),
             ElementName = "AbstractFeatureObjectExtensionGroup", IsNullable = false, Form = XmlSchemaForm.Qualified,
             Namespace = Declarations.SchemaVersion)]
         public List<AbstractFeatureObjectExtensionGroup> AbstractFeatureObjectExtensionGroup
@@ -297,9 +319,5 @@ namespace SharpMap.Entities.Ogc.Kml
             set { __AbstractFeatureObjectExtensionGroup = value; }
         }
 
-        public new void MakeSchemaCompliant()
-        {
-            base.MakeSchemaCompliant();
-        }
     }
 }

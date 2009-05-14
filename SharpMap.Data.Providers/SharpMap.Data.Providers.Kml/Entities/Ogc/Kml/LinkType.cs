@@ -41,7 +41,7 @@ namespace SharpMap.Entities.Ogc.Kml
     [XmlInclude(typeof (ScaleType))]
     [XmlInclude(typeof (LodType))]
     [XmlInclude(typeof (ViewVolumeType))]
-    public class LinkType : BasicLinkType
+    public abstract class LinkType : BasicLinkType
     {
         [XmlIgnore] private string __httpQuery;
         [XmlIgnore] private List<LinkObjectExtensionGroup> __LinkObjectExtensionGroup;
@@ -49,7 +49,7 @@ namespace SharpMap.Entities.Ogc.Kml
         [XmlIgnore] private double __refreshInterval;
 
         [XmlIgnore] public bool __refreshIntervalSpecified;
-        [XmlIgnore] private refreshModeEnumType __refreshMode;
+        [XmlIgnore] private RefreshMode __refreshMode;
 
         [XmlIgnore] public bool __refreshModeSpecified;
         [XmlIgnore] private double __viewBoundScale;
@@ -58,7 +58,7 @@ namespace SharpMap.Entities.Ogc.Kml
         [XmlIgnore] private string __viewFormat;
 
 
-        [XmlIgnore] private viewRefreshModeEnumType __viewRefreshMode;
+        [XmlIgnore] private ViewRefreshMode __viewRefreshMode;
 
         [XmlIgnore] public bool __viewRefreshModeSpecified;
 
@@ -69,16 +69,16 @@ namespace SharpMap.Entities.Ogc.Kml
 
         public LinkType()
         {
-            refreshMode = refreshModeEnumType.onChange;
+            refreshMode = RefreshMode.OnChange;
             refreshInterval = 4.0;
-            viewRefreshMode = viewRefreshModeEnumType.never;
+            viewRefreshMode = ViewRefreshMode.Never;
             viewRefreshTime = 4.0;
             viewBoundScale = 1.0;
         }
 
         [XmlElement(ElementName = "refreshMode", IsNullable = false, Form = XmlSchemaForm.Qualified,
             Namespace = Declarations.SchemaVersion)]
-        public refreshModeEnumType refreshMode
+        public RefreshMode refreshMode
         {
             get { return __refreshMode; }
             set
@@ -102,7 +102,7 @@ namespace SharpMap.Entities.Ogc.Kml
 
         [XmlElement(ElementName = "viewRefreshMode", IsNullable = false, Form = XmlSchemaForm.Qualified,
             Namespace = Declarations.SchemaVersion)]
-        public viewRefreshModeEnumType viewRefreshMode
+        public ViewRefreshMode viewRefreshMode
         {
             get { return __viewRefreshMode; }
             set

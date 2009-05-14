@@ -23,7 +23,7 @@ namespace SharpMap.Entities.Ogc.Kml
 {
     [XmlRoot(ElementName = "PlacemarkObjectExtensionGroup", Namespace = Declarations.SchemaVersion, IsNullable = false),
      Serializable]
-    public abstract class PlacemarkObjectExtensionGroup
+    public class PlacemarkObjectExtensionGroup
     {
         [XmlIgnore] private string __id;
         [XmlIgnore] private List<string> __ObjectSimpleExtensionGroup;

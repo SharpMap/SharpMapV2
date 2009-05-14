@@ -100,7 +100,7 @@ namespace SharpMap.Entities.Ogc.Kml
 
         [XmlElement(Type = typeof (Link), ElementName = "Link", IsNullable = false, Form = XmlSchemaForm.Qualified,
             Namespace = Declarations.SchemaVersion)]
-        public Link Link
+        public Link link
         {
             get
             {

@@ -18,33 +18,33 @@ using System.Xml.Serialization;
 namespace SharpMap.Entities.Ogc.Kml
 {
     [XmlType(TypeName = "vec2Type", Namespace = Declarations.SchemaVersion), Serializable]
-    public class vec2Type
+    public class Vector2
     {
         [XmlIgnore] private double __x;
 
         [XmlIgnore] public bool __xSpecified;
 
-        [XmlIgnore] private unitsEnumType __xunits;
+        [XmlIgnore] private Unit _xUnits;
 
         [XmlIgnore] public bool __xunitsSpecified;
         [XmlIgnore] private double __y;
 
         [XmlIgnore] public bool __ySpecified;
 
-        [XmlIgnore] private unitsEnumType __yunits;
+        [XmlIgnore] private Unit __yunits;
 
         [XmlIgnore] public bool __yunitsSpecified;
 
-        public vec2Type()
+        public Vector2()
         {
-            x = 1.0;
-            y = 1.0;
-            xunits = unitsEnumType.fraction;
-            yunits = unitsEnumType.fraction;
+            X = 1.0;
+            Y = 1.0;
+            XUnits = Unit.Fraction;
+            YUnits = Unit.Fraction;
         }
 
         [XmlAttribute(AttributeName = "x", DataType = "double")]
-        public double x
+        public double X
         {
             get { return __x; }
             set
@@ -55,7 +55,7 @@ namespace SharpMap.Entities.Ogc.Kml
         }
 
         [XmlAttribute(AttributeName = "y", DataType = "double")]
-        public double y
+        public double Y
         {
             get { return __y; }
             set
@@ -66,18 +66,18 @@ namespace SharpMap.Entities.Ogc.Kml
         }
 
         [XmlAttribute(AttributeName = "xunits")]
-        public unitsEnumType xunits
+        public Unit XUnits
         {
-            get { return __xunits; }
+            get { return _xUnits; }
             set
             {
-                __xunits = value;
+                _xUnits = value;
                 __xunitsSpecified = true;
             }
         }
 
         [XmlAttribute(AttributeName = "yunits")]
-        public unitsEnumType yunits
+        public Unit YUnits
         {
             get { return __yunits; }
             set
@@ -87,7 +87,7 @@ namespace SharpMap.Entities.Ogc.Kml
             }
         }
 
-        public void MakeSchemaCompliant()
+        public virtual void MakeSchemaCompliant()
         {
         }
     }

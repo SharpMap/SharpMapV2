@@ -18,9 +18,9 @@ using System.Xml.Serialization;
 namespace SharpMap.Entities.Ogc.Kml
 {
     [Serializable]
-    public enum gridOriginEnumType
+    public enum DisplayMode
     {
-        [XmlEnum(Name = "lowerLeft")] lowerLeft,
-        [XmlEnum(Name = "upperLeft")] upperLeft
+        [XmlEnum(Name = "default")] Default,
+        [XmlEnum(Name = "hide")] Hide
     }
 }

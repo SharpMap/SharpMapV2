@@ -18,11 +18,8 @@ using System.Xml.Serialization;
 namespace SharpMap.Entities.Ogc.Kml
 {
     [XmlRoot(ElementName = "screenXY", Namespace = Declarations.SchemaVersion, IsNullable = false), Serializable]
-    public class screenXY : vec2Type
+    public class ScreenXY : Vector2
     {
-        public new void MakeSchemaCompliant()
-        {
-            base.MakeSchemaCompliant();
-        }
+
     }
 }

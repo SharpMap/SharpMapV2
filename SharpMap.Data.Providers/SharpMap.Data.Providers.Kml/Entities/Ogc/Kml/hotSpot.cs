@@ -18,11 +18,8 @@ using System.Xml.Serialization;
 namespace SharpMap.Entities.Ogc.Kml
 {
     [XmlRoot(ElementName = "hotSpot", Namespace = Declarations.SchemaVersion, IsNullable = false), Serializable]
-    public class hotSpot : vec2Type
+    public class HotSpot : Vector2
     {
-        public new void MakeSchemaCompliant()
-        {
-            base.MakeSchemaCompliant();
-        }
+
     }
 }

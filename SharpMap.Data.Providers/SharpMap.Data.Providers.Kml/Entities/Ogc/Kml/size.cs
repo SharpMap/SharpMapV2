@@ -18,11 +18,8 @@ using System.Xml.Serialization;
 namespace SharpMap.Entities.Ogc.Kml
 {
     [XmlRoot(ElementName = "size", Namespace = Declarations.SchemaVersion, IsNullable = false), Serializable]
-    public class size : vec2Type
+    public class Size : Vector2
     {
-        public new void MakeSchemaCompliant()
-        {
-            base.MakeSchemaCompliant();
-        }
+
     }
 }

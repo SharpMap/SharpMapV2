@@ -18,11 +18,8 @@ using System.Xml.Serialization;
 namespace SharpMap.Entities.Ogc.Kml
 {
     [XmlRoot(ElementName = "rotationXY", Namespace = Declarations.SchemaVersion, IsNullable = false), Serializable]
-    public class rotationXY : vec2Type
+    public class RotationXY : Vector2
     {
-        public new void MakeSchemaCompliant()
-        {
-            base.MakeSchemaCompliant();
-        }
+
     }
 }

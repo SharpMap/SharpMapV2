@@ -18,9 +18,10 @@ using System.Xml.Serialization;
 namespace SharpMap.Entities.Ogc.Kml
 {
     [Serializable]
-    public enum styleStateEnumType
+    public enum Shape
     {
-        [XmlEnum(Name = "normal")] normal,
-        [XmlEnum(Name = "highlight")] highlight
+        [XmlEnum(Name = "rectangle")] Rectangle,
+        [XmlEnum(Name = "cylinder")] Cylinder,
+        [XmlEnum(Name = "sphere")] Sphere
     }
 }

@@ -50,7 +50,7 @@ namespace SharpMap.Entities.Ogc.Kml
         [XmlIgnore] private double __rotation;
 
         [XmlIgnore] public bool __rotationSpecified;
-        [XmlIgnore] private shapeEnumType __shape;
+        [XmlIgnore] private Shape __shape;
 
         [XmlIgnore] public bool __shapeSpecified;
 
@@ -60,7 +60,7 @@ namespace SharpMap.Entities.Ogc.Kml
         public PhotoOverlayType()
         {
             rotation = 0.0;
-            shape = shapeEnumType.rectangle;
+            shape = Shape.Rectangle;
         }
 
         [XmlElement(ElementName = "rotation", IsNullable = false, Form = XmlSchemaForm.Qualified, DataType = "double",
@@ -114,7 +114,7 @@ namespace SharpMap.Entities.Ogc.Kml
 
         [XmlElement(ElementName = "shape", IsNullable = false, Form = XmlSchemaForm.Qualified,
             Namespace = Declarations.SchemaVersion)]
-        public shapeEnumType shape
+        public Shape shape
         {
             get { return __shape; }
             set

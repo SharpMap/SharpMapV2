@@ -47,13 +47,13 @@ namespace SharpMap.Entities.Ogc.Kml
         [XmlIgnore] private List<string> __AbstractColorStyleSimpleExtensionGroup;
         [XmlIgnore] private byte[] __color;
 
-        [XmlIgnore] private colorModeEnumType __colorMode;
+        [XmlIgnore] private ColorMode __colorMode;
 
         [XmlIgnore] public bool __colorModeSpecified;
 
         public AbstractColorStyleType()
         {
-            colorMode = colorModeEnumType.normal;
+            colorMode = ColorMode.Normal;
         }
 
         [XmlElement(ElementName = "color", IsNullable = false, Form = XmlSchemaForm.Qualified, DataType = "hexBinary",
@@ -67,7 +67,7 @@ namespace SharpMap.Entities.Ogc.Kml
 
         [XmlElement(ElementName = "colorMode", IsNullable = false, Form = XmlSchemaForm.Qualified,
             Namespace = Declarations.SchemaVersion)]
-        public colorModeEnumType colorMode
+        public ColorMode colorMode
         {
             get { return __colorMode; }
             set

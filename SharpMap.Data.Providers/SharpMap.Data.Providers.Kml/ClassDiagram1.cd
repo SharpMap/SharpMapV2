@@ -486,7 +486,7 @@
   <Class Name="SharpMap.Entities.Ogc.Kml.AbstractObjectType" Collapsed="true">
     <Position X="64.75" Y="0.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AQIQAIAAAAAAARAACAAABAQAAABAAAAAAAAAAABCAgA=</HashCode>
+      <HashCode>AQISAIAAAAAAABAACAAABAQAAABAAAAAAAAAAABDAAA=</HashCode>
       <FileName>Entities\Ogc\Kml\AbstractObjectType.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -742,10 +742,10 @@
       <FileName>Entities\Ogc\Kml\GroundOverlayType.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="SharpMap.Entities.Ogc.Kml.hotSpot" Collapsed="true">
+  <Class Name="SharpMap.Entities.Ogc.Kml.HotSpot" Collapsed="true">
     <Position X="0.75" Y="7.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Entities\Ogc\Kml\hotSpot.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -805,13 +805,6 @@
       <FileName>Entities\Ogc\Kml\ItemIconObjectExtensionGroup.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="SharpMap.Entities.Ogc.Kml.kml" Collapsed="true">
-    <Position X="12.5" Y="7.75" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Entities\Ogc\Kml\Kml.cs</FileName>
-    </TypeIdentifier>
-  </Class>
   <Class Name="SharpMap.Entities.Ogc.Kml.KmlObjectExtensionGroup" Collapsed="true">
     <Position X="145" Y="3.5" Width="1.5" />
     <TypeIdentifier>
@@ -819,11 +812,11 @@
       <FileName>Entities\Ogc\Kml\KmlObjectExtensionGroup.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="SharpMap.Entities.Ogc.Kml.KmlType" Collapsed="true">
+  <Class Name="SharpMap.Entities.Ogc.Kml.KmlRoot" Collapsed="true">
     <Position X="12.5" Y="6.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AgAQAAAAAAACAAAAEAAIEIACIAAAAAAAAIAAgAAAAAA=</HashCode>
-      <FileName>Entities\Ogc\Kml\KmlType.cs</FileName>
+      <HashCode>AgAQAAAAAAACAAAAEAAoEIACAAAAAAAAAIAAgAAAAAA=</HashCode>
+      <FileName>Entities\Ogc\Kml\KmlRoot.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="SharpMap.Entities.Ogc.Kml.LabelStyleObjectExtensionGroup" Collapsed="true">
@@ -1071,10 +1064,10 @@
       <FileName>Entities\Ogc\Kml\outerBoundaryIs.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="SharpMap.Entities.Ogc.Kml.overlayXY" Collapsed="true">
+  <Class Name="SharpMap.Entities.Ogc.Kml.OverlayXY" Collapsed="true">
     <Position X="7.5" Y="7.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Entities\Ogc\Kml\overlayXY.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -1190,10 +1183,10 @@
       <FileName>Entities\Ogc\Kml\ResourceMapType.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="SharpMap.Entities.Ogc.Kml.rotationXY" Collapsed="true">
+  <Class Name="SharpMap.Entities.Ogc.Kml.RotationXY" Collapsed="true">
     <Position X="9.75" Y="7.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Entities\Ogc\Kml\rotationXY.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -1239,10 +1232,10 @@
       <FileName>Entities\Ogc\Kml\ScreenOverlayType.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="SharpMap.Entities.Ogc.Kml.screenXY" Collapsed="true">
+  <Class Name="SharpMap.Entities.Ogc.Kml.ScreenXY" Collapsed="true">
     <Position X="3" Y="7.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Entities\Ogc\Kml\screenXY.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -1260,10 +1253,10 @@
       <FileName>Entities\Ogc\Kml\SimpleFieldType.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="SharpMap.Entities.Ogc.Kml.size" Collapsed="true">
+  <Class Name="SharpMap.Entities.Ogc.Kml.Size" Collapsed="true">
     <Position X="5.25" Y="7.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Entities\Ogc\Kml\size.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -1342,13 +1335,6 @@
     <TypeIdentifier>
       <HashCode>AAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Entities\Ogc\Kml\Url.cs</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="SharpMap.Entities.Ogc.Kml.vec2Type" Collapsed="true">
-    <Position X="5.25" Y="6.5" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>gACQAAAAAEEAAAAAEAAAAAAAAAAAAACAAABgAAAAAAA=</HashCode>
-      <FileName>Entities\Ogc\Kml\vec2Type.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="SharpMap.Entities.Ogc.Kml.ViewVolumeObjectExtensionGroup" Collapsed="true">
@@ -1967,81 +1953,46 @@
       <FileName>Entities\xAl\Declarations.cs</FileName>
     </TypeIdentifier>
   </Struct>
-  <Enum Name="SharpMap.Entities.Ogc.Kml.altitudeModeEnumType" Collapsed="true">
+  <Enum Name="SharpMap.Entities.Ogc.Kml.AltitudeMode" Collapsed="true">
     <Position X="125.75" Y="14" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAIAAAAAAAAAAAAQAAAAAAAAAAAAAAAIAAAAAAAAAA=</HashCode>
-      <FileName>Entities\Ogc\Kml\altitudeModeEnumType.cs</FileName>
+      <HashCode>ACAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAACAAAAA=</HashCode>
+      <FileName>Entities\Ogc\Kml\AltitudeMode.cs</FileName>
     </TypeIdentifier>
   </Enum>
-  <Enum Name="SharpMap.Entities.Ogc.Kml.colorModeEnumType" Collapsed="true">
+  <Enum Name="SharpMap.Entities.Ogc.Kml.ColorMode" Collapsed="true">
     <Position X="127.5" Y="14" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAQAAAAAAAA=</HashCode>
-      <FileName>Entities\Ogc\Kml\colorModeEnumType.cs</FileName>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAIBAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Entities\Ogc\Kml\ColorMode.cs</FileName>
     </TypeIdentifier>
   </Enum>
-  <Enum Name="SharpMap.Entities.Ogc.Kml.displayModeEnumType" Collapsed="true">
-    <Position X="131" Y="14" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAABAgAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Entities\Ogc\Kml\displayModeEnumType.cs</FileName>
-    </TypeIdentifier>
-  </Enum>
-  <Enum Name="SharpMap.Entities.Ogc.Kml.gridOriginEnumType" Collapsed="true">
-    <Position X="132.75" Y="14" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAA=</HashCode>
-      <FileName>Entities\Ogc\Kml\gridOriginEnumType.cs</FileName>
-    </TypeIdentifier>
-  </Enum>
-  <Enum Name="SharpMap.Entities.Ogc.Kml.itemIconStateEnumType" Collapsed="true">
+  <Enum Name="SharpMap.Entities.Ogc.Kml.ItemIconState" Collapsed="true">
     <Position X="134.5" Y="14" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAACEAAAAAAAAAAAAAAIAAAgAAAAA=</HashCode>
-      <FileName>Entities\Ogc\Kml\itemIconStateEnumType.cs</FileName>
+      <HashCode>AAAAAAAAAAAAIQAAAAAAAAAAAAAAAAAAAAAAAACAAAI=</HashCode>
+      <FileName>Entities\Ogc\Kml\ItemIconState.cs</FileName>
     </TypeIdentifier>
   </Enum>
-  <Enum Name="SharpMap.Entities.Ogc.Kml.listItemTypeEnumType" Collapsed="true">
+  <Enum Name="SharpMap.Entities.Ogc.Kml.ListItemType" Collapsed="true">
     <Position X="136.25" Y="14" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAgAAAAIAAAEAAAAAAAAAAAAAgAAAAAAAAAAAAA=</HashCode>
-      <FileName>Entities\Ogc\Kml\listItemTypeEnumType.cs</FileName>
+      <HashCode>AAAAAAgAAABIAAAAAAAAAAACAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Entities\Ogc\Kml\ListItemType.cs</FileName>
     </TypeIdentifier>
   </Enum>
-  <Enum Name="SharpMap.Entities.Ogc.Kml.refreshModeEnumType" Collapsed="true">
-    <Position X="145" Y="14" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>gAABAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Entities\Ogc\Kml\refreshModeEnumType.cs</FileName>
-    </TypeIdentifier>
-  </Enum>
-  <Enum Name="SharpMap.Entities.Ogc.Kml.shapeEnumType" Collapsed="true">
+  <Enum Name="SharpMap.Entities.Ogc.Kml.Shape" Collapsed="true">
     <Position X="125.75" Y="14.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAABAAAAAAAACAAAAAABAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Entities\Ogc\Kml\shapeEnumType.cs</FileName>
+      <HashCode>AAAAAAAAAAAAAAAAAAQAAAAAAAAgAAAAAAQAAAAAAAA=</HashCode>
+      <FileName>Entities\Ogc\Kml\Shape.cs</FileName>
     </TypeIdentifier>
   </Enum>
-  <Enum Name="SharpMap.Entities.Ogc.Kml.styleStateEnumType" Collapsed="true">
+  <Enum Name="SharpMap.Entities.Ogc.Kml.StyleState" Collapsed="true">
     <Position X="127.5" Y="14.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAABAAAAAAAA=</HashCode>
-      <FileName>Entities\Ogc\Kml\styleStateEnumType.cs</FileName>
-    </TypeIdentifier>
-  </Enum>
-  <Enum Name="SharpMap.Entities.Ogc.Kml.unitsEnumType" Collapsed="true">
-    <Position X="129.25" Y="14.75" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAEAAAAAAAAAAQAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Entities\Ogc\Kml\unitsEnumType.cs</FileName>
-    </TypeIdentifier>
-  </Enum>
-  <Enum Name="SharpMap.Entities.Ogc.Kml.viewRefreshModeEnumType" Collapsed="true">
-    <Position X="131" Y="14.75" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAQAAAAAAAAAAAAAAAAAAAABAAAAQAAAAAAAAAACAAA=</HashCode>
-      <FileName>Entities\Ogc\Kml\viewRefreshModeEnumType.cs</FileName>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAIAEAAAAAAAAAAAAA=</HashCode>
+      <FileName>Entities\Ogc\Kml\StyleState.cs</FileName>
     </TypeIdentifier>
   </Enum>
   <Enum Name="SharpMap.Entities.xAL.DependentThoroughfares" Collapsed="true">

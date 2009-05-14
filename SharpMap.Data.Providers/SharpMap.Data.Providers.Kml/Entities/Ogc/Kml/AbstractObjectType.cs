@@ -41,14 +41,14 @@ namespace SharpMap.Entities.Ogc.Kml
         }
 
         [XmlAttribute(AttributeName = "id", DataType = "ID")]
-        public string id
+        public string Id
         {
             get { return __id; }
             set { __id = value; }
         }
 
         [XmlAttribute(AttributeName = "targetId", DataType = "NCName")]
-        public string targetId
+        public string TargetId
         {
             get { return __targetId; }
             set { __targetId = value; }
@@ -94,7 +94,7 @@ namespace SharpMap.Entities.Ogc.Kml
             return ObjectSimpleExtensionGroup.Remove(obj);
         }
 
-        public void MakeSchemaCompliant()
+        public virtual void MakeSchemaCompliant()
         {
         }
     }

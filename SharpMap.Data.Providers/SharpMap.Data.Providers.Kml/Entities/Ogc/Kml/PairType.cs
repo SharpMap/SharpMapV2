@@ -46,7 +46,7 @@ namespace SharpMap.Entities.Ogc.Kml
     public class PairType : AbstractObjectType
     {
         [XmlIgnore] private AbstractStyleSelectorGroup __AbstractStyleSelectorGroup;
-        [XmlIgnore] private styleStateEnumType __key;
+        [XmlIgnore] private StyleState __key;
 
         [XmlIgnore] public bool __keySpecified;
         [XmlIgnore] private List<PairObjectExtensionGroup> __PairObjectExtensionGroup;
@@ -57,12 +57,12 @@ namespace SharpMap.Entities.Ogc.Kml
 
         public PairType()
         {
-            key = styleStateEnumType.normal;
+            key = StyleState.Normal;
         }
 
         [XmlElement(ElementName = "key", IsNullable = false, Form = XmlSchemaForm.Qualified,
             Namespace = Declarations.SchemaVersion)]
-        public styleStateEnumType key
+        public StyleState key
         {
             get { return __key; }
             set

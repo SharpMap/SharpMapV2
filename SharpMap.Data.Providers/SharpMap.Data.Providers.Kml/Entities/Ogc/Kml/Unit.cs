@@ -18,11 +18,10 @@ using System.Xml.Serialization;
 namespace SharpMap.Entities.Ogc.Kml
 {
     [Serializable]
-    public enum viewRefreshModeEnumType
+    public enum Unit
     {
-        [XmlEnum(Name = "never")] never,
-        [XmlEnum(Name = "onRequest")] onRequest,
-        [XmlEnum(Name = "onStop")] onStop,
-        [XmlEnum(Name = "onRegion")] onRegion
+        [XmlEnum(Name = "fraction")] Fraction,
+        [XmlEnum(Name = "pixels")] Pixels,
+        [XmlEnum(Name = "insetPixels")] InsetPixels
     }
 }

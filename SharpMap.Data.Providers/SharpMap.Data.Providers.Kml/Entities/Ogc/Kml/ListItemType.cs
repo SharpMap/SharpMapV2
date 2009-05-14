@@ -18,13 +18,11 @@ using System.Xml.Serialization;
 namespace SharpMap.Entities.Ogc.Kml
 {
     [Serializable]
-    public enum itemIconStateEnumType
+    public enum ListItemType
     {
-        [XmlEnum(Name = "open")] open,
-        [XmlEnum(Name = "closed")] closed,
-        [XmlEnum(Name = "error")] error,
-        [XmlEnum(Name = "fetching0")] fetching0,
-        [XmlEnum(Name = "fetching1")] fetching1,
-        [XmlEnum(Name = "fetching2")] fetching2
+        [XmlEnum(Name = "radioFolder")] RadioFolder,
+        [XmlEnum(Name = "check")] Check,
+        [XmlEnum(Name = "checkHideChildren")] CheckHideChildren,
+        [XmlEnum(Name = "checkOffOnly")] CheckOffOnly
     }
 }
