@@ -75,7 +75,7 @@ namespace SharpMap.Entities.xAL
         {
             get
             {
-                if (__AdministrativeArea == null) __AdministrativeArea = new AdministrativeArea();
+                
                 return __AdministrativeArea;
             }
             set { __AdministrativeArea = value; }
@@ -87,7 +87,7 @@ namespace SharpMap.Entities.xAL
         {
             get
             {
-                if (__Locality == null) __Locality = new Locality();
+                
                 return __Locality;
             }
             set { __Locality = value; }
@@ -99,7 +99,7 @@ namespace SharpMap.Entities.xAL
         {
             get
             {
-                if (__Thoroughfare == null) __Thoroughfare = new Thoroughfare();
+                
                 return __Thoroughfare;
             }
             set { __Thoroughfare = value; }

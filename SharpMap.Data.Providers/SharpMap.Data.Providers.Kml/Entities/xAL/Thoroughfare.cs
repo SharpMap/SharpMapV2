@@ -155,7 +155,7 @@ namespace SharpMap.Entities.xAL
         {
             get
             {
-                if (__ThoroughfarePreDirection == null) __ThoroughfarePreDirection = new ThoroughfarePreDirectionType();
+                
                 return __ThoroughfarePreDirection;
             }
             set { __ThoroughfarePreDirection = value; }
@@ -167,7 +167,7 @@ namespace SharpMap.Entities.xAL
         {
             get
             {
-                if (__ThoroughfareLeadingType == null) __ThoroughfareLeadingType = new ThoroughfareLeadingTypeType();
+                
                 return __ThoroughfareLeadingType;
             }
             set { __ThoroughfareLeadingType = value; }
@@ -191,7 +191,7 @@ namespace SharpMap.Entities.xAL
         {
             get
             {
-                if (__ThoroughfareTrailingType == null) __ThoroughfareTrailingType = new ThoroughfareTrailingTypeType();
+                
                 return __ThoroughfareTrailingType;
             }
             set { __ThoroughfareTrailingType = value; }
@@ -216,7 +216,7 @@ namespace SharpMap.Entities.xAL
         {
             get
             {
-                if (__DependentThoroughfare == null) __DependentThoroughfare = new DependentThoroughfare();
+                
                 return __DependentThoroughfare;
             }
             set { __DependentThoroughfare = value; }
@@ -228,7 +228,7 @@ namespace SharpMap.Entities.xAL
         {
             get
             {
-                if (__DependentLocality == null) __DependentLocality = new DependentLocalityType();
+                
                 return __DependentLocality;
             }
             set { __DependentLocality = value; }
@@ -240,7 +240,7 @@ namespace SharpMap.Entities.xAL
         {
             get
             {
-                if (__Premise == null) __Premise = new Premise();
+                
                 return __Premise;
             }
             set { __Premise = value; }
@@ -252,7 +252,7 @@ namespace SharpMap.Entities.xAL
         {
             get
             {
-                if (__Firm == null) __Firm = new FirmType();
+                
                 return __Firm;
             }
             set { __Firm = value; }
@@ -264,7 +264,7 @@ namespace SharpMap.Entities.xAL
         {
             get
             {
-                if (__PostalCode == null) __PostalCode = new PostalCode();
+                
                 return __PostalCode;
             }
             set { __PostalCode = value; }

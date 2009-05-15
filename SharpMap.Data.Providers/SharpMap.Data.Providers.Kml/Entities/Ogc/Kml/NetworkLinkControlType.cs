@@ -135,7 +135,7 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (__linkSnippet == null) __linkSnippet = new linkSnippet();
+                
                 return __linkSnippet;
             }
             set { __linkSnippet = value; }
@@ -171,7 +171,7 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (__Update == null) __Update = new Update();
+                
                 return __Update;
             }
             set { __Update = value; }

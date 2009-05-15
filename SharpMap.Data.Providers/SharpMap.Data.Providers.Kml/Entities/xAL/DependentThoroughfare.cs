@@ -59,7 +59,7 @@ namespace SharpMap.Entities.xAL
         {
             get
             {
-                if (__ThoroughfarePreDirection == null) __ThoroughfarePreDirection = new ThoroughfarePreDirectionType();
+                
                 return __ThoroughfarePreDirection;
             }
             set { __ThoroughfarePreDirection = value; }
@@ -71,7 +71,7 @@ namespace SharpMap.Entities.xAL
         {
             get
             {
-                if (__ThoroughfareLeadingType == null) __ThoroughfareLeadingType = new ThoroughfareLeadingTypeType();
+                
                 return __ThoroughfareLeadingType;
             }
             set { __ThoroughfareLeadingType = value; }
@@ -95,7 +95,7 @@ namespace SharpMap.Entities.xAL
         {
             get
             {
-                if (__ThoroughfareTrailingType == null) __ThoroughfareTrailingType = new ThoroughfareTrailingTypeType();
+                
                 return __ThoroughfareTrailingType;
             }
             set { __ThoroughfareTrailingType = value; }

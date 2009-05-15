@@ -102,7 +102,7 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (__outerBoundaryIs == null) __outerBoundaryIs = new outerBoundaryIs();
+                
                 return __outerBoundaryIs;
             }
             set { __outerBoundaryIs = value; }

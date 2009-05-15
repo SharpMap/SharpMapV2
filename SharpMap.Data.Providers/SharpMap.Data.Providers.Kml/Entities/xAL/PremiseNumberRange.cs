@@ -90,7 +90,7 @@ namespace SharpMap.Entities.xAL
         {
             get
             {
-                if (__PremiseNumberRangeFrom == null) __PremiseNumberRangeFrom = new PremiseNumberRangeFrom();
+                
                 return __PremiseNumberRangeFrom;
             }
             set { __PremiseNumberRangeFrom = value; }
@@ -102,7 +102,7 @@ namespace SharpMap.Entities.xAL
         {
             get
             {
-                if (__PremiseNumberRangeTo == null) __PremiseNumberRangeTo = new PremiseNumberRangeTo();
+                
                 return __PremiseNumberRangeTo;
             }
             set { __PremiseNumberRangeTo = value; }

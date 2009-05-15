@@ -75,7 +75,7 @@ namespace SharpMap.Data.Providers.Kml.Test
             table.Add(" http://www.opengis.net/kml/2.2");
             table.Add("urn:oasis:names:tc:ciq:xsdschema:xAL:2.0");
             table.Add("http://www.w3.org/2005/Atom");
-            XmlSerializer serializer = new XmlSerializer(typeof(T));
+            XmlSerializer serializer = new XmlSerializer(typeof (T));
             T obj;
             using (FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read))
             {
@@ -98,7 +98,7 @@ namespace SharpMap.Data.Providers.Kml.Test
             Placemark p = new Placemark();
             p.AddressDetails = new AddressDetails
                                    {
-                                       Address = { Value = "12345 some street, somewhere , someplace" },
+                                       Address = new Address {Value = "12345 some street, somewhere , someplace"},
                                        AddressType = "Postal Address"
                                    };
             p.Author = new Author
@@ -122,7 +122,7 @@ namespace SharpMap.Data.Providers.Kml.Test
 
         private static void Serialize<T>(T obj, string path)
         {
-            XmlSerializer serializer = new XmlSerializer(typeof(T));
+            XmlSerializer serializer = new XmlSerializer(typeof (T));
             using (FileStream fs = new FileStream(path, FileMode.Create, FileAccess.Write, FileShare.None))
             {
                 serializer.Serialize(fs, obj);

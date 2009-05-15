@@ -61,7 +61,7 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (__IconStyle == null) __IconStyle = new IconStyle();
+                
                 return __IconStyle;
             }
             set { __IconStyle = value; }
@@ -73,7 +73,7 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (__LabelStyle == null) __LabelStyle = new LabelStyle();
+                
                 return __LabelStyle;
             }
             set { __LabelStyle = value; }
@@ -85,7 +85,7 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (__LineStyle == null) __LineStyle = new LineStyle();
+                
                 return __LineStyle;
             }
             set { __LineStyle = value; }
@@ -97,7 +97,7 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (__PolyStyle == null) __PolyStyle = new PolyStyle();
+                
                 return __PolyStyle;
             }
             set { __PolyStyle = value; }
@@ -109,7 +109,7 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (__BalloonStyle == null) __BalloonStyle = new BalloonStyle();
+                
                 return __BalloonStyle;
             }
             set { __BalloonStyle = value; }
@@ -121,7 +121,7 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (__ListStyle == null) __ListStyle = new ListStyle();
+                
                 return __ListStyle;
             }
             set { __ListStyle = value; }

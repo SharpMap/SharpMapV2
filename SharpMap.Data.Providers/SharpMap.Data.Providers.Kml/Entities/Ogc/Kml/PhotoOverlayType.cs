@@ -81,7 +81,7 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (__ViewVolume == null) __ViewVolume = new ViewVolume();
+                
                 return __ViewVolume;
             }
             set { __ViewVolume = value; }
@@ -93,7 +93,7 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (__ImagePyramid == null) __ImagePyramid = new ImagePyramid();
+                
                 return __ImagePyramid;
             }
             set { __ImagePyramid = value; }
@@ -105,7 +105,7 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (__Point == null) __Point = new Point();
+                
                 return __Point;
             }
             set { __Point = value; }

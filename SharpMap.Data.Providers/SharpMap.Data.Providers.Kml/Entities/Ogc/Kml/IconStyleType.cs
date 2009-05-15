@@ -92,7 +92,7 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (__Icon == null) __Icon = new Icon();
+                
                 return __Icon;
             }
             set { __Icon = value; }
@@ -104,7 +104,7 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (__hotSpot == null) __hotSpot = new HotSpot();
+                
                 return __hotSpot;
             }
             set { __hotSpot = value; }

@@ -82,7 +82,7 @@ namespace SharpMap.Entities.xAL
         {
             get
             {
-                if (__PostTown == null) __PostTown = new PostTown();
+                
                 return __PostTown;
             }
             set { __PostTown = value; }

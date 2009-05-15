@@ -67,7 +67,7 @@ namespace SharpMap.Entities.xAL
         {
             get
             {
-                if (__PostTownSuffix == null) __PostTownSuffix = new PostTownSuffix();
+                
                 return __PostTownSuffix;
             }
             set { __PostTownSuffix = value; }

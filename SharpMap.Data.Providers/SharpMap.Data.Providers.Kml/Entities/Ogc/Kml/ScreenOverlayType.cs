@@ -65,7 +65,7 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (__overlayXY == null) __overlayXY = new OverlayXY();
+                
                 return __overlayXY;
             }
             set { __overlayXY = value; }
@@ -77,7 +77,7 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (__screenXY == null) __screenXY = new ScreenXY();
+                
                 return __screenXY;
             }
             set { __screenXY = value; }
@@ -89,7 +89,7 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (__rotationXY == null) __rotationXY = new RotationXY();
+                
                 return __rotationXY;
             }
             set { __rotationXY = value; }
@@ -101,7 +101,7 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (__size == null) __size = new Size();
+                
                 return __size;
             }
             set { __size = value; }

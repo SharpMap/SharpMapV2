@@ -56,7 +56,7 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (__LatLonAltBox == null) __LatLonAltBox = new LatLonAltBox();
+                
                 return __LatLonAltBox;
             }
             set { __LatLonAltBox = value; }
@@ -68,7 +68,7 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (__Lod == null) __Lod = new Lod();
+                
                 return __Lod;
             }
             set { __Lod = value; }

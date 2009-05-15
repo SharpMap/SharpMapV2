@@ -56,7 +56,7 @@ namespace SharpMap.Entities.xAL
         {
             get
             {
-                if (__MailStopName == null) __MailStopName = new MailStopName();
+                
                 return __MailStopName;
             }
             set { __MailStopName = value; }
@@ -68,7 +68,7 @@ namespace SharpMap.Entities.xAL
         {
             get
             {
-                if (__MailStopNumber == null) __MailStopNumber = new MailStopNumber();
+                
                 return __MailStopNumber;
             }
             set { __MailStopNumber = value; }

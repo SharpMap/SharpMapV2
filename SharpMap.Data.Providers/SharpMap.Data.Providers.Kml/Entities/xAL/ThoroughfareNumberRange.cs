@@ -120,7 +120,7 @@ namespace SharpMap.Entities.xAL
         {
             get
             {
-                if (__ThoroughfareNumberFrom == null) __ThoroughfareNumberFrom = new ThoroughfareNumberFrom();
+                
                 return __ThoroughfareNumberFrom;
             }
             set { __ThoroughfareNumberFrom = value; }
@@ -132,7 +132,7 @@ namespace SharpMap.Entities.xAL
         {
             get
             {
-                if (__ThoroughfareNumberTo == null) __ThoroughfareNumberTo = new ThoroughfareNumberTo();
+                
                 return __ThoroughfareNumberTo;
             }
             set { __ThoroughfareNumberTo = value; }

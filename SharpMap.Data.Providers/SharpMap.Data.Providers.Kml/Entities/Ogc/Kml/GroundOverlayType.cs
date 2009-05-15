@@ -83,7 +83,7 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (__LatLonBox == null) __LatLonBox = new LatLonBox();
+                
                 return __LatLonBox;
             }
             set { __LatLonBox = value; }

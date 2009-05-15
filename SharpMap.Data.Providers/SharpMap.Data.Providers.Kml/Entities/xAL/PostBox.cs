@@ -67,7 +67,7 @@ namespace SharpMap.Entities.xAL
         {
             get
             {
-                if (__PostBoxNumber == null) __PostBoxNumber = new PostBoxNumber();
+                
                 return __PostBoxNumber;
             }
             set { __PostBoxNumber = value; }
@@ -79,7 +79,7 @@ namespace SharpMap.Entities.xAL
         {
             get
             {
-                if (__PostBoxNumberPrefix == null) __PostBoxNumberPrefix = new PostBoxNumberPrefix();
+                
                 return __PostBoxNumberPrefix;
             }
             set { __PostBoxNumberPrefix = value; }
@@ -91,7 +91,7 @@ namespace SharpMap.Entities.xAL
         {
             get
             {
-                if (__PostBoxNumberSuffix == null) __PostBoxNumberSuffix = new PostBoxNumberSuffix();
+                
                 return __PostBoxNumberSuffix;
             }
             set { __PostBoxNumberSuffix = value; }
@@ -103,7 +103,7 @@ namespace SharpMap.Entities.xAL
         {
             get
             {
-                if (__PostBoxNumberExtension == null) __PostBoxNumberExtension = new PostBoxNumberExtension();
+                
                 return __PostBoxNumberExtension;
             }
             set { __PostBoxNumberExtension = value; }
@@ -115,7 +115,7 @@ namespace SharpMap.Entities.xAL
         {
             get
             {
-                if (__Firm == null) __Firm = new FirmType();
+                
                 return __Firm;
             }
             set { __Firm = value; }
@@ -127,7 +127,7 @@ namespace SharpMap.Entities.xAL
         {
             get
             {
-                if (__PostalCode == null) __PostalCode = new PostalCode();
+                
                 return __PostalCode;
             }
             set { __PostalCode = value; }

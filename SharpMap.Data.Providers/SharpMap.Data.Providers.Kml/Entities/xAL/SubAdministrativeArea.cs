@@ -87,7 +87,7 @@ namespace SharpMap.Entities.xAL
         {
             get
             {
-                if (__Locality == null) __Locality = new Locality();
+                
                 return __Locality;
             }
             set { __Locality = value; }
@@ -99,7 +99,7 @@ namespace SharpMap.Entities.xAL
         {
             get
             {
-                if (__PostOffice == null) __PostOffice = new PostOffice();
+                
                 return __PostOffice;
             }
             set { __PostOffice = value; }
@@ -111,7 +111,7 @@ namespace SharpMap.Entities.xAL
         {
             get
             {
-                if (__PostalCode == null) __PostalCode = new PostalCode();
+                
                 return __PostalCode;
             }
             set { __PostalCode = value; }

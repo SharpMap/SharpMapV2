@@ -69,7 +69,7 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (__Location == null) __Location = new Location();
+                
                 return __Location;
             }
             set { __Location = value; }
@@ -81,7 +81,7 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (__Orientation == null) __Orientation = new Orientation();
+                
                 return __Orientation;
             }
             set { __Orientation = value; }
@@ -93,7 +93,7 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (__Scale == null) __Scale = new Scale();
+                
                 return __Scale;
             }
             set { __Scale = value; }
@@ -105,7 +105,7 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (__Link == null) __Link = new Link();
+                
                 return __Link;
             }
             set { __Link = value; }
@@ -117,7 +117,7 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (__ResourceMap == null) __ResourceMap = new ResourceMap();
+                
                 return __ResourceMap;
             }
             set { __ResourceMap = value; }

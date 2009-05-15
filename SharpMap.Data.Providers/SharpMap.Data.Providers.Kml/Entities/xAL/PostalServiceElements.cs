@@ -63,7 +63,7 @@ namespace SharpMap.Entities.xAL
         {
             get
             {
-                if (__EndorsementLineCode == null) __EndorsementLineCode = new EndorsementLineCode();
+                
                 return __EndorsementLineCode;
             }
             set { __EndorsementLineCode = value; }
@@ -75,7 +75,7 @@ namespace SharpMap.Entities.xAL
         {
             get
             {
-                if (__KeyLineCode == null) __KeyLineCode = new KeyLineCode();
+                
                 return __KeyLineCode;
             }
             set { __KeyLineCode = value; }
@@ -87,7 +87,7 @@ namespace SharpMap.Entities.xAL
         {
             get
             {
-                if (__Barcode == null) __Barcode = new Barcode();
+                
                 return __Barcode;
             }
             set { __Barcode = value; }
@@ -99,7 +99,7 @@ namespace SharpMap.Entities.xAL
         {
             get
             {
-                if (__SortingCode == null) __SortingCode = new SortingCode();
+                
                 return __SortingCode;
             }
             set { __SortingCode = value; }
@@ -111,7 +111,7 @@ namespace SharpMap.Entities.xAL
         {
             get
             {
-                if (__AddressLatitude == null) __AddressLatitude = new AddressLatitude();
+                
                 return __AddressLatitude;
             }
             set { __AddressLatitude = value; }
@@ -123,7 +123,7 @@ namespace SharpMap.Entities.xAL
         {
             get
             {
-                if (__AddressLatitudeDirection == null) __AddressLatitudeDirection = new AddressLatitudeDirection();
+                
                 return __AddressLatitudeDirection;
             }
             set { __AddressLatitudeDirection = value; }
@@ -135,7 +135,7 @@ namespace SharpMap.Entities.xAL
         {
             get
             {
-                if (__AddressLongitude == null) __AddressLongitude = new AddressLongitude();
+                
                 return __AddressLongitude;
             }
             set { __AddressLongitude = value; }
@@ -147,7 +147,7 @@ namespace SharpMap.Entities.xAL
         {
             get
             {
-                if (__AddressLongitudeDirection == null) __AddressLongitudeDirection = new AddressLongitudeDirection();
+                
                 return __AddressLongitudeDirection;
             }
             set { __AddressLongitudeDirection = value; }

@@ -92,7 +92,7 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (__Url == null) __Url = new Url();
+                
                 return __Url;
             }
             set { __Url = value; }
@@ -104,7 +104,7 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (__Link == null) __Link = new Link();
+                
                 return __Link;
             }
             set { __Link = value; }

@@ -91,7 +91,7 @@ namespace SharpMap.Entities.xAL
         {
             get
             {
-                if (_postBox == null) _postBox = new PostBox();
+                
                 return _postBox;
             }
             set { _postBox = value; }
@@ -103,7 +103,7 @@ namespace SharpMap.Entities.xAL
         {
             get
             {
-                if (_largeMailUser == null) _largeMailUser = new LargeMailUserType();
+                
                 return _largeMailUser;
             }
             set { _largeMailUser = value; }
@@ -115,7 +115,7 @@ namespace SharpMap.Entities.xAL
         {
             get
             {
-                if (_postOffice == null) _postOffice = new PostOffice();
+                
                 return _postOffice;
             }
             set { _postOffice = value; }
@@ -127,7 +127,7 @@ namespace SharpMap.Entities.xAL
         {
             get
             {
-                if (_postalRoute == null) _postalRoute = new PostalRouteType();
+                
                 return _postalRoute;
             }
             set { _postalRoute = value; }
@@ -139,7 +139,7 @@ namespace SharpMap.Entities.xAL
         {
             get
             {
-                if (_thoroughfare == null) _thoroughfare = new Thoroughfare();
+                
                 return _thoroughfare;
             }
             set { _thoroughfare = value; }
@@ -151,7 +151,7 @@ namespace SharpMap.Entities.xAL
         {
             get
             {
-                if (_premise == null) _premise = new Premise();
+                
                 return _premise;
             }
             set { _premise = value; }
@@ -164,7 +164,7 @@ namespace SharpMap.Entities.xAL
             get
             {
                 //jd: stack overflow awaits you when serializing
-                //if (_dependentLocality == null) _dependentLocality = new DependentLocalityType();
+                //
                 return _dependentLocality;
             }
             set { _dependentLocality = value; }
@@ -176,7 +176,7 @@ namespace SharpMap.Entities.xAL
         {
             get
             {
-                if (_postalCode == null) _postalCode = new PostalCode();
+                
                 return _postalCode;
             }
             set { _postalCode = value; }

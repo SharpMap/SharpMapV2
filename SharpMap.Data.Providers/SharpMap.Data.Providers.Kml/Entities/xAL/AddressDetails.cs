@@ -98,7 +98,7 @@ namespace SharpMap.Entities.xAL
         {
             get
             {
-                if (__PostalServiceElements == null) __PostalServiceElements = new PostalServiceElements();
+                
                 return __PostalServiceElements;
             }
             set { __PostalServiceElements = value; }
@@ -110,7 +110,7 @@ namespace SharpMap.Entities.xAL
         {
             get
             {
-                if (__Address == null) __Address = new Address();
+                
                 return __Address;
             }
             set { __Address = value; }
@@ -122,7 +122,7 @@ namespace SharpMap.Entities.xAL
         {
             get
             {
-                if (__AddressLines == null) __AddressLines = new AddressLinesType();
+                
                 return __AddressLines;
             }
             set { __AddressLines = value; }
@@ -134,7 +134,7 @@ namespace SharpMap.Entities.xAL
         {
             get
             {
-                if (__Country == null) __Country = new Country();
+                
                 return __Country;
             }
             set { __Country = value; }
@@ -146,7 +146,7 @@ namespace SharpMap.Entities.xAL
         {
             get
             {
-                if (__AdministrativeArea == null) __AdministrativeArea = new AdministrativeArea();
+                
                 return __AdministrativeArea;
             }
             set { __AdministrativeArea = value; }
@@ -158,7 +158,7 @@ namespace SharpMap.Entities.xAL
         {
             get
             {
-                if (__Locality == null) __Locality = new Locality();
+                
                 return __Locality;
             }
             set { __Locality = value; }
@@ -170,7 +170,7 @@ namespace SharpMap.Entities.xAL
         {
             get
             {
-                if (__Thoroughfare == null) __Thoroughfare = new Thoroughfare();
+                
                 return __Thoroughfare;
             }
             set { __Thoroughfare = value; }

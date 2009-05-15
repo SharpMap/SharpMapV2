@@ -53,7 +53,7 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (__LinearRing == null) __LinearRing = new LinearRing();
+                
                 return __LinearRing;
             }
             set { __LinearRing = value; }

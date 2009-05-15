@@ -69,7 +69,7 @@ namespace SharpMap.Entities.xAL
         {
             get
             {
-                if (__PostalRouteNumber == null) __PostalRouteNumber = new PostalRouteNumber();
+                
                 return __PostalRouteNumber;
             }
             set { __PostalRouteNumber = value; }
@@ -81,7 +81,7 @@ namespace SharpMap.Entities.xAL
         {
             get
             {
-                if (__PostBox == null) __PostBox = new PostBox();
+                
                 return __PostBox;
             }
             set { __PostBox = value; }

@@ -69,7 +69,7 @@ namespace SharpMap.Entities.xAL
         {
             get
             {
-                if (__MailStop == null) __MailStop = new MailStopType();
+                
                 return __MailStop;
             }
             set { __MailStop = value; }
@@ -81,7 +81,7 @@ namespace SharpMap.Entities.xAL
         {
             get
             {
-                if (__PostalCode == null) __PostalCode = new PostalCode();
+                
                 return __PostalCode;
             }
             set { __PostalCode = value; }

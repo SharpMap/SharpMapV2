@@ -145,7 +145,7 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (__author == null) __author = new Author();
+                
                 return __author;
             }
             set { __author = value; }
@@ -177,7 +177,7 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (__AddressDetails == null) __AddressDetails = new AddressDetails();
+                
                 return __AddressDetails;
             }
             set { __AddressDetails = value; }
@@ -197,7 +197,7 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (__Snippet == null) __Snippet = new Snippet();
+                
                 return __Snippet;
             }
             set { __Snippet = value; }
@@ -262,7 +262,7 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (__Region == null) __Region = new Region();
+                
                 return __Region;
             }
             set { __Region = value; }
@@ -274,7 +274,7 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (__Metadata == null) __Metadata = new Metadata();
+                
                 return __Metadata;
             }
             set { __Metadata = value; }
@@ -286,7 +286,7 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (__ExtendedData == null) __ExtendedData = new ExtendedData();
+                
                 return __ExtendedData;
             }
             set { __ExtendedData = value; }

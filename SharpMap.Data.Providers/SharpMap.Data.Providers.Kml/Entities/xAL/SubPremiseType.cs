@@ -76,7 +76,7 @@ namespace SharpMap.Entities.xAL
         {
             get
             {
-                if (__SubPremiseLocation == null) __SubPremiseLocation = new SubPremiseLocation();
+                
                 return __SubPremiseLocation;
             }
             set { __SubPremiseLocation = value; }
@@ -136,7 +136,7 @@ namespace SharpMap.Entities.xAL
         {
             get
             {
-                if (__Firm == null) __Firm = new FirmType();
+                
                 return __Firm;
             }
             set { __Firm = value; }
@@ -148,7 +148,7 @@ namespace SharpMap.Entities.xAL
         {
             get
             {
-                if (__MailStop == null) __MailStop = new MailStopType();
+                
                 return __MailStop;
             }
             set { __MailStop = value; }
@@ -160,7 +160,7 @@ namespace SharpMap.Entities.xAL
         {
             get
             {
-                if (__PostalCode == null) __PostalCode = new PostalCode();
+                
                 return __PostalCode;
             }
             set { __PostalCode = value; }
@@ -172,7 +172,7 @@ namespace SharpMap.Entities.xAL
         {
             get
             {
-                if (__SubPremise == null) __SubPremise = new SubPremiseType();
+                
                 return __SubPremise;
             }
             set { __SubPremise = value; }

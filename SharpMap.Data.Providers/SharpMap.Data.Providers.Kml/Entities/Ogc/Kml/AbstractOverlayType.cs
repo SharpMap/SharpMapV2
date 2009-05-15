@@ -85,7 +85,7 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (__Icon == null) __Icon = new Icon();
+                
                 return __Icon;
             }
             set { __Icon = value; }

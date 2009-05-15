@@ -68,7 +68,7 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (_networkLinkControl == null) _networkLinkControl = new NetworkLinkControl();
+                
                 return _networkLinkControl;
             }
             set { _networkLinkControl = value; }
