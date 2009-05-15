@@ -43,8 +43,8 @@ namespace SharpMap.Entities.Ogc.Kml
     [XmlInclude(typeof (ViewVolumeType))]
     public abstract class AbstractViewType : AbstractObjectType
     {
-        [XmlIgnore] private List<AbstractViewObjectExtensionGroup> __AbstractViewObjectExtensionGroup;
-        [XmlIgnore] private List<string> __AbstractViewSimpleExtensionGroup;
+        [XmlIgnore] private List<AbstractViewObjectExtensionGroup> _AbstractViewObjectExtensionGroup;
+        [XmlIgnore] private List<string> _AbstractViewSimpleExtensionGroup;
 
         [XmlElement(Type = typeof (string), ElementName = "AbstractViewSimpleExtensionGroup", IsNullable = false,
             Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
@@ -52,10 +52,10 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (__AbstractViewSimpleExtensionGroup == null) __AbstractViewSimpleExtensionGroup = new List<string>();
-                return __AbstractViewSimpleExtensionGroup;
+                if (_AbstractViewSimpleExtensionGroup == null) _AbstractViewSimpleExtensionGroup = new List<string>();
+                return _AbstractViewSimpleExtensionGroup;
             }
-            set { __AbstractViewSimpleExtensionGroup = value; }
+            set { _AbstractViewSimpleExtensionGroup = value; }
         }
 
         [XmlElement(Type = typeof (AbstractViewObjectExtensionGroup), ElementName = "AbstractViewObjectExtensionGroup",
@@ -64,11 +64,11 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (__AbstractViewObjectExtensionGroup == null)
-                    __AbstractViewObjectExtensionGroup = new List<AbstractViewObjectExtensionGroup>();
-                return __AbstractViewObjectExtensionGroup;
+                if (_AbstractViewObjectExtensionGroup == null)
+                    _AbstractViewObjectExtensionGroup = new List<AbstractViewObjectExtensionGroup>();
+                return _AbstractViewObjectExtensionGroup;
             }
-            set { __AbstractViewObjectExtensionGroup = value; }
+            set { _AbstractViewObjectExtensionGroup = value; }
         }
 
         public new void MakeSchemaCompliant()

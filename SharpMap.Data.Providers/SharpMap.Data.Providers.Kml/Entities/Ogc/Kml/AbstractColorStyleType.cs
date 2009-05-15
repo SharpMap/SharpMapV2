@@ -43,13 +43,13 @@ namespace SharpMap.Entities.Ogc.Kml
     [XmlInclude(typeof (ViewVolumeType))]
     public abstract class AbstractColorStyleType : AbstractSubStyleType
     {
-        [XmlIgnore] private List<AbstractColorStyleObjectExtensionGroup> __AbstractColorStyleObjectExtensionGroup;
-        [XmlIgnore] private List<string> __AbstractColorStyleSimpleExtensionGroup;
-        [XmlIgnore] private byte[] __color;
+        [XmlIgnore] private List<AbstractColorStyleObjectExtensionGroup> _AbstractColorStyleObjectExtensionGroup;
+        [XmlIgnore] private List<string> _AbstractColorStyleSimpleExtensionGroup;
+        [XmlIgnore] private byte[] _color;
 
-        [XmlIgnore] private ColorMode __colorMode;
+        [XmlIgnore] private ColorMode _colorMode;
 
-        [XmlIgnore] public bool __colorModeSpecified;
+        [XmlIgnore] public bool _colorModeSpecified;
 
         public AbstractColorStyleType()
         {
@@ -60,8 +60,8 @@ namespace SharpMap.Entities.Ogc.Kml
             Namespace = Declarations.SchemaVersion)]
         public byte[] color
         {
-            get { return __color; }
-            set { __color = value; }
+            get { return _color; }
+            set { _color = value; }
         }
 
 
@@ -69,11 +69,11 @@ namespace SharpMap.Entities.Ogc.Kml
             Namespace = Declarations.SchemaVersion)]
         public ColorMode colorMode
         {
-            get { return __colorMode; }
+            get { return _colorMode; }
             set
             {
-                __colorMode = value;
-                __colorModeSpecified = true;
+                _colorMode = value;
+                _colorModeSpecified = true;
             }
         }
 
@@ -83,11 +83,11 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (__AbstractColorStyleSimpleExtensionGroup == null)
-                    __AbstractColorStyleSimpleExtensionGroup = new List<string>();
-                return __AbstractColorStyleSimpleExtensionGroup;
+                if (_AbstractColorStyleSimpleExtensionGroup == null)
+                    _AbstractColorStyleSimpleExtensionGroup = new List<string>();
+                return _AbstractColorStyleSimpleExtensionGroup;
             }
-            set { __AbstractColorStyleSimpleExtensionGroup = value; }
+            set { _AbstractColorStyleSimpleExtensionGroup = value; }
         }
 
         [XmlElement(Type = typeof (AbstractColorStyleObjectExtensionGroup),
@@ -97,11 +97,11 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (__AbstractColorStyleObjectExtensionGroup == null)
-                    __AbstractColorStyleObjectExtensionGroup = new List<AbstractColorStyleObjectExtensionGroup>();
-                return __AbstractColorStyleObjectExtensionGroup;
+                if (_AbstractColorStyleObjectExtensionGroup == null)
+                    _AbstractColorStyleObjectExtensionGroup = new List<AbstractColorStyleObjectExtensionGroup>();
+                return _AbstractColorStyleObjectExtensionGroup;
             }
-            set { __AbstractColorStyleObjectExtensionGroup = value; }
+            set { _AbstractColorStyleObjectExtensionGroup = value; }
         }
 
         public new void MakeSchemaCompliant()

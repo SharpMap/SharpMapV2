@@ -23,52 +23,52 @@ namespace SharpMap.Entities.xAL
     [XmlRoot(ElementName = "Premise", Namespace = Declarations.SchemaVersion, IsNullable = false), Serializable]
     public class Premise
     {
-        [XmlIgnore] private List<AddressLine> __AddressLine;
-        [XmlIgnore] private List<BuildingNameType> __BuildingName;
-        [XmlIgnore] private FirmType __Firm;
-        [XmlIgnore] private MailStopType __MailStop;
-        [XmlIgnore] private PostalCode __PostalCode;
-        [XmlIgnore] private Premise __Premise;
-        [XmlIgnore] private string __PremiseDependency;
-        [XmlIgnore] private string __PremiseDependencyType;
-        [XmlIgnore] private PremiseLocation __PremiseLocation;
-        [XmlIgnore] private List<PremiseName> __PremiseName;
-        [XmlIgnore] private List<PremiseNumber> __PremiseNumber;
-        [XmlIgnore] private List<PremiseNumberPrefix> __PremiseNumberPrefix;
-        [XmlIgnore] private PremiseNumberRange __PremiseNumberRange;
-        [XmlIgnore] private List<PremiseNumberSuffix> __PremiseNumberSuffix;
-        [XmlIgnore] private string __PremiseThoroughfareConnector;
-        [XmlIgnore] private List<SubPremiseType> __SubPremise;
-        [XmlIgnore] private string __Type;
+        [XmlIgnore] private List<AddressLine> _AddressLine;
+        [XmlIgnore] private List<BuildingNameType> _BuildingName;
+        [XmlIgnore] private FirmType _Firm;
+        [XmlIgnore] private MailStopType _MailStop;
+        [XmlIgnore] private PostalCode _PostalCode;
+        [XmlIgnore] private Premise _Premise;
+        [XmlIgnore] private string _PremiseDependency;
+        [XmlIgnore] private string _PremiseDependencyType;
+        [XmlIgnore] private PremiseLocation _PremiseLocation;
+        [XmlIgnore] private List<PremiseName> _PremiseName;
+        [XmlIgnore] private List<PremiseNumber> _PremiseNumber;
+        [XmlIgnore] private List<PremiseNumberPrefix> _PremiseNumberPrefix;
+        [XmlIgnore] private PremiseNumberRange _PremiseNumberRange;
+        [XmlIgnore] private List<PremiseNumberSuffix> _PremiseNumberSuffix;
+        [XmlIgnore] private string _PremiseThoroughfareConnector;
+        [XmlIgnore] private List<SubPremiseType> _SubPremise;
+        [XmlIgnore] private string _Type;
         [XmlAnyElement] public XmlElement[] Any;
         [XmlAnyAttribute] public XmlAttribute[] AnyAttr;
 
         [XmlAttribute(AttributeName = "Type")]
         public string Type
         {
-            get { return __Type; }
-            set { __Type = value; }
+            get { return _Type; }
+            set { _Type = value; }
         }
 
         [XmlAttribute(AttributeName = "PremiseDependency")]
         public string PremiseDependency
         {
-            get { return __PremiseDependency; }
-            set { __PremiseDependency = value; }
+            get { return _PremiseDependency; }
+            set { _PremiseDependency = value; }
         }
 
         [XmlAttribute(AttributeName = "PremiseDependencyType")]
         public string PremiseDependencyType
         {
-            get { return __PremiseDependencyType; }
-            set { __PremiseDependencyType = value; }
+            get { return _PremiseDependencyType; }
+            set { _PremiseDependencyType = value; }
         }
 
         [XmlAttribute(AttributeName = "PremiseThoroughfareConnector")]
         public string PremiseThoroughfareConnector
         {
-            get { return __PremiseThoroughfareConnector; }
-            set { __PremiseThoroughfareConnector = value; }
+            get { return _PremiseThoroughfareConnector; }
+            set { _PremiseThoroughfareConnector = value; }
         }
 
         [XmlElement(Type = typeof (AddressLine), ElementName = "AddressLine", IsNullable = false,
@@ -77,10 +77,10 @@ namespace SharpMap.Entities.xAL
         {
             get
             {
-                if (__AddressLine == null) __AddressLine = new List<AddressLine>();
-                return __AddressLine;
+                if (_AddressLine == null) _AddressLine = new List<AddressLine>();
+                return _AddressLine;
             }
-            set { __AddressLine = value; }
+            set { _AddressLine = value; }
         }
 
         [XmlElement(Type = typeof (PremiseName), ElementName = "PremiseName", IsNullable = false,
@@ -89,22 +89,18 @@ namespace SharpMap.Entities.xAL
         {
             get
             {
-                if (__PremiseName == null) __PremiseName = new List<PremiseName>();
-                return __PremiseName;
+                if (_PremiseName == null) _PremiseName = new List<PremiseName>();
+                return _PremiseName;
             }
-            set { __PremiseName = value; }
+            set { _PremiseName = value; }
         }
 
         [XmlElement(Type = typeof (PremiseLocation), ElementName = "PremiseLocation", IsNullable = false,
             Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public PremiseLocation PremiseLocation
         {
-            get
-            {
-                
-                return __PremiseLocation;
-            }
-            set { __PremiseLocation = value; }
+            get { return _PremiseLocation; }
+            set { _PremiseLocation = value; }
         }
 
         [XmlElement(Type = typeof (PremiseNumber), ElementName = "PremiseNumber", IsNullable = false,
@@ -113,22 +109,18 @@ namespace SharpMap.Entities.xAL
         {
             get
             {
-                if (__PremiseNumber == null) __PremiseNumber = new List<PremiseNumber>();
-                return __PremiseNumber;
+                if (_PremiseNumber == null) _PremiseNumber = new List<PremiseNumber>();
+                return _PremiseNumber;
             }
-            set { __PremiseNumber = value; }
+            set { _PremiseNumber = value; }
         }
 
         [XmlElement(Type = typeof (PremiseNumberRange), ElementName = "PremiseNumberRange", IsNullable = false,
             Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public PremiseNumberRange PremiseNumberRange
         {
-            get
-            {
-                
-                return __PremiseNumberRange;
-            }
-            set { __PremiseNumberRange = value; }
+            get { return _PremiseNumberRange; }
+            set { _PremiseNumberRange = value; }
         }
 
         [XmlElement(Type = typeof (PremiseNumberPrefix), ElementName = "PremiseNumberPrefix", IsNullable = false,
@@ -137,10 +129,10 @@ namespace SharpMap.Entities.xAL
         {
             get
             {
-                if (__PremiseNumberPrefix == null) __PremiseNumberPrefix = new List<PremiseNumberPrefix>();
-                return __PremiseNumberPrefix;
+                if (_PremiseNumberPrefix == null) _PremiseNumberPrefix = new List<PremiseNumberPrefix>();
+                return _PremiseNumberPrefix;
             }
-            set { __PremiseNumberPrefix = value; }
+            set { _PremiseNumberPrefix = value; }
         }
 
         [XmlElement(Type = typeof (PremiseNumberSuffix), ElementName = "PremiseNumberSuffix", IsNullable = false,
@@ -149,10 +141,10 @@ namespace SharpMap.Entities.xAL
         {
             get
             {
-                if (__PremiseNumberSuffix == null) __PremiseNumberSuffix = new List<PremiseNumberSuffix>();
-                return __PremiseNumberSuffix;
+                if (_PremiseNumberSuffix == null) _PremiseNumberSuffix = new List<PremiseNumberSuffix>();
+                return _PremiseNumberSuffix;
             }
-            set { __PremiseNumberSuffix = value; }
+            set { _PremiseNumberSuffix = value; }
         }
 
         [XmlElement(Type = typeof (BuildingNameType), ElementName = "BuildingName", IsNullable = false,
@@ -161,10 +153,10 @@ namespace SharpMap.Entities.xAL
         {
             get
             {
-                if (__BuildingName == null) __BuildingName = new List<BuildingNameType>();
-                return __BuildingName;
+                if (_BuildingName == null) _BuildingName = new List<BuildingNameType>();
+                return _BuildingName;
             }
-            set { __BuildingName = value; }
+            set { _BuildingName = value; }
         }
 
         [XmlElement(Type = typeof (SubPremiseType), ElementName = "SubPremise", IsNullable = false,
@@ -173,58 +165,42 @@ namespace SharpMap.Entities.xAL
         {
             get
             {
-                if (__SubPremise == null) __SubPremise = new List<SubPremiseType>();
-                return __SubPremise;
+                if (_SubPremise == null) _SubPremise = new List<SubPremiseType>();
+                return _SubPremise;
             }
-            set { __SubPremise = value; }
+            set { _SubPremise = value; }
         }
 
         [XmlElement(Type = typeof (FirmType), ElementName = "Firm", IsNullable = false, Form = XmlSchemaForm.Qualified,
             Namespace = Declarations.SchemaVersion)]
         public FirmType Firm
         {
-            get
-            {
-                
-                return __Firm;
-            }
-            set { __Firm = value; }
+            get { return _Firm; }
+            set { _Firm = value; }
         }
 
         [XmlElement(Type = typeof (MailStopType), ElementName = "MailStop", IsNullable = false,
             Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public MailStopType MailStop
         {
-            get
-            {
-                
-                return __MailStop;
-            }
-            set { __MailStop = value; }
+            get { return _MailStop; }
+            set { _MailStop = value; }
         }
 
         [XmlElement(Type = typeof (PostalCode), ElementName = "PostalCode", IsNullable = false,
             Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public PostalCode PostalCode
         {
-            get
-            {
-                
-                return __PostalCode;
-            }
-            set { __PostalCode = value; }
+            get { return _PostalCode; }
+            set { _PostalCode = value; }
         }
 
         [XmlElement(Type = typeof (Premise), ElementName = "Premise", IsNullable = false, Form = XmlSchemaForm.Qualified
             , Namespace = Declarations.SchemaVersion)]
         public Premise Premise1
         {
-            get
-            {
-                
-                return __Premise;
-            }
-            set { __Premise = value; }
+            get { return _Premise; }
+            set { _Premise = value; }
         }
 
         public void MakeSchemaCompliant()

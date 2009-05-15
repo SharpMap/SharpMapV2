@@ -43,31 +43,31 @@ namespace SharpMap.Entities.Ogc.Kml
     [XmlInclude(typeof (ViewVolumeType))]
     public class CameraType : AbstractViewType
     {
-        [XmlIgnore] private double __altitude;
-        [XmlIgnore] private string __altitudeModeGroup;
+        [XmlIgnore] private double _altitude;
+        [XmlIgnore] private string _altitudeModeGroup;
 
-        [XmlIgnore] public bool __altitudeSpecified;
-        [XmlIgnore] private List<CameraObjectExtensionGroup> __CameraObjectExtensionGroup;
-        [XmlIgnore] private List<string> __CameraSimpleExtensionGroup;
-
-
-        [XmlIgnore] private double __heading;
-
-        [XmlIgnore] public bool __headingSpecified;
-        [XmlIgnore] private double __latitude;
-
-        [XmlIgnore] public bool __latitudeSpecified;
-        [XmlIgnore] private double __longitude;
-
-        [XmlIgnore] public bool __longitudeSpecified;
-        [XmlIgnore] private double __roll;
-
-        [XmlIgnore] public bool __rollSpecified;
+        [XmlIgnore] public bool _altitudeSpecified;
+        [XmlIgnore] private List<CameraObjectExtensionGroup> _CameraObjectExtensionGroup;
+        [XmlIgnore] private List<string> _CameraSimpleExtensionGroup;
 
 
-        [XmlIgnore] private double __tilt;
+        [XmlIgnore] private double _heading;
 
-        [XmlIgnore] public bool __tiltSpecified;
+        [XmlIgnore] public bool _headingSpecified;
+        [XmlIgnore] private double _latitude;
+
+        [XmlIgnore] public bool _latitudeSpecified;
+        [XmlIgnore] private double _longitude;
+
+        [XmlIgnore] public bool _longitudeSpecified;
+        [XmlIgnore] private double _roll;
+
+        [XmlIgnore] public bool _rollSpecified;
+
+
+        [XmlIgnore] private double _tilt;
+
+        [XmlIgnore] public bool _tiltSpecified;
 
         public CameraType()
         {
@@ -83,11 +83,11 @@ namespace SharpMap.Entities.Ogc.Kml
             Namespace = Declarations.SchemaVersion)]
         public double longitude
         {
-            get { return __longitude; }
+            get { return _longitude; }
             set
             {
-                __longitude = value;
-                __longitudeSpecified = true;
+                _longitude = value;
+                _longitudeSpecified = true;
             }
         }
 
@@ -95,11 +95,11 @@ namespace SharpMap.Entities.Ogc.Kml
             Namespace = Declarations.SchemaVersion)]
         public double latitude
         {
-            get { return __latitude; }
+            get { return _latitude; }
             set
             {
-                __latitude = value;
-                __latitudeSpecified = true;
+                _latitude = value;
+                _latitudeSpecified = true;
             }
         }
 
@@ -107,11 +107,11 @@ namespace SharpMap.Entities.Ogc.Kml
             Namespace = Declarations.SchemaVersion)]
         public double altitude
         {
-            get { return __altitude; }
+            get { return _altitude; }
             set
             {
-                __altitude = value;
-                __altitudeSpecified = true;
+                _altitude = value;
+                _altitudeSpecified = true;
             }
         }
 
@@ -119,11 +119,11 @@ namespace SharpMap.Entities.Ogc.Kml
             Namespace = Declarations.SchemaVersion)]
         public double heading
         {
-            get { return __heading; }
+            get { return _heading; }
             set
             {
-                __heading = value;
-                __headingSpecified = true;
+                _heading = value;
+                _headingSpecified = true;
             }
         }
 
@@ -132,11 +132,11 @@ namespace SharpMap.Entities.Ogc.Kml
             Namespace = Declarations.SchemaVersion)]
         public double tilt
         {
-            get { return __tilt; }
+            get { return _tilt; }
             set
             {
-                __tilt = value;
-                __tiltSpecified = true;
+                _tilt = value;
+                _tiltSpecified = true;
             }
         }
 
@@ -145,11 +145,11 @@ namespace SharpMap.Entities.Ogc.Kml
             Namespace = Declarations.SchemaVersion)]
         public double roll
         {
-            get { return __roll; }
+            get { return _roll; }
             set
             {
-                __roll = value;
-                __rollSpecified = true;
+                _roll = value;
+                _rollSpecified = true;
             }
         }
 
@@ -157,8 +157,8 @@ namespace SharpMap.Entities.Ogc.Kml
             Namespace = Declarations.SchemaVersion)]
         public string altitudeModeGroup
         {
-            get { return __altitudeModeGroup; }
-            set { __altitudeModeGroup = value; }
+            get { return _altitudeModeGroup; }
+            set { _altitudeModeGroup = value; }
         }
 
         [XmlElement(Type = typeof (string), ElementName = "CameraSimpleExtensionGroup", IsNullable = false,
@@ -167,10 +167,10 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (__CameraSimpleExtensionGroup == null) __CameraSimpleExtensionGroup = new List<string>();
-                return __CameraSimpleExtensionGroup;
+                if (_CameraSimpleExtensionGroup == null) _CameraSimpleExtensionGroup = new List<string>();
+                return _CameraSimpleExtensionGroup;
             }
-            set { __CameraSimpleExtensionGroup = value; }
+            set { _CameraSimpleExtensionGroup = value; }
         }
 
         [XmlElement(Type = typeof (CameraObjectExtensionGroup), ElementName = "CameraObjectExtensionGroup",
@@ -179,11 +179,11 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (__CameraObjectExtensionGroup == null)
-                    __CameraObjectExtensionGroup = new List<CameraObjectExtensionGroup>();
-                return __CameraObjectExtensionGroup;
+                if (_CameraObjectExtensionGroup == null)
+                    _CameraObjectExtensionGroup = new List<CameraObjectExtensionGroup>();
+                return _CameraObjectExtensionGroup;
             }
-            set { __CameraObjectExtensionGroup = value; }
+            set { _CameraObjectExtensionGroup = value; }
         }
 
         public new void MakeSchemaCompliant()

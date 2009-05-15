@@ -43,8 +43,8 @@ namespace SharpMap.Entities.Ogc.Kml
     [XmlInclude(typeof (ViewVolumeType))]
     public abstract class AbstractGeometryType : AbstractObjectType
     {
-        [XmlIgnore] private List<AbstractGeometryObjectExtensionGroup> __AbstractGeometryObjectExtensionGroup;
-        [XmlIgnore] private List<string> __AbstractGeometrySimpleExtensionGroup;
+        [XmlIgnore] private List<AbstractGeometryObjectExtensionGroup> _AbstractGeometryObjectExtensionGroup;
+        [XmlIgnore] private List<string> _AbstractGeometrySimpleExtensionGroup;
 
         [XmlElement(Type = typeof (string), ElementName = "AbstractGeometrySimpleExtensionGroup", IsNullable = false,
             Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
@@ -52,11 +52,11 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (__AbstractGeometrySimpleExtensionGroup == null)
-                    __AbstractGeometrySimpleExtensionGroup = new List<string>();
-                return __AbstractGeometrySimpleExtensionGroup;
+                if (_AbstractGeometrySimpleExtensionGroup == null)
+                    _AbstractGeometrySimpleExtensionGroup = new List<string>();
+                return _AbstractGeometrySimpleExtensionGroup;
             }
-            set { __AbstractGeometrySimpleExtensionGroup = value; }
+            set { _AbstractGeometrySimpleExtensionGroup = value; }
         }
 
         [XmlElement(Type = typeof (AbstractGeometryObjectExtensionGroup),
@@ -66,11 +66,11 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (__AbstractGeometryObjectExtensionGroup == null)
-                    __AbstractGeometryObjectExtensionGroup = new List<AbstractGeometryObjectExtensionGroup>();
-                return __AbstractGeometryObjectExtensionGroup;
+                if (_AbstractGeometryObjectExtensionGroup == null)
+                    _AbstractGeometryObjectExtensionGroup = new List<AbstractGeometryObjectExtensionGroup>();
+                return _AbstractGeometryObjectExtensionGroup;
             }
-            set { __AbstractGeometryObjectExtensionGroup = value; }
+            set { _AbstractGeometryObjectExtensionGroup = value; }
         }
 
         public new void MakeSchemaCompliant()

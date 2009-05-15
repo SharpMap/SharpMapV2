@@ -23,20 +23,20 @@ namespace SharpMap.Entities.xAL
     [XmlType(TypeName = "ThoroughfareNumberFrom", Namespace = Declarations.SchemaVersion), Serializable]
     public class ThoroughfareNumberFrom
     {
-        [XmlIgnore] private List<AddressLine> __AddressLine;
-        [XmlIgnore] private string __Code;
-        [XmlIgnore] private List<ThoroughfareNumber> __ThoroughfareNumber;
-        [XmlIgnore] private List<ThoroughfareNumberPrefix> __ThoroughfareNumberPrefix;
-        [XmlIgnore] private List<ThoroughfareNumberSuffix> __ThoroughfareNumberSuffix;
-        [XmlIgnore] private string __Value;
+        [XmlIgnore] private List<AddressLine> _AddressLine;
+        [XmlIgnore] private string _Code;
+        [XmlIgnore] private List<ThoroughfareNumber> _ThoroughfareNumber;
+        [XmlIgnore] private List<ThoroughfareNumberPrefix> _ThoroughfareNumberPrefix;
+        [XmlIgnore] private List<ThoroughfareNumberSuffix> _ThoroughfareNumberSuffix;
+        [XmlIgnore] private string _Value;
 
         [XmlAnyAttribute] public XmlAttribute[] AnyAttr;
 
         [XmlAttribute(AttributeName = "Code")]
         public string Code
         {
-            get { return __Code; }
-            set { __Code = value; }
+            get { return _Code; }
+            set { _Code = value; }
         }
 
         [XmlElement(Type = typeof (AddressLine), ElementName = "AddressLine", IsNullable = false,
@@ -45,10 +45,10 @@ namespace SharpMap.Entities.xAL
         {
             get
             {
-                if (__AddressLine == null) __AddressLine = new List<AddressLine>();
-                return __AddressLine;
+                if (_AddressLine == null) _AddressLine = new List<AddressLine>();
+                return _AddressLine;
             }
-            set { __AddressLine = value; }
+            set { _AddressLine = value; }
         }
 
         [XmlElement(Type = typeof (ThoroughfareNumberPrefix), ElementName = "ThoroughfareNumberPrefix",
@@ -57,11 +57,11 @@ namespace SharpMap.Entities.xAL
         {
             get
             {
-                if (__ThoroughfareNumberPrefix == null)
-                    __ThoroughfareNumberPrefix = new List<ThoroughfareNumberPrefix>();
-                return __ThoroughfareNumberPrefix;
+                if (_ThoroughfareNumberPrefix == null)
+                    _ThoroughfareNumberPrefix = new List<ThoroughfareNumberPrefix>();
+                return _ThoroughfareNumberPrefix;
             }
-            set { __ThoroughfareNumberPrefix = value; }
+            set { _ThoroughfareNumberPrefix = value; }
         }
 
         [XmlElement(Type = typeof (ThoroughfareNumber), ElementName = "ThoroughfareNumber", IsNullable = false,
@@ -70,10 +70,10 @@ namespace SharpMap.Entities.xAL
         {
             get
             {
-                if (__ThoroughfareNumber == null) __ThoroughfareNumber = new List<ThoroughfareNumber>();
-                return __ThoroughfareNumber;
+                if (_ThoroughfareNumber == null) _ThoroughfareNumber = new List<ThoroughfareNumber>();
+                return _ThoroughfareNumber;
             }
-            set { __ThoroughfareNumber = value; }
+            set { _ThoroughfareNumber = value; }
         }
 
         [XmlElement(Type = typeof (ThoroughfareNumberSuffix), ElementName = "ThoroughfareNumberSuffix",
@@ -82,18 +82,18 @@ namespace SharpMap.Entities.xAL
         {
             get
             {
-                if (__ThoroughfareNumberSuffix == null)
-                    __ThoroughfareNumberSuffix = new List<ThoroughfareNumberSuffix>();
-                return __ThoroughfareNumberSuffix;
+                if (_ThoroughfareNumberSuffix == null)
+                    _ThoroughfareNumberSuffix = new List<ThoroughfareNumberSuffix>();
+                return _ThoroughfareNumberSuffix;
             }
-            set { __ThoroughfareNumberSuffix = value; }
+            set { _ThoroughfareNumberSuffix = value; }
         }
 
         [XmlText(DataType = "string")]
         public string Value
         {
-            get { return __Value; }
-            set { __Value = value; }
+            get { return _Value; }
+            set { _Value = value; }
         }
 
         public void MakeSchemaCompliant()

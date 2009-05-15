@@ -23,10 +23,10 @@ namespace SharpMap.Entities.xAL
     [XmlType(TypeName = "MailStopType", Namespace = Declarations.SchemaVersion), Serializable]
     public class MailStopType
     {
-        [XmlIgnore] private List<AddressLine> __AddressLine;
-        [XmlIgnore] private MailStopName __MailStopName;
-        [XmlIgnore] private MailStopNumber __MailStopNumber;
-        [XmlIgnore] private string __Type;
+        [XmlIgnore] private List<AddressLine> _AddressLine;
+        [XmlIgnore] private MailStopName _MailStopName;
+        [XmlIgnore] private MailStopNumber _MailStopNumber;
+        [XmlIgnore] private string _Type;
         [XmlAnyElement] public XmlElement[] Any;
 
         [XmlAnyAttribute] public XmlAttribute[] AnyAttr;
@@ -34,8 +34,8 @@ namespace SharpMap.Entities.xAL
         [XmlAttribute(AttributeName = "Type")]
         public string Type
         {
-            get { return __Type; }
-            set { __Type = value; }
+            get { return _Type; }
+            set { _Type = value; }
         }
 
         [XmlElement(Type = typeof (AddressLine), ElementName = "AddressLine", IsNullable = false,
@@ -44,34 +44,26 @@ namespace SharpMap.Entities.xAL
         {
             get
             {
-                if (__AddressLine == null) __AddressLine = new List<AddressLine>();
-                return __AddressLine;
+                if (_AddressLine == null) _AddressLine = new List<AddressLine>();
+                return _AddressLine;
             }
-            set { __AddressLine = value; }
+            set { _AddressLine = value; }
         }
 
         [XmlElement(Type = typeof (MailStopName), ElementName = "MailStopName", IsNullable = false,
             Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public MailStopName MailStopName
         {
-            get
-            {
-                
-                return __MailStopName;
-            }
-            set { __MailStopName = value; }
+            get { return _MailStopName; }
+            set { _MailStopName = value; }
         }
 
         [XmlElement(Type = typeof (MailStopNumber), ElementName = "MailStopNumber", IsNullable = false,
             Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public MailStopNumber MailStopNumber
         {
-            get
-            {
-                
-                return __MailStopNumber;
-            }
-            set { __MailStopNumber = value; }
+            get { return _MailStopNumber; }
+            set { _MailStopNumber = value; }
         }
 
         public void MakeSchemaCompliant()

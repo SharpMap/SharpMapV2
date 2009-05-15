@@ -43,22 +43,22 @@ namespace SharpMap.Entities.Ogc.Kml
     [XmlInclude(typeof (ViewVolumeType))]
     public class LodType : AbstractObjectType
     {
-        [XmlIgnore] private List<LodObjectExtensionGroup> __LodObjectExtensionGroup;
-        [XmlIgnore] private List<string> __LodSimpleExtensionGroup;
-        [XmlIgnore] private double __maxFadeExtent;
+        [XmlIgnore] private List<LodObjectExtensionGroup> _LodObjectExtensionGroup;
+        [XmlIgnore] private List<string> _LodSimpleExtensionGroup;
+        [XmlIgnore] private double _maxFadeExtent;
 
-        [XmlIgnore] public bool __maxFadeExtentSpecified;
-        [XmlIgnore] private double __maxLodPixels;
+        [XmlIgnore] public bool _maxFadeExtentSpecified;
+        [XmlIgnore] private double _maxLodPixels;
 
-        [XmlIgnore] public bool __maxLodPixelsSpecified;
+        [XmlIgnore] public bool _maxLodPixelsSpecified;
 
 
-        [XmlIgnore] private double __minFadeExtent;
+        [XmlIgnore] private double _minFadeExtent;
 
-        [XmlIgnore] public bool __minFadeExtentSpecified;
-        [XmlIgnore] private double __minLodPixels;
+        [XmlIgnore] public bool _minFadeExtentSpecified;
+        [XmlIgnore] private double _minLodPixels;
 
-        [XmlIgnore] public bool __minLodPixelsSpecified;
+        [XmlIgnore] public bool _minLodPixelsSpecified;
 
         public LodType()
         {
@@ -72,11 +72,11 @@ namespace SharpMap.Entities.Ogc.Kml
             DataType = "double", Namespace = Declarations.SchemaVersion)]
         public double minLodPixels
         {
-            get { return __minLodPixels; }
+            get { return _minLodPixels; }
             set
             {
-                __minLodPixels = value;
-                __minLodPixelsSpecified = true;
+                _minLodPixels = value;
+                _minLodPixelsSpecified = true;
             }
         }
 
@@ -84,11 +84,11 @@ namespace SharpMap.Entities.Ogc.Kml
             DataType = "double", Namespace = Declarations.SchemaVersion)]
         public double maxLodPixels
         {
-            get { return __maxLodPixels; }
+            get { return _maxLodPixels; }
             set
             {
-                __maxLodPixels = value;
-                __maxLodPixelsSpecified = true;
+                _maxLodPixels = value;
+                _maxLodPixelsSpecified = true;
             }
         }
 
@@ -97,11 +97,11 @@ namespace SharpMap.Entities.Ogc.Kml
             DataType = "double", Namespace = Declarations.SchemaVersion)]
         public double minFadeExtent
         {
-            get { return __minFadeExtent; }
+            get { return _minFadeExtent; }
             set
             {
-                __minFadeExtent = value;
-                __minFadeExtentSpecified = true;
+                _minFadeExtent = value;
+                _minFadeExtentSpecified = true;
             }
         }
 
@@ -110,11 +110,11 @@ namespace SharpMap.Entities.Ogc.Kml
             DataType = "double", Namespace = Declarations.SchemaVersion)]
         public double maxFadeExtent
         {
-            get { return __maxFadeExtent; }
+            get { return _maxFadeExtent; }
             set
             {
-                __maxFadeExtent = value;
-                __maxFadeExtentSpecified = true;
+                _maxFadeExtent = value;
+                _maxFadeExtentSpecified = true;
             }
         }
 
@@ -124,10 +124,10 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (__LodSimpleExtensionGroup == null) __LodSimpleExtensionGroup = new List<string>();
-                return __LodSimpleExtensionGroup;
+                if (_LodSimpleExtensionGroup == null) _LodSimpleExtensionGroup = new List<string>();
+                return _LodSimpleExtensionGroup;
             }
-            set { __LodSimpleExtensionGroup = value; }
+            set { _LodSimpleExtensionGroup = value; }
         }
 
         [XmlElement(Type = typeof (LodObjectExtensionGroup), ElementName = "LodObjectExtensionGroup", IsNullable = false
@@ -136,10 +136,10 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (__LodObjectExtensionGroup == null) __LodObjectExtensionGroup = new List<LodObjectExtensionGroup>();
-                return __LodObjectExtensionGroup;
+                if (_LodObjectExtensionGroup == null) _LodObjectExtensionGroup = new List<LodObjectExtensionGroup>();
+                return _LodObjectExtensionGroup;
             }
-            set { __LodObjectExtensionGroup = value; }
+            set { _LodObjectExtensionGroup = value; }
         }
 
         public new void MakeSchemaCompliant()

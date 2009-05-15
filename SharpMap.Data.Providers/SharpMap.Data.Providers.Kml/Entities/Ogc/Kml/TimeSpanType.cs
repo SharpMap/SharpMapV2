@@ -43,43 +43,43 @@ namespace SharpMap.Entities.Ogc.Kml
     [XmlInclude(typeof (ViewVolumeType))]
     public class TimeSpanType : AbstractTimePrimitiveType
     {
-        [XmlIgnore] private DateTime __begin;
+        [XmlIgnore] private DateTime _begin;
 
-        [XmlIgnore] public bool __beginSpecified;
+        [XmlIgnore] public bool _beginSpecified;
 
 
-        [XmlIgnore] private DateTime __end;
+        [XmlIgnore] private DateTime _end;
 
-        [XmlIgnore] public bool __endSpecified;
-        [XmlIgnore] private List<TimeSpanObjectExtensionGroup> __TimeSpanObjectExtensionGroup;
-        [XmlIgnore] private List<string> __TimeSpanSimpleExtensionGroup;
+        [XmlIgnore] public bool _endSpecified;
+        [XmlIgnore] private List<TimeSpanObjectExtensionGroup> _TimeSpanObjectExtensionGroup;
+        [XmlIgnore] private List<string> _TimeSpanSimpleExtensionGroup;
 
         public TimeSpanType()
         {
-            __begin = DateTime.Now;
-            __end = DateTime.Now;
+            _begin = DateTime.Now;
+            _end = DateTime.Now;
         }
 
         [XmlElement(ElementName = "begin", IsNullable = false, Form = XmlSchemaForm.Qualified, DataType = "dateTime",
             Namespace = Declarations.SchemaVersion)]
         public DateTime begin
         {
-            get { return __begin; }
+            get { return _begin; }
             set
             {
-                __begin = value;
-                __beginSpecified = true;
+                _begin = value;
+                _beginSpecified = true;
             }
         }
 
         [XmlIgnore]
         public DateTime beginUtc
         {
-            get { return __begin.ToUniversalTime(); }
+            get { return _begin.ToUniversalTime(); }
             set
             {
-                __begin = value.ToLocalTime();
-                __beginSpecified = true;
+                _begin = value.ToLocalTime();
+                _beginSpecified = true;
             }
         }
 
@@ -88,22 +88,22 @@ namespace SharpMap.Entities.Ogc.Kml
             Namespace = Declarations.SchemaVersion)]
         public DateTime end
         {
-            get { return __end; }
+            get { return _end; }
             set
             {
-                __end = value;
-                __endSpecified = true;
+                _end = value;
+                _endSpecified = true;
             }
         }
 
         [XmlIgnore]
         public DateTime endUtc
         {
-            get { return __end.ToUniversalTime(); }
+            get { return _end.ToUniversalTime(); }
             set
             {
-                __end = value.ToLocalTime();
-                __endSpecified = true;
+                _end = value.ToLocalTime();
+                _endSpecified = true;
             }
         }
 
@@ -113,10 +113,10 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (__TimeSpanSimpleExtensionGroup == null) __TimeSpanSimpleExtensionGroup = new List<string>();
-                return __TimeSpanSimpleExtensionGroup;
+                if (_TimeSpanSimpleExtensionGroup == null) _TimeSpanSimpleExtensionGroup = new List<string>();
+                return _TimeSpanSimpleExtensionGroup;
             }
-            set { __TimeSpanSimpleExtensionGroup = value; }
+            set { _TimeSpanSimpleExtensionGroup = value; }
         }
 
         [XmlElement(Type = typeof (TimeSpanObjectExtensionGroup), ElementName = "TimeSpanObjectExtensionGroup",
@@ -125,11 +125,11 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (__TimeSpanObjectExtensionGroup == null)
-                    __TimeSpanObjectExtensionGroup = new List<TimeSpanObjectExtensionGroup>();
-                return __TimeSpanObjectExtensionGroup;
+                if (_TimeSpanObjectExtensionGroup == null)
+                    _TimeSpanObjectExtensionGroup = new List<TimeSpanObjectExtensionGroup>();
+                return _TimeSpanObjectExtensionGroup;
             }
-            set { __TimeSpanObjectExtensionGroup = value; }
+            set { _TimeSpanObjectExtensionGroup = value; }
         }
 
         public new void MakeSchemaCompliant()

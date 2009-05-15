@@ -43,20 +43,16 @@ namespace SharpMap.Entities.Ogc.Kml
     [XmlInclude(typeof (ViewVolumeType))]
     public class BoundaryType
     {
-        [XmlIgnore] private List<BoundaryObjectExtensionGroup> __BoundaryObjectExtensionGroup;
-        [XmlIgnore] private List<string> __BoundarySimpleExtensionGroup;
-        [XmlIgnore] private LinearRing __LinearRing;
+        [XmlIgnore] private List<BoundaryObjectExtensionGroup> _BoundaryObjectExtensionGroup;
+        [XmlIgnore] private List<string> _BoundarySimpleExtensionGroup;
+        [XmlIgnore] private LinearRing _LinearRing;
 
         [XmlElement(Type = typeof (LinearRing), ElementName = "LinearRing", IsNullable = false,
             Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public LinearRing LinearRing
         {
-            get
-            {
-                
-                return __LinearRing;
-            }
-            set { __LinearRing = value; }
+            get { return _LinearRing; }
+            set { _LinearRing = value; }
         }
 
         [XmlElement(Type = typeof (string), ElementName = "BoundarySimpleExtensionGroup", IsNullable = false,
@@ -65,10 +61,10 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (__BoundarySimpleExtensionGroup == null) __BoundarySimpleExtensionGroup = new List<string>();
-                return __BoundarySimpleExtensionGroup;
+                if (_BoundarySimpleExtensionGroup == null) _BoundarySimpleExtensionGroup = new List<string>();
+                return _BoundarySimpleExtensionGroup;
             }
-            set { __BoundarySimpleExtensionGroup = value; }
+            set { _BoundarySimpleExtensionGroup = value; }
         }
 
         [XmlElement(Type = typeof (BoundaryObjectExtensionGroup), ElementName = "BoundaryObjectExtensionGroup",
@@ -77,11 +73,11 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (__BoundaryObjectExtensionGroup == null)
-                    __BoundaryObjectExtensionGroup = new List<BoundaryObjectExtensionGroup>();
-                return __BoundaryObjectExtensionGroup;
+                if (_BoundaryObjectExtensionGroup == null)
+                    _BoundaryObjectExtensionGroup = new List<BoundaryObjectExtensionGroup>();
+                return _BoundaryObjectExtensionGroup;
             }
-            set { __BoundaryObjectExtensionGroup = value; }
+            set { _BoundaryObjectExtensionGroup = value; }
         }
 
         public void MakeSchemaCompliant()

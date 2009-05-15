@@ -43,11 +43,11 @@ namespace SharpMap.Entities.Ogc.Kml
     [XmlInclude(typeof (ViewVolumeType))]
     public class LatLonBoxType : AbstractLatLonBoxType
     {
-        [XmlIgnore] private List<LatLonBoxObjectExtensionGroup> __LatLonBoxObjectExtensionGroup;
-        [XmlIgnore] private List<string> __LatLonBoxSimpleExtensionGroup;
-        [XmlIgnore] private double __rotation;
+        [XmlIgnore] private List<LatLonBoxObjectExtensionGroup> _LatLonBoxObjectExtensionGroup;
+        [XmlIgnore] private List<string> _LatLonBoxSimpleExtensionGroup;
+        [XmlIgnore] private double _rotation;
 
-        [XmlIgnore] public bool __rotationSpecified;
+        [XmlIgnore] public bool _rotationSpecified;
 
         public LatLonBoxType()
         {
@@ -59,11 +59,11 @@ namespace SharpMap.Entities.Ogc.Kml
             Namespace = Declarations.SchemaVersion)]
         public double rotation
         {
-            get { return __rotation; }
+            get { return _rotation; }
             set
             {
-                __rotation = value;
-                __rotationSpecified = true;
+                _rotation = value;
+                _rotationSpecified = true;
             }
         }
 
@@ -73,10 +73,10 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (__LatLonBoxSimpleExtensionGroup == null) __LatLonBoxSimpleExtensionGroup = new List<string>();
-                return __LatLonBoxSimpleExtensionGroup;
+                if (_LatLonBoxSimpleExtensionGroup == null) _LatLonBoxSimpleExtensionGroup = new List<string>();
+                return _LatLonBoxSimpleExtensionGroup;
             }
-            set { __LatLonBoxSimpleExtensionGroup = value; }
+            set { _LatLonBoxSimpleExtensionGroup = value; }
         }
 
         [XmlElement(Type = typeof (LatLonBoxObjectExtensionGroup), ElementName = "LatLonBoxObjectExtensionGroup",
@@ -85,11 +85,11 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (__LatLonBoxObjectExtensionGroup == null)
-                    __LatLonBoxObjectExtensionGroup = new List<LatLonBoxObjectExtensionGroup>();
-                return __LatLonBoxObjectExtensionGroup;
+                if (_LatLonBoxObjectExtensionGroup == null)
+                    _LatLonBoxObjectExtensionGroup = new List<LatLonBoxObjectExtensionGroup>();
+                return _LatLonBoxObjectExtensionGroup;
             }
-            set { __LatLonBoxObjectExtensionGroup = value; }
+            set { _LatLonBoxObjectExtensionGroup = value; }
         }
 
         public new void MakeSchemaCompliant()

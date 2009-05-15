@@ -43,20 +43,20 @@ namespace SharpMap.Entities.Ogc.Kml
     [XmlInclude(typeof (ViewVolumeType))]
     public class ImagePyramidType : AbstractObjectType
     {
-        [XmlIgnore] private GridOrigin __gridOrigin;
+        [XmlIgnore] private GridOrigin _gridOrigin;
 
-        [XmlIgnore] public bool __gridOriginSpecified;
-        [XmlIgnore] private List<ImagePyramidObjectExtensionGroup> __ImagePyramidObjectExtensionGroup;
-        [XmlIgnore] private List<string> __ImagePyramidSimpleExtensionGroup;
-        [XmlIgnore] private int __maxHeight;
+        [XmlIgnore] public bool _gridOriginSpecified;
+        [XmlIgnore] private List<ImagePyramidObjectExtensionGroup> _ImagePyramidObjectExtensionGroup;
+        [XmlIgnore] private List<string> _ImagePyramidSimpleExtensionGroup;
+        [XmlIgnore] private int _maxHeight;
 
-        [XmlIgnore] public bool __maxHeightSpecified;
-        [XmlIgnore] private int __maxWidth;
+        [XmlIgnore] public bool _maxHeightSpecified;
+        [XmlIgnore] private int _maxWidth;
 
-        [XmlIgnore] public bool __maxWidthSpecified;
-        [XmlIgnore] private int __tileSize;
+        [XmlIgnore] public bool _maxWidthSpecified;
+        [XmlIgnore] private int _tileSize;
 
-        [XmlIgnore] public bool __tileSizeSpecified;
+        [XmlIgnore] public bool _tileSizeSpecified;
 
         public ImagePyramidType()
         {
@@ -71,11 +71,11 @@ namespace SharpMap.Entities.Ogc.Kml
             Namespace = Declarations.SchemaVersion)]
         public int tileSize
         {
-            get { return __tileSize; }
+            get { return _tileSize; }
             set
             {
-                __tileSize = value;
-                __tileSizeSpecified = true;
+                _tileSize = value;
+                _tileSizeSpecified = true;
             }
         }
 
@@ -84,11 +84,11 @@ namespace SharpMap.Entities.Ogc.Kml
             Namespace = Declarations.SchemaVersion)]
         public int maxWidth
         {
-            get { return __maxWidth; }
+            get { return _maxWidth; }
             set
             {
-                __maxWidth = value;
-                __maxWidthSpecified = true;
+                _maxWidth = value;
+                _maxWidthSpecified = true;
             }
         }
 
@@ -97,11 +97,11 @@ namespace SharpMap.Entities.Ogc.Kml
             Namespace = Declarations.SchemaVersion)]
         public int maxHeight
         {
-            get { return __maxHeight; }
+            get { return _maxHeight; }
             set
             {
-                __maxHeight = value;
-                __maxHeightSpecified = true;
+                _maxHeight = value;
+                _maxHeightSpecified = true;
             }
         }
 
@@ -110,11 +110,11 @@ namespace SharpMap.Entities.Ogc.Kml
             Namespace = Declarations.SchemaVersion)]
         public GridOrigin gridOrigin
         {
-            get { return __gridOrigin; }
+            get { return _gridOrigin; }
             set
             {
-                __gridOrigin = value;
-                __gridOriginSpecified = true;
+                _gridOrigin = value;
+                _gridOriginSpecified = true;
             }
         }
 
@@ -124,10 +124,10 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (__ImagePyramidSimpleExtensionGroup == null) __ImagePyramidSimpleExtensionGroup = new List<string>();
-                return __ImagePyramidSimpleExtensionGroup;
+                if (_ImagePyramidSimpleExtensionGroup == null) _ImagePyramidSimpleExtensionGroup = new List<string>();
+                return _ImagePyramidSimpleExtensionGroup;
             }
-            set { __ImagePyramidSimpleExtensionGroup = value; }
+            set { _ImagePyramidSimpleExtensionGroup = value; }
         }
 
         [XmlElement(Type = typeof (ImagePyramidObjectExtensionGroup), ElementName = "ImagePyramidObjectExtensionGroup",
@@ -136,11 +136,11 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (__ImagePyramidObjectExtensionGroup == null)
-                    __ImagePyramidObjectExtensionGroup = new List<ImagePyramidObjectExtensionGroup>();
-                return __ImagePyramidObjectExtensionGroup;
+                if (_ImagePyramidObjectExtensionGroup == null)
+                    _ImagePyramidObjectExtensionGroup = new List<ImagePyramidObjectExtensionGroup>();
+                return _ImagePyramidObjectExtensionGroup;
             }
-            set { __ImagePyramidObjectExtensionGroup = value; }
+            set { _ImagePyramidObjectExtensionGroup = value; }
         }
 
         public new void MakeSchemaCompliant()

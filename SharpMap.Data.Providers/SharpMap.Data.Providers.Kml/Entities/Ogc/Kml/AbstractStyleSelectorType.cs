@@ -43,8 +43,8 @@ namespace SharpMap.Entities.Ogc.Kml
     [XmlInclude(typeof (ViewVolumeType))]
     public abstract class AbstractStyleSelectorType : AbstractObjectType
     {
-        [XmlIgnore] private List<AbstractStyleSelectorObjectExtensionGroup> __AbstractStyleSelectorObjectExtensionGroup;
-        [XmlIgnore] private List<string> __AbstractStyleSelectorSimpleExtensionGroup;
+        [XmlIgnore] private List<AbstractStyleSelectorObjectExtensionGroup> _AbstractStyleSelectorObjectExtensionGroup;
+        [XmlIgnore] private List<string> _AbstractStyleSelectorSimpleExtensionGroup;
 
         [XmlElement(Type = typeof (string), ElementName = "AbstractStyleSelectorSimpleExtensionGroup",
             IsNullable = false, Form = XmlSchemaForm.Qualified,
@@ -53,11 +53,11 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (__AbstractStyleSelectorSimpleExtensionGroup == null)
-                    __AbstractStyleSelectorSimpleExtensionGroup = new List<string>();
-                return __AbstractStyleSelectorSimpleExtensionGroup;
+                if (_AbstractStyleSelectorSimpleExtensionGroup == null)
+                    _AbstractStyleSelectorSimpleExtensionGroup = new List<string>();
+                return _AbstractStyleSelectorSimpleExtensionGroup;
             }
-            set { __AbstractStyleSelectorSimpleExtensionGroup = value; }
+            set { _AbstractStyleSelectorSimpleExtensionGroup = value; }
         }
 
         [XmlElement(Type = typeof (AbstractStyleSelectorObjectExtensionGroup),
@@ -67,11 +67,11 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (__AbstractStyleSelectorObjectExtensionGroup == null)
-                    __AbstractStyleSelectorObjectExtensionGroup = new List<AbstractStyleSelectorObjectExtensionGroup>();
-                return __AbstractStyleSelectorObjectExtensionGroup;
+                if (_AbstractStyleSelectorObjectExtensionGroup == null)
+                    _AbstractStyleSelectorObjectExtensionGroup = new List<AbstractStyleSelectorObjectExtensionGroup>();
+                return _AbstractStyleSelectorObjectExtensionGroup;
             }
-            set { __AbstractStyleSelectorObjectExtensionGroup = value; }
+            set { _AbstractStyleSelectorObjectExtensionGroup = value; }
         }
 
         public new void MakeSchemaCompliant()

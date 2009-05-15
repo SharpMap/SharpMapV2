@@ -21,38 +21,38 @@ namespace SharpMap.Entities.xAL
     [XmlType(TypeName = "LargeMailUserIdentifier", Namespace = Declarations.SchemaVersion), Serializable]
     public class LargeMailUserIdentifier
     {
-        [XmlIgnore] private string __Code;
-        [XmlIgnore] private string __Indicator;
-        [XmlIgnore] private string __Type;
-        [XmlIgnore] private string __Value;
+        [XmlIgnore] private string _Code;
+        [XmlIgnore] private string _Indicator;
+        [XmlIgnore] private string _Type;
+        [XmlIgnore] private string _Value;
         [XmlAnyAttribute] public XmlAttribute[] AnyAttr;
 
         [XmlAttribute(AttributeName = "Type", DataType = "string")]
         public string Type
         {
-            get { return __Type; }
-            set { __Type = value; }
+            get { return _Type; }
+            set { _Type = value; }
         }
 
         [XmlAttribute(AttributeName = "Indicator")]
         public string Indicator
         {
-            get { return __Indicator; }
-            set { __Indicator = value; }
+            get { return _Indicator; }
+            set { _Indicator = value; }
         }
 
         [XmlAttribute(AttributeName = "Code")]
         public string Code
         {
-            get { return __Code; }
-            set { __Code = value; }
+            get { return _Code; }
+            set { _Code = value; }
         }
 
         [XmlText(DataType = "string")]
         public string Value
         {
-            get { return __Value; }
-            set { __Value = value; }
+            get { return _Value; }
+            set { _Value = value; }
         }
 
         public void MakeSchemaCompliant()

@@ -43,10 +43,10 @@ namespace SharpMap.Entities.Ogc.Kml
     [XmlInclude(typeof (ViewVolumeType))]
     public class StyleMapType : AbstractStyleSelectorType
     {
-        [XmlIgnore] private List<Pair> __Pair;
-        [XmlIgnore] private List<StyleMapObjectExtensionGroup> __StyleMapObjectExtensionGroup;
+        [XmlIgnore] private List<Pair> _Pair;
+        [XmlIgnore] private List<StyleMapObjectExtensionGroup> _StyleMapObjectExtensionGroup;
 
-        [XmlIgnore] private List<string> __StyleMapSimpleExtensionGroup;
+        [XmlIgnore] private List<string> _StyleMapSimpleExtensionGroup;
 
         [XmlElement(Type = typeof (Pair), ElementName = "Pair", IsNullable = false, Form = XmlSchemaForm.Qualified,
             Namespace = Declarations.SchemaVersion)]
@@ -54,10 +54,10 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (__Pair == null) __Pair = new List<Pair>();
-                return __Pair;
+                if (_Pair == null) _Pair = new List<Pair>();
+                return _Pair;
             }
-            set { __Pair = value; }
+            set { _Pair = value; }
         }
 
         [XmlElement(Type = typeof (string), ElementName = "StyleMapSimpleExtensionGroup", IsNullable = false,
@@ -66,10 +66,10 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (__StyleMapSimpleExtensionGroup == null) __StyleMapSimpleExtensionGroup = new List<string>();
-                return __StyleMapSimpleExtensionGroup;
+                if (_StyleMapSimpleExtensionGroup == null) _StyleMapSimpleExtensionGroup = new List<string>();
+                return _StyleMapSimpleExtensionGroup;
             }
-            set { __StyleMapSimpleExtensionGroup = value; }
+            set { _StyleMapSimpleExtensionGroup = value; }
         }
 
         [XmlElement(Type = typeof (StyleMapObjectExtensionGroup), ElementName = "StyleMapObjectExtensionGroup",
@@ -78,11 +78,11 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (__StyleMapObjectExtensionGroup == null)
-                    __StyleMapObjectExtensionGroup = new List<StyleMapObjectExtensionGroup>();
-                return __StyleMapObjectExtensionGroup;
+                if (_StyleMapObjectExtensionGroup == null)
+                    _StyleMapObjectExtensionGroup = new List<StyleMapObjectExtensionGroup>();
+                return _StyleMapObjectExtensionGroup;
             }
-            set { __StyleMapObjectExtensionGroup = value; }
+            set { _StyleMapObjectExtensionGroup = value; }
         }
 
         public new void MakeSchemaCompliant()

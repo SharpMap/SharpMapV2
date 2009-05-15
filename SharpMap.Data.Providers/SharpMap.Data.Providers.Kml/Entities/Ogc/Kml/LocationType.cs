@@ -43,17 +43,17 @@ namespace SharpMap.Entities.Ogc.Kml
     [XmlInclude(typeof (ViewVolumeType))]
     public class LocationType : AbstractObjectType
     {
-        [XmlIgnore] private double __altitude;
+        [XmlIgnore] private double _altitude;
 
-        [XmlIgnore] public bool __altitudeSpecified;
-        [XmlIgnore] private double __latitude;
+        [XmlIgnore] public bool _altitudeSpecified;
+        [XmlIgnore] private double _latitude;
 
-        [XmlIgnore] public bool __latitudeSpecified;
-        [XmlIgnore] private List<LocationObjectExtensionGroup> __LocationObjectExtensionGroup;
-        [XmlIgnore] private List<string> __LocationSimpleExtensionGroup;
-        [XmlIgnore] private double __longitude;
+        [XmlIgnore] public bool _latitudeSpecified;
+        [XmlIgnore] private List<LocationObjectExtensionGroup> _LocationObjectExtensionGroup;
+        [XmlIgnore] private List<string> _LocationSimpleExtensionGroup;
+        [XmlIgnore] private double _longitude;
 
-        [XmlIgnore] public bool __longitudeSpecified;
+        [XmlIgnore] public bool _longitudeSpecified;
 
         public LocationType()
         {
@@ -67,11 +67,11 @@ namespace SharpMap.Entities.Ogc.Kml
             Namespace = Declarations.SchemaVersion)]
         public double longitude
         {
-            get { return __longitude; }
+            get { return _longitude; }
             set
             {
-                __longitude = value;
-                __longitudeSpecified = true;
+                _longitude = value;
+                _longitudeSpecified = true;
             }
         }
 
@@ -80,11 +80,11 @@ namespace SharpMap.Entities.Ogc.Kml
             Namespace = Declarations.SchemaVersion)]
         public double latitude
         {
-            get { return __latitude; }
+            get { return _latitude; }
             set
             {
-                __latitude = value;
-                __latitudeSpecified = true;
+                _latitude = value;
+                _latitudeSpecified = true;
             }
         }
 
@@ -93,11 +93,11 @@ namespace SharpMap.Entities.Ogc.Kml
             Namespace = Declarations.SchemaVersion)]
         public double altitude
         {
-            get { return __altitude; }
+            get { return _altitude; }
             set
             {
-                __altitude = value;
-                __altitudeSpecified = true;
+                _altitude = value;
+                _altitudeSpecified = true;
             }
         }
 
@@ -107,10 +107,10 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (__LocationSimpleExtensionGroup == null) __LocationSimpleExtensionGroup = new List<string>();
-                return __LocationSimpleExtensionGroup;
+                if (_LocationSimpleExtensionGroup == null) _LocationSimpleExtensionGroup = new List<string>();
+                return _LocationSimpleExtensionGroup;
             }
-            set { __LocationSimpleExtensionGroup = value; }
+            set { _LocationSimpleExtensionGroup = value; }
         }
 
         [XmlElement(Type = typeof (LocationObjectExtensionGroup), ElementName = "LocationObjectExtensionGroup",
@@ -119,11 +119,11 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (__LocationObjectExtensionGroup == null)
-                    __LocationObjectExtensionGroup = new List<LocationObjectExtensionGroup>();
-                return __LocationObjectExtensionGroup;
+                if (_LocationObjectExtensionGroup == null)
+                    _LocationObjectExtensionGroup = new List<LocationObjectExtensionGroup>();
+                return _LocationObjectExtensionGroup;
             }
-            set { __LocationObjectExtensionGroup = value; }
+            set { _LocationObjectExtensionGroup = value; }
         }
 
         public new void MakeSchemaCompliant()

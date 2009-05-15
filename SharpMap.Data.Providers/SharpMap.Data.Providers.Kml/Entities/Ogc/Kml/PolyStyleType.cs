@@ -43,18 +43,18 @@ namespace SharpMap.Entities.Ogc.Kml
     [XmlInclude(typeof (ViewVolumeType))]
     public class PolyStyleType : AbstractColorStyleType
     {
-        [XmlIgnore] private bool __fill;
+        [XmlIgnore] private bool _fill;
 
-        [XmlIgnore] public bool __fillSpecified;
-
-
-        [XmlIgnore] private bool __outline;
-
-        [XmlIgnore] public bool __outlineSpecified;
-        [XmlIgnore] private List<PolyStyleObjectExtensionGroup> __PolyStyleObjectExtensionGroup;
+        [XmlIgnore] public bool _fillSpecified;
 
 
-        [XmlIgnore] private List<string> __PolyStyleSimpleExtensionGroup;
+        [XmlIgnore] private bool _outline;
+
+        [XmlIgnore] public bool _outlineSpecified;
+        [XmlIgnore] private List<PolyStyleObjectExtensionGroup> _PolyStyleObjectExtensionGroup;
+
+
+        [XmlIgnore] private List<string> _PolyStyleSimpleExtensionGroup;
 
         public PolyStyleType()
         {
@@ -66,11 +66,11 @@ namespace SharpMap.Entities.Ogc.Kml
             Namespace = Declarations.SchemaVersion)]
         public bool fill
         {
-            get { return __fill; }
+            get { return _fill; }
             set
             {
-                __fill = value;
-                __fillSpecified = true;
+                _fill = value;
+                _fillSpecified = true;
             }
         }
 
@@ -78,11 +78,11 @@ namespace SharpMap.Entities.Ogc.Kml
             Namespace = Declarations.SchemaVersion)]
         public bool outline
         {
-            get { return __outline; }
+            get { return _outline; }
             set
             {
-                __outline = value;
-                __outlineSpecified = true;
+                _outline = value;
+                _outlineSpecified = true;
             }
         }
 
@@ -92,10 +92,10 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (__PolyStyleSimpleExtensionGroup == null) __PolyStyleSimpleExtensionGroup = new List<string>();
-                return __PolyStyleSimpleExtensionGroup;
+                if (_PolyStyleSimpleExtensionGroup == null) _PolyStyleSimpleExtensionGroup = new List<string>();
+                return _PolyStyleSimpleExtensionGroup;
             }
-            set { __PolyStyleSimpleExtensionGroup = value; }
+            set { _PolyStyleSimpleExtensionGroup = value; }
         }
 
         [XmlElement(Type = typeof (PolyStyleObjectExtensionGroup), ElementName = "PolyStyleObjectExtensionGroup",
@@ -104,11 +104,11 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (__PolyStyleObjectExtensionGroup == null)
-                    __PolyStyleObjectExtensionGroup = new List<PolyStyleObjectExtensionGroup>();
-                return __PolyStyleObjectExtensionGroup;
+                if (_PolyStyleObjectExtensionGroup == null)
+                    _PolyStyleObjectExtensionGroup = new List<PolyStyleObjectExtensionGroup>();
+                return _PolyStyleObjectExtensionGroup;
             }
-            set { __PolyStyleObjectExtensionGroup = value; }
+            set { _PolyStyleObjectExtensionGroup = value; }
         }
 
         public new void MakeSchemaCompliant()

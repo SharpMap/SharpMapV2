@@ -23,17 +23,17 @@ namespace SharpMap.Entities.xAL
     [XmlType(TypeName = "PostalServiceElements", Namespace = Declarations.SchemaVersion), Serializable]
     public class PostalServiceElements
     {
-        [XmlIgnore] private List<AddressIdentifier> __AddressIdentifier;
-        [XmlIgnore] private AddressLatitude __AddressLatitude;
-        [XmlIgnore] private AddressLatitudeDirection __AddressLatitudeDirection;
-        [XmlIgnore] private AddressLongitude __AddressLongitude;
-        [XmlIgnore] private AddressLongitudeDirection __AddressLongitudeDirection;
-        [XmlIgnore] private Barcode __Barcode;
-        [XmlIgnore] private EndorsementLineCode __EndorsementLineCode;
-        [XmlIgnore] private KeyLineCode __KeyLineCode;
-        [XmlIgnore] private SortingCode __SortingCode;
-        [XmlIgnore] private List<SupplementaryPostalServiceData> __SupplementaryPostalServiceData;
-        [XmlIgnore] private string __Type;
+        [XmlIgnore] private List<AddressIdentifier> _AddressIdentifier;
+        [XmlIgnore] private AddressLatitude _AddressLatitude;
+        [XmlIgnore] private AddressLatitudeDirection _AddressLatitudeDirection;
+        [XmlIgnore] private AddressLongitude _AddressLongitude;
+        [XmlIgnore] private AddressLongitudeDirection _AddressLongitudeDirection;
+        [XmlIgnore] private Barcode _Barcode;
+        [XmlIgnore] private EndorsementLineCode _EndorsementLineCode;
+        [XmlIgnore] private KeyLineCode _KeyLineCode;
+        [XmlIgnore] private SortingCode _SortingCode;
+        [XmlIgnore] private List<SupplementaryPostalServiceData> _SupplementaryPostalServiceData;
+        [XmlIgnore] private string _Type;
         [XmlAnyElement] public XmlElement[] Any;
 
         [XmlAnyAttribute] public XmlAttribute[] AnyAttr;
@@ -41,8 +41,8 @@ namespace SharpMap.Entities.xAL
         [XmlAttribute(AttributeName = "Type")]
         public string Type
         {
-            get { return __Type; }
-            set { __Type = value; }
+            get { return _Type; }
+            set { _Type = value; }
         }
 
         [XmlElement(Type = typeof (AddressIdentifier), ElementName = "AddressIdentifier", IsNullable = false,
@@ -51,106 +51,74 @@ namespace SharpMap.Entities.xAL
         {
             get
             {
-                if (__AddressIdentifier == null) __AddressIdentifier = new List<AddressIdentifier>();
-                return __AddressIdentifier;
+                if (_AddressIdentifier == null) _AddressIdentifier = new List<AddressIdentifier>();
+                return _AddressIdentifier;
             }
-            set { __AddressIdentifier = value; }
+            set { _AddressIdentifier = value; }
         }
 
         [XmlElement(Type = typeof (EndorsementLineCode), ElementName = "EndorsementLineCode", IsNullable = false,
             Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public EndorsementLineCode EndorsementLineCode
         {
-            get
-            {
-                
-                return __EndorsementLineCode;
-            }
-            set { __EndorsementLineCode = value; }
+            get { return _EndorsementLineCode; }
+            set { _EndorsementLineCode = value; }
         }
 
         [XmlElement(Type = typeof (KeyLineCode), ElementName = "KeyLineCode", IsNullable = false,
             Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public KeyLineCode KeyLineCode
         {
-            get
-            {
-                
-                return __KeyLineCode;
-            }
-            set { __KeyLineCode = value; }
+            get { return _KeyLineCode; }
+            set { _KeyLineCode = value; }
         }
 
         [XmlElement(Type = typeof (Barcode), ElementName = "Barcode", IsNullable = false, Form = XmlSchemaForm.Qualified
             , Namespace = Declarations.SchemaVersion)]
         public Barcode Barcode
         {
-            get
-            {
-                
-                return __Barcode;
-            }
-            set { __Barcode = value; }
+            get { return _Barcode; }
+            set { _Barcode = value; }
         }
 
         [XmlElement(Type = typeof (SortingCode), ElementName = "SortingCode", IsNullable = false,
             Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public SortingCode SortingCode
         {
-            get
-            {
-                
-                return __SortingCode;
-            }
-            set { __SortingCode = value; }
+            get { return _SortingCode; }
+            set { _SortingCode = value; }
         }
 
         [XmlElement(Type = typeof (AddressLatitude), ElementName = "AddressLatitude", IsNullable = false,
             Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public AddressLatitude AddressLatitude
         {
-            get
-            {
-                
-                return __AddressLatitude;
-            }
-            set { __AddressLatitude = value; }
+            get { return _AddressLatitude; }
+            set { _AddressLatitude = value; }
         }
 
         [XmlElement(Type = typeof (AddressLatitudeDirection), ElementName = "AddressLatitudeDirection",
             IsNullable = false, Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public AddressLatitudeDirection AddressLatitudeDirection
         {
-            get
-            {
-                
-                return __AddressLatitudeDirection;
-            }
-            set { __AddressLatitudeDirection = value; }
+            get { return _AddressLatitudeDirection; }
+            set { _AddressLatitudeDirection = value; }
         }
 
         [XmlElement(Type = typeof (AddressLongitude), ElementName = "AddressLongitude", IsNullable = false,
             Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public AddressLongitude AddressLongitude
         {
-            get
-            {
-                
-                return __AddressLongitude;
-            }
-            set { __AddressLongitude = value; }
+            get { return _AddressLongitude; }
+            set { _AddressLongitude = value; }
         }
 
         [XmlElement(Type = typeof (AddressLongitudeDirection), ElementName = "AddressLongitudeDirection",
             IsNullable = false, Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public AddressLongitudeDirection AddressLongitudeDirection
         {
-            get
-            {
-                
-                return __AddressLongitudeDirection;
-            }
-            set { __AddressLongitudeDirection = value; }
+            get { return _AddressLongitudeDirection; }
+            set { _AddressLongitudeDirection = value; }
         }
 
         [XmlElement(Type = typeof (SupplementaryPostalServiceData), ElementName = "SupplementaryPostalServiceData",
@@ -159,11 +127,11 @@ namespace SharpMap.Entities.xAL
         {
             get
             {
-                if (__SupplementaryPostalServiceData == null)
-                    __SupplementaryPostalServiceData = new List<SupplementaryPostalServiceData>();
-                return __SupplementaryPostalServiceData;
+                if (_SupplementaryPostalServiceData == null)
+                    _SupplementaryPostalServiceData = new List<SupplementaryPostalServiceData>();
+                return _SupplementaryPostalServiceData;
             }
-            set { __SupplementaryPostalServiceData = value; }
+            set { _SupplementaryPostalServiceData = value; }
         }
 
         public void MakeSchemaCompliant()

@@ -20,9 +20,9 @@ namespace SharpMap.Entities.Ogc.Kml
     [XmlType(TypeName = "SimpleDataType", Namespace = Declarations.SchemaVersion), Serializable]
     public class SimpleDataType
     {
-        [XmlIgnore] private string __name;
+        [XmlIgnore] private string _name;
 
-        [XmlIgnore] private string __Value;
+        [XmlIgnore] private string _Value;
 
         public SimpleDataType()
         {
@@ -32,15 +32,15 @@ namespace SharpMap.Entities.Ogc.Kml
         [XmlAttribute(AttributeName = "name", DataType = "string")]
         public string name
         {
-            get { return __name; }
-            set { __name = value; }
+            get { return _name; }
+            set { _name = value; }
         }
 
         [XmlText(DataType = "string")]
         public string Value
         {
-            get { return __Value; }
-            set { __Value = value; }
+            get { return _Value; }
+            set { _Value = value; }
         }
 
         public void MakeSchemaCompliant()

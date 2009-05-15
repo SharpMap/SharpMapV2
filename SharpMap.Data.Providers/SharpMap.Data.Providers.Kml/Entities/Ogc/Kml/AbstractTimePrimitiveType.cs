@@ -43,8 +43,8 @@ namespace SharpMap.Entities.Ogc.Kml
     [XmlInclude(typeof (ViewVolumeType))]
     public abstract class AbstractTimePrimitiveType : AbstractObjectType
     {
-        [XmlIgnore] private List<AbstractTimePrimitiveObjectExtensionGroup> __AbstractTimePrimitiveObjectExtensionGroup;
-        [XmlIgnore] private List<string> __AbstractTimePrimitiveSimpleExtensionGroup;
+        [XmlIgnore] private List<AbstractTimePrimitiveObjectExtensionGroup> _AbstractTimePrimitiveObjectExtensionGroup;
+        [XmlIgnore] private List<string> _AbstractTimePrimitiveSimpleExtensionGroup;
 
         [XmlElement(Type = typeof (string), ElementName = "AbstractTimePrimitiveSimpleExtensionGroup",
             IsNullable = false, Form = XmlSchemaForm.Qualified,
@@ -53,11 +53,11 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (__AbstractTimePrimitiveSimpleExtensionGroup == null)
-                    __AbstractTimePrimitiveSimpleExtensionGroup = new List<string>();
-                return __AbstractTimePrimitiveSimpleExtensionGroup;
+                if (_AbstractTimePrimitiveSimpleExtensionGroup == null)
+                    _AbstractTimePrimitiveSimpleExtensionGroup = new List<string>();
+                return _AbstractTimePrimitiveSimpleExtensionGroup;
             }
-            set { __AbstractTimePrimitiveSimpleExtensionGroup = value; }
+            set { _AbstractTimePrimitiveSimpleExtensionGroup = value; }
         }
 
         [XmlElement(Type = typeof (AbstractTimePrimitiveObjectExtensionGroup),
@@ -67,11 +67,11 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (__AbstractTimePrimitiveObjectExtensionGroup == null)
-                    __AbstractTimePrimitiveObjectExtensionGroup = new List<AbstractTimePrimitiveObjectExtensionGroup>();
-                return __AbstractTimePrimitiveObjectExtensionGroup;
+                if (_AbstractTimePrimitiveObjectExtensionGroup == null)
+                    _AbstractTimePrimitiveObjectExtensionGroup = new List<AbstractTimePrimitiveObjectExtensionGroup>();
+                return _AbstractTimePrimitiveObjectExtensionGroup;
             }
-            set { __AbstractTimePrimitiveObjectExtensionGroup = value; }
+            set { _AbstractTimePrimitiveObjectExtensionGroup = value; }
         }
 
         public new void MakeSchemaCompliant()

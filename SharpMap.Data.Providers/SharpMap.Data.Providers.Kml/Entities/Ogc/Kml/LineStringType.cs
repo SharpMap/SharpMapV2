@@ -43,18 +43,18 @@ namespace SharpMap.Entities.Ogc.Kml
     [XmlInclude(typeof (ViewVolumeType))]
     public class LineStringType : AbstractGeometryType
     {
-        [XmlIgnore] private string __altitudeModeGroup;
-        [XmlIgnore] private string __coordinates;
-        [XmlIgnore] private bool __extrude;
+        [XmlIgnore] private string _altitudeModeGroup;
+        [XmlIgnore] private string _coordinates;
+        [XmlIgnore] private bool _extrude;
 
-        [XmlIgnore] public bool __extrudeSpecified;
-        [XmlIgnore] private List<LineStringObjectExtensionGroup> __LineStringObjectExtensionGroup;
-        [XmlIgnore] private List<string> __LineStringSimpleExtensionGroup;
+        [XmlIgnore] public bool _extrudeSpecified;
+        [XmlIgnore] private List<LineStringObjectExtensionGroup> _LineStringObjectExtensionGroup;
+        [XmlIgnore] private List<string> _LineStringSimpleExtensionGroup;
 
 
-        [XmlIgnore] private bool __tessellate;
+        [XmlIgnore] private bool _tessellate;
 
-        [XmlIgnore] public bool __tessellateSpecified;
+        [XmlIgnore] public bool _tessellateSpecified;
 
         public LineStringType()
         {
@@ -66,11 +66,11 @@ namespace SharpMap.Entities.Ogc.Kml
             Namespace = Declarations.SchemaVersion)]
         public bool extrude
         {
-            get { return __extrude; }
+            get { return _extrude; }
             set
             {
-                __extrude = value;
-                __extrudeSpecified = true;
+                _extrude = value;
+                _extrudeSpecified = true;
             }
         }
 
@@ -79,11 +79,11 @@ namespace SharpMap.Entities.Ogc.Kml
             , Namespace = Declarations.SchemaVersion)]
         public bool tessellate
         {
-            get { return __tessellate; }
+            get { return _tessellate; }
             set
             {
-                __tessellate = value;
-                __tessellateSpecified = true;
+                _tessellate = value;
+                _tessellateSpecified = true;
             }
         }
 
@@ -91,16 +91,16 @@ namespace SharpMap.Entities.Ogc.Kml
             Namespace = Declarations.SchemaVersion)]
         public string altitudeModeGroup
         {
-            get { return __altitudeModeGroup; }
-            set { __altitudeModeGroup = value; }
+            get { return _altitudeModeGroup; }
+            set { _altitudeModeGroup = value; }
         }
 
         [XmlElement(ElementName = "coordinates", IsNullable = false, Form = XmlSchemaForm.Qualified,
             Namespace = Declarations.SchemaVersion)]
         public string coordinates
         {
-            get { return __coordinates; }
-            set { __coordinates = value; }
+            get { return _coordinates; }
+            set { _coordinates = value; }
         }
 
         [XmlElement(Type = typeof (string), ElementName = "LineStringSimpleExtensionGroup", IsNullable = false,
@@ -109,10 +109,10 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (__LineStringSimpleExtensionGroup == null) __LineStringSimpleExtensionGroup = new List<string>();
-                return __LineStringSimpleExtensionGroup;
+                if (_LineStringSimpleExtensionGroup == null) _LineStringSimpleExtensionGroup = new List<string>();
+                return _LineStringSimpleExtensionGroup;
             }
-            set { __LineStringSimpleExtensionGroup = value; }
+            set { _LineStringSimpleExtensionGroup = value; }
         }
 
         [XmlElement(Type = typeof (LineStringObjectExtensionGroup), ElementName = "LineStringObjectExtensionGroup",
@@ -121,11 +121,11 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (__LineStringObjectExtensionGroup == null)
-                    __LineStringObjectExtensionGroup = new List<LineStringObjectExtensionGroup>();
-                return __LineStringObjectExtensionGroup;
+                if (_LineStringObjectExtensionGroup == null)
+                    _LineStringObjectExtensionGroup = new List<LineStringObjectExtensionGroup>();
+                return _LineStringObjectExtensionGroup;
             }
-            set { __LineStringObjectExtensionGroup = value; }
+            set { _LineStringObjectExtensionGroup = value; }
         }
 
         public new void MakeSchemaCompliant()

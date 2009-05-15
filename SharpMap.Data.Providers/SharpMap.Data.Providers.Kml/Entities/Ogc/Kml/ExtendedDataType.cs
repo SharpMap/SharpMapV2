@@ -23,9 +23,9 @@ namespace SharpMap.Entities.Ogc.Kml
     [XmlType(TypeName = "ExtendedDataType", Namespace = Declarations.SchemaVersion), Serializable]
     public class ExtendedDataType
     {
-        [XmlIgnore] private List<Data> __Data;
+        [XmlIgnore] private List<Data> _Data;
 
-        [XmlIgnore] private List<SchemaData> __SchemaData;
+        [XmlIgnore] private List<SchemaData> _SchemaData;
 
         [XmlAnyElement] public XmlElement[] Any;
 
@@ -35,10 +35,10 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (__Data == null) __Data = new List<Data>();
-                return __Data;
+                if (_Data == null) _Data = new List<Data>();
+                return _Data;
             }
-            set { __Data = value; }
+            set { _Data = value; }
         }
 
         [XmlElement(Type = typeof (SchemaData), ElementName = "SchemaData", IsNullable = false,
@@ -47,10 +47,10 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (__SchemaData == null) __SchemaData = new List<SchemaData>();
-                return __SchemaData;
+                if (_SchemaData == null) _SchemaData = new List<SchemaData>();
+                return _SchemaData;
             }
-            set { __SchemaData = value; }
+            set { _SchemaData = value; }
         }
 
         public void MakeSchemaCompliant()

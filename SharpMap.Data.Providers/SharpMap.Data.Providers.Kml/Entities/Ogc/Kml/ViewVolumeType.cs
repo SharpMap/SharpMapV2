@@ -43,27 +43,27 @@ namespace SharpMap.Entities.Ogc.Kml
     [XmlInclude(typeof (ViewVolumeType))]
     public class ViewVolumeType : AbstractObjectType
     {
-        [XmlIgnore] private double __bottomFov;
+        [XmlIgnore] private double _bottomFov;
 
-        [XmlIgnore] public bool __bottomFovSpecified;
-        [XmlIgnore] private double __leftFov;
+        [XmlIgnore] public bool _bottomFovSpecified;
+        [XmlIgnore] private double _leftFov;
 
-        [XmlIgnore] public bool __leftFovSpecified;
-        [XmlIgnore] private double __near;
+        [XmlIgnore] public bool _leftFovSpecified;
+        [XmlIgnore] private double _near;
 
-        [XmlIgnore] public bool __nearSpecified;
-
-
-        [XmlIgnore] private double __rightFov;
-
-        [XmlIgnore] public bool __rightFovSpecified;
+        [XmlIgnore] public bool _nearSpecified;
 
 
-        [XmlIgnore] private double __topFov;
+        [XmlIgnore] private double _rightFov;
 
-        [XmlIgnore] public bool __topFovSpecified;
-        [XmlIgnore] private List<ViewVolumeObjectExtensionGroup> __ViewVolumeObjectExtensionGroup;
-        [XmlIgnore] private List<string> __ViewVolumeSimpleExtensionGroup;
+        [XmlIgnore] public bool _rightFovSpecified;
+
+
+        [XmlIgnore] private double _topFov;
+
+        [XmlIgnore] public bool _topFovSpecified;
+        [XmlIgnore] private List<ViewVolumeObjectExtensionGroup> _ViewVolumeObjectExtensionGroup;
+        [XmlIgnore] private List<string> _ViewVolumeSimpleExtensionGroup;
 
         public ViewVolumeType()
         {
@@ -78,11 +78,11 @@ namespace SharpMap.Entities.Ogc.Kml
             Namespace = Declarations.SchemaVersion)]
         public double leftFov
         {
-            get { return __leftFov; }
+            get { return _leftFov; }
             set
             {
-                __leftFov = value;
-                __leftFovSpecified = true;
+                _leftFov = value;
+                _leftFovSpecified = true;
             }
         }
 
@@ -90,11 +90,11 @@ namespace SharpMap.Entities.Ogc.Kml
             Namespace = Declarations.SchemaVersion)]
         public double rightFov
         {
-            get { return __rightFov; }
+            get { return _rightFov; }
             set
             {
-                __rightFov = value;
-                __rightFovSpecified = true;
+                _rightFov = value;
+                _rightFovSpecified = true;
             }
         }
 
@@ -102,11 +102,11 @@ namespace SharpMap.Entities.Ogc.Kml
             Namespace = Declarations.SchemaVersion)]
         public double bottomFov
         {
-            get { return __bottomFov; }
+            get { return _bottomFov; }
             set
             {
-                __bottomFov = value;
-                __bottomFovSpecified = true;
+                _bottomFov = value;
+                _bottomFovSpecified = true;
             }
         }
 
@@ -115,11 +115,11 @@ namespace SharpMap.Entities.Ogc.Kml
             Namespace = Declarations.SchemaVersion)]
         public double topFov
         {
-            get { return __topFov; }
+            get { return _topFov; }
             set
             {
-                __topFov = value;
-                __topFovSpecified = true;
+                _topFov = value;
+                _topFovSpecified = true;
             }
         }
 
@@ -128,11 +128,11 @@ namespace SharpMap.Entities.Ogc.Kml
             Namespace = Declarations.SchemaVersion)]
         public double near
         {
-            get { return __near; }
+            get { return _near; }
             set
             {
-                __near = value;
-                __nearSpecified = true;
+                _near = value;
+                _nearSpecified = true;
             }
         }
 
@@ -142,10 +142,10 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (__ViewVolumeSimpleExtensionGroup == null) __ViewVolumeSimpleExtensionGroup = new List<string>();
-                return __ViewVolumeSimpleExtensionGroup;
+                if (_ViewVolumeSimpleExtensionGroup == null) _ViewVolumeSimpleExtensionGroup = new List<string>();
+                return _ViewVolumeSimpleExtensionGroup;
             }
-            set { __ViewVolumeSimpleExtensionGroup = value; }
+            set { _ViewVolumeSimpleExtensionGroup = value; }
         }
 
         [XmlElement(Type = typeof (ViewVolumeObjectExtensionGroup), ElementName = "ViewVolumeObjectExtensionGroup",
@@ -154,11 +154,11 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (__ViewVolumeObjectExtensionGroup == null)
-                    __ViewVolumeObjectExtensionGroup = new List<ViewVolumeObjectExtensionGroup>();
-                return __ViewVolumeObjectExtensionGroup;
+                if (_ViewVolumeObjectExtensionGroup == null)
+                    _ViewVolumeObjectExtensionGroup = new List<ViewVolumeObjectExtensionGroup>();
+                return _ViewVolumeObjectExtensionGroup;
             }
-            set { __ViewVolumeObjectExtensionGroup = value; }
+            set { _ViewVolumeObjectExtensionGroup = value; }
         }
 
         public new void MakeSchemaCompliant()

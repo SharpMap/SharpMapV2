@@ -26,7 +26,7 @@ namespace SharpMap.Entities.Ogc.Kml
     [XmlInclude(typeof (DocumentType))]
     public class CreateType
     {
-        [XmlIgnore] private List<AbstractContainerGroup> __AbstractContainerGroup;
+        [XmlIgnore] private List<AbstractContainerGroup> _AbstractContainerGroup;
 
         [XmlIgnore]
         public AbstractContainerGroup this[int index]
@@ -46,10 +46,10 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (__AbstractContainerGroup == null) __AbstractContainerGroup = new List<AbstractContainerGroup>();
-                return __AbstractContainerGroup;
+                if (_AbstractContainerGroup == null) _AbstractContainerGroup = new List<AbstractContainerGroup>();
+                return _AbstractContainerGroup;
             }
-            set { __AbstractContainerGroup = value; }
+            set { _AbstractContainerGroup = value; }
         }
 
         [DispId(-4)]

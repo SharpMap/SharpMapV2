@@ -43,19 +43,19 @@ namespace SharpMap.Entities.Ogc.Kml
     [XmlInclude(typeof (ViewVolumeType))]
     public class OrientationType : AbstractObjectType
     {
-        [XmlIgnore] private double __heading;
+        [XmlIgnore] private double _heading;
 
-        [XmlIgnore] public bool __headingSpecified;
-        [XmlIgnore] private List<OrientationObjectExtensionGroup> __OrientationObjectExtensionGroup;
-        [XmlIgnore] private List<string> __OrientationSimpleExtensionGroup;
-        [XmlIgnore] private double __roll;
+        [XmlIgnore] public bool _headingSpecified;
+        [XmlIgnore] private List<OrientationObjectExtensionGroup> _OrientationObjectExtensionGroup;
+        [XmlIgnore] private List<string> _OrientationSimpleExtensionGroup;
+        [XmlIgnore] private double _roll;
 
-        [XmlIgnore] public bool __rollSpecified;
+        [XmlIgnore] public bool _rollSpecified;
 
 
-        [XmlIgnore] private double __tilt;
+        [XmlIgnore] private double _tilt;
 
-        [XmlIgnore] public bool __tiltSpecified;
+        [XmlIgnore] public bool _tiltSpecified;
 
         public OrientationType()
         {
@@ -68,11 +68,11 @@ namespace SharpMap.Entities.Ogc.Kml
             Namespace = Declarations.SchemaVersion)]
         public double heading
         {
-            get { return __heading; }
+            get { return _heading; }
             set
             {
-                __heading = value;
-                __headingSpecified = true;
+                _heading = value;
+                _headingSpecified = true;
             }
         }
 
@@ -81,11 +81,11 @@ namespace SharpMap.Entities.Ogc.Kml
             Namespace = Declarations.SchemaVersion)]
         public double tilt
         {
-            get { return __tilt; }
+            get { return _tilt; }
             set
             {
-                __tilt = value;
-                __tiltSpecified = true;
+                _tilt = value;
+                _tiltSpecified = true;
             }
         }
 
@@ -94,11 +94,11 @@ namespace SharpMap.Entities.Ogc.Kml
             Namespace = Declarations.SchemaVersion)]
         public double roll
         {
-            get { return __roll; }
+            get { return _roll; }
             set
             {
-                __roll = value;
-                __rollSpecified = true;
+                _roll = value;
+                _rollSpecified = true;
             }
         }
 
@@ -108,10 +108,10 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (__OrientationSimpleExtensionGroup == null) __OrientationSimpleExtensionGroup = new List<string>();
-                return __OrientationSimpleExtensionGroup;
+                if (_OrientationSimpleExtensionGroup == null) _OrientationSimpleExtensionGroup = new List<string>();
+                return _OrientationSimpleExtensionGroup;
             }
-            set { __OrientationSimpleExtensionGroup = value; }
+            set { _OrientationSimpleExtensionGroup = value; }
         }
 
         [XmlElement(Type = typeof (OrientationObjectExtensionGroup), ElementName = "OrientationObjectExtensionGroup",
@@ -120,11 +120,11 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (__OrientationObjectExtensionGroup == null)
-                    __OrientationObjectExtensionGroup = new List<OrientationObjectExtensionGroup>();
-                return __OrientationObjectExtensionGroup;
+                if (_OrientationObjectExtensionGroup == null)
+                    _OrientationObjectExtensionGroup = new List<OrientationObjectExtensionGroup>();
+                return _OrientationObjectExtensionGroup;
             }
-            set { __OrientationObjectExtensionGroup = value; }
+            set { _OrientationObjectExtensionGroup = value; }
         }
 
         public new void MakeSchemaCompliant()

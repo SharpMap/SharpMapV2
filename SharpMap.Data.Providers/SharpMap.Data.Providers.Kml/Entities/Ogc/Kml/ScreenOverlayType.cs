@@ -43,16 +43,16 @@ namespace SharpMap.Entities.Ogc.Kml
     [XmlInclude(typeof (ViewVolumeType))]
     public class ScreenOverlayType : AbstractOverlayType
     {
-        [XmlIgnore] private OverlayXY __overlayXY;
-        [XmlIgnore] private double __rotation;
+        [XmlIgnore] private OverlayXY _overlayXY;
+        [XmlIgnore] private double _rotation;
 
-        [XmlIgnore] public bool __rotationSpecified;
-        [XmlIgnore] private RotationXY __rotationXY;
-        [XmlIgnore] private List<ScreenOverlayObjectExtensionGroup> __ScreenOverlayObjectExtensionGroup;
-        [XmlIgnore] private List<string> __ScreenOverlaySimpleExtensionGroup;
+        [XmlIgnore] public bool _rotationSpecified;
+        [XmlIgnore] private RotationXY _rotationXY;
+        [XmlIgnore] private List<ScreenOverlayObjectExtensionGroup> _ScreenOverlayObjectExtensionGroup;
+        [XmlIgnore] private List<string> _ScreenOverlaySimpleExtensionGroup;
 
-        [XmlIgnore] private ScreenXY __screenXY;
-        [XmlIgnore] private Size __size;
+        [XmlIgnore] private ScreenXY _screenXY;
+        [XmlIgnore] private Size _size;
 
         public ScreenOverlayType()
         {
@@ -63,48 +63,32 @@ namespace SharpMap.Entities.Ogc.Kml
             Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public OverlayXY overlayXY
         {
-            get
-            {
-                
-                return __overlayXY;
-            }
-            set { __overlayXY = value; }
+            get { return _overlayXY; }
+            set { _overlayXY = value; }
         }
 
         [XmlElement(Type = typeof (ScreenXY), ElementName = "screenXY", IsNullable = false,
             Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public ScreenXY screenXY
         {
-            get
-            {
-                
-                return __screenXY;
-            }
-            set { __screenXY = value; }
+            get { return _screenXY; }
+            set { _screenXY = value; }
         }
 
         [XmlElement(Type = typeof (RotationXY), ElementName = "rotationXY", IsNullable = false,
             Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public RotationXY rotationXY
         {
-            get
-            {
-                
-                return __rotationXY;
-            }
-            set { __rotationXY = value; }
+            get { return _rotationXY; }
+            set { _rotationXY = value; }
         }
 
         [XmlElement(Type = typeof (Size), ElementName = "size", IsNullable = false, Form = XmlSchemaForm.Qualified,
             Namespace = Declarations.SchemaVersion)]
         public Size size
         {
-            get
-            {
-                
-                return __size;
-            }
-            set { __size = value; }
+            get { return _size; }
+            set { _size = value; }
         }
 
 
@@ -112,11 +96,11 @@ namespace SharpMap.Entities.Ogc.Kml
             Namespace = Declarations.SchemaVersion)]
         public double rotation
         {
-            get { return __rotation; }
+            get { return _rotation; }
             set
             {
-                __rotation = value;
-                __rotationSpecified = true;
+                _rotation = value;
+                _rotationSpecified = true;
             }
         }
 
@@ -126,11 +110,11 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (__ScreenOverlaySimpleExtensionGroup == null)
-                    __ScreenOverlaySimpleExtensionGroup = new List<string>();
-                return __ScreenOverlaySimpleExtensionGroup;
+                if (_ScreenOverlaySimpleExtensionGroup == null)
+                    _ScreenOverlaySimpleExtensionGroup = new List<string>();
+                return _ScreenOverlaySimpleExtensionGroup;
             }
-            set { __ScreenOverlaySimpleExtensionGroup = value; }
+            set { _ScreenOverlaySimpleExtensionGroup = value; }
         }
 
         [XmlElement(Type = typeof (ScreenOverlayObjectExtensionGroup), ElementName = "ScreenOverlayObjectExtensionGroup"
@@ -139,11 +123,11 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (__ScreenOverlayObjectExtensionGroup == null)
-                    __ScreenOverlayObjectExtensionGroup = new List<ScreenOverlayObjectExtensionGroup>();
-                return __ScreenOverlayObjectExtensionGroup;
+                if (_ScreenOverlayObjectExtensionGroup == null)
+                    _ScreenOverlayObjectExtensionGroup = new List<ScreenOverlayObjectExtensionGroup>();
+                return _ScreenOverlayObjectExtensionGroup;
             }
-            set { __ScreenOverlayObjectExtensionGroup = value; }
+            set { _ScreenOverlayObjectExtensionGroup = value; }
         }
 
         public new void MakeSchemaCompliant()

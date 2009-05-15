@@ -20,6 +20,5 @@ namespace SharpMap.Entities.Ogc.Kml
     [XmlRoot(ElementName = "rotationXY", Namespace = Declarations.SchemaVersion, IsNullable = false), Serializable]
     public class RotationXY : Vector2
     {
-
     }
 }

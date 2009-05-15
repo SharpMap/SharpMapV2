@@ -43,15 +43,15 @@ namespace SharpMap.Entities.Ogc.Kml
     [XmlInclude(typeof (ViewVolumeType))]
     public class TimeStampType : AbstractTimePrimitiveType
     {
-        [XmlIgnore] private List<TimeStampObjectExtensionGroup> __TimeStampObjectExtensionGroup;
-        [XmlIgnore] private List<string> __TimeStampSimpleExtensionGroup;
-        [XmlIgnore] private DateTime __when;
+        [XmlIgnore] private List<TimeStampObjectExtensionGroup> _TimeStampObjectExtensionGroup;
+        [XmlIgnore] private List<string> _TimeStampSimpleExtensionGroup;
+        [XmlIgnore] private DateTime _when;
 
-        [XmlIgnore] public bool __whenSpecified;
+        [XmlIgnore] public bool _whenSpecified;
 
         public TimeStampType()
         {
-            __when = DateTime.Now;
+            _when = DateTime.Now;
         }
 
 
@@ -59,22 +59,22 @@ namespace SharpMap.Entities.Ogc.Kml
             Namespace = Declarations.SchemaVersion)]
         public DateTime when
         {
-            get { return __when; }
+            get { return _when; }
             set
             {
-                __when = value;
-                __whenSpecified = true;
+                _when = value;
+                _whenSpecified = true;
             }
         }
 
         [XmlIgnore]
         public DateTime whenUtc
         {
-            get { return __when.ToUniversalTime(); }
+            get { return _when.ToUniversalTime(); }
             set
             {
-                __when = value.ToLocalTime();
-                __whenSpecified = true;
+                _when = value.ToLocalTime();
+                _whenSpecified = true;
             }
         }
 
@@ -84,10 +84,10 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (__TimeStampSimpleExtensionGroup == null) __TimeStampSimpleExtensionGroup = new List<string>();
-                return __TimeStampSimpleExtensionGroup;
+                if (_TimeStampSimpleExtensionGroup == null) _TimeStampSimpleExtensionGroup = new List<string>();
+                return _TimeStampSimpleExtensionGroup;
             }
-            set { __TimeStampSimpleExtensionGroup = value; }
+            set { _TimeStampSimpleExtensionGroup = value; }
         }
 
         [XmlElement(Type = typeof (TimeStampObjectExtensionGroup), ElementName = "TimeStampObjectExtensionGroup",
@@ -96,11 +96,11 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (__TimeStampObjectExtensionGroup == null)
-                    __TimeStampObjectExtensionGroup = new List<TimeStampObjectExtensionGroup>();
-                return __TimeStampObjectExtensionGroup;
+                if (_TimeStampObjectExtensionGroup == null)
+                    _TimeStampObjectExtensionGroup = new List<TimeStampObjectExtensionGroup>();
+                return _TimeStampObjectExtensionGroup;
             }
-            set { __TimeStampObjectExtensionGroup = value; }
+            set { _TimeStampObjectExtensionGroup = value; }
         }
 
         public new void MakeSchemaCompliant()

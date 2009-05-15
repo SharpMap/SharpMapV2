@@ -43,21 +43,21 @@ namespace SharpMap.Entities.Ogc.Kml
     [XmlInclude(typeof (ViewVolumeType))]
     public class ScaleType : AbstractObjectType
     {
-        [XmlIgnore] private List<ScaleObjectExtensionGroup> __ScaleObjectExtensionGroup;
-        [XmlIgnore] private List<string> __ScaleSimpleExtensionGroup;
-        [XmlIgnore] private double __x;
+        [XmlIgnore] private List<ScaleObjectExtensionGroup> _ScaleObjectExtensionGroup;
+        [XmlIgnore] private List<string> _ScaleSimpleExtensionGroup;
+        [XmlIgnore] private double _x;
 
-        [XmlIgnore] public bool __xSpecified;
-
-
-        [XmlIgnore] private double __y;
-
-        [XmlIgnore] public bool __ySpecified;
+        [XmlIgnore] public bool _xSpecified;
 
 
-        [XmlIgnore] private double __z;
+        [XmlIgnore] private double _y;
 
-        [XmlIgnore] public bool __zSpecified;
+        [XmlIgnore] public bool _ySpecified;
+
+
+        [XmlIgnore] private double _z;
+
+        [XmlIgnore] public bool _zSpecified;
 
         public ScaleType()
         {
@@ -70,11 +70,11 @@ namespace SharpMap.Entities.Ogc.Kml
             Namespace = Declarations.SchemaVersion)]
         public double x
         {
-            get { return __x; }
+            get { return _x; }
             set
             {
-                __x = value;
-                __xSpecified = true;
+                _x = value;
+                _xSpecified = true;
             }
         }
 
@@ -82,11 +82,11 @@ namespace SharpMap.Entities.Ogc.Kml
             Namespace = Declarations.SchemaVersion)]
         public double y
         {
-            get { return __y; }
+            get { return _y; }
             set
             {
-                __y = value;
-                __ySpecified = true;
+                _y = value;
+                _ySpecified = true;
             }
         }
 
@@ -95,11 +95,11 @@ namespace SharpMap.Entities.Ogc.Kml
             Namespace = Declarations.SchemaVersion)]
         public double z
         {
-            get { return __z; }
+            get { return _z; }
             set
             {
-                __z = value;
-                __zSpecified = true;
+                _z = value;
+                _zSpecified = true;
             }
         }
 
@@ -109,10 +109,10 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (__ScaleSimpleExtensionGroup == null) __ScaleSimpleExtensionGroup = new List<string>();
-                return __ScaleSimpleExtensionGroup;
+                if (_ScaleSimpleExtensionGroup == null) _ScaleSimpleExtensionGroup = new List<string>();
+                return _ScaleSimpleExtensionGroup;
             }
-            set { __ScaleSimpleExtensionGroup = value; }
+            set { _ScaleSimpleExtensionGroup = value; }
         }
 
         [XmlElement(Type = typeof (ScaleObjectExtensionGroup), ElementName = "ScaleObjectExtensionGroup",
@@ -121,11 +121,11 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (__ScaleObjectExtensionGroup == null)
-                    __ScaleObjectExtensionGroup = new List<ScaleObjectExtensionGroup>();
-                return __ScaleObjectExtensionGroup;
+                if (_ScaleObjectExtensionGroup == null)
+                    _ScaleObjectExtensionGroup = new List<ScaleObjectExtensionGroup>();
+                return _ScaleObjectExtensionGroup;
             }
-            set { __ScaleObjectExtensionGroup = value; }
+            set { _ScaleObjectExtensionGroup = value; }
         }
 
         public new void MakeSchemaCompliant()

@@ -43,19 +43,19 @@ namespace SharpMap.Entities.Ogc.Kml
     [XmlInclude(typeof (ViewVolumeType))]
     public class PolygonType : AbstractGeometryType
     {
-        [XmlIgnore] private string __altitudeModeGroup;
-        [XmlIgnore] private bool __extrude;
+        [XmlIgnore] private string _altitudeModeGroup;
+        [XmlIgnore] private bool _extrude;
 
-        [XmlIgnore] public bool __extrudeSpecified;
-        [XmlIgnore] private List<innerBoundaryIs> __innerBoundaryIs;
-        [XmlIgnore] private outerBoundaryIs __outerBoundaryIs;
-        [XmlIgnore] private List<PolygonObjectExtensionGroup> __PolygonObjectExtensionGroup;
-        [XmlIgnore] private List<string> __PolygonSimpleExtensionGroup;
+        [XmlIgnore] public bool _extrudeSpecified;
+        [XmlIgnore] private List<innerBoundaryIs> _innerBoundaryIs;
+        [XmlIgnore] private outerBoundaryIs _outerBoundaryIs;
+        [XmlIgnore] private List<PolygonObjectExtensionGroup> _PolygonObjectExtensionGroup;
+        [XmlIgnore] private List<string> _PolygonSimpleExtensionGroup;
 
 
-        [XmlIgnore] private bool __tessellate;
+        [XmlIgnore] private bool _tessellate;
 
-        [XmlIgnore] public bool __tessellateSpecified;
+        [XmlIgnore] public bool _tessellateSpecified;
 
         public PolygonType()
         {
@@ -67,11 +67,11 @@ namespace SharpMap.Entities.Ogc.Kml
             Namespace = Declarations.SchemaVersion)]
         public bool extrude
         {
-            get { return __extrude; }
+            get { return _extrude; }
             set
             {
-                __extrude = value;
-                __extrudeSpecified = true;
+                _extrude = value;
+                _extrudeSpecified = true;
             }
         }
 
@@ -80,11 +80,11 @@ namespace SharpMap.Entities.Ogc.Kml
             , Namespace = Declarations.SchemaVersion)]
         public bool tessellate
         {
-            get { return __tessellate; }
+            get { return _tessellate; }
             set
             {
-                __tessellate = value;
-                __tessellateSpecified = true;
+                _tessellate = value;
+                _tessellateSpecified = true;
             }
         }
 
@@ -92,20 +92,16 @@ namespace SharpMap.Entities.Ogc.Kml
             Namespace = Declarations.SchemaVersion)]
         public string altitudeModeGroup
         {
-            get { return __altitudeModeGroup; }
-            set { __altitudeModeGroup = value; }
+            get { return _altitudeModeGroup; }
+            set { _altitudeModeGroup = value; }
         }
 
         [XmlElement(Type = typeof (outerBoundaryIs), ElementName = "outerBoundaryIs", IsNullable = false,
             Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public outerBoundaryIs outerBoundaryIs
         {
-            get
-            {
-                
-                return __outerBoundaryIs;
-            }
-            set { __outerBoundaryIs = value; }
+            get { return _outerBoundaryIs; }
+            set { _outerBoundaryIs = value; }
         }
 
         [XmlElement(Type = typeof (innerBoundaryIs), ElementName = "innerBoundaryIs", IsNullable = false,
@@ -114,10 +110,10 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (__innerBoundaryIs == null) __innerBoundaryIs = new List<innerBoundaryIs>();
-                return __innerBoundaryIs;
+                if (_innerBoundaryIs == null) _innerBoundaryIs = new List<innerBoundaryIs>();
+                return _innerBoundaryIs;
             }
-            set { __innerBoundaryIs = value; }
+            set { _innerBoundaryIs = value; }
         }
 
         [XmlElement(Type = typeof (string), ElementName = "PolygonSimpleExtensionGroup", IsNullable = false,
@@ -126,10 +122,10 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (__PolygonSimpleExtensionGroup == null) __PolygonSimpleExtensionGroup = new List<string>();
-                return __PolygonSimpleExtensionGroup;
+                if (_PolygonSimpleExtensionGroup == null) _PolygonSimpleExtensionGroup = new List<string>();
+                return _PolygonSimpleExtensionGroup;
             }
-            set { __PolygonSimpleExtensionGroup = value; }
+            set { _PolygonSimpleExtensionGroup = value; }
         }
 
         [XmlElement(Type = typeof (PolygonObjectExtensionGroup), ElementName = "PolygonObjectExtensionGroup",
@@ -138,11 +134,11 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (__PolygonObjectExtensionGroup == null)
-                    __PolygonObjectExtensionGroup = new List<PolygonObjectExtensionGroup>();
-                return __PolygonObjectExtensionGroup;
+                if (_PolygonObjectExtensionGroup == null)
+                    _PolygonObjectExtensionGroup = new List<PolygonObjectExtensionGroup>();
+                return _PolygonObjectExtensionGroup;
             }
-            set { __PolygonObjectExtensionGroup = value; }
+            set { _PolygonObjectExtensionGroup = value; }
         }
 
         public new void MakeSchemaCompliant()

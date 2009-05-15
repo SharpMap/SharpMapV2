@@ -43,25 +43,25 @@ namespace SharpMap.Entities.Ogc.Kml
     [XmlInclude(typeof (ViewVolumeType))]
     public class ItemIconType : AbstractObjectType
     {
-        [XmlIgnore] private string __href;
-        [XmlIgnore] private List<ItemIconObjectExtensionGroup> __ItemIconObjectExtensionGroup;
-        [XmlIgnore] private List<string> __ItemIconSimpleExtensionGroup;
-        [XmlIgnore] private string __state;
+        [XmlIgnore] private string _href;
+        [XmlIgnore] private List<ItemIconObjectExtensionGroup> _ItemIconObjectExtensionGroup;
+        [XmlIgnore] private List<string> _ItemIconSimpleExtensionGroup;
+        [XmlIgnore] private string _state;
 
         [XmlElement(ElementName = "state", IsNullable = false, Form = XmlSchemaForm.Qualified,
             Namespace = Declarations.SchemaVersion)]
         public string state
         {
-            get { return __state; }
-            set { __state = value; }
+            get { return _state; }
+            set { _state = value; }
         }
 
         [XmlElement(ElementName = "href", IsNullable = false, Form = XmlSchemaForm.Qualified, DataType = "string",
             Namespace = Declarations.SchemaVersion)]
         public string href
         {
-            get { return __href; }
-            set { __href = value; }
+            get { return _href; }
+            set { _href = value; }
         }
 
         [XmlElement(Type = typeof (string), ElementName = "ItemIconSimpleExtensionGroup", IsNullable = false,
@@ -70,10 +70,10 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (__ItemIconSimpleExtensionGroup == null) __ItemIconSimpleExtensionGroup = new List<string>();
-                return __ItemIconSimpleExtensionGroup;
+                if (_ItemIconSimpleExtensionGroup == null) _ItemIconSimpleExtensionGroup = new List<string>();
+                return _ItemIconSimpleExtensionGroup;
             }
-            set { __ItemIconSimpleExtensionGroup = value; }
+            set { _ItemIconSimpleExtensionGroup = value; }
         }
 
         [XmlElement(Type = typeof (ItemIconObjectExtensionGroup), ElementName = "ItemIconObjectExtensionGroup",
@@ -82,11 +82,11 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (__ItemIconObjectExtensionGroup == null)
-                    __ItemIconObjectExtensionGroup = new List<ItemIconObjectExtensionGroup>();
-                return __ItemIconObjectExtensionGroup;
+                if (_ItemIconObjectExtensionGroup == null)
+                    _ItemIconObjectExtensionGroup = new List<ItemIconObjectExtensionGroup>();
+                return _ItemIconObjectExtensionGroup;
             }
-            set { __ItemIconObjectExtensionGroup = value; }
+            set { _ItemIconObjectExtensionGroup = value; }
         }
 
         public new void MakeSchemaCompliant()

@@ -23,18 +23,18 @@ namespace SharpMap.Entities.xAL
     [XmlType(TypeName = "PostTown", Namespace = Declarations.SchemaVersion), Serializable]
     public class PostTown
     {
-        [XmlIgnore] private List<AddressLine> __AddressLine;
-        [XmlIgnore] private List<PostTownName> __PostTownName;
-        [XmlIgnore] private PostTownSuffix __PostTownSuffix;
-        [XmlIgnore] private string __Type;
+        [XmlIgnore] private List<AddressLine> _AddressLine;
+        [XmlIgnore] private List<PostTownName> _PostTownName;
+        [XmlIgnore] private PostTownSuffix _PostTownSuffix;
+        [XmlIgnore] private string _Type;
 
         [XmlAnyAttribute] public XmlAttribute[] AnyAttr;
 
         [XmlAttribute(AttributeName = "Type")]
         public string Type
         {
-            get { return __Type; }
-            set { __Type = value; }
+            get { return _Type; }
+            set { _Type = value; }
         }
 
         [XmlElement(Type = typeof (AddressLine), ElementName = "AddressLine", IsNullable = false,
@@ -43,10 +43,10 @@ namespace SharpMap.Entities.xAL
         {
             get
             {
-                if (__AddressLine == null) __AddressLine = new List<AddressLine>();
-                return __AddressLine;
+                if (_AddressLine == null) _AddressLine = new List<AddressLine>();
+                return _AddressLine;
             }
-            set { __AddressLine = value; }
+            set { _AddressLine = value; }
         }
 
         [XmlElement(Type = typeof (PostTownName), ElementName = "PostTownName", IsNullable = false,
@@ -55,22 +55,18 @@ namespace SharpMap.Entities.xAL
         {
             get
             {
-                if (__PostTownName == null) __PostTownName = new List<PostTownName>();
-                return __PostTownName;
+                if (_PostTownName == null) _PostTownName = new List<PostTownName>();
+                return _PostTownName;
             }
-            set { __PostTownName = value; }
+            set { _PostTownName = value; }
         }
 
         [XmlElement(Type = typeof (PostTownSuffix), ElementName = "PostTownSuffix", IsNullable = false,
             Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public PostTownSuffix PostTownSuffix
         {
-            get
-            {
-                
-                return __PostTownSuffix;
-            }
-            set { __PostTownSuffix = value; }
+            get { return _PostTownSuffix; }
+            set { _PostTownSuffix = value; }
         }
 
         public void MakeSchemaCompliant()

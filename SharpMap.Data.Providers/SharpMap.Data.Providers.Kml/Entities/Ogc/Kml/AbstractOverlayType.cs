@@ -43,16 +43,16 @@ namespace SharpMap.Entities.Ogc.Kml
     [XmlInclude(typeof (ViewVolumeType))]
     public abstract class AbstractOverlayType : AbstractFeatureType
     {
-        [XmlIgnore] private List<AbstractOverlayObjectExtensionGroup> __AbstractOverlayObjectExtensionGroup;
-        [XmlIgnore] private List<string> __AbstractOverlaySimpleExtensionGroup;
-        [XmlIgnore] private byte[] __color;
+        [XmlIgnore] private List<AbstractOverlayObjectExtensionGroup> _AbstractOverlayObjectExtensionGroup;
+        [XmlIgnore] private List<string> _AbstractOverlaySimpleExtensionGroup;
+        [XmlIgnore] private byte[] _color;
 
-        [XmlIgnore] private int __drawOrder;
+        [XmlIgnore] private int _drawOrder;
 
-        [XmlIgnore] public bool __drawOrderSpecified;
+        [XmlIgnore] public bool _drawOrderSpecified;
 
 
-        [XmlIgnore] private Icon __Icon;
+        [XmlIgnore] private Icon _Icon;
 
         public AbstractOverlayType()
         {
@@ -63,19 +63,19 @@ namespace SharpMap.Entities.Ogc.Kml
             Namespace = Declarations.SchemaVersion)]
         public byte[] color
         {
-            get { return __color; }
-            set { __color = value; }
+            get { return _color; }
+            set { _color = value; }
         }
 
         [XmlElement(ElementName = "drawOrder", IsNullable = false, Form = XmlSchemaForm.Qualified, DataType = "int",
             Namespace = Declarations.SchemaVersion)]
         public int drawOrder
         {
-            get { return __drawOrder; }
+            get { return _drawOrder; }
             set
             {
-                __drawOrder = value;
-                __drawOrderSpecified = true;
+                _drawOrder = value;
+                _drawOrderSpecified = true;
             }
         }
 
@@ -83,12 +83,8 @@ namespace SharpMap.Entities.Ogc.Kml
             Namespace = Declarations.SchemaVersion)]
         public Icon Icon
         {
-            get
-            {
-                
-                return __Icon;
-            }
-            set { __Icon = value; }
+            get { return _Icon; }
+            set { _Icon = value; }
         }
 
         [XmlElement(Type = typeof (string), ElementName = "AbstractOverlaySimpleExtensionGroup", IsNullable = false,
@@ -97,11 +93,11 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (__AbstractOverlaySimpleExtensionGroup == null)
-                    __AbstractOverlaySimpleExtensionGroup = new List<string>();
-                return __AbstractOverlaySimpleExtensionGroup;
+                if (_AbstractOverlaySimpleExtensionGroup == null)
+                    _AbstractOverlaySimpleExtensionGroup = new List<string>();
+                return _AbstractOverlaySimpleExtensionGroup;
             }
-            set { __AbstractOverlaySimpleExtensionGroup = value; }
+            set { _AbstractOverlaySimpleExtensionGroup = value; }
         }
 
         [XmlElement(Type = typeof (AbstractOverlayObjectExtensionGroup),
@@ -111,11 +107,11 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (__AbstractOverlayObjectExtensionGroup == null)
-                    __AbstractOverlayObjectExtensionGroup = new List<AbstractOverlayObjectExtensionGroup>();
-                return __AbstractOverlayObjectExtensionGroup;
+                if (_AbstractOverlayObjectExtensionGroup == null)
+                    _AbstractOverlayObjectExtensionGroup = new List<AbstractOverlayObjectExtensionGroup>();
+                return _AbstractOverlayObjectExtensionGroup;
             }
-            set { __AbstractOverlayObjectExtensionGroup = value; }
+            set { _AbstractOverlayObjectExtensionGroup = value; }
         }
 
         public new void MakeSchemaCompliant()

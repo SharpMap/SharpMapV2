@@ -23,15 +23,15 @@ namespace SharpMap.Entities.xAL
     [XmlType(TypeName = "LargeMailUserType", Namespace = Declarations.SchemaVersion), Serializable]
     public class LargeMailUserType
     {
-        [XmlIgnore] private List<AddressLine> __AddressLine;
-        [XmlIgnore] private List<BuildingNameType> __BuildingName;
-        [XmlIgnore] private Department __Department;
-        [XmlIgnore] private LargeMailUserIdentifier __LargeMailUserIdentifier;
-        [XmlIgnore] private List<LargeMailUserName> __LargeMailUserName;
-        [XmlIgnore] private PostalCode __PostalCode;
-        [XmlIgnore] private PostBox __PostBox;
-        [XmlIgnore] private Thoroughfare __Thoroughfare;
-        [XmlIgnore] private string __Type;
+        [XmlIgnore] private List<AddressLine> _AddressLine;
+        [XmlIgnore] private List<BuildingNameType> _BuildingName;
+        [XmlIgnore] private Department _Department;
+        [XmlIgnore] private LargeMailUserIdentifier _LargeMailUserIdentifier;
+        [XmlIgnore] private List<LargeMailUserName> _LargeMailUserName;
+        [XmlIgnore] private PostalCode _PostalCode;
+        [XmlIgnore] private PostBox _PostBox;
+        [XmlIgnore] private Thoroughfare _Thoroughfare;
+        [XmlIgnore] private string _Type;
         [XmlAnyElement] public XmlElement[] Any;
 
         [XmlAnyAttribute] public XmlAttribute[] AnyAttr;
@@ -39,8 +39,8 @@ namespace SharpMap.Entities.xAL
         [XmlAttribute(AttributeName = "Type", DataType = "string")]
         public string Type
         {
-            get { return __Type; }
-            set { __Type = value; }
+            get { return _Type; }
+            set { _Type = value; }
         }
 
         [XmlElement(Type = typeof (AddressLine), ElementName = "AddressLine", IsNullable = false,
@@ -49,10 +49,10 @@ namespace SharpMap.Entities.xAL
         {
             get
             {
-                if (__AddressLine == null) __AddressLine = new List<AddressLine>();
-                return __AddressLine;
+                if (_AddressLine == null) _AddressLine = new List<AddressLine>();
+                return _AddressLine;
             }
-            set { __AddressLine = value; }
+            set { _AddressLine = value; }
         }
 
         [XmlElement(Type = typeof (LargeMailUserName), ElementName = "LargeMailUserName", IsNullable = false,
@@ -61,22 +61,18 @@ namespace SharpMap.Entities.xAL
         {
             get
             {
-                if (__LargeMailUserName == null) __LargeMailUserName = new List<LargeMailUserName>();
-                return __LargeMailUserName;
+                if (_LargeMailUserName == null) _LargeMailUserName = new List<LargeMailUserName>();
+                return _LargeMailUserName;
             }
-            set { __LargeMailUserName = value; }
+            set { _LargeMailUserName = value; }
         }
 
         [XmlElement(Type = typeof (LargeMailUserIdentifier), ElementName = "LargeMailUserIdentifier", IsNullable = false
             , Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public LargeMailUserIdentifier LargeMailUserIdentifier
         {
-            get
-            {
-                
-                return __LargeMailUserIdentifier;
-            }
-            set { __LargeMailUserIdentifier = value; }
+            get { return _LargeMailUserIdentifier; }
+            set { _LargeMailUserIdentifier = value; }
         }
 
         [XmlElement(Type = typeof (BuildingNameType), ElementName = "BuildingName", IsNullable = false,
@@ -85,58 +81,42 @@ namespace SharpMap.Entities.xAL
         {
             get
             {
-                if (__BuildingName == null) __BuildingName = new List<BuildingNameType>();
-                return __BuildingName;
+                if (_BuildingName == null) _BuildingName = new List<BuildingNameType>();
+                return _BuildingName;
             }
-            set { __BuildingName = value; }
+            set { _BuildingName = value; }
         }
 
         [XmlElement(Type = typeof (Department), ElementName = "Department", IsNullable = false,
             Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public Department Department
         {
-            get
-            {
-                
-                return __Department;
-            }
-            set { __Department = value; }
+            get { return _Department; }
+            set { _Department = value; }
         }
 
         [XmlElement(Type = typeof (PostBox), ElementName = "PostBox", IsNullable = false, Form = XmlSchemaForm.Qualified
             , Namespace = Declarations.SchemaVersion)]
         public PostBox PostBox
         {
-            get
-            {
-                
-                return __PostBox;
-            }
-            set { __PostBox = value; }
+            get { return _PostBox; }
+            set { _PostBox = value; }
         }
 
         [XmlElement(Type = typeof (Thoroughfare), ElementName = "Thoroughfare", IsNullable = false,
             Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public Thoroughfare Thoroughfare
         {
-            get
-            {
-                
-                return __Thoroughfare;
-            }
-            set { __Thoroughfare = value; }
+            get { return _Thoroughfare; }
+            set { _Thoroughfare = value; }
         }
 
         [XmlElement(Type = typeof (PostalCode), ElementName = "PostalCode", IsNullable = false,
             Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public PostalCode PostalCode
         {
-            get
-            {
-                
-                return __PostalCode;
-            }
-            set { __PostalCode = value; }
+            get { return _PostalCode; }
+            set { _PostalCode = value; }
         }
 
         public void MakeSchemaCompliant()

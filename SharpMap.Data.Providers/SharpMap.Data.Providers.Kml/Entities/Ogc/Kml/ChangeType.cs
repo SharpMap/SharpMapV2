@@ -45,7 +45,7 @@ namespace SharpMap.Entities.Ogc.Kml
     [XmlInclude(typeof (ViewVolumeType))]
     public class ChangeType
     {
-        [XmlIgnore] private List<AbstractObjectGroup> __AbstractObjectGroup;
+        [XmlIgnore] private List<AbstractObjectGroup> _AbstractObjectGroup;
 
         [XmlIgnore]
         public AbstractObjectGroup this[int index]
@@ -65,10 +65,10 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (__AbstractObjectGroup == null) __AbstractObjectGroup = new List<AbstractObjectGroup>();
-                return __AbstractObjectGroup;
+                if (_AbstractObjectGroup == null) _AbstractObjectGroup = new List<AbstractObjectGroup>();
+                return _AbstractObjectGroup;
             }
-            set { __AbstractObjectGroup = value; }
+            set { _AbstractObjectGroup = value; }
         }
 
         [DispId(-4)]

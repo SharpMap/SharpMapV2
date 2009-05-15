@@ -20,20 +20,19 @@ namespace SharpMap.Entities.Ogc.Kml
     [XmlType(TypeName = "vec2Type", Namespace = Declarations.SchemaVersion), Serializable]
     public class Vector2
     {
-        [XmlIgnore] private double __x;
+        [XmlIgnore] private double _x;
 
-        [XmlIgnore] public bool __xSpecified;
+        [XmlIgnore] public bool _xSpecified;
 
+        [XmlIgnore] public bool _xunitsSpecified;
+        [XmlIgnore] private double _y;
+
+        [XmlIgnore] public bool _ySpecified;
+
+        [XmlIgnore] private Unit _yunits;
+
+        [XmlIgnore] public bool _yunitsSpecified;
         [XmlIgnore] private Unit _xUnits;
-
-        [XmlIgnore] public bool __xunitsSpecified;
-        [XmlIgnore] private double __y;
-
-        [XmlIgnore] public bool __ySpecified;
-
-        [XmlIgnore] private Unit __yunits;
-
-        [XmlIgnore] public bool __yunitsSpecified;
 
         public Vector2()
         {
@@ -46,22 +45,22 @@ namespace SharpMap.Entities.Ogc.Kml
         [XmlAttribute(AttributeName = "x", DataType = "double")]
         public double X
         {
-            get { return __x; }
+            get { return _x; }
             set
             {
-                __x = value;
-                __xSpecified = true;
+                _x = value;
+                _xSpecified = true;
             }
         }
 
         [XmlAttribute(AttributeName = "y", DataType = "double")]
         public double Y
         {
-            get { return __y; }
+            get { return _y; }
             set
             {
-                __y = value;
-                __ySpecified = true;
+                _y = value;
+                _ySpecified = true;
             }
         }
 
@@ -72,18 +71,18 @@ namespace SharpMap.Entities.Ogc.Kml
             set
             {
                 _xUnits = value;
-                __xunitsSpecified = true;
+                _xunitsSpecified = true;
             }
         }
 
         [XmlAttribute(AttributeName = "yunits")]
         public Unit YUnits
         {
-            get { return __yunits; }
+            get { return _yunits; }
             set
             {
-                __yunits = value;
-                __yunitsSpecified = true;
+                _yunits = value;
+                _yunitsSpecified = true;
             }
         }
 

@@ -22,23 +22,23 @@ namespace SharpMap.Entities.Ogc.Kml
     [XmlType(TypeName = "SchemaType", Namespace = Declarations.SchemaVersion), Serializable]
     public class SchemaType
     {
-        [XmlIgnore] private string __id;
-        [XmlIgnore] private string __name;
-        [XmlIgnore] private List<string> __SchemaExtension;
-        [XmlIgnore] private List<SimpleField> __SimpleField;
+        [XmlIgnore] private string _id;
+        [XmlIgnore] private string _name;
+        [XmlIgnore] private List<string> _SchemaExtension;
+        [XmlIgnore] private List<SimpleField> _SimpleField;
 
         [XmlAttribute(AttributeName = "name", DataType = "string")]
         public string name
         {
-            get { return __name; }
-            set { __name = value; }
+            get { return _name; }
+            set { _name = value; }
         }
 
         [XmlAttribute(AttributeName = "id", DataType = "ID")]
         public string id
         {
-            get { return __id; }
-            set { __id = value; }
+            get { return _id; }
+            set { _id = value; }
         }
 
         [XmlElement(Type = typeof (SimpleField), ElementName = "SimpleField", IsNullable = false,
@@ -47,10 +47,10 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (__SimpleField == null) __SimpleField = new List<SimpleField>();
-                return __SimpleField;
+                if (_SimpleField == null) _SimpleField = new List<SimpleField>();
+                return _SimpleField;
             }
-            set { __SimpleField = value; }
+            set { _SimpleField = value; }
         }
 
         [XmlElement(Type = typeof (string), ElementName = "SchemaExtension", IsNullable = false,
@@ -59,10 +59,10 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (__SchemaExtension == null) __SchemaExtension = new List<string>();
-                return __SchemaExtension;
+                if (_SchemaExtension == null) _SchemaExtension = new List<string>();
+                return _SchemaExtension;
             }
-            set { __SchemaExtension = value; }
+            set { _SchemaExtension = value; }
         }
 
         public void MakeSchemaCompliant()

@@ -45,28 +45,28 @@ namespace SharpMap.Entities.Ogc.Kml
     [XmlInclude(typeof (ViewVolumeType))]
     public class NetworkLinkControlType
     {
-        [XmlIgnore] private AbstractViewGroup __AbstractViewGroup;
-        [XmlIgnore] private string __cookie;
-        [XmlIgnore] private DateTime __expires;
+        [XmlIgnore] private AbstractViewGroup _AbstractViewGroup;
+        [XmlIgnore] private string _cookie;
+        [XmlIgnore] private DateTime _expires;
 
-        [XmlIgnore] public bool __expiresSpecified;
-        [XmlIgnore] private string __linkDescription;
-        [XmlIgnore] private string __linkName;
-        [XmlIgnore] private linkSnippet __linkSnippet;
-        [XmlIgnore] private double __maxSessionLength;
+        [XmlIgnore] public bool _expiresSpecified;
+        [XmlIgnore] private string _linkDescription;
+        [XmlIgnore] private string _linkName;
+        [XmlIgnore] private linkSnippet _linkSnippet;
+        [XmlIgnore] private double _maxSessionLength;
 
-        [XmlIgnore] public bool __maxSessionLengthSpecified;
-        [XmlIgnore] private string __message;
-        [XmlIgnore] private double __minRefreshPeriod;
+        [XmlIgnore] public bool _maxSessionLengthSpecified;
+        [XmlIgnore] private string _message;
+        [XmlIgnore] private double _minRefreshPeriod;
 
-        [XmlIgnore] public bool __minRefreshPeriodSpecified;
-        [XmlIgnore] private List<NetworkLinkControlObjectExtensionGroup> __NetworkLinkControlObjectExtensionGroup;
-        [XmlIgnore] private List<string> __NetworkLinkControlSimpleExtensionGroup;
-        [XmlIgnore] private Update __Update;
+        [XmlIgnore] public bool _minRefreshPeriodSpecified;
+        [XmlIgnore] private List<NetworkLinkControlObjectExtensionGroup> _NetworkLinkControlObjectExtensionGroup;
+        [XmlIgnore] private List<string> _NetworkLinkControlSimpleExtensionGroup;
+        [XmlIgnore] private Update _Update;
 
         public NetworkLinkControlType()
         {
-            __expires = DateTime.Now;
+            _expires = DateTime.Now;
             minRefreshPeriod = 0.0;
             maxSessionLength = -1.0;
         }
@@ -76,11 +76,11 @@ namespace SharpMap.Entities.Ogc.Kml
             DataType = "double", Namespace = Declarations.SchemaVersion)]
         public double minRefreshPeriod
         {
-            get { return __minRefreshPeriod; }
+            get { return _minRefreshPeriod; }
             set
             {
-                __minRefreshPeriod = value;
-                __minRefreshPeriodSpecified = true;
+                _minRefreshPeriod = value;
+                _minRefreshPeriodSpecified = true;
             }
         }
 
@@ -89,11 +89,11 @@ namespace SharpMap.Entities.Ogc.Kml
             DataType = "double", Namespace = Declarations.SchemaVersion)]
         public double maxSessionLength
         {
-            get { return __maxSessionLength; }
+            get { return _maxSessionLength; }
             set
             {
-                __maxSessionLength = value;
-                __maxSessionLengthSpecified = true;
+                _maxSessionLength = value;
+                _maxSessionLengthSpecified = true;
             }
         }
 
@@ -101,44 +101,40 @@ namespace SharpMap.Entities.Ogc.Kml
             Namespace = Declarations.SchemaVersion)]
         public string cookie
         {
-            get { return __cookie; }
-            set { __cookie = value; }
+            get { return _cookie; }
+            set { _cookie = value; }
         }
 
         [XmlElement(ElementName = "message", IsNullable = false, Form = XmlSchemaForm.Qualified, DataType = "string",
             Namespace = Declarations.SchemaVersion)]
         public string message
         {
-            get { return __message; }
-            set { __message = value; }
+            get { return _message; }
+            set { _message = value; }
         }
 
         [XmlElement(ElementName = "linkName", IsNullable = false, Form = XmlSchemaForm.Qualified, DataType = "string",
             Namespace = Declarations.SchemaVersion)]
         public string linkName
         {
-            get { return __linkName; }
-            set { __linkName = value; }
+            get { return _linkName; }
+            set { _linkName = value; }
         }
 
         [XmlElement(ElementName = "linkDescription", IsNullable = false, Form = XmlSchemaForm.Qualified,
             DataType = "string", Namespace = Declarations.SchemaVersion)]
         public string linkDescription
         {
-            get { return __linkDescription; }
-            set { __linkDescription = value; }
+            get { return _linkDescription; }
+            set { _linkDescription = value; }
         }
 
         [XmlElement(Type = typeof (linkSnippet), ElementName = "linkSnippet", IsNullable = false,
             Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public linkSnippet linkSnippet
         {
-            get
-            {
-                
-                return __linkSnippet;
-            }
-            set { __linkSnippet = value; }
+            get { return _linkSnippet; }
+            set { _linkSnippet = value; }
         }
 
 
@@ -146,22 +142,22 @@ namespace SharpMap.Entities.Ogc.Kml
             Namespace = Declarations.SchemaVersion)]
         public DateTime expires
         {
-            get { return __expires; }
+            get { return _expires; }
             set
             {
-                __expires = value;
-                __expiresSpecified = true;
+                _expires = value;
+                _expiresSpecified = true;
             }
         }
 
         [XmlIgnore]
         public DateTime expiresUtc
         {
-            get { return __expires.ToUniversalTime(); }
+            get { return _expires.ToUniversalTime(); }
             set
             {
-                __expires = value.ToLocalTime();
-                __expiresSpecified = true;
+                _expires = value.ToLocalTime();
+                _expiresSpecified = true;
             }
         }
 
@@ -169,20 +165,16 @@ namespace SharpMap.Entities.Ogc.Kml
             Namespace = Declarations.SchemaVersion)]
         public Update Update
         {
-            get
-            {
-                
-                return __Update;
-            }
-            set { __Update = value; }
+            get { return _Update; }
+            set { _Update = value; }
         }
 
         [XmlElement(Type = typeof (AbstractViewGroup), ElementName = "AbstractViewGroup", IsNullable = false,
             Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public AbstractViewGroup AbstractViewGroup
         {
-            get { return __AbstractViewGroup; }
-            set { __AbstractViewGroup = value; }
+            get { return _AbstractViewGroup; }
+            set { _AbstractViewGroup = value; }
         }
 
         [XmlElement(Type = typeof (string), ElementName = "NetworkLinkControlSimpleExtensionGroup", IsNullable = false,
@@ -191,11 +183,11 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (__NetworkLinkControlSimpleExtensionGroup == null)
-                    __NetworkLinkControlSimpleExtensionGroup = new List<string>();
-                return __NetworkLinkControlSimpleExtensionGroup;
+                if (_NetworkLinkControlSimpleExtensionGroup == null)
+                    _NetworkLinkControlSimpleExtensionGroup = new List<string>();
+                return _NetworkLinkControlSimpleExtensionGroup;
             }
-            set { __NetworkLinkControlSimpleExtensionGroup = value; }
+            set { _NetworkLinkControlSimpleExtensionGroup = value; }
         }
 
         [XmlElement(Type = typeof (NetworkLinkControlObjectExtensionGroup),
@@ -205,11 +197,11 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (__NetworkLinkControlObjectExtensionGroup == null)
-                    __NetworkLinkControlObjectExtensionGroup = new List<NetworkLinkControlObjectExtensionGroup>();
-                return __NetworkLinkControlObjectExtensionGroup;
+                if (_NetworkLinkControlObjectExtensionGroup == null)
+                    _NetworkLinkControlObjectExtensionGroup = new List<NetworkLinkControlObjectExtensionGroup>();
+                return _NetworkLinkControlObjectExtensionGroup;
             }
-            set { __NetworkLinkControlObjectExtensionGroup = value; }
+            set { _NetworkLinkControlObjectExtensionGroup = value; }
         }
 
         public void MakeSchemaCompliant()

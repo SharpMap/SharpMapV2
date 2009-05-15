@@ -25,9 +25,9 @@ namespace SharpMap.Entities.Ogc.Kml
         IsNullable = false), Serializable]
     public abstract class AbstractViewObjectExtensionGroup
     {
-        [XmlIgnore] private string __id;
-        [XmlIgnore] private List<string> __ObjectSimpleExtensionGroup;
-        [XmlIgnore] private string __targetId;
+        [XmlIgnore] private string _id;
+        [XmlIgnore] private List<string> _ObjectSimpleExtensionGroup;
+        [XmlIgnore] private string _targetId;
 
         [XmlIgnore]
         public string this[int index]
@@ -44,15 +44,15 @@ namespace SharpMap.Entities.Ogc.Kml
         [XmlAttribute(AttributeName = "id", DataType = "ID")]
         public string id
         {
-            get { return __id; }
-            set { __id = value; }
+            get { return _id; }
+            set { _id = value; }
         }
 
         [XmlAttribute(AttributeName = "targetId", DataType = "NCName")]
         public string targetId
         {
-            get { return __targetId; }
-            set { __targetId = value; }
+            get { return _targetId; }
+            set { _targetId = value; }
         }
 
         [XmlElement(Type = typeof (string), ElementName = "ObjectSimpleExtensionGroup", IsNullable = false,
@@ -61,10 +61,10 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (__ObjectSimpleExtensionGroup == null) __ObjectSimpleExtensionGroup = new List<string>();
-                return __ObjectSimpleExtensionGroup;
+                if (_ObjectSimpleExtensionGroup == null) _ObjectSimpleExtensionGroup = new List<string>();
+                return _ObjectSimpleExtensionGroup;
             }
-            set { __ObjectSimpleExtensionGroup = value; }
+            set { _ObjectSimpleExtensionGroup = value; }
         }
 
         [DispId(-4)]

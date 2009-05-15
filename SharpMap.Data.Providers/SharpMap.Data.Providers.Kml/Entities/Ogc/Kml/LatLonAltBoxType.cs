@@ -43,15 +43,15 @@ namespace SharpMap.Entities.Ogc.Kml
     [XmlInclude(typeof (ViewVolumeType))]
     public class LatLonAltBoxType : AbstractLatLonBoxType
     {
-        [XmlIgnore] private string __altitudeModeGroup;
-        [XmlIgnore] private List<LatLonAltBoxObjectExtensionGroup> __LatLonAltBoxObjectExtensionGroup;
-        [XmlIgnore] private List<string> __LatLonAltBoxSimpleExtensionGroup;
-        [XmlIgnore] private double __maxAltitude;
+        [XmlIgnore] private string _altitudeModeGroup;
+        [XmlIgnore] private List<LatLonAltBoxObjectExtensionGroup> _LatLonAltBoxObjectExtensionGroup;
+        [XmlIgnore] private List<string> _LatLonAltBoxSimpleExtensionGroup;
+        [XmlIgnore] private double _maxAltitude;
 
-        [XmlIgnore] public bool __maxAltitudeSpecified;
-        [XmlIgnore] private double __minAltitude;
+        [XmlIgnore] public bool _maxAltitudeSpecified;
+        [XmlIgnore] private double _minAltitude;
 
-        [XmlIgnore] public bool __minAltitudeSpecified;
+        [XmlIgnore] public bool _minAltitudeSpecified;
 
         public LatLonAltBoxType()
         {
@@ -64,11 +64,11 @@ namespace SharpMap.Entities.Ogc.Kml
             , Namespace = Declarations.SchemaVersion)]
         public double minAltitude
         {
-            get { return __minAltitude; }
+            get { return _minAltitude; }
             set
             {
-                __minAltitude = value;
-                __minAltitudeSpecified = true;
+                _minAltitude = value;
+                _minAltitudeSpecified = true;
             }
         }
 
@@ -77,11 +77,11 @@ namespace SharpMap.Entities.Ogc.Kml
             , Namespace = Declarations.SchemaVersion)]
         public double maxAltitude
         {
-            get { return __maxAltitude; }
+            get { return _maxAltitude; }
             set
             {
-                __maxAltitude = value;
-                __maxAltitudeSpecified = true;
+                _maxAltitude = value;
+                _maxAltitudeSpecified = true;
             }
         }
 
@@ -89,8 +89,8 @@ namespace SharpMap.Entities.Ogc.Kml
             Namespace = Declarations.SchemaVersion)]
         public string altitudeModeGroup
         {
-            get { return __altitudeModeGroup; }
-            set { __altitudeModeGroup = value; }
+            get { return _altitudeModeGroup; }
+            set { _altitudeModeGroup = value; }
         }
 
         [XmlElement(Type = typeof (string), ElementName = "LatLonAltBoxSimpleExtensionGroup", IsNullable = false,
@@ -99,10 +99,10 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (__LatLonAltBoxSimpleExtensionGroup == null) __LatLonAltBoxSimpleExtensionGroup = new List<string>();
-                return __LatLonAltBoxSimpleExtensionGroup;
+                if (_LatLonAltBoxSimpleExtensionGroup == null) _LatLonAltBoxSimpleExtensionGroup = new List<string>();
+                return _LatLonAltBoxSimpleExtensionGroup;
             }
-            set { __LatLonAltBoxSimpleExtensionGroup = value; }
+            set { _LatLonAltBoxSimpleExtensionGroup = value; }
         }
 
         [XmlElement(Type = typeof (LatLonAltBoxObjectExtensionGroup), ElementName = "LatLonAltBoxObjectExtensionGroup",
@@ -111,11 +111,11 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (__LatLonAltBoxObjectExtensionGroup == null)
-                    __LatLonAltBoxObjectExtensionGroup = new List<LatLonAltBoxObjectExtensionGroup>();
-                return __LatLonAltBoxObjectExtensionGroup;
+                if (_LatLonAltBoxObjectExtensionGroup == null)
+                    _LatLonAltBoxObjectExtensionGroup = new List<LatLonAltBoxObjectExtensionGroup>();
+                return _LatLonAltBoxObjectExtensionGroup;
             }
-            set { __LatLonAltBoxObjectExtensionGroup = value; }
+            set { _LatLonAltBoxObjectExtensionGroup = value; }
         }
 
         public new void MakeSchemaCompliant()

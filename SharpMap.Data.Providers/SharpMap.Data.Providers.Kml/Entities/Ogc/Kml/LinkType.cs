@@ -43,29 +43,29 @@ namespace SharpMap.Entities.Ogc.Kml
     [XmlInclude(typeof (ViewVolumeType))]
     public abstract class LinkType : BasicLinkType
     {
-        [XmlIgnore] private string __httpQuery;
-        [XmlIgnore] private List<LinkObjectExtensionGroup> __LinkObjectExtensionGroup;
-        [XmlIgnore] private List<string> __LinkSimpleExtensionGroup;
-        [XmlIgnore] private double __refreshInterval;
+        [XmlIgnore] private string _httpQuery;
+        [XmlIgnore] private List<LinkObjectExtensionGroup> _LinkObjectExtensionGroup;
+        [XmlIgnore] private List<string> _LinkSimpleExtensionGroup;
+        [XmlIgnore] private double _refreshInterval;
 
-        [XmlIgnore] public bool __refreshIntervalSpecified;
-        [XmlIgnore] private RefreshMode __refreshMode;
+        [XmlIgnore] public bool _refreshIntervalSpecified;
+        [XmlIgnore] private RefreshMode _refreshMode;
 
-        [XmlIgnore] public bool __refreshModeSpecified;
-        [XmlIgnore] private double __viewBoundScale;
+        [XmlIgnore] public bool _refreshModeSpecified;
+        [XmlIgnore] private double _viewBoundScale;
 
-        [XmlIgnore] public bool __viewBoundScaleSpecified;
-        [XmlIgnore] private string __viewFormat;
-
-
-        [XmlIgnore] private ViewRefreshMode __viewRefreshMode;
-
-        [XmlIgnore] public bool __viewRefreshModeSpecified;
+        [XmlIgnore] public bool _viewBoundScaleSpecified;
+        [XmlIgnore] private string _viewFormat;
 
 
-        [XmlIgnore] private double __viewRefreshTime;
+        [XmlIgnore] private ViewRefreshMode _viewRefreshMode;
 
-        [XmlIgnore] public bool __viewRefreshTimeSpecified;
+        [XmlIgnore] public bool _viewRefreshModeSpecified;
+
+
+        [XmlIgnore] private double _viewRefreshTime;
+
+        [XmlIgnore] public bool _viewRefreshTimeSpecified;
 
         public LinkType()
         {
@@ -80,11 +80,11 @@ namespace SharpMap.Entities.Ogc.Kml
             Namespace = Declarations.SchemaVersion)]
         public RefreshMode refreshMode
         {
-            get { return __refreshMode; }
+            get { return _refreshMode; }
             set
             {
-                __refreshMode = value;
-                __refreshModeSpecified = true;
+                _refreshMode = value;
+                _refreshModeSpecified = true;
             }
         }
 
@@ -92,11 +92,11 @@ namespace SharpMap.Entities.Ogc.Kml
             DataType = "double", Namespace = Declarations.SchemaVersion)]
         public double refreshInterval
         {
-            get { return __refreshInterval; }
+            get { return _refreshInterval; }
             set
             {
-                __refreshInterval = value;
-                __refreshIntervalSpecified = true;
+                _refreshInterval = value;
+                _refreshIntervalSpecified = true;
             }
         }
 
@@ -104,11 +104,11 @@ namespace SharpMap.Entities.Ogc.Kml
             Namespace = Declarations.SchemaVersion)]
         public ViewRefreshMode viewRefreshMode
         {
-            get { return __viewRefreshMode; }
+            get { return _viewRefreshMode; }
             set
             {
-                __viewRefreshMode = value;
-                __viewRefreshModeSpecified = true;
+                _viewRefreshMode = value;
+                _viewRefreshModeSpecified = true;
             }
         }
 
@@ -117,11 +117,11 @@ namespace SharpMap.Entities.Ogc.Kml
             DataType = "double", Namespace = Declarations.SchemaVersion)]
         public double viewRefreshTime
         {
-            get { return __viewRefreshTime; }
+            get { return _viewRefreshTime; }
             set
             {
-                __viewRefreshTime = value;
-                __viewRefreshTimeSpecified = true;
+                _viewRefreshTime = value;
+                _viewRefreshTimeSpecified = true;
             }
         }
 
@@ -130,11 +130,11 @@ namespace SharpMap.Entities.Ogc.Kml
             DataType = "double", Namespace = Declarations.SchemaVersion)]
         public double viewBoundScale
         {
-            get { return __viewBoundScale; }
+            get { return _viewBoundScale; }
             set
             {
-                __viewBoundScale = value;
-                __viewBoundScaleSpecified = true;
+                _viewBoundScale = value;
+                _viewBoundScaleSpecified = true;
             }
         }
 
@@ -142,16 +142,16 @@ namespace SharpMap.Entities.Ogc.Kml
             Namespace = Declarations.SchemaVersion)]
         public string viewFormat
         {
-            get { return __viewFormat; }
-            set { __viewFormat = value; }
+            get { return _viewFormat; }
+            set { _viewFormat = value; }
         }
 
         [XmlElement(ElementName = "httpQuery", IsNullable = false, Form = XmlSchemaForm.Qualified, DataType = "string",
             Namespace = Declarations.SchemaVersion)]
         public string httpQuery
         {
-            get { return __httpQuery; }
-            set { __httpQuery = value; }
+            get { return _httpQuery; }
+            set { _httpQuery = value; }
         }
 
         [XmlElement(Type = typeof (string), ElementName = "LinkSimpleExtensionGroup", IsNullable = false,
@@ -160,10 +160,10 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (__LinkSimpleExtensionGroup == null) __LinkSimpleExtensionGroup = new List<string>();
-                return __LinkSimpleExtensionGroup;
+                if (_LinkSimpleExtensionGroup == null) _LinkSimpleExtensionGroup = new List<string>();
+                return _LinkSimpleExtensionGroup;
             }
-            set { __LinkSimpleExtensionGroup = value; }
+            set { _LinkSimpleExtensionGroup = value; }
         }
 
         [XmlElement(Type = typeof (LinkObjectExtensionGroup), ElementName = "LinkObjectExtensionGroup",
@@ -172,11 +172,11 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (__LinkObjectExtensionGroup == null)
-                    __LinkObjectExtensionGroup = new List<LinkObjectExtensionGroup>();
-                return __LinkObjectExtensionGroup;
+                if (_LinkObjectExtensionGroup == null)
+                    _LinkObjectExtensionGroup = new List<LinkObjectExtensionGroup>();
+                return _LinkObjectExtensionGroup;
             }
-            set { __LinkObjectExtensionGroup = value; }
+            set { _LinkObjectExtensionGroup = value; }
         }
 
         public new void MakeSchemaCompliant()

@@ -49,17 +49,17 @@ namespace SharpMap.Entities.Ogc.Kml
     [XmlInclude(typeof (ViewVolumeType))]
     public class PlacemarkType : AbstractFeatureType
     {
-        [XmlIgnore] private AbstractGeometryGroup __AbstractGeometryGroup;
-        [XmlIgnore] private List<PlacemarkObjectExtensionGroup> __PlacemarkObjectExtensionGroup;
+        [XmlIgnore] private AbstractGeometryGroup _AbstractGeometryGroup;
+        [XmlIgnore] private List<PlacemarkObjectExtensionGroup> _PlacemarkObjectExtensionGroup;
 
-        [XmlIgnore] private List<string> __PlacemarkSimpleExtensionGroup;
+        [XmlIgnore] private List<string> _PlacemarkSimpleExtensionGroup;
 
         [XmlElement(Type = typeof (AbstractGeometryGroup), ElementName = "AbstractGeometryGroup", IsNullable = false,
             Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public AbstractGeometryGroup AbstractGeometryGroup
         {
-            get { return __AbstractGeometryGroup; }
-            set { __AbstractGeometryGroup = value; }
+            get { return _AbstractGeometryGroup; }
+            set { _AbstractGeometryGroup = value; }
         }
 
         [XmlElement(Type = typeof (string), ElementName = "PlacemarkSimpleExtensionGroup", IsNullable = false,
@@ -68,10 +68,10 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (__PlacemarkSimpleExtensionGroup == null) __PlacemarkSimpleExtensionGroup = new List<string>();
-                return __PlacemarkSimpleExtensionGroup;
+                if (_PlacemarkSimpleExtensionGroup == null) _PlacemarkSimpleExtensionGroup = new List<string>();
+                return _PlacemarkSimpleExtensionGroup;
             }
-            set { __PlacemarkSimpleExtensionGroup = value; }
+            set { _PlacemarkSimpleExtensionGroup = value; }
         }
 
         [XmlElement(Type = typeof (PlacemarkObjectExtensionGroup), ElementName = "PlacemarkObjectExtensionGroup",
@@ -80,11 +80,11 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (__PlacemarkObjectExtensionGroup == null)
-                    __PlacemarkObjectExtensionGroup = new List<PlacemarkObjectExtensionGroup>();
-                return __PlacemarkObjectExtensionGroup;
+                if (_PlacemarkObjectExtensionGroup == null)
+                    _PlacemarkObjectExtensionGroup = new List<PlacemarkObjectExtensionGroup>();
+                return _PlacemarkObjectExtensionGroup;
             }
-            set { __PlacemarkObjectExtensionGroup = value; }
+            set { _PlacemarkObjectExtensionGroup = value; }
         }
 
         public new void MakeSchemaCompliant()

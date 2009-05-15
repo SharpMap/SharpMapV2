@@ -23,83 +23,83 @@ namespace SharpMap.Entities.xAL
     [XmlType(TypeName = "ThoroughfareNumberRange", Namespace = Declarations.SchemaVersion), Serializable]
     public class ThoroughfareNumberRange
     {
-        [XmlIgnore] private List<AddressLine> __AddressLine;
-        [XmlIgnore] private string __Code;
-        [XmlIgnore] private string __Indicator;
-        [XmlIgnore] private Occurrence __IndicatorOccurrence;
+        [XmlIgnore] private List<AddressLine> _AddressLine;
+        [XmlIgnore] private string _Code;
+        [XmlIgnore] private string _Indicator;
+        [XmlIgnore] private Occurrence _IndicatorOccurrence;
 
-        [XmlIgnore] public bool __IndicatorOccurrenceSpecified;
-        [XmlIgnore] private NumberOccurrence __NumberRangeOccurrence;
+        [XmlIgnore] public bool _IndicatorOccurrenceSpecified;
+        [XmlIgnore] private NumberOccurrence _NumberRangeOccurrence;
 
-        [XmlIgnore] public bool __NumberRangeOccurrenceSpecified;
-        [XmlIgnore] private RangeType __RangeType;
+        [XmlIgnore] public bool _NumberRangeOccurrenceSpecified;
+        [XmlIgnore] private RangeType _RangeType;
 
-        [XmlIgnore] public bool __RangeTypeSpecified;
-        [XmlIgnore] private string __Separator;
-        [XmlIgnore] private ThoroughfareNumberFrom __ThoroughfareNumberFrom;
-        [XmlIgnore] private ThoroughfareNumberTo __ThoroughfareNumberTo;
-        [XmlIgnore] private string __Type;
+        [XmlIgnore] public bool _RangeTypeSpecified;
+        [XmlIgnore] private string _Separator;
+        [XmlIgnore] private ThoroughfareNumberFrom _ThoroughfareNumberFrom;
+        [XmlIgnore] private ThoroughfareNumberTo _ThoroughfareNumberTo;
+        [XmlIgnore] private string _Type;
         [XmlAnyAttribute] public XmlAttribute[] AnyAttr;
 
         [XmlAttribute(AttributeName = "RangeType")]
         public RangeType RangeType
         {
-            get { return __RangeType; }
+            get { return _RangeType; }
             set
             {
-                __RangeType = value;
-                __RangeTypeSpecified = true;
+                _RangeType = value;
+                _RangeTypeSpecified = true;
             }
         }
 
         [XmlAttribute(AttributeName = "Indicator")]
         public string Indicator
         {
-            get { return __Indicator; }
-            set { __Indicator = value; }
+            get { return _Indicator; }
+            set { _Indicator = value; }
         }
 
         [XmlAttribute(AttributeName = "Separator")]
         public string Separator
         {
-            get { return __Separator; }
-            set { __Separator = value; }
+            get { return _Separator; }
+            set { _Separator = value; }
         }
 
         [XmlAttribute(AttributeName = "IndicatorOccurrence")]
         public Occurrence IndicatorOccurrence
         {
-            get { return __IndicatorOccurrence; }
+            get { return _IndicatorOccurrence; }
             set
             {
-                __IndicatorOccurrence = value;
-                __IndicatorOccurrenceSpecified = true;
+                _IndicatorOccurrence = value;
+                _IndicatorOccurrenceSpecified = true;
             }
         }
 
         [XmlAttribute(AttributeName = "NumberRangeOccurrence")]
         public NumberOccurrence NumberRangeOccurrence
         {
-            get { return __NumberRangeOccurrence; }
+            get { return _NumberRangeOccurrence; }
             set
             {
-                __NumberRangeOccurrence = value;
-                __NumberRangeOccurrenceSpecified = true;
+                _NumberRangeOccurrence = value;
+                _NumberRangeOccurrenceSpecified = true;
             }
         }
 
         [XmlAttribute(AttributeName = "Type")]
         public string Type
         {
-            get { return __Type; }
-            set { __Type = value; }
+            get { return _Type; }
+            set { _Type = value; }
         }
 
         [XmlAttribute(AttributeName = "Code")]
         public string Code
         {
-            get { return __Code; }
-            set { __Code = value; }
+            get { return _Code; }
+            set { _Code = value; }
         }
 
         [XmlElement(Type = typeof (AddressLine), ElementName = "AddressLine", IsNullable = false,
@@ -108,34 +108,26 @@ namespace SharpMap.Entities.xAL
         {
             get
             {
-                if (__AddressLine == null) __AddressLine = new List<AddressLine>();
-                return __AddressLine;
+                if (_AddressLine == null) _AddressLine = new List<AddressLine>();
+                return _AddressLine;
             }
-            set { __AddressLine = value; }
+            set { _AddressLine = value; }
         }
 
         [XmlElement(Type = typeof (ThoroughfareNumberFrom), ElementName = "ThoroughfareNumberFrom", IsNullable = false,
             Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public ThoroughfareNumberFrom ThoroughfareNumberFrom
         {
-            get
-            {
-                
-                return __ThoroughfareNumberFrom;
-            }
-            set { __ThoroughfareNumberFrom = value; }
+            get { return _ThoroughfareNumberFrom; }
+            set { _ThoroughfareNumberFrom = value; }
         }
 
         [XmlElement(Type = typeof (ThoroughfareNumberTo), ElementName = "ThoroughfareNumberTo", IsNullable = false,
             Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public ThoroughfareNumberTo ThoroughfareNumberTo
         {
-            get
-            {
-                
-                return __ThoroughfareNumberTo;
-            }
-            set { __ThoroughfareNumberTo = value; }
+            get { return _ThoroughfareNumberTo; }
+            set { _ThoroughfareNumberTo = value; }
         }
 
         public void MakeSchemaCompliant()

@@ -20,6 +20,5 @@ namespace SharpMap.Entities.Ogc.Kml
     [XmlRoot(ElementName = "hotSpot", Namespace = Declarations.SchemaVersion, IsNullable = false), Serializable]
     public class HotSpot : Vector2
     {
-
     }
 }

@@ -21,66 +21,66 @@ namespace SharpMap.Entities.xAL
     [XmlType(TypeName = "PremiseNumberRange", Namespace = Declarations.SchemaVersion), Serializable]
     public class PremiseNumberRange
     {
-        [XmlIgnore] private string __Indicator;
-        [XmlIgnore] private Occurrence __IndicatorOccurence;
+        [XmlIgnore] private string _Indicator;
+        [XmlIgnore] private Occurrence _IndicatorOccurence;
 
-        [XmlIgnore] public bool __IndicatorOccurenceSpecified;
-        [XmlIgnore] private NumberOccurrence __NumberRangeOccurence;
+        [XmlIgnore] public bool _IndicatorOccurenceSpecified;
+        [XmlIgnore] private NumberOccurrence _NumberRangeOccurence;
 
-        [XmlIgnore] public bool __NumberRangeOccurenceSpecified;
-        [XmlIgnore] private PremiseNumberRangeFrom __PremiseNumberRangeFrom;
-        [XmlIgnore] private PremiseNumberRangeTo __PremiseNumberRangeTo;
-        [XmlIgnore] private string __RangeType;
-        [XmlIgnore] private string __Separator;
-        [XmlIgnore] private string __Type;
+        [XmlIgnore] public bool _NumberRangeOccurenceSpecified;
+        [XmlIgnore] private PremiseNumberRangeFrom _PremiseNumberRangeFrom;
+        [XmlIgnore] private PremiseNumberRangeTo _PremiseNumberRangeTo;
+        [XmlIgnore] private string _RangeType;
+        [XmlIgnore] private string _Separator;
+        [XmlIgnore] private string _Type;
 
         [XmlAttribute(AttributeName = "RangeType")]
         public string RangeType
         {
-            get { return __RangeType; }
-            set { __RangeType = value; }
+            get { return _RangeType; }
+            set { _RangeType = value; }
         }
 
         [XmlAttribute(AttributeName = "Indicator")]
         public string Indicator
         {
-            get { return __Indicator; }
-            set { __Indicator = value; }
+            get { return _Indicator; }
+            set { _Indicator = value; }
         }
 
         [XmlAttribute(AttributeName = "Separator")]
         public string Separator
         {
-            get { return __Separator; }
-            set { __Separator = value; }
+            get { return _Separator; }
+            set { _Separator = value; }
         }
 
         [XmlAttribute(AttributeName = "Type")]
         public string Type
         {
-            get { return __Type; }
-            set { __Type = value; }
+            get { return _Type; }
+            set { _Type = value; }
         }
 
         [XmlAttribute(AttributeName = "IndicatorOccurence")]
         public Occurrence IndicatorOccurence
         {
-            get { return __IndicatorOccurence; }
+            get { return _IndicatorOccurence; }
             set
             {
-                __IndicatorOccurence = value;
-                __IndicatorOccurenceSpecified = true;
+                _IndicatorOccurence = value;
+                _IndicatorOccurenceSpecified = true;
             }
         }
 
         [XmlAttribute(AttributeName = "NumberRangeOccurence")]
         public NumberOccurrence NumberRangeOccurence
         {
-            get { return __NumberRangeOccurence; }
+            get { return _NumberRangeOccurence; }
             set
             {
-                __NumberRangeOccurence = value;
-                __NumberRangeOccurenceSpecified = true;
+                _NumberRangeOccurence = value;
+                _NumberRangeOccurenceSpecified = true;
             }
         }
 
@@ -88,24 +88,16 @@ namespace SharpMap.Entities.xAL
             Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public PremiseNumberRangeFrom PremiseNumberRangeFrom
         {
-            get
-            {
-                
-                return __PremiseNumberRangeFrom;
-            }
-            set { __PremiseNumberRangeFrom = value; }
+            get { return _PremiseNumberRangeFrom; }
+            set { _PremiseNumberRangeFrom = value; }
         }
 
         [XmlElement(Type = typeof (PremiseNumberRangeTo), ElementName = "PremiseNumberRangeTo", IsNullable = false,
             Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public PremiseNumberRangeTo PremiseNumberRangeTo
         {
-            get
-            {
-                
-                return __PremiseNumberRangeTo;
-            }
-            set { __PremiseNumberRangeTo = value; }
+            get { return _PremiseNumberRangeTo; }
+            set { _PremiseNumberRangeTo = value; }
         }
 
         public void MakeSchemaCompliant()

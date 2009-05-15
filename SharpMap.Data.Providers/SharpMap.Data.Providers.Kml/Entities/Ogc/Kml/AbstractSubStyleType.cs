@@ -43,8 +43,8 @@ namespace SharpMap.Entities.Ogc.Kml
     [XmlInclude(typeof (ViewVolumeType))]
     public abstract class AbstractSubStyleType : AbstractObjectType
     {
-        [XmlIgnore] private List<AbstractSubStyleObjectExtensionGroup> __AbstractSubStyleObjectExtensionGroup;
-        [XmlIgnore] private List<string> __AbstractSubStyleSimpleExtensionGroup;
+        [XmlIgnore] private List<AbstractSubStyleObjectExtensionGroup> _AbstractSubStyleObjectExtensionGroup;
+        [XmlIgnore] private List<string> _AbstractSubStyleSimpleExtensionGroup;
 
         [XmlElement(Type = typeof (string), ElementName = "AbstractSubStyleSimpleExtensionGroup", IsNullable = false,
             Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
@@ -52,11 +52,11 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (__AbstractSubStyleSimpleExtensionGroup == null)
-                    __AbstractSubStyleSimpleExtensionGroup = new List<string>();
-                return __AbstractSubStyleSimpleExtensionGroup;
+                if (_AbstractSubStyleSimpleExtensionGroup == null)
+                    _AbstractSubStyleSimpleExtensionGroup = new List<string>();
+                return _AbstractSubStyleSimpleExtensionGroup;
             }
-            set { __AbstractSubStyleSimpleExtensionGroup = value; }
+            set { _AbstractSubStyleSimpleExtensionGroup = value; }
         }
 
         [XmlElement(Type = typeof (AbstractSubStyleObjectExtensionGroup),
@@ -66,14 +66,14 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (__AbstractSubStyleObjectExtensionGroup == null)
-                    __AbstractSubStyleObjectExtensionGroup = new List<AbstractSubStyleObjectExtensionGroup>();
-                return __AbstractSubStyleObjectExtensionGroup;
+                if (_AbstractSubStyleObjectExtensionGroup == null)
+                    _AbstractSubStyleObjectExtensionGroup = new List<AbstractSubStyleObjectExtensionGroup>();
+                return _AbstractSubStyleObjectExtensionGroup;
             }
-            set { __AbstractSubStyleObjectExtensionGroup = value; }
+            set { _AbstractSubStyleObjectExtensionGroup = value; }
         }
 
-        public new void MakeSchemaCompliant()
+        public new virtual void MakeSchemaCompliant()
         {
             base.MakeSchemaCompliant();
         }

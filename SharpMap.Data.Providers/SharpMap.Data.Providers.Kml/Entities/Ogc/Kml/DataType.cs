@@ -22,10 +22,10 @@ namespace SharpMap.Entities.Ogc.Kml
     [XmlType(TypeName = "DataType", Namespace = Declarations.SchemaVersion), Serializable]
     public class DataType : AbstractObjectType
     {
-        [XmlIgnore] private List<string> __DataExtension;
-        [XmlIgnore] private string __displayName;
-        [XmlIgnore] private string __name;
-        [XmlIgnore] private string __value;
+        [XmlIgnore] private List<string> _DataExtension;
+        [XmlIgnore] private string _displayName;
+        [XmlIgnore] private string _name;
+        [XmlIgnore] private string _value;
 
         public DataType()
         {
@@ -35,24 +35,24 @@ namespace SharpMap.Entities.Ogc.Kml
         [XmlAttribute(AttributeName = "name", DataType = "string")]
         public string name
         {
-            get { return __name; }
-            set { __name = value; }
+            get { return _name; }
+            set { _name = value; }
         }
 
         [XmlElement(ElementName = "displayName", IsNullable = false, Form = XmlSchemaForm.Qualified, DataType = "string"
             , Namespace = Declarations.SchemaVersion)]
         public string displayName
         {
-            get { return __displayName; }
-            set { __displayName = value; }
+            get { return _displayName; }
+            set { _displayName = value; }
         }
 
         [XmlElement(ElementName = "value", IsNullable = false, Form = XmlSchemaForm.Qualified, DataType = "string",
             Namespace = Declarations.SchemaVersion)]
         public string @value
         {
-            get { return __value; }
-            set { __value = value; }
+            get { return _value; }
+            set { _value = value; }
         }
 
         [XmlElement(Type = typeof (string), ElementName = "DataExtension", IsNullable = false,
@@ -61,10 +61,10 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (__DataExtension == null) __DataExtension = new List<string>();
-                return __DataExtension;
+                if (_DataExtension == null) _DataExtension = new List<string>();
+                return _DataExtension;
             }
-            set { __DataExtension = value; }
+            set { _DataExtension = value; }
         }
 
         public new void MakeSchemaCompliant()

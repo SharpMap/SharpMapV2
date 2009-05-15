@@ -20,6 +20,5 @@ namespace SharpMap.Entities.Ogc.Kml
     [XmlRoot(ElementName = "screenXY", Namespace = Declarations.SchemaVersion, IsNullable = false), Serializable]
     public class ScreenXY : Vector2
     {
-
     }
 }

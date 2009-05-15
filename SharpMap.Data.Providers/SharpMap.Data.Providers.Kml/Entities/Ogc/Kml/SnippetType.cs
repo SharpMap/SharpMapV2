@@ -20,11 +20,11 @@ namespace SharpMap.Entities.Ogc.Kml
     [XmlType(TypeName = "SnippetType", Namespace = Declarations.SchemaVersion), Serializable]
     public class SnippetType
     {
-        [XmlIgnore] private int __maxLines;
+        [XmlIgnore] private int _maxLines;
 
-        [XmlIgnore] public bool __maxLinesSpecified;
+        [XmlIgnore] public bool _maxLinesSpecified;
 
-        [XmlIgnore] private string __Value;
+        [XmlIgnore] private string _Value;
 
         public SnippetType()
         {
@@ -34,19 +34,19 @@ namespace SharpMap.Entities.Ogc.Kml
         [XmlAttribute(AttributeName = "maxLines", DataType = "int")]
         public int maxLines
         {
-            get { return __maxLines; }
+            get { return _maxLines; }
             set
             {
-                __maxLines = value;
-                __maxLinesSpecified = true;
+                _maxLines = value;
+                _maxLinesSpecified = true;
             }
         }
 
         [XmlText(DataType = "string")]
         public string Value
         {
-            get { return __Value; }
-            set { __Value = value; }
+            get { return _Value; }
+            set { _Value = value; }
         }
 
         public void MakeSchemaCompliant()

@@ -43,25 +43,25 @@ namespace SharpMap.Entities.Ogc.Kml
     [XmlInclude(typeof (ViewVolumeType))]
     public class AliasType : AbstractObjectType
     {
-        [XmlIgnore] private List<AliasObjectExtensionGroup> __AliasObjectExtensionGroup;
-        [XmlIgnore] private List<string> __AliasSimpleExtensionGroup;
-        [XmlIgnore] private string __sourceHref;
-        [XmlIgnore] private string __targetHref;
+        [XmlIgnore] private List<AliasObjectExtensionGroup> _AliasObjectExtensionGroup;
+        [XmlIgnore] private List<string> _AliasSimpleExtensionGroup;
+        [XmlIgnore] private string _sourceHref;
+        [XmlIgnore] private string _targetHref;
 
         [XmlElement(ElementName = "targetHref", IsNullable = false, Form = XmlSchemaForm.Qualified, DataType = "anyURI",
             Namespace = Declarations.SchemaVersion)]
         public string targetHref
         {
-            get { return __targetHref; }
-            set { __targetHref = value; }
+            get { return _targetHref; }
+            set { _targetHref = value; }
         }
 
         [XmlElement(ElementName = "sourceHref", IsNullable = false, Form = XmlSchemaForm.Qualified, DataType = "anyURI",
             Namespace = Declarations.SchemaVersion)]
         public string sourceHref
         {
-            get { return __sourceHref; }
-            set { __sourceHref = value; }
+            get { return _sourceHref; }
+            set { _sourceHref = value; }
         }
 
         [XmlElement(Type = typeof (string), ElementName = "AliasSimpleExtensionGroup", IsNullable = false,
@@ -70,10 +70,10 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (__AliasSimpleExtensionGroup == null) __AliasSimpleExtensionGroup = new List<string>();
-                return __AliasSimpleExtensionGroup;
+                if (_AliasSimpleExtensionGroup == null) _AliasSimpleExtensionGroup = new List<string>();
+                return _AliasSimpleExtensionGroup;
             }
-            set { __AliasSimpleExtensionGroup = value; }
+            set { _AliasSimpleExtensionGroup = value; }
         }
 
         [XmlElement(Type = typeof (AliasObjectExtensionGroup), ElementName = "AliasObjectExtensionGroup",
@@ -82,11 +82,11 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (__AliasObjectExtensionGroup == null)
-                    __AliasObjectExtensionGroup = new List<AliasObjectExtensionGroup>();
-                return __AliasObjectExtensionGroup;
+                if (_AliasObjectExtensionGroup == null)
+                    _AliasObjectExtensionGroup = new List<AliasObjectExtensionGroup>();
+                return _AliasObjectExtensionGroup;
             }
-            set { __AliasObjectExtensionGroup = value; }
+            set { _AliasObjectExtensionGroup = value; }
         }
 
         public new void MakeSchemaCompliant()

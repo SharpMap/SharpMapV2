@@ -43,15 +43,15 @@ namespace SharpMap.Entities.Ogc.Kml
     [XmlInclude(typeof (ViewVolumeType))]
     public class BalloonStyleType : AbstractSubStyleType
     {
-        [XmlIgnore] private List<BalloonStyleObjectExtensionGroup> __BalloonStyleObjectExtensionGroup;
-        [XmlIgnore] private List<string> __BalloonStyleSimpleExtensionGroup;
-        [XmlIgnore] private byte[] __bgColor;
-        [XmlIgnore] private byte[] __color;
-        [XmlIgnore] private DisplayMode __displayMode;
+        [XmlIgnore] private List<BalloonStyleObjectExtensionGroup> _BalloonStyleObjectExtensionGroup;
+        [XmlIgnore] private List<string> _BalloonStyleSimpleExtensionGroup;
+        [XmlIgnore] private byte[] _bgColor;
+        [XmlIgnore] private byte[] _color;
+        [XmlIgnore] private DisplayMode _displayMode;
 
-        [XmlIgnore] public bool __displayModeSpecified;
-        [XmlIgnore] private string __text;
-        [XmlIgnore] private byte[] __textColor;
+        [XmlIgnore] public bool _displayModeSpecified;
+        [XmlIgnore] private string _text;
+        [XmlIgnore] private byte[] _textColor;
 
         public BalloonStyleType()
         {
@@ -62,32 +62,32 @@ namespace SharpMap.Entities.Ogc.Kml
             Namespace = Declarations.SchemaVersion)]
         public byte[] color
         {
-            get { return __color; }
-            set { __color = value; }
+            get { return _color; }
+            set { _color = value; }
         }
 
         [XmlElement(ElementName = "bgColor", IsNullable = false, Form = XmlSchemaForm.Qualified, DataType = "hexBinary",
             Namespace = Declarations.SchemaVersion)]
         public byte[] bgColor
         {
-            get { return __bgColor; }
-            set { __bgColor = value; }
+            get { return _bgColor; }
+            set { _bgColor = value; }
         }
 
         [XmlElement(ElementName = "textColor", IsNullable = false, Form = XmlSchemaForm.Qualified,
             DataType = "hexBinary", Namespace = Declarations.SchemaVersion)]
         public byte[] textColor
         {
-            get { return __textColor; }
-            set { __textColor = value; }
+            get { return _textColor; }
+            set { _textColor = value; }
         }
 
         [XmlElement(ElementName = "text", IsNullable = false, Form = XmlSchemaForm.Qualified, DataType = "string",
             Namespace = Declarations.SchemaVersion)]
         public string text
         {
-            get { return __text; }
-            set { __text = value; }
+            get { return _text; }
+            set { _text = value; }
         }
 
 
@@ -95,11 +95,11 @@ namespace SharpMap.Entities.Ogc.Kml
             Namespace = Declarations.SchemaVersion)]
         public DisplayMode displayMode
         {
-            get { return __displayMode; }
+            get { return _displayMode; }
             set
             {
-                __displayMode = value;
-                __displayModeSpecified = true;
+                _displayMode = value;
+                _displayModeSpecified = true;
             }
         }
 
@@ -109,10 +109,10 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (__BalloonStyleSimpleExtensionGroup == null) __BalloonStyleSimpleExtensionGroup = new List<string>();
-                return __BalloonStyleSimpleExtensionGroup;
+                if (_BalloonStyleSimpleExtensionGroup == null) _BalloonStyleSimpleExtensionGroup = new List<string>();
+                return _BalloonStyleSimpleExtensionGroup;
             }
-            set { __BalloonStyleSimpleExtensionGroup = value; }
+            set { _BalloonStyleSimpleExtensionGroup = value; }
         }
 
         [XmlElement(Type = typeof (BalloonStyleObjectExtensionGroup), ElementName = "BalloonStyleObjectExtensionGroup",
@@ -121,16 +121,11 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (__BalloonStyleObjectExtensionGroup == null)
-                    __BalloonStyleObjectExtensionGroup = new List<BalloonStyleObjectExtensionGroup>();
-                return __BalloonStyleObjectExtensionGroup;
+                if (_BalloonStyleObjectExtensionGroup == null)
+                    _BalloonStyleObjectExtensionGroup = new List<BalloonStyleObjectExtensionGroup>();
+                return _BalloonStyleObjectExtensionGroup;
             }
-            set { __BalloonStyleObjectExtensionGroup = value; }
-        }
-
-        public new void MakeSchemaCompliant()
-        {
-            base.MakeSchemaCompliant();
+            set { _BalloonStyleObjectExtensionGroup = value; }
         }
     }
 }

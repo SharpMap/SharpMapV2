@@ -43,16 +43,16 @@ namespace SharpMap.Entities.Ogc.Kml
     [XmlInclude(typeof (ViewVolumeType))]
     public class NetworkLinkType : AbstractFeatureType
     {
-        [XmlIgnore] private bool __flyToView;
+        [XmlIgnore] private bool _flyToView;
 
-        [XmlIgnore] public bool __flyToViewSpecified;
-        [XmlIgnore] private Link __Link;
-        [XmlIgnore] private List<NetworkLinkObjectExtensionGroup> __NetworkLinkObjectExtensionGroup;
-        [XmlIgnore] private List<string> __NetworkLinkSimpleExtensionGroup;
-        [XmlIgnore] private bool __refreshVisibility;
+        [XmlIgnore] public bool _flyToViewSpecified;
+        [XmlIgnore] private Link _Link;
+        [XmlIgnore] private List<NetworkLinkObjectExtensionGroup> _NetworkLinkObjectExtensionGroup;
+        [XmlIgnore] private List<string> _NetworkLinkSimpleExtensionGroup;
+        [XmlIgnore] private bool _refreshVisibility;
 
-        [XmlIgnore] public bool __refreshVisibilitySpecified;
-        [XmlIgnore] private Url __Url;
+        [XmlIgnore] public bool _refreshVisibilitySpecified;
+        [XmlIgnore] private Url _Url;
 
         public NetworkLinkType()
         {
@@ -65,11 +65,11 @@ namespace SharpMap.Entities.Ogc.Kml
             DataType = "boolean", Namespace = Declarations.SchemaVersion)]
         public bool refreshVisibility
         {
-            get { return __refreshVisibility; }
+            get { return _refreshVisibility; }
             set
             {
-                __refreshVisibility = value;
-                __refreshVisibilitySpecified = true;
+                _refreshVisibility = value;
+                _refreshVisibilitySpecified = true;
             }
         }
 
@@ -78,11 +78,11 @@ namespace SharpMap.Entities.Ogc.Kml
             Namespace = Declarations.SchemaVersion)]
         public bool flyToView
         {
-            get { return __flyToView; }
+            get { return _flyToView; }
             set
             {
-                __flyToView = value;
-                __flyToViewSpecified = true;
+                _flyToView = value;
+                _flyToViewSpecified = true;
             }
         }
 
@@ -90,24 +90,16 @@ namespace SharpMap.Entities.Ogc.Kml
             Namespace = Declarations.SchemaVersion)]
         public Url Url
         {
-            get
-            {
-                
-                return __Url;
-            }
-            set { __Url = value; }
+            get { return _Url; }
+            set { _Url = value; }
         }
 
         [XmlElement(Type = typeof (Link), ElementName = "Link", IsNullable = false, Form = XmlSchemaForm.Qualified,
             Namespace = Declarations.SchemaVersion)]
         public Link link
         {
-            get
-            {
-                
-                return __Link;
-            }
-            set { __Link = value; }
+            get { return _Link; }
+            set { _Link = value; }
         }
 
         [XmlElement(Type = typeof (string), ElementName = "NetworkLinkSimpleExtensionGroup", IsNullable = false,
@@ -116,10 +108,10 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (__NetworkLinkSimpleExtensionGroup == null) __NetworkLinkSimpleExtensionGroup = new List<string>();
-                return __NetworkLinkSimpleExtensionGroup;
+                if (_NetworkLinkSimpleExtensionGroup == null) _NetworkLinkSimpleExtensionGroup = new List<string>();
+                return _NetworkLinkSimpleExtensionGroup;
             }
-            set { __NetworkLinkSimpleExtensionGroup = value; }
+            set { _NetworkLinkSimpleExtensionGroup = value; }
         }
 
         [XmlElement(Type = typeof (NetworkLinkObjectExtensionGroup), ElementName = "NetworkLinkObjectExtensionGroup",
@@ -128,11 +120,11 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (__NetworkLinkObjectExtensionGroup == null)
-                    __NetworkLinkObjectExtensionGroup = new List<NetworkLinkObjectExtensionGroup>();
-                return __NetworkLinkObjectExtensionGroup;
+                if (_NetworkLinkObjectExtensionGroup == null)
+                    _NetworkLinkObjectExtensionGroup = new List<NetworkLinkObjectExtensionGroup>();
+                return _NetworkLinkObjectExtensionGroup;
             }
-            set { __NetworkLinkObjectExtensionGroup = value; }
+            set { _NetworkLinkObjectExtensionGroup = value; }
         }
 
         public new void MakeSchemaCompliant()

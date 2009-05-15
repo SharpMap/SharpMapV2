@@ -20,6 +20,5 @@ namespace SharpMap.Entities.Ogc.Kml
     [XmlRoot(ElementName = "overlayXY", Namespace = Declarations.SchemaVersion, IsNullable = false), Serializable]
     public class OverlayXY : Vector2
     {
-
     }
 }

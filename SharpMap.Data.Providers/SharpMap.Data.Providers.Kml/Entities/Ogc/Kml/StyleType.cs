@@ -43,88 +43,64 @@ namespace SharpMap.Entities.Ogc.Kml
     [XmlInclude(typeof (ViewVolumeType))]
     public class StyleType : AbstractStyleSelectorType
     {
-        [XmlIgnore] private BalloonStyle __BalloonStyle;
-        [XmlIgnore] private IconStyle __IconStyle;
+        [XmlIgnore] private BalloonStyle _BalloonStyle;
+        [XmlIgnore] private IconStyle _IconStyle;
 
-        [XmlIgnore] private LabelStyle __LabelStyle;
+        [XmlIgnore] private LabelStyle _LabelStyle;
 
-        [XmlIgnore] private LineStyle __LineStyle;
-        [XmlIgnore] private ListStyle __ListStyle;
+        [XmlIgnore] private LineStyle _LineStyle;
+        [XmlIgnore] private ListStyle _ListStyle;
 
-        [XmlIgnore] private PolyStyle __PolyStyle;
-        [XmlIgnore] private List<StyleObjectExtensionGroup> __StyleObjectExtensionGroup;
-        [XmlIgnore] private List<string> __StyleSimpleExtensionGroup;
+        [XmlIgnore] private PolyStyle _PolyStyle;
+        [XmlIgnore] private List<StyleObjectExtensionGroup> _StyleObjectExtensionGroup;
+        [XmlIgnore] private List<string> _StyleSimpleExtensionGroup;
 
         [XmlElement(Type = typeof (IconStyle), ElementName = "IconStyle", IsNullable = false,
             Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public IconStyle IconStyle
         {
-            get
-            {
-                
-                return __IconStyle;
-            }
-            set { __IconStyle = value; }
+            get { return _IconStyle; }
+            set { _IconStyle = value; }
         }
 
         [XmlElement(Type = typeof (LabelStyle), ElementName = "LabelStyle", IsNullable = false,
             Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public LabelStyle LabelStyle
         {
-            get
-            {
-                
-                return __LabelStyle;
-            }
-            set { __LabelStyle = value; }
+            get { return _LabelStyle; }
+            set { _LabelStyle = value; }
         }
 
         [XmlElement(Type = typeof (LineStyle), ElementName = "LineStyle", IsNullable = false,
             Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public LineStyle LineStyle
         {
-            get
-            {
-                
-                return __LineStyle;
-            }
-            set { __LineStyle = value; }
+            get { return _LineStyle; }
+            set { _LineStyle = value; }
         }
 
         [XmlElement(Type = typeof (PolyStyle), ElementName = "PolyStyle", IsNullable = false,
             Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public PolyStyle PolyStyle
         {
-            get
-            {
-                
-                return __PolyStyle;
-            }
-            set { __PolyStyle = value; }
+            get { return _PolyStyle; }
+            set { _PolyStyle = value; }
         }
 
         [XmlElement(Type = typeof (BalloonStyle), ElementName = "BalloonStyle", IsNullable = false,
             Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public BalloonStyle BalloonStyle
         {
-            get
-            {
-                
-                return __BalloonStyle;
-            }
-            set { __BalloonStyle = value; }
+            get { return _BalloonStyle; }
+            set { _BalloonStyle = value; }
         }
 
         [XmlElement(Type = typeof (ListStyle), ElementName = "ListStyle", IsNullable = false,
             Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public ListStyle ListStyle
         {
-            get
-            {
-                
-                return __ListStyle;
-            }
-            set { __ListStyle = value; }
+            get { return _ListStyle; }
+            set { _ListStyle = value; }
         }
 
         [XmlElement(Type = typeof (string), ElementName = "StyleSimpleExtensionGroup", IsNullable = false,
@@ -133,10 +109,10 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (__StyleSimpleExtensionGroup == null) __StyleSimpleExtensionGroup = new List<string>();
-                return __StyleSimpleExtensionGroup;
+                if (_StyleSimpleExtensionGroup == null) _StyleSimpleExtensionGroup = new List<string>();
+                return _StyleSimpleExtensionGroup;
             }
-            set { __StyleSimpleExtensionGroup = value; }
+            set { _StyleSimpleExtensionGroup = value; }
         }
 
         [XmlElement(Type = typeof (StyleObjectExtensionGroup), ElementName = "StyleObjectExtensionGroup",
@@ -145,11 +121,11 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (__StyleObjectExtensionGroup == null)
-                    __StyleObjectExtensionGroup = new List<StyleObjectExtensionGroup>();
-                return __StyleObjectExtensionGroup;
+                if (_StyleObjectExtensionGroup == null)
+                    _StyleObjectExtensionGroup = new List<StyleObjectExtensionGroup>();
+                return _StyleObjectExtensionGroup;
             }
-            set { __StyleObjectExtensionGroup = value; }
+            set { _StyleObjectExtensionGroup = value; }
         }
 
         public new void MakeSchemaCompliant()

@@ -43,13 +43,13 @@ namespace SharpMap.Entities.Ogc.Kml
     [XmlInclude(typeof (ViewVolumeType))]
     public class PointType : AbstractGeometryType
     {
-        [XmlIgnore] private string __altitudeModeGroup;
-        [XmlIgnore] private string __coordinates;
-        [XmlIgnore] private bool __extrude;
+        [XmlIgnore] private string _altitudeModeGroup;
+        [XmlIgnore] private string _coordinates;
+        [XmlIgnore] private bool _extrude;
 
-        [XmlIgnore] public bool __extrudeSpecified;
-        [XmlIgnore] private List<PointObjectExtensionGroup> __PointObjectExtensionGroup;
-        [XmlIgnore] private List<string> __PointSimpleExtensionGroup;
+        [XmlIgnore] public bool _extrudeSpecified;
+        [XmlIgnore] private List<PointObjectExtensionGroup> _PointObjectExtensionGroup;
+        [XmlIgnore] private List<string> _PointSimpleExtensionGroup;
 
         public PointType()
         {
@@ -61,11 +61,11 @@ namespace SharpMap.Entities.Ogc.Kml
             Namespace = Declarations.SchemaVersion)]
         public bool extrude
         {
-            get { return __extrude; }
+            get { return _extrude; }
             set
             {
-                __extrude = value;
-                __extrudeSpecified = true;
+                _extrude = value;
+                _extrudeSpecified = true;
             }
         }
 
@@ -73,16 +73,16 @@ namespace SharpMap.Entities.Ogc.Kml
             Namespace = Declarations.SchemaVersion)]
         public string altitudeModeGroup
         {
-            get { return __altitudeModeGroup; }
-            set { __altitudeModeGroup = value; }
+            get { return _altitudeModeGroup; }
+            set { _altitudeModeGroup = value; }
         }
 
         [XmlElement(ElementName = "coordinates", IsNullable = false, Form = XmlSchemaForm.Qualified,
             Namespace = Declarations.SchemaVersion)]
         public string coordinates
         {
-            get { return __coordinates; }
-            set { __coordinates = value; }
+            get { return _coordinates; }
+            set { _coordinates = value; }
         }
 
         [XmlElement(Type = typeof (string), ElementName = "PointSimpleExtensionGroup", IsNullable = false,
@@ -91,10 +91,10 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (__PointSimpleExtensionGroup == null) __PointSimpleExtensionGroup = new List<string>();
-                return __PointSimpleExtensionGroup;
+                if (_PointSimpleExtensionGroup == null) _PointSimpleExtensionGroup = new List<string>();
+                return _PointSimpleExtensionGroup;
             }
-            set { __PointSimpleExtensionGroup = value; }
+            set { _PointSimpleExtensionGroup = value; }
         }
 
         [XmlElement(Type = typeof (PointObjectExtensionGroup), ElementName = "PointObjectExtensionGroup",
@@ -103,11 +103,11 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (__PointObjectExtensionGroup == null)
-                    __PointObjectExtensionGroup = new List<PointObjectExtensionGroup>();
-                return __PointObjectExtensionGroup;
+                if (_PointObjectExtensionGroup == null)
+                    _PointObjectExtensionGroup = new List<PointObjectExtensionGroup>();
+                return _PointObjectExtensionGroup;
             }
-            set { __PointObjectExtensionGroup = value; }
+            set { _PointObjectExtensionGroup = value; }
         }
 
         public new void MakeSchemaCompliant()

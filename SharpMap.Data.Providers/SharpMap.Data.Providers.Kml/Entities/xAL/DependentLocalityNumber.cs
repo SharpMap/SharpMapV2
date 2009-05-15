@@ -21,36 +21,36 @@ namespace SharpMap.Entities.xAL
     [XmlType(TypeName = "DependentLocalityNumber", Namespace = Declarations.SchemaVersion), Serializable]
     public class DependentLocalityNumber
     {
-        [XmlIgnore] private string __Code;
-        [XmlIgnore] private Occurrence __NameNumberOccurrence;
+        [XmlIgnore] private string _Code;
+        [XmlIgnore] private Occurrence _NameNumberOccurrence;
 
-        [XmlIgnore] public bool __NameNumberOccurrenceSpecified;
-        [XmlIgnore] private string __Value;
+        [XmlIgnore] public bool _NameNumberOccurrenceSpecified;
+        [XmlIgnore] private string _Value;
         [XmlAnyAttribute] public XmlAttribute[] AnyAttr;
 
         [XmlAttribute(AttributeName = "NameNumberOccurrence")]
         public Occurrence NameNumberOccurrence
         {
-            get { return __NameNumberOccurrence; }
+            get { return _NameNumberOccurrence; }
             set
             {
-                __NameNumberOccurrence = value;
-                __NameNumberOccurrenceSpecified = true;
+                _NameNumberOccurrence = value;
+                _NameNumberOccurrenceSpecified = true;
             }
         }
 
         [XmlAttribute(AttributeName = "Code")]
         public string Code
         {
-            get { return __Code; }
-            set { __Code = value; }
+            get { return _Code; }
+            set { _Code = value; }
         }
 
         [XmlText(DataType = "string")]
         public string Value
         {
-            get { return __Value; }
-            set { __Value = value; }
+            get { return _Value; }
+            set { _Value = value; }
         }
 
         public void MakeSchemaCompliant()

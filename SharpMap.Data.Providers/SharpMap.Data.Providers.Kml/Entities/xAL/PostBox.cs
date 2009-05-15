@@ -23,30 +23,30 @@ namespace SharpMap.Entities.xAL
     [XmlRoot(ElementName = "PostBox", Namespace = Declarations.SchemaVersion, IsNullable = false), Serializable]
     public class PostBox
     {
-        [XmlIgnore] private List<AddressLine> __AddressLine;
-        [XmlIgnore] private FirmType __Firm;
-        [XmlIgnore] private string __Indicator;
-        [XmlIgnore] private PostalCode __PostalCode;
-        [XmlIgnore] private PostBoxNumber __PostBoxNumber;
-        [XmlIgnore] private PostBoxNumberExtension __PostBoxNumberExtension;
-        [XmlIgnore] private PostBoxNumberPrefix __PostBoxNumberPrefix;
-        [XmlIgnore] private PostBoxNumberSuffix __PostBoxNumberSuffix;
-        [XmlIgnore] private string __Type;
+        [XmlIgnore] private List<AddressLine> _AddressLine;
+        [XmlIgnore] private FirmType _Firm;
+        [XmlIgnore] private string _Indicator;
+        [XmlIgnore] private PostalCode _PostalCode;
+        [XmlIgnore] private PostBoxNumber _PostBoxNumber;
+        [XmlIgnore] private PostBoxNumberExtension _PostBoxNumberExtension;
+        [XmlIgnore] private PostBoxNumberPrefix _PostBoxNumberPrefix;
+        [XmlIgnore] private PostBoxNumberSuffix _PostBoxNumberSuffix;
+        [XmlIgnore] private string _Type;
         [XmlAnyElement] public XmlElement[] Any;
         [XmlAnyAttribute] public XmlAttribute[] AnyAttr;
 
         [XmlAttribute(AttributeName = "Type")]
         public string Type
         {
-            get { return __Type; }
-            set { __Type = value; }
+            get { return _Type; }
+            set { _Type = value; }
         }
 
         [XmlAttribute(AttributeName = "Indicator")]
         public string Indicator
         {
-            get { return __Indicator; }
-            set { __Indicator = value; }
+            get { return _Indicator; }
+            set { _Indicator = value; }
         }
 
         [XmlElement(Type = typeof (AddressLine), ElementName = "AddressLine", IsNullable = false,
@@ -55,82 +55,58 @@ namespace SharpMap.Entities.xAL
         {
             get
             {
-                if (__AddressLine == null) __AddressLine = new List<AddressLine>();
-                return __AddressLine;
+                if (_AddressLine == null) _AddressLine = new List<AddressLine>();
+                return _AddressLine;
             }
-            set { __AddressLine = value; }
+            set { _AddressLine = value; }
         }
 
         [XmlElement(Type = typeof (PostBoxNumber), ElementName = "PostBoxNumber", IsNullable = false,
             Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public PostBoxNumber PostBoxNumber
         {
-            get
-            {
-                
-                return __PostBoxNumber;
-            }
-            set { __PostBoxNumber = value; }
+            get { return _PostBoxNumber; }
+            set { _PostBoxNumber = value; }
         }
 
         [XmlElement(Type = typeof (PostBoxNumberPrefix), ElementName = "PostBoxNumberPrefix", IsNullable = false,
             Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public PostBoxNumberPrefix PostBoxNumberPrefix
         {
-            get
-            {
-                
-                return __PostBoxNumberPrefix;
-            }
-            set { __PostBoxNumberPrefix = value; }
+            get { return _PostBoxNumberPrefix; }
+            set { _PostBoxNumberPrefix = value; }
         }
 
         [XmlElement(Type = typeof (PostBoxNumberSuffix), ElementName = "PostBoxNumberSuffix", IsNullable = false,
             Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public PostBoxNumberSuffix PostBoxNumberSuffix
         {
-            get
-            {
-                
-                return __PostBoxNumberSuffix;
-            }
-            set { __PostBoxNumberSuffix = value; }
+            get { return _PostBoxNumberSuffix; }
+            set { _PostBoxNumberSuffix = value; }
         }
 
         [XmlElement(Type = typeof (PostBoxNumberExtension), ElementName = "PostBoxNumberExtension", IsNullable = false,
             Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public PostBoxNumberExtension PostBoxNumberExtension
         {
-            get
-            {
-                
-                return __PostBoxNumberExtension;
-            }
-            set { __PostBoxNumberExtension = value; }
+            get { return _PostBoxNumberExtension; }
+            set { _PostBoxNumberExtension = value; }
         }
 
         [XmlElement(Type = typeof (FirmType), ElementName = "Firm", IsNullable = false, Form = XmlSchemaForm.Qualified,
             Namespace = Declarations.SchemaVersion)]
         public FirmType Firm
         {
-            get
-            {
-                
-                return __Firm;
-            }
-            set { __Firm = value; }
+            get { return _Firm; }
+            set { _Firm = value; }
         }
 
         [XmlElement(Type = typeof (PostalCode), ElementName = "PostalCode", IsNullable = false,
             Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public PostalCode PostalCode
         {
-            get
-            {
-                
-                return __PostalCode;
-            }
-            set { __PostalCode = value; }
+            get { return _PostalCode; }
+            set { _PostalCode = value; }
         }
 
         public void MakeSchemaCompliant()

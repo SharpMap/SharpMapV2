@@ -23,11 +23,11 @@ namespace SharpMap.Entities.xAL
     [XmlRoot(ElementName = "Department", Namespace = Declarations.SchemaVersion, IsNullable = false), Serializable]
     public class Department
     {
-        [XmlIgnore] private List<AddressLine> __AddressLine;
-        [XmlIgnore] private List<DepartmentName> __DepartmentName;
-        [XmlIgnore] private MailStopType __MailStop;
-        [XmlIgnore] private PostalCode __PostalCode;
-        [XmlIgnore] private string __Type;
+        [XmlIgnore] private List<AddressLine> _AddressLine;
+        [XmlIgnore] private List<DepartmentName> _DepartmentName;
+        [XmlIgnore] private MailStopType _MailStop;
+        [XmlIgnore] private PostalCode _PostalCode;
+        [XmlIgnore] private string _Type;
         [XmlAnyElement] public XmlElement[] Any;
 
         [XmlAnyAttribute] public XmlAttribute[] AnyAttr;
@@ -35,8 +35,8 @@ namespace SharpMap.Entities.xAL
         [XmlAttribute(AttributeName = "Type")]
         public string Type
         {
-            get { return __Type; }
-            set { __Type = value; }
+            get { return _Type; }
+            set { _Type = value; }
         }
 
         [XmlElement(Type = typeof (AddressLine), ElementName = "AddressLine", IsNullable = false,
@@ -45,10 +45,10 @@ namespace SharpMap.Entities.xAL
         {
             get
             {
-                if (__AddressLine == null) __AddressLine = new List<AddressLine>();
-                return __AddressLine;
+                if (_AddressLine == null) _AddressLine = new List<AddressLine>();
+                return _AddressLine;
             }
-            set { __AddressLine = value; }
+            set { _AddressLine = value; }
         }
 
         [XmlElement(Type = typeof (DepartmentName), ElementName = "DepartmentName", IsNullable = false,
@@ -57,34 +57,26 @@ namespace SharpMap.Entities.xAL
         {
             get
             {
-                if (__DepartmentName == null) __DepartmentName = new List<DepartmentName>();
-                return __DepartmentName;
+                if (_DepartmentName == null) _DepartmentName = new List<DepartmentName>();
+                return _DepartmentName;
             }
-            set { __DepartmentName = value; }
+            set { _DepartmentName = value; }
         }
 
         [XmlElement(Type = typeof (MailStopType), ElementName = "MailStop", IsNullable = false,
             Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public MailStopType MailStop
         {
-            get
-            {
-                
-                return __MailStop;
-            }
-            set { __MailStop = value; }
+            get { return _MailStop; }
+            set { _MailStop = value; }
         }
 
         [XmlElement(Type = typeof (PostalCode), ElementName = "PostalCode", IsNullable = false,
             Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public PostalCode PostalCode
         {
-            get
-            {
-                
-                return __PostalCode;
-            }
-            set { __PostalCode = value; }
+            get { return _PostalCode; }
+            set { _PostalCode = value; }
         }
 
         public void MakeSchemaCompliant()

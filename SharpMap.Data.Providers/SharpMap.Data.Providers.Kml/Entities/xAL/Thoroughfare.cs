@@ -23,68 +23,68 @@ namespace SharpMap.Entities.xAL
     [XmlRoot(ElementName = "Thoroughfare", Namespace = Declarations.SchemaVersion, IsNullable = false), Serializable]
     public class Thoroughfare
     {
-        [XmlIgnore] private List<AddressLine> __AddressLine;
-        [XmlIgnore] private DependentLocalityType __DependentLocality;
-        [XmlIgnore] private DependentThoroughfare __DependentThoroughfare;
-        [XmlIgnore] private DependentThoroughfares __DependentThoroughfares;
-        [XmlIgnore] private string __DependentThoroughfaresConnector;
-        [XmlIgnore] private string __DependentThoroughfaresIndicator;
+        [XmlIgnore] private List<AddressLine> _AddressLine;
+        [XmlIgnore] private DependentLocalityType _DependentLocality;
+        [XmlIgnore] private DependentThoroughfare _DependentThoroughfare;
+        [XmlIgnore] private DependentThoroughfares _DependentThoroughfares;
+        [XmlIgnore] private string _DependentThoroughfaresConnector;
+        [XmlIgnore] private string _DependentThoroughfaresIndicator;
 
-        [XmlIgnore] public bool __DependentThoroughfaresSpecified;
-        [XmlIgnore] private string __DependentThoroughfaresType;
-        [XmlIgnore] private FirmType __Firm;
-        [XmlIgnore] private PostalCode __PostalCode;
-        [XmlIgnore] private Premise __Premise;
-        [XmlIgnore] private ThoroughfareLeadingTypeType __ThoroughfareLeadingType;
-        [XmlIgnore] private List<ThoroughfareNameType> __ThoroughfareName;
-        [XmlIgnore] private List<ThoroughfareNumber> __ThoroughfareNumber;
-        [XmlIgnore] private List<ThoroughfareNumberPrefix> __ThoroughfareNumberPrefix;
-        [XmlIgnore] private List<ThoroughfareNumberRange> __ThoroughfareNumberRange;
-        [XmlIgnore] private List<ThoroughfareNumberSuffix> __ThoroughfareNumberSuffix;
-        [XmlIgnore] private ThoroughfarePostDirectionType __ThoroughfarePostDirection;
-        [XmlIgnore] private ThoroughfarePreDirectionType __ThoroughfarePreDirection;
-        [XmlIgnore] private ThoroughfareTrailingTypeType __ThoroughfareTrailingType;
-        [XmlIgnore] private string __Type;
+        [XmlIgnore] public bool _DependentThoroughfaresSpecified;
+        [XmlIgnore] private string _DependentThoroughfaresType;
+        [XmlIgnore] private FirmType _Firm;
+        [XmlIgnore] private PostalCode _PostalCode;
+        [XmlIgnore] private Premise _Premise;
+        [XmlIgnore] private ThoroughfareLeadingTypeType _ThoroughfareLeadingType;
+        [XmlIgnore] private List<ThoroughfareNameType> _ThoroughfareName;
+        [XmlIgnore] private List<ThoroughfareNumber> _ThoroughfareNumber;
+        [XmlIgnore] private List<ThoroughfareNumberPrefix> _ThoroughfareNumberPrefix;
+        [XmlIgnore] private List<ThoroughfareNumberRange> _ThoroughfareNumberRange;
+        [XmlIgnore] private List<ThoroughfareNumberSuffix> _ThoroughfareNumberSuffix;
+        [XmlIgnore] private ThoroughfarePostDirectionType _ThoroughfarePostDirection;
+        [XmlIgnore] private ThoroughfarePreDirectionType _ThoroughfarePreDirection;
+        [XmlIgnore] private ThoroughfareTrailingTypeType _ThoroughfareTrailingType;
+        [XmlIgnore] private string _Type;
         [XmlAnyElement] public XmlElement[] Any;
         [XmlAnyAttribute] public XmlAttribute[] AnyAttr;
 
         [XmlAttribute(AttributeName = "Type")]
         public string Type
         {
-            get { return __Type; }
-            set { __Type = value; }
+            get { return _Type; }
+            set { _Type = value; }
         }
 
         [XmlAttribute(AttributeName = "DependentThoroughfares")]
         public DependentThoroughfares DependentThoroughfares
         {
-            get { return __DependentThoroughfares; }
+            get { return _DependentThoroughfares; }
             set
             {
-                __DependentThoroughfares = value;
-                __DependentThoroughfaresSpecified = true;
+                _DependentThoroughfares = value;
+                _DependentThoroughfaresSpecified = true;
             }
         }
 
         [XmlAttribute(AttributeName = "DependentThoroughfaresIndicator")]
         public string DependentThoroughfaresIndicator
         {
-            get { return __DependentThoroughfaresIndicator; }
-            set { __DependentThoroughfaresIndicator = value; }
+            get { return _DependentThoroughfaresIndicator; }
+            set { _DependentThoroughfaresIndicator = value; }
         }
 
         [XmlAttribute(AttributeName = "DependentThoroughfaresConnector")]
         public string DependentThoroughfaresConnector
         {
-            get { return __DependentThoroughfaresConnector; }
-            set { __DependentThoroughfaresConnector = value; }
+            get { return _DependentThoroughfaresConnector; }
+            set { _DependentThoroughfaresConnector = value; }
         }
 
         [XmlAttribute(AttributeName = "DependentThoroughfaresType")]
         public string DependentThoroughfaresType
         {
-            get { return __DependentThoroughfaresType; }
-            set { __DependentThoroughfaresType = value; }
+            get { return _DependentThoroughfaresType; }
+            set { _DependentThoroughfaresType = value; }
         }
 
         [XmlElement(Type = typeof (AddressLine), ElementName = "AddressLine", IsNullable = false,
@@ -93,10 +93,10 @@ namespace SharpMap.Entities.xAL
         {
             get
             {
-                if (__AddressLine == null) __AddressLine = new List<AddressLine>();
-                return __AddressLine;
+                if (_AddressLine == null) _AddressLine = new List<AddressLine>();
+                return _AddressLine;
             }
-            set { __AddressLine = value; }
+            set { _AddressLine = value; }
         }
 
         [XmlElement(Type = typeof (ThoroughfareNumber), ElementName = "ThoroughfareNumber", IsNullable = false,
@@ -105,10 +105,10 @@ namespace SharpMap.Entities.xAL
         {
             get
             {
-                if (__ThoroughfareNumber == null) __ThoroughfareNumber = new List<ThoroughfareNumber>();
-                return __ThoroughfareNumber;
+                if (_ThoroughfareNumber == null) _ThoroughfareNumber = new List<ThoroughfareNumber>();
+                return _ThoroughfareNumber;
             }
-            set { __ThoroughfareNumber = value; }
+            set { _ThoroughfareNumber = value; }
         }
 
         [XmlElement(Type = typeof (ThoroughfareNumberRange), ElementName = "ThoroughfareNumberRange", IsNullable = false
@@ -117,10 +117,10 @@ namespace SharpMap.Entities.xAL
         {
             get
             {
-                if (__ThoroughfareNumberRange == null) __ThoroughfareNumberRange = new List<ThoroughfareNumberRange>();
-                return __ThoroughfareNumberRange;
+                if (_ThoroughfareNumberRange == null) _ThoroughfareNumberRange = new List<ThoroughfareNumberRange>();
+                return _ThoroughfareNumberRange;
             }
-            set { __ThoroughfareNumberRange = value; }
+            set { _ThoroughfareNumberRange = value; }
         }
 
         [XmlElement(Type = typeof (ThoroughfareNumberPrefix), ElementName = "ThoroughfareNumberPrefix",
@@ -129,11 +129,11 @@ namespace SharpMap.Entities.xAL
         {
             get
             {
-                if (__ThoroughfareNumberPrefix == null)
-                    __ThoroughfareNumberPrefix = new List<ThoroughfareNumberPrefix>();
-                return __ThoroughfareNumberPrefix;
+                if (_ThoroughfareNumberPrefix == null)
+                    _ThoroughfareNumberPrefix = new List<ThoroughfareNumberPrefix>();
+                return _ThoroughfareNumberPrefix;
             }
-            set { __ThoroughfareNumberPrefix = value; }
+            set { _ThoroughfareNumberPrefix = value; }
         }
 
         [XmlElement(Type = typeof (ThoroughfareNumberSuffix), ElementName = "ThoroughfareNumberSuffix",
@@ -142,35 +142,27 @@ namespace SharpMap.Entities.xAL
         {
             get
             {
-                if (__ThoroughfareNumberSuffix == null)
-                    __ThoroughfareNumberSuffix = new List<ThoroughfareNumberSuffix>();
-                return __ThoroughfareNumberSuffix;
+                if (_ThoroughfareNumberSuffix == null)
+                    _ThoroughfareNumberSuffix = new List<ThoroughfareNumberSuffix>();
+                return _ThoroughfareNumberSuffix;
             }
-            set { __ThoroughfareNumberSuffix = value; }
+            set { _ThoroughfareNumberSuffix = value; }
         }
 
         [XmlElement(Type = typeof (ThoroughfarePreDirectionType), ElementName = "ThoroughfarePreDirection",
             IsNullable = false, Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public ThoroughfarePreDirectionType ThoroughfarePreDirection
         {
-            get
-            {
-                
-                return __ThoroughfarePreDirection;
-            }
-            set { __ThoroughfarePreDirection = value; }
+            get { return _ThoroughfarePreDirection; }
+            set { _ThoroughfarePreDirection = value; }
         }
 
         [XmlElement(Type = typeof (ThoroughfareLeadingTypeType), ElementName = "ThoroughfareLeadingType",
             IsNullable = false, Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public ThoroughfareLeadingTypeType ThoroughfareLeadingType
         {
-            get
-            {
-                
-                return __ThoroughfareLeadingType;
-            }
-            set { __ThoroughfareLeadingType = value; }
+            get { return _ThoroughfareLeadingType; }
+            set { _ThoroughfareLeadingType = value; }
         }
 
         [XmlElement(Type = typeof (ThoroughfareNameType), ElementName = "ThoroughfareName", IsNullable = false,
@@ -179,22 +171,18 @@ namespace SharpMap.Entities.xAL
         {
             get
             {
-                if (__ThoroughfareName == null) __ThoroughfareName = new List<ThoroughfareNameType>();
-                return __ThoroughfareName;
+                if (_ThoroughfareName == null) _ThoroughfareName = new List<ThoroughfareNameType>();
+                return _ThoroughfareName;
             }
-            set { __ThoroughfareName = value; }
+            set { _ThoroughfareName = value; }
         }
 
         [XmlElement(Type = typeof (ThoroughfareTrailingTypeType), ElementName = "ThoroughfareTrailingType",
             IsNullable = false, Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public ThoroughfareTrailingTypeType ThoroughfareTrailingType
         {
-            get
-            {
-                
-                return __ThoroughfareTrailingType;
-            }
-            set { __ThoroughfareTrailingType = value; }
+            get { return _ThoroughfareTrailingType; }
+            set { _ThoroughfareTrailingType = value; }
         }
 
         [XmlElement(Type = typeof (ThoroughfarePostDirectionType), ElementName = "ThoroughfarePostDirection",
@@ -203,71 +191,51 @@ namespace SharpMap.Entities.xAL
         {
             get
             {
-                if (__ThoroughfarePostDirection == null)
-                    __ThoroughfarePostDirection = new ThoroughfarePostDirectionType();
-                return __ThoroughfarePostDirection;
+                if (_ThoroughfarePostDirection == null)
+                    _ThoroughfarePostDirection = new ThoroughfarePostDirectionType();
+                return _ThoroughfarePostDirection;
             }
-            set { __ThoroughfarePostDirection = value; }
+            set { _ThoroughfarePostDirection = value; }
         }
 
         [XmlElement(Type = typeof (DependentThoroughfare), ElementName = "DependentThoroughfare", IsNullable = false,
             Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public DependentThoroughfare DependentThoroughfare
         {
-            get
-            {
-                
-                return __DependentThoroughfare;
-            }
-            set { __DependentThoroughfare = value; }
+            get { return _DependentThoroughfare; }
+            set { _DependentThoroughfare = value; }
         }
 
         [XmlElement(Type = typeof (DependentLocalityType), ElementName = "DependentLocality", IsNullable = false,
             Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public DependentLocalityType DependentLocality
         {
-            get
-            {
-                
-                return __DependentLocality;
-            }
-            set { __DependentLocality = value; }
+            get { return _DependentLocality; }
+            set { _DependentLocality = value; }
         }
 
         [XmlElement(Type = typeof (Premise), ElementName = "Premise", IsNullable = false, Form = XmlSchemaForm.Qualified
             , Namespace = Declarations.SchemaVersion)]
         public Premise Premise
         {
-            get
-            {
-                
-                return __Premise;
-            }
-            set { __Premise = value; }
+            get { return _Premise; }
+            set { _Premise = value; }
         }
 
         [XmlElement(Type = typeof (FirmType), ElementName = "Firm", IsNullable = false, Form = XmlSchemaForm.Qualified,
             Namespace = Declarations.SchemaVersion)]
         public FirmType Firm
         {
-            get
-            {
-                
-                return __Firm;
-            }
-            set { __Firm = value; }
+            get { return _Firm; }
+            set { _Firm = value; }
         }
 
         [XmlElement(Type = typeof (PostalCode), ElementName = "PostalCode", IsNullable = false,
             Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public PostalCode PostalCode
         {
-            get
-            {
-                
-                return __PostalCode;
-            }
-            set { __PostalCode = value; }
+            get { return _PostalCode; }
+            set { _PostalCode = value; }
         }
 
         public void MakeSchemaCompliant()

@@ -21,45 +21,45 @@ namespace SharpMap.Entities.xAL
     [XmlType(TypeName = "PostOfficeNumber", Namespace = Declarations.SchemaVersion), Serializable]
     public class PostOfficeNumber
     {
-        [XmlIgnore] private string __Code;
-        [XmlIgnore] private string __Indicator;
+        [XmlIgnore] private string _Code;
+        [XmlIgnore] private string _Indicator;
 
-        [XmlIgnore] private Occurrence __IndicatorOccurrence;
+        [XmlIgnore] private Occurrence _IndicatorOccurrence;
 
-        [XmlIgnore] public bool __IndicatorOccurrenceSpecified;
-        [XmlIgnore] private string __Value;
+        [XmlIgnore] public bool _IndicatorOccurrenceSpecified;
+        [XmlIgnore] private string _Value;
         [XmlAnyAttribute] public XmlAttribute[] AnyAttr;
 
         [XmlAttribute(AttributeName = "Indicator")]
         public string Indicator
         {
-            get { return __Indicator; }
-            set { __Indicator = value; }
+            get { return _Indicator; }
+            set { _Indicator = value; }
         }
 
         [XmlAttribute(AttributeName = "IndicatorOccurrence")]
         public Occurrence IndicatorOccurrence
         {
-            get { return __IndicatorOccurrence; }
+            get { return _IndicatorOccurrence; }
             set
             {
-                __IndicatorOccurrence = value;
-                __IndicatorOccurrenceSpecified = true;
+                _IndicatorOccurrence = value;
+                _IndicatorOccurrenceSpecified = true;
             }
         }
 
         [XmlAttribute(AttributeName = "Code")]
         public string Code
         {
-            get { return __Code; }
-            set { __Code = value; }
+            get { return _Code; }
+            set { _Code = value; }
         }
 
         [XmlText(DataType = "string")]
         public string Value
         {
-            get { return __Value; }
-            set { __Value = value; }
+            get { return _Value; }
+            set { _Value = value; }
         }
 
         public void MakeSchemaCompliant()

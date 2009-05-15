@@ -43,8 +43,8 @@ namespace SharpMap.Entities.Ogc.Kml
     [XmlInclude(typeof (ViewVolumeType))]
     public abstract class AbstractContainerType : AbstractFeatureType
     {
-        [XmlIgnore] private List<AbstractContainerObjectExtensionGroup> __AbstractContainerObjectExtensionGroup;
-        [XmlIgnore] private List<string> __AbstractContainerSimpleExtensionGroup;
+        [XmlIgnore] private List<AbstractContainerObjectExtensionGroup> _AbstractContainerObjectExtensionGroup;
+        [XmlIgnore] private List<string> _AbstractContainerSimpleExtensionGroup;
 
         [XmlElement(Type = typeof (string), ElementName = "AbstractContainerSimpleExtensionGroup", IsNullable = false,
             Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
@@ -52,11 +52,11 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (__AbstractContainerSimpleExtensionGroup == null)
-                    __AbstractContainerSimpleExtensionGroup = new List<string>();
-                return __AbstractContainerSimpleExtensionGroup;
+                if (_AbstractContainerSimpleExtensionGroup == null)
+                    _AbstractContainerSimpleExtensionGroup = new List<string>();
+                return _AbstractContainerSimpleExtensionGroup;
             }
-            set { __AbstractContainerSimpleExtensionGroup = value; }
+            set { _AbstractContainerSimpleExtensionGroup = value; }
         }
 
         [XmlElement(Type = typeof (AbstractContainerObjectExtensionGroup),
@@ -66,11 +66,11 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (__AbstractContainerObjectExtensionGroup == null)
-                    __AbstractContainerObjectExtensionGroup = new List<AbstractContainerObjectExtensionGroup>();
-                return __AbstractContainerObjectExtensionGroup;
+                if (_AbstractContainerObjectExtensionGroup == null)
+                    _AbstractContainerObjectExtensionGroup = new List<AbstractContainerObjectExtensionGroup>();
+                return _AbstractContainerObjectExtensionGroup;
             }
-            set { __AbstractContainerObjectExtensionGroup = value; }
+            set { _AbstractContainerObjectExtensionGroup = value; }
         }
 
         public new void MakeSchemaCompliant()

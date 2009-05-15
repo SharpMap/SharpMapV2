@@ -43,13 +43,13 @@ namespace SharpMap.Entities.Ogc.Kml
     [XmlInclude(typeof (ViewVolumeType))]
     public class GroundOverlayType : AbstractOverlayType
     {
-        [XmlIgnore] private double __altitude;
-        [XmlIgnore] private string __altitudeModeGroup;
+        [XmlIgnore] private double _altitude;
+        [XmlIgnore] private string _altitudeModeGroup;
 
-        [XmlIgnore] public bool __altitudeSpecified;
-        [XmlIgnore] private List<GroundOverlayObjectExtensionGroup> __GroundOverlayObjectExtensionGroup;
-        [XmlIgnore] private List<string> __GroundOverlaySimpleExtensionGroup;
-        [XmlIgnore] private LatLonBox __LatLonBox;
+        [XmlIgnore] public bool _altitudeSpecified;
+        [XmlIgnore] private List<GroundOverlayObjectExtensionGroup> _GroundOverlayObjectExtensionGroup;
+        [XmlIgnore] private List<string> _GroundOverlaySimpleExtensionGroup;
+        [XmlIgnore] private LatLonBox _LatLonBox;
 
         public GroundOverlayType()
         {
@@ -61,11 +61,11 @@ namespace SharpMap.Entities.Ogc.Kml
             Namespace = Declarations.SchemaVersion)]
         public double altitude
         {
-            get { return __altitude; }
+            get { return _altitude; }
             set
             {
-                __altitude = value;
-                __altitudeSpecified = true;
+                _altitude = value;
+                _altitudeSpecified = true;
             }
         }
 
@@ -73,20 +73,16 @@ namespace SharpMap.Entities.Ogc.Kml
             Namespace = Declarations.SchemaVersion)]
         public string altitudeModeGroup
         {
-            get { return __altitudeModeGroup; }
-            set { __altitudeModeGroup = value; }
+            get { return _altitudeModeGroup; }
+            set { _altitudeModeGroup = value; }
         }
 
         [XmlElement(Type = typeof (LatLonBox), ElementName = "LatLonBox", IsNullable = false,
             Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public LatLonBox LatLonBox
         {
-            get
-            {
-                
-                return __LatLonBox;
-            }
-            set { __LatLonBox = value; }
+            get { return _LatLonBox; }
+            set { _LatLonBox = value; }
         }
 
         [XmlElement(Type = typeof (string), ElementName = "GroundOverlaySimpleExtensionGroup", IsNullable = false,
@@ -95,11 +91,11 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (__GroundOverlaySimpleExtensionGroup == null)
-                    __GroundOverlaySimpleExtensionGroup = new List<string>();
-                return __GroundOverlaySimpleExtensionGroup;
+                if (_GroundOverlaySimpleExtensionGroup == null)
+                    _GroundOverlaySimpleExtensionGroup = new List<string>();
+                return _GroundOverlaySimpleExtensionGroup;
             }
-            set { __GroundOverlaySimpleExtensionGroup = value; }
+            set { _GroundOverlaySimpleExtensionGroup = value; }
         }
 
         [XmlElement(Type = typeof (GroundOverlayObjectExtensionGroup), ElementName = "GroundOverlayObjectExtensionGroup"
@@ -108,11 +104,11 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (__GroundOverlayObjectExtensionGroup == null)
-                    __GroundOverlayObjectExtensionGroup = new List<GroundOverlayObjectExtensionGroup>();
-                return __GroundOverlayObjectExtensionGroup;
+                if (_GroundOverlayObjectExtensionGroup == null)
+                    _GroundOverlayObjectExtensionGroup = new List<GroundOverlayObjectExtensionGroup>();
+                return _GroundOverlayObjectExtensionGroup;
             }
-            set { __GroundOverlayObjectExtensionGroup = value; }
+            set { _GroundOverlayObjectExtensionGroup = value; }
         }
 
         public new void MakeSchemaCompliant()

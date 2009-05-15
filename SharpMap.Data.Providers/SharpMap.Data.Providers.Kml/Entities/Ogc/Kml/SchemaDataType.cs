@@ -22,16 +22,16 @@ namespace SharpMap.Entities.Ogc.Kml
     [XmlType(TypeName = "SchemaDataType", Namespace = Declarations.SchemaVersion), Serializable]
     public class SchemaDataType : AbstractObjectType
     {
-        [XmlIgnore] private List<string> __SchemaDataExtension;
-        [XmlIgnore] private string __schemaUrl;
+        [XmlIgnore] private List<string> _SchemaDataExtension;
+        [XmlIgnore] private string _schemaUrl;
 
-        [XmlIgnore] private List<SimpleData> __SimpleData;
+        [XmlIgnore] private List<SimpleData> _SimpleData;
 
         [XmlAttribute(AttributeName = "schemaUrl", DataType = "anyURI")]
         public string schemaUrl
         {
-            get { return __schemaUrl; }
-            set { __schemaUrl = value; }
+            get { return _schemaUrl; }
+            set { _schemaUrl = value; }
         }
 
         [XmlElement(Type = typeof (SimpleData), ElementName = "SimpleData", IsNullable = false,
@@ -40,10 +40,10 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (__SimpleData == null) __SimpleData = new List<SimpleData>();
-                return __SimpleData;
+                if (_SimpleData == null) _SimpleData = new List<SimpleData>();
+                return _SimpleData;
             }
-            set { __SimpleData = value; }
+            set { _SimpleData = value; }
         }
 
         [XmlElement(Type = typeof (string), ElementName = "SchemaDataExtension", IsNullable = false,
@@ -52,10 +52,10 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (__SchemaDataExtension == null) __SchemaDataExtension = new List<string>();
-                return __SchemaDataExtension;
+                if (_SchemaDataExtension == null) _SchemaDataExtension = new List<string>();
+                return _SchemaDataExtension;
             }
-            set { __SchemaDataExtension = value; }
+            set { _SchemaDataExtension = value; }
         }
 
         public new void MakeSchemaCompliant()

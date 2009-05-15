@@ -43,16 +43,16 @@ namespace SharpMap.Entities.Ogc.Kml
     [XmlInclude(typeof (ViewVolumeType))]
     public class ListStyleType : AbstractSubStyleType
     {
-        [XmlIgnore] private byte[] __bgColor;
-        [XmlIgnore] private List<ItemIcon> __ItemIcon;
-        [XmlIgnore] private ListItemType __listItemType;
+        [XmlIgnore] private byte[] _bgColor;
+        [XmlIgnore] private List<ItemIcon> _ItemIcon;
+        [XmlIgnore] private ListItemType _listItemType;
 
-        [XmlIgnore] public bool __listItemTypeSpecified;
-        [XmlIgnore] private List<ListStyleObjectExtensionGroup> __ListStyleObjectExtensionGroup;
-        [XmlIgnore] private List<string> __ListStyleSimpleExtensionGroup;
-        [XmlIgnore] private int __maxSnippetLines;
+        [XmlIgnore] public bool _listItemTypeSpecified;
+        [XmlIgnore] private List<ListStyleObjectExtensionGroup> _ListStyleObjectExtensionGroup;
+        [XmlIgnore] private List<string> _ListStyleSimpleExtensionGroup;
+        [XmlIgnore] private int _maxSnippetLines;
 
-        [XmlIgnore] public bool __maxSnippetLinesSpecified;
+        [XmlIgnore] public bool _maxSnippetLinesSpecified;
 
         public ListStyleType()
         {
@@ -65,11 +65,11 @@ namespace SharpMap.Entities.Ogc.Kml
             Namespace = Declarations.SchemaVersion)]
         public ListItemType listItemType
         {
-            get { return __listItemType; }
+            get { return _listItemType; }
             set
             {
-                __listItemType = value;
-                __listItemTypeSpecified = true;
+                _listItemType = value;
+                _listItemTypeSpecified = true;
             }
         }
 
@@ -77,8 +77,8 @@ namespace SharpMap.Entities.Ogc.Kml
             Namespace = Declarations.SchemaVersion)]
         public byte[] bgColor
         {
-            get { return __bgColor; }
-            set { __bgColor = value; }
+            get { return _bgColor; }
+            set { _bgColor = value; }
         }
 
         [XmlElement(Type = typeof (ItemIcon), ElementName = "ItemIcon", IsNullable = false,
@@ -87,10 +87,10 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (__ItemIcon == null) __ItemIcon = new List<ItemIcon>();
-                return __ItemIcon;
+                if (_ItemIcon == null) _ItemIcon = new List<ItemIcon>();
+                return _ItemIcon;
             }
-            set { __ItemIcon = value; }
+            set { _ItemIcon = value; }
         }
 
 
@@ -98,11 +98,11 @@ namespace SharpMap.Entities.Ogc.Kml
             DataType = "int", Namespace = Declarations.SchemaVersion)]
         public int maxSnippetLines
         {
-            get { return __maxSnippetLines; }
+            get { return _maxSnippetLines; }
             set
             {
-                __maxSnippetLines = value;
-                __maxSnippetLinesSpecified = true;
+                _maxSnippetLines = value;
+                _maxSnippetLinesSpecified = true;
             }
         }
 
@@ -112,10 +112,10 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (__ListStyleSimpleExtensionGroup == null) __ListStyleSimpleExtensionGroup = new List<string>();
-                return __ListStyleSimpleExtensionGroup;
+                if (_ListStyleSimpleExtensionGroup == null) _ListStyleSimpleExtensionGroup = new List<string>();
+                return _ListStyleSimpleExtensionGroup;
             }
-            set { __ListStyleSimpleExtensionGroup = value; }
+            set { _ListStyleSimpleExtensionGroup = value; }
         }
 
         [XmlElement(Type = typeof (ListStyleObjectExtensionGroup), ElementName = "ListStyleObjectExtensionGroup",
@@ -124,11 +124,11 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (__ListStyleObjectExtensionGroup == null)
-                    __ListStyleObjectExtensionGroup = new List<ListStyleObjectExtensionGroup>();
-                return __ListStyleObjectExtensionGroup;
+                if (_ListStyleObjectExtensionGroup == null)
+                    _ListStyleObjectExtensionGroup = new List<ListStyleObjectExtensionGroup>();
+                return _ListStyleObjectExtensionGroup;
             }
-            set { __ListStyleObjectExtensionGroup = value; }
+            set { _ListStyleObjectExtensionGroup = value; }
         }
 
         public new void MakeSchemaCompliant()

@@ -45,15 +45,15 @@ namespace SharpMap.Entities.Ogc.Kml
     [XmlInclude(typeof (ViewVolumeType))]
     public class PairType : AbstractObjectType
     {
-        [XmlIgnore] private AbstractStyleSelectorGroup __AbstractStyleSelectorGroup;
-        [XmlIgnore] private StyleState __key;
+        [XmlIgnore] private AbstractStyleSelectorGroup _AbstractStyleSelectorGroup;
+        [XmlIgnore] private StyleState _key;
 
-        [XmlIgnore] public bool __keySpecified;
-        [XmlIgnore] private List<PairObjectExtensionGroup> __PairObjectExtensionGroup;
-        [XmlIgnore] private List<string> __PairSimpleExtensionGroup;
+        [XmlIgnore] public bool _keySpecified;
+        [XmlIgnore] private List<PairObjectExtensionGroup> _PairObjectExtensionGroup;
+        [XmlIgnore] private List<string> _PairSimpleExtensionGroup;
 
 
-        [XmlIgnore] private string __styleUrl;
+        [XmlIgnore] private string _styleUrl;
 
         public PairType()
         {
@@ -64,11 +64,11 @@ namespace SharpMap.Entities.Ogc.Kml
             Namespace = Declarations.SchemaVersion)]
         public StyleState key
         {
-            get { return __key; }
+            get { return _key; }
             set
             {
-                __key = value;
-                __keySpecified = true;
+                _key = value;
+                _keySpecified = true;
             }
         }
 
@@ -76,16 +76,16 @@ namespace SharpMap.Entities.Ogc.Kml
             Namespace = Declarations.SchemaVersion)]
         public string styleUrl
         {
-            get { return __styleUrl; }
-            set { __styleUrl = value; }
+            get { return _styleUrl; }
+            set { _styleUrl = value; }
         }
 
         [XmlElement(Type = typeof (AbstractStyleSelectorGroup), ElementName = "AbstractStyleSelectorGroup",
             IsNullable = false, Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public AbstractStyleSelectorGroup AbstractStyleSelectorGroup
         {
-            get { return __AbstractStyleSelectorGroup; }
-            set { __AbstractStyleSelectorGroup = value; }
+            get { return _AbstractStyleSelectorGroup; }
+            set { _AbstractStyleSelectorGroup = value; }
         }
 
         [XmlElement(Type = typeof (string), ElementName = "PairSimpleExtensionGroup", IsNullable = false,
@@ -94,10 +94,10 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (__PairSimpleExtensionGroup == null) __PairSimpleExtensionGroup = new List<string>();
-                return __PairSimpleExtensionGroup;
+                if (_PairSimpleExtensionGroup == null) _PairSimpleExtensionGroup = new List<string>();
+                return _PairSimpleExtensionGroup;
             }
-            set { __PairSimpleExtensionGroup = value; }
+            set { _PairSimpleExtensionGroup = value; }
         }
 
         [XmlElement(Type = typeof (PairObjectExtensionGroup), ElementName = "PairObjectExtensionGroup",
@@ -106,11 +106,11 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (__PairObjectExtensionGroup == null)
-                    __PairObjectExtensionGroup = new List<PairObjectExtensionGroup>();
-                return __PairObjectExtensionGroup;
+                if (_PairObjectExtensionGroup == null)
+                    _PairObjectExtensionGroup = new List<PairObjectExtensionGroup>();
+                return _PairObjectExtensionGroup;
             }
-            set { __PairObjectExtensionGroup = value; }
+            set { _PairObjectExtensionGroup = value; }
         }
 
         public new void MakeSchemaCompliant()

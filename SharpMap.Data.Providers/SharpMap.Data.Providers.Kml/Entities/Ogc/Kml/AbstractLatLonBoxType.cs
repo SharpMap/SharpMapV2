@@ -43,24 +43,24 @@ namespace SharpMap.Entities.Ogc.Kml
     [XmlInclude(typeof (ViewVolumeType))]
     public abstract class AbstractLatLonBoxType : AbstractObjectType
     {
-        [XmlIgnore] private List<AbstractLatLonBoxObjectExtensionGroup> __AbstractLatLonBoxObjectExtensionGroup;
-        [XmlIgnore] private List<string> __AbstractLatLonBoxSimpleExtensionGroup;
-        [XmlIgnore] private double __east;
+        [XmlIgnore] private List<AbstractLatLonBoxObjectExtensionGroup> _AbstractLatLonBoxObjectExtensionGroup;
+        [XmlIgnore] private List<string> _AbstractLatLonBoxSimpleExtensionGroup;
+        [XmlIgnore] private double _east;
 
-        [XmlIgnore] public bool __eastSpecified;
-        [XmlIgnore] private double __north;
+        [XmlIgnore] public bool _eastSpecified;
+        [XmlIgnore] private double _north;
 
-        [XmlIgnore] public bool __northSpecified;
-
-
-        [XmlIgnore] private double __south;
-
-        [XmlIgnore] public bool __southSpecified;
+        [XmlIgnore] public bool _northSpecified;
 
 
-        [XmlIgnore] private double __west;
+        [XmlIgnore] private double _south;
 
-        [XmlIgnore] public bool __westSpecified;
+        [XmlIgnore] public bool _southSpecified;
+
+
+        [XmlIgnore] private double _west;
+
+        [XmlIgnore] public bool _westSpecified;
 
         public AbstractLatLonBoxType()
         {
@@ -74,11 +74,11 @@ namespace SharpMap.Entities.Ogc.Kml
             Namespace = Declarations.SchemaVersion)]
         public double north
         {
-            get { return __north; }
+            get { return _north; }
             set
             {
-                __north = value;
-                __northSpecified = true;
+                _north = value;
+                _northSpecified = true;
             }
         }
 
@@ -86,11 +86,11 @@ namespace SharpMap.Entities.Ogc.Kml
             Namespace = Declarations.SchemaVersion)]
         public double south
         {
-            get { return __south; }
+            get { return _south; }
             set
             {
-                __south = value;
-                __southSpecified = true;
+                _south = value;
+                _southSpecified = true;
             }
         }
 
@@ -98,11 +98,11 @@ namespace SharpMap.Entities.Ogc.Kml
             Namespace = Declarations.SchemaVersion)]
         public double east
         {
-            get { return __east; }
+            get { return _east; }
             set
             {
-                __east = value;
-                __eastSpecified = true;
+                _east = value;
+                _eastSpecified = true;
             }
         }
 
@@ -111,11 +111,11 @@ namespace SharpMap.Entities.Ogc.Kml
             Namespace = Declarations.SchemaVersion)]
         public double west
         {
-            get { return __west; }
+            get { return _west; }
             set
             {
-                __west = value;
-                __westSpecified = true;
+                _west = value;
+                _westSpecified = true;
             }
         }
 
@@ -125,11 +125,11 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (__AbstractLatLonBoxSimpleExtensionGroup == null)
-                    __AbstractLatLonBoxSimpleExtensionGroup = new List<string>();
-                return __AbstractLatLonBoxSimpleExtensionGroup;
+                if (_AbstractLatLonBoxSimpleExtensionGroup == null)
+                    _AbstractLatLonBoxSimpleExtensionGroup = new List<string>();
+                return _AbstractLatLonBoxSimpleExtensionGroup;
             }
-            set { __AbstractLatLonBoxSimpleExtensionGroup = value; }
+            set { _AbstractLatLonBoxSimpleExtensionGroup = value; }
         }
 
         [XmlElement(Type = typeof (AbstractLatLonBoxObjectExtensionGroup),
@@ -139,11 +139,11 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (__AbstractLatLonBoxObjectExtensionGroup == null)
-                    __AbstractLatLonBoxObjectExtensionGroup = new List<AbstractLatLonBoxObjectExtensionGroup>();
-                return __AbstractLatLonBoxObjectExtensionGroup;
+                if (_AbstractLatLonBoxObjectExtensionGroup == null)
+                    _AbstractLatLonBoxObjectExtensionGroup = new List<AbstractLatLonBoxObjectExtensionGroup>();
+                return _AbstractLatLonBoxObjectExtensionGroup;
             }
-            set { __AbstractLatLonBoxObjectExtensionGroup = value; }
+            set { _AbstractLatLonBoxObjectExtensionGroup = value; }
         }
 
         public new void MakeSchemaCompliant()

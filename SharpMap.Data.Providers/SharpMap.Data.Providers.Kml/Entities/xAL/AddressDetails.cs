@@ -23,157 +23,129 @@ namespace SharpMap.Entities.xAL
     [XmlType(TypeName = "AddressDetails", Namespace = Declarations.SchemaVersion)]
     public class AddressDetails
     {
-        [XmlIgnore] private Address __Address;
-        [XmlIgnore] private string __AddressDetailsKey;
-        [XmlIgnore] private AddressLinesType __AddressLines;
-        [XmlIgnore] private string __AddressType;
-        [XmlIgnore] private AdministrativeArea __AdministrativeArea;
-        [XmlIgnore] private string __Code;
-        [XmlIgnore] private Country __Country;
+        [XmlIgnore] private Address _Address;
+        [XmlIgnore] private string _AddressDetailsKey;
+        [XmlIgnore] private AddressLinesType _AddressLines;
+        [XmlIgnore] private string _AddressType;
+        [XmlIgnore] private AdministrativeArea _AdministrativeArea;
+        [XmlIgnore] private string _Code;
+        [XmlIgnore] private Country _Country;
 
-        [XmlIgnore] private string __CurrentStatus;
-        [XmlIgnore] private Locality __Locality;
-        [XmlIgnore] private PostalServiceElements __PostalServiceElements;
-        [XmlIgnore] private Thoroughfare __Thoroughfare;
-        [XmlIgnore] private string __Usage;
+        [XmlIgnore] private string _CurrentStatus;
+        [XmlIgnore] private Locality _Locality;
+        [XmlIgnore] private PostalServiceElements _PostalServiceElements;
+        [XmlIgnore] private Thoroughfare _Thoroughfare;
+        [XmlIgnore] private string _Usage;
 
-        [XmlIgnore] private string __ValidFromDate;
+        [XmlIgnore] private string _ValidFromDate;
 
-        [XmlIgnore] private string __ValidToDate;
+        [XmlIgnore] private string _ValidToDate;
         [XmlAnyElement] public XmlElement[] Any;
         [XmlAnyAttribute] public XmlAttribute[] AnyAttr;
 
         [XmlAttribute(AttributeName = "AddressType")]
         public string AddressType
         {
-            get { return __AddressType; }
-            set { __AddressType = value; }
+            get { return _AddressType; }
+            set { _AddressType = value; }
         }
 
         [XmlAttribute(AttributeName = "CurrentStatus")]
         public string CurrentStatus
         {
-            get { return __CurrentStatus; }
-            set { __CurrentStatus = value; }
+            get { return _CurrentStatus; }
+            set { _CurrentStatus = value; }
         }
 
         [XmlAttribute(AttributeName = "ValidFromDate")]
         public string ValidFromDate
         {
-            get { return __ValidFromDate; }
-            set { __ValidFromDate = value; }
+            get { return _ValidFromDate; }
+            set { _ValidFromDate = value; }
         }
 
         [XmlAttribute(AttributeName = "ValidToDate")]
         public string ValidToDate
         {
-            get { return __ValidToDate; }
-            set { __ValidToDate = value; }
+            get { return _ValidToDate; }
+            set { _ValidToDate = value; }
         }
 
         [XmlAttribute(AttributeName = "Usage")]
         public string Usage
         {
-            get { return __Usage; }
-            set { __Usage = value; }
+            get { return _Usage; }
+            set { _Usage = value; }
         }
 
         [XmlAttribute(AttributeName = "Code")]
         public string Code
         {
-            get { return __Code; }
-            set { __Code = value; }
+            get { return _Code; }
+            set { _Code = value; }
         }
 
         [XmlAttribute(AttributeName = "AddressDetailsKey")]
         public string AddressDetailsKey
         {
-            get { return __AddressDetailsKey; }
-            set { __AddressDetailsKey = value; }
+            get { return _AddressDetailsKey; }
+            set { _AddressDetailsKey = value; }
         }
 
         [XmlElement(Type = typeof (PostalServiceElements), ElementName = "PostalServiceElements", IsNullable = false,
             Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public PostalServiceElements PostalServiceElements
         {
-            get
-            {
-                
-                return __PostalServiceElements;
-            }
-            set { __PostalServiceElements = value; }
+            get { return _PostalServiceElements; }
+            set { _PostalServiceElements = value; }
         }
 
         [XmlElement(Type = typeof (Address), ElementName = "Address", IsNullable = false, Form = XmlSchemaForm.Qualified
             , Namespace = Declarations.SchemaVersion)]
         public Address Address
         {
-            get
-            {
-                
-                return __Address;
-            }
-            set { __Address = value; }
+            get { return _Address; }
+            set { _Address = value; }
         }
 
         [XmlElement(Type = typeof (AddressLinesType), ElementName = "AddressLines", IsNullable = false,
             Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public AddressLinesType AddressLines
         {
-            get
-            {
-                
-                return __AddressLines;
-            }
-            set { __AddressLines = value; }
+            get { return _AddressLines; }
+            set { _AddressLines = value; }
         }
 
         [XmlElement(Type = typeof (Country), ElementName = "Country", IsNullable = false, Form = XmlSchemaForm.Qualified
             , Namespace = Declarations.SchemaVersion)]
         public Country Country
         {
-            get
-            {
-                
-                return __Country;
-            }
-            set { __Country = value; }
+            get { return _Country; }
+            set { _Country = value; }
         }
 
         [XmlElement(Type = typeof (AdministrativeArea), ElementName = "AdministrativeArea", IsNullable = false,
             Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public AdministrativeArea AdministrativeArea
         {
-            get
-            {
-                
-                return __AdministrativeArea;
-            }
-            set { __AdministrativeArea = value; }
+            get { return _AdministrativeArea; }
+            set { _AdministrativeArea = value; }
         }
 
         [XmlElement(Type = typeof (Locality), ElementName = "Locality", IsNullable = false,
             Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public Locality Locality
         {
-            get
-            {
-                
-                return __Locality;
-            }
-            set { __Locality = value; }
+            get { return _Locality; }
+            set { _Locality = value; }
         }
 
         [XmlElement(Type = typeof (Thoroughfare), ElementName = "Thoroughfare", IsNullable = false,
             Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public Thoroughfare Thoroughfare
         {
-            get
-            {
-                
-                return __Thoroughfare;
-            }
-            set { __Thoroughfare = value; }
+            get { return _Thoroughfare; }
+            set { _Thoroughfare = value; }
         }
 
         public void MakeSchemaCompliant()

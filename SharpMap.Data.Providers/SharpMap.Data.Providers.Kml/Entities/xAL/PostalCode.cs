@@ -23,11 +23,11 @@ namespace SharpMap.Entities.xAL
     [XmlRoot(ElementName = "PostalCode", Namespace = Declarations.SchemaVersion, IsNullable = false), Serializable]
     public class PostalCode
     {
-        [XmlIgnore] private List<AddressLine> __AddressLine;
-        [XmlIgnore] private List<PostalCodeNumber> __PostalCodeNumber;
-        [XmlIgnore] private List<PostalCodeNumberExtension> __PostalCodeNumberExtension;
-        [XmlIgnore] private PostTown __PostTown;
-        [XmlIgnore] private string __Type;
+        [XmlIgnore] private List<AddressLine> _AddressLine;
+        [XmlIgnore] private List<PostalCodeNumber> _PostalCodeNumber;
+        [XmlIgnore] private List<PostalCodeNumberExtension> _PostalCodeNumberExtension;
+        [XmlIgnore] private PostTown _PostTown;
+        [XmlIgnore] private string _Type;
         [XmlAnyElement] public XmlElement[] Any;
 
         [XmlAnyAttribute] public XmlAttribute[] AnyAttr;
@@ -35,8 +35,8 @@ namespace SharpMap.Entities.xAL
         [XmlAttribute(AttributeName = "Type")]
         public string Type
         {
-            get { return __Type; }
-            set { __Type = value; }
+            get { return _Type; }
+            set { _Type = value; }
         }
 
         [XmlElement(Type = typeof (AddressLine), ElementName = "AddressLine", IsNullable = false,
@@ -45,10 +45,10 @@ namespace SharpMap.Entities.xAL
         {
             get
             {
-                if (__AddressLine == null) __AddressLine = new List<AddressLine>();
-                return __AddressLine;
+                if (_AddressLine == null) _AddressLine = new List<AddressLine>();
+                return _AddressLine;
             }
-            set { __AddressLine = value; }
+            set { _AddressLine = value; }
         }
 
         [XmlElement(Type = typeof (PostalCodeNumber), ElementName = "PostalCodeNumber", IsNullable = false,
@@ -57,10 +57,10 @@ namespace SharpMap.Entities.xAL
         {
             get
             {
-                if (__PostalCodeNumber == null) __PostalCodeNumber = new List<PostalCodeNumber>();
-                return __PostalCodeNumber;
+                if (_PostalCodeNumber == null) _PostalCodeNumber = new List<PostalCodeNumber>();
+                return _PostalCodeNumber;
             }
-            set { __PostalCodeNumber = value; }
+            set { _PostalCodeNumber = value; }
         }
 
         [XmlElement(Type = typeof (PostalCodeNumberExtension), ElementName = "PostalCodeNumberExtension",
@@ -69,23 +69,19 @@ namespace SharpMap.Entities.xAL
         {
             get
             {
-                if (__PostalCodeNumberExtension == null)
-                    __PostalCodeNumberExtension = new List<PostalCodeNumberExtension>();
-                return __PostalCodeNumberExtension;
+                if (_PostalCodeNumberExtension == null)
+                    _PostalCodeNumberExtension = new List<PostalCodeNumberExtension>();
+                return _PostalCodeNumberExtension;
             }
-            set { __PostalCodeNumberExtension = value; }
+            set { _PostalCodeNumberExtension = value; }
         }
 
         [XmlElement(Type = typeof (PostTown), ElementName = "PostTown", IsNullable = false,
             Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public PostTown PostTown
         {
-            get
-            {
-                
-                return __PostTown;
-            }
-            set { __PostTown = value; }
+            get { return _PostTown; }
+            set { _PostTown = value; }
         }
 
         public void MakeSchemaCompliant()

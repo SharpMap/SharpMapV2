@@ -66,11 +66,7 @@ namespace SharpMap.Entities.Ogc.Kml
             Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public NetworkLinkControl NetworkLinkControl
         {
-            get
-            {
-                
-                return _networkLinkControl;
-            }
+            get { return _networkLinkControl; }
             set { _networkLinkControl = value; }
         }
 

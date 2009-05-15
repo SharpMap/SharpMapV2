@@ -28,7 +28,7 @@ namespace SharpMap.Entities.Ogc.Kml
     [XmlInclude(typeof (AbstractOverlayType))]
     public class DeleteType
     {
-        [XmlIgnore] private List<AbstractFeatureGroup> __AbstractFeatureGroup;
+        [XmlIgnore] private List<AbstractFeatureGroup> _AbstractFeatureGroup;
 
         [XmlIgnore]
         public AbstractFeatureGroup this[int index]
@@ -48,10 +48,10 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (__AbstractFeatureGroup == null) __AbstractFeatureGroup = new List<AbstractFeatureGroup>();
-                return __AbstractFeatureGroup;
+                if (_AbstractFeatureGroup == null) _AbstractFeatureGroup = new List<AbstractFeatureGroup>();
+                return _AbstractFeatureGroup;
             }
-            set { __AbstractFeatureGroup = value; }
+            set { _AbstractFeatureGroup = value; }
         }
 
         [DispId(-4)]

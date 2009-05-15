@@ -43,16 +43,16 @@ namespace SharpMap.Entities.Ogc.Kml
     [XmlInclude(typeof (ViewVolumeType))]
     public class IconStyleType : AbstractColorStyleType
     {
-        [XmlIgnore] private double __heading;
+        [XmlIgnore] private double _heading;
 
-        [XmlIgnore] public bool __headingSpecified;
-        [XmlIgnore] private HotSpot __hotSpot;
-        [XmlIgnore] private Icon __Icon;
-        [XmlIgnore] private List<IconStyleObjectExtensionGroup> __IconStyleObjectExtensionGroup;
-        [XmlIgnore] private List<string> __IconStyleSimpleExtensionGroup;
-        [XmlIgnore] private double __scale;
+        [XmlIgnore] public bool _headingSpecified;
+        [XmlIgnore] private HotSpot _hotSpot;
+        [XmlIgnore] private Icon _Icon;
+        [XmlIgnore] private List<IconStyleObjectExtensionGroup> _IconStyleObjectExtensionGroup;
+        [XmlIgnore] private List<string> _IconStyleSimpleExtensionGroup;
+        [XmlIgnore] private double _scale;
 
-        [XmlIgnore] public bool __scaleSpecified;
+        [XmlIgnore] public bool _scaleSpecified;
 
         public IconStyleType()
         {
@@ -65,11 +65,11 @@ namespace SharpMap.Entities.Ogc.Kml
             Namespace = Declarations.SchemaVersion)]
         public double scale
         {
-            get { return __scale; }
+            get { return _scale; }
             set
             {
-                __scale = value;
-                __scaleSpecified = true;
+                _scale = value;
+                _scaleSpecified = true;
             }
         }
 
@@ -78,11 +78,11 @@ namespace SharpMap.Entities.Ogc.Kml
             Namespace = Declarations.SchemaVersion)]
         public double heading
         {
-            get { return __heading; }
+            get { return _heading; }
             set
             {
-                __heading = value;
-                __headingSpecified = true;
+                _heading = value;
+                _headingSpecified = true;
             }
         }
 
@@ -90,24 +90,16 @@ namespace SharpMap.Entities.Ogc.Kml
             Namespace = Declarations.SchemaVersion)]
         public Icon Icon
         {
-            get
-            {
-                
-                return __Icon;
-            }
-            set { __Icon = value; }
+            get { return _Icon; }
+            set { _Icon = value; }
         }
 
         [XmlElement(Type = typeof (HotSpot), ElementName = "hotSpot", IsNullable = false, Form = XmlSchemaForm.Qualified
             , Namespace = Declarations.SchemaVersion)]
         public HotSpot hotSpot
         {
-            get
-            {
-                
-                return __hotSpot;
-            }
-            set { __hotSpot = value; }
+            get { return _hotSpot; }
+            set { _hotSpot = value; }
         }
 
         [XmlElement(Type = typeof (string), ElementName = "IconStyleSimpleExtensionGroup", IsNullable = false,
@@ -116,10 +108,10 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (__IconStyleSimpleExtensionGroup == null) __IconStyleSimpleExtensionGroup = new List<string>();
-                return __IconStyleSimpleExtensionGroup;
+                if (_IconStyleSimpleExtensionGroup == null) _IconStyleSimpleExtensionGroup = new List<string>();
+                return _IconStyleSimpleExtensionGroup;
             }
-            set { __IconStyleSimpleExtensionGroup = value; }
+            set { _IconStyleSimpleExtensionGroup = value; }
         }
 
         [XmlElement(Type = typeof (IconStyleObjectExtensionGroup), ElementName = "IconStyleObjectExtensionGroup",
@@ -128,11 +120,11 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (__IconStyleObjectExtensionGroup == null)
-                    __IconStyleObjectExtensionGroup = new List<IconStyleObjectExtensionGroup>();
-                return __IconStyleObjectExtensionGroup;
+                if (_IconStyleObjectExtensionGroup == null)
+                    _IconStyleObjectExtensionGroup = new List<IconStyleObjectExtensionGroup>();
+                return _IconStyleObjectExtensionGroup;
             }
-            set { __IconStyleObjectExtensionGroup = value; }
+            set { _IconStyleObjectExtensionGroup = value; }
         }
 
         public new void MakeSchemaCompliant()

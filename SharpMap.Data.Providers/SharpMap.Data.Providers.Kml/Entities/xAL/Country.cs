@@ -23,13 +23,13 @@ namespace SharpMap.Entities.xAL
     [XmlType(TypeName = "Country", Namespace = Declarations.SchemaVersion), Serializable]
     public class Country
     {
-        [XmlIgnore] private List<AddressLine> __AddressLine;
-        [XmlIgnore] private AdministrativeArea __AdministrativeArea;
-        [XmlIgnore] private List<CountryName> __CountryName;
+        [XmlIgnore] private List<AddressLine> _AddressLine;
+        [XmlIgnore] private AdministrativeArea _AdministrativeArea;
+        [XmlIgnore] private List<CountryName> _CountryName;
 
-        [XmlIgnore] private List<CountryNameCode> __CountryNameCode;
-        [XmlIgnore] private Locality __Locality;
-        [XmlIgnore] private Thoroughfare __Thoroughfare;
+        [XmlIgnore] private List<CountryNameCode> _CountryNameCode;
+        [XmlIgnore] private Locality _Locality;
+        [XmlIgnore] private Thoroughfare _Thoroughfare;
         [XmlAnyElement] public XmlElement[] Any;
         [XmlAnyAttribute] public XmlAttribute[] AnyAttr;
 
@@ -39,10 +39,10 @@ namespace SharpMap.Entities.xAL
         {
             get
             {
-                if (__AddressLine == null) __AddressLine = new List<AddressLine>();
-                return __AddressLine;
+                if (_AddressLine == null) _AddressLine = new List<AddressLine>();
+                return _AddressLine;
             }
-            set { __AddressLine = value; }
+            set { _AddressLine = value; }
         }
 
         [XmlElement(Type = typeof (CountryNameCode), ElementName = "CountryNameCode", IsNullable = false,
@@ -51,10 +51,10 @@ namespace SharpMap.Entities.xAL
         {
             get
             {
-                if (__CountryNameCode == null) __CountryNameCode = new List<CountryNameCode>();
-                return __CountryNameCode;
+                if (_CountryNameCode == null) _CountryNameCode = new List<CountryNameCode>();
+                return _CountryNameCode;
             }
-            set { __CountryNameCode = value; }
+            set { _CountryNameCode = value; }
         }
 
         [XmlElement(Type = typeof (CountryName), ElementName = "CountryName", IsNullable = false,
@@ -63,46 +63,34 @@ namespace SharpMap.Entities.xAL
         {
             get
             {
-                if (__CountryName == null) __CountryName = new List<CountryName>();
-                return __CountryName;
+                if (_CountryName == null) _CountryName = new List<CountryName>();
+                return _CountryName;
             }
-            set { __CountryName = value; }
+            set { _CountryName = value; }
         }
 
         [XmlElement(Type = typeof (AdministrativeArea), ElementName = "AdministrativeArea", IsNullable = false,
             Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public AdministrativeArea AdministrativeArea
         {
-            get
-            {
-                
-                return __AdministrativeArea;
-            }
-            set { __AdministrativeArea = value; }
+            get { return _AdministrativeArea; }
+            set { _AdministrativeArea = value; }
         }
 
         [XmlElement(Type = typeof (Locality), ElementName = "Locality", IsNullable = false,
             Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public Locality Locality
         {
-            get
-            {
-                
-                return __Locality;
-            }
-            set { __Locality = value; }
+            get { return _Locality; }
+            set { _Locality = value; }
         }
 
         [XmlElement(Type = typeof (Thoroughfare), ElementName = "Thoroughfare", IsNullable = false,
             Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public Thoroughfare Thoroughfare
         {
-            get
-            {
-                
-                return __Thoroughfare;
-            }
-            set { __Thoroughfare = value; }
+            get { return _Thoroughfare; }
+            set { _Thoroughfare = value; }
         }
 
         public void MakeSchemaCompliant()

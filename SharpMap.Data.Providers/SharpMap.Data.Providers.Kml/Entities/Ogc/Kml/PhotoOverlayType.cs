@@ -43,19 +43,19 @@ namespace SharpMap.Entities.Ogc.Kml
     [XmlInclude(typeof (ViewVolumeType))]
     public class PhotoOverlayType : AbstractOverlayType
     {
-        [XmlIgnore] private ImagePyramid __ImagePyramid;
-        [XmlIgnore] private List<PhotoOverlayObjectExtensionGroup> __PhotoOverlayObjectExtensionGroup;
-        [XmlIgnore] private List<string> __PhotoOverlaySimpleExtensionGroup;
-        [XmlIgnore] private Point __Point;
-        [XmlIgnore] private double __rotation;
+        [XmlIgnore] private ImagePyramid _ImagePyramid;
+        [XmlIgnore] private List<PhotoOverlayObjectExtensionGroup> _PhotoOverlayObjectExtensionGroup;
+        [XmlIgnore] private List<string> _PhotoOverlaySimpleExtensionGroup;
+        [XmlIgnore] private Point _Point;
+        [XmlIgnore] private double _rotation;
 
-        [XmlIgnore] public bool __rotationSpecified;
-        [XmlIgnore] private Shape __shape;
+        [XmlIgnore] public bool _rotationSpecified;
+        [XmlIgnore] private Shape _shape;
 
-        [XmlIgnore] public bool __shapeSpecified;
+        [XmlIgnore] public bool _shapeSpecified;
 
 
-        [XmlIgnore] private ViewVolume __ViewVolume;
+        [XmlIgnore] private ViewVolume _ViewVolume;
 
         public PhotoOverlayType()
         {
@@ -67,11 +67,11 @@ namespace SharpMap.Entities.Ogc.Kml
             Namespace = Declarations.SchemaVersion)]
         public double rotation
         {
-            get { return __rotation; }
+            get { return _rotation; }
             set
             {
-                __rotation = value;
-                __rotationSpecified = true;
+                _rotation = value;
+                _rotationSpecified = true;
             }
         }
 
@@ -79,36 +79,24 @@ namespace SharpMap.Entities.Ogc.Kml
             Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public ViewVolume ViewVolume
         {
-            get
-            {
-                
-                return __ViewVolume;
-            }
-            set { __ViewVolume = value; }
+            get { return _ViewVolume; }
+            set { _ViewVolume = value; }
         }
 
         [XmlElement(Type = typeof (ImagePyramid), ElementName = "ImagePyramid", IsNullable = false,
             Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public ImagePyramid ImagePyramid
         {
-            get
-            {
-                
-                return __ImagePyramid;
-            }
-            set { __ImagePyramid = value; }
+            get { return _ImagePyramid; }
+            set { _ImagePyramid = value; }
         }
 
         [XmlElement(Type = typeof (Point), ElementName = "Point", IsNullable = false, Form = XmlSchemaForm.Qualified,
             Namespace = Declarations.SchemaVersion)]
         public Point Point
         {
-            get
-            {
-                
-                return __Point;
-            }
-            set { __Point = value; }
+            get { return _Point; }
+            set { _Point = value; }
         }
 
 
@@ -116,11 +104,11 @@ namespace SharpMap.Entities.Ogc.Kml
             Namespace = Declarations.SchemaVersion)]
         public Shape shape
         {
-            get { return __shape; }
+            get { return _shape; }
             set
             {
-                __shape = value;
-                __shapeSpecified = true;
+                _shape = value;
+                _shapeSpecified = true;
             }
         }
 
@@ -130,10 +118,10 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (__PhotoOverlaySimpleExtensionGroup == null) __PhotoOverlaySimpleExtensionGroup = new List<string>();
-                return __PhotoOverlaySimpleExtensionGroup;
+                if (_PhotoOverlaySimpleExtensionGroup == null) _PhotoOverlaySimpleExtensionGroup = new List<string>();
+                return _PhotoOverlaySimpleExtensionGroup;
             }
-            set { __PhotoOverlaySimpleExtensionGroup = value; }
+            set { _PhotoOverlaySimpleExtensionGroup = value; }
         }
 
         [XmlElement(Type = typeof (PhotoOverlayObjectExtensionGroup), ElementName = "PhotoOverlayObjectExtensionGroup",
@@ -142,11 +130,11 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (__PhotoOverlayObjectExtensionGroup == null)
-                    __PhotoOverlayObjectExtensionGroup = new List<PhotoOverlayObjectExtensionGroup>();
-                return __PhotoOverlayObjectExtensionGroup;
+                if (_PhotoOverlayObjectExtensionGroup == null)
+                    _PhotoOverlayObjectExtensionGroup = new List<PhotoOverlayObjectExtensionGroup>();
+                return _PhotoOverlayObjectExtensionGroup;
             }
-            set { __PhotoOverlayObjectExtensionGroup = value; }
+            set { _PhotoOverlayObjectExtensionGroup = value; }
         }
 
         public new void MakeSchemaCompliant()

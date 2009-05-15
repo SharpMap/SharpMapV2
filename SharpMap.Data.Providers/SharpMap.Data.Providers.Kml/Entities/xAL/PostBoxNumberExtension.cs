@@ -21,23 +21,23 @@ namespace SharpMap.Entities.xAL
     [XmlType(TypeName = "PostBoxNumberExtension", Namespace = Declarations.SchemaVersion), Serializable]
     public class PostBoxNumberExtension
     {
-        [XmlIgnore] private string __NumberExtensionSeparator;
+        [XmlIgnore] private string _NumberExtensionSeparator;
 
-        [XmlIgnore] private string __Value;
+        [XmlIgnore] private string _Value;
         [XmlAnyAttribute] public XmlAttribute[] AnyAttr;
 
         [XmlAttribute(AttributeName = "NumberExtensionSeparator")]
         public string NumberExtensionSeparator
         {
-            get { return __NumberExtensionSeparator; }
-            set { __NumberExtensionSeparator = value; }
+            get { return _NumberExtensionSeparator; }
+            set { _NumberExtensionSeparator = value; }
         }
 
         [XmlText(DataType = "string")]
         public string Value
         {
-            get { return __Value; }
-            set { __Value = value; }
+            get { return _Value; }
+            set { _Value = value; }
         }
 
         public void MakeSchemaCompliant()

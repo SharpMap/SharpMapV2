@@ -89,11 +89,7 @@ namespace SharpMap.Entities.xAL
             , Namespace = Declarations.SchemaVersion)]
         public PostBox PostBox
         {
-            get
-            {
-                
-                return _postBox;
-            }
+            get { return _postBox; }
             set { _postBox = value; }
         }
 
@@ -101,11 +97,7 @@ namespace SharpMap.Entities.xAL
             Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public LargeMailUserType LargeMailUser
         {
-            get
-            {
-                
-                return _largeMailUser;
-            }
+            get { return _largeMailUser; }
             set { _largeMailUser = value; }
         }
 
@@ -113,11 +105,7 @@ namespace SharpMap.Entities.xAL
             Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public PostOffice PostOffice
         {
-            get
-            {
-                
-                return _postOffice;
-            }
+            get { return _postOffice; }
             set { _postOffice = value; }
         }
 
@@ -125,11 +113,7 @@ namespace SharpMap.Entities.xAL
             Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public PostalRouteType PostalRoute
         {
-            get
-            {
-                
-                return _postalRoute;
-            }
+            get { return _postalRoute; }
             set { _postalRoute = value; }
         }
 
@@ -137,11 +121,7 @@ namespace SharpMap.Entities.xAL
             Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public Thoroughfare Thoroughfare
         {
-            get
-            {
-                
-                return _thoroughfare;
-            }
+            get { return _thoroughfare; }
             set { _thoroughfare = value; }
         }
 
@@ -149,11 +129,7 @@ namespace SharpMap.Entities.xAL
             , Namespace = Declarations.SchemaVersion)]
         public Premise Premise
         {
-            get
-            {
-                
-                return _premise;
-            }
+            get { return _premise; }
             set { _premise = value; }
         }
 
@@ -174,11 +150,7 @@ namespace SharpMap.Entities.xAL
             Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public PostalCode PostalCode
         {
-            get
-            {
-                
-                return _postalCode;
-            }
+            get { return _postalCode; }
             set { _postalCode = value; }
         }
 

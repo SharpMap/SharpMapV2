@@ -22,31 +22,31 @@ namespace SharpMap.Entities.Ogc.Kml
     [XmlType(TypeName = "SimpleFieldType", Namespace = Declarations.SchemaVersion), Serializable]
     public class SimpleFieldType
     {
-        [XmlIgnore] private string __displayName;
-        [XmlIgnore] private string __name;
-        [XmlIgnore] private List<string> __SimpleFieldExtension;
-        [XmlIgnore] private string __type;
+        [XmlIgnore] private string _displayName;
+        [XmlIgnore] private string _name;
+        [XmlIgnore] private List<string> _SimpleFieldExtension;
+        [XmlIgnore] private string _type;
 
         [XmlAttribute(AttributeName = "type", DataType = "string")]
         public string type
         {
-            get { return __type; }
-            set { __type = value; }
+            get { return _type; }
+            set { _type = value; }
         }
 
         [XmlAttribute(AttributeName = "name", DataType = "string")]
         public string name
         {
-            get { return __name; }
-            set { __name = value; }
+            get { return _name; }
+            set { _name = value; }
         }
 
         [XmlElement(ElementName = "displayName", IsNullable = false, Form = XmlSchemaForm.Qualified, DataType = "string"
             , Namespace = Declarations.SchemaVersion)]
         public string displayName
         {
-            get { return __displayName; }
-            set { __displayName = value; }
+            get { return _displayName; }
+            set { _displayName = value; }
         }
 
         [XmlElement(Type = typeof (string), ElementName = "SimpleFieldExtension", IsNullable = false,
@@ -55,10 +55,10 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (__SimpleFieldExtension == null) __SimpleFieldExtension = new List<string>();
-                return __SimpleFieldExtension;
+                if (_SimpleFieldExtension == null) _SimpleFieldExtension = new List<string>();
+                return _SimpleFieldExtension;
             }
-            set { __SimpleFieldExtension = value; }
+            set { _SimpleFieldExtension = value; }
         }
 
         public void MakeSchemaCompliant()

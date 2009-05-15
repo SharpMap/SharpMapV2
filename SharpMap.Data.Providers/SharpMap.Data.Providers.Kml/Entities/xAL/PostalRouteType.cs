@@ -23,11 +23,11 @@ namespace SharpMap.Entities.xAL
     [XmlType(TypeName = "PostalRouteType", Namespace = Declarations.SchemaVersion), Serializable]
     public class PostalRouteType
     {
-        [XmlIgnore] private List<AddressLine> __AddressLine;
-        [XmlIgnore] private List<PostalRouteName> __PostalRouteName;
-        [XmlIgnore] private PostalRouteNumber __PostalRouteNumber;
-        [XmlIgnore] private PostBox __PostBox;
-        [XmlIgnore] private string __Type;
+        [XmlIgnore] private List<AddressLine> _AddressLine;
+        [XmlIgnore] private List<PostalRouteName> _PostalRouteName;
+        [XmlIgnore] private PostalRouteNumber _PostalRouteNumber;
+        [XmlIgnore] private PostBox _PostBox;
+        [XmlIgnore] private string _Type;
         [XmlAnyElement] public XmlElement[] Any;
 
         [XmlAnyAttribute] public XmlAttribute[] AnyAttr;
@@ -35,8 +35,8 @@ namespace SharpMap.Entities.xAL
         [XmlAttribute(AttributeName = "Type")]
         public string Type
         {
-            get { return __Type; }
-            set { __Type = value; }
+            get { return _Type; }
+            set { _Type = value; }
         }
 
         [XmlElement(Type = typeof (AddressLine), ElementName = "AddressLine", IsNullable = false,
@@ -45,10 +45,10 @@ namespace SharpMap.Entities.xAL
         {
             get
             {
-                if (__AddressLine == null) __AddressLine = new List<AddressLine>();
-                return __AddressLine;
+                if (_AddressLine == null) _AddressLine = new List<AddressLine>();
+                return _AddressLine;
             }
-            set { __AddressLine = value; }
+            set { _AddressLine = value; }
         }
 
         [XmlElement(Type = typeof (PostalRouteName), ElementName = "PostalRouteName", IsNullable = false,
@@ -57,34 +57,26 @@ namespace SharpMap.Entities.xAL
         {
             get
             {
-                if (__PostalRouteName == null) __PostalRouteName = new List<PostalRouteName>();
-                return __PostalRouteName;
+                if (_PostalRouteName == null) _PostalRouteName = new List<PostalRouteName>();
+                return _PostalRouteName;
             }
-            set { __PostalRouteName = value; }
+            set { _PostalRouteName = value; }
         }
 
         [XmlElement(Type = typeof (PostalRouteNumber), ElementName = "PostalRouteNumber", IsNullable = false,
             Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public PostalRouteNumber PostalRouteNumber
         {
-            get
-            {
-                
-                return __PostalRouteNumber;
-            }
-            set { __PostalRouteNumber = value; }
+            get { return _PostalRouteNumber; }
+            set { _PostalRouteNumber = value; }
         }
 
         [XmlElement(Type = typeof (PostBox), ElementName = "PostBox", IsNullable = false, Form = XmlSchemaForm.Qualified
             , Namespace = Declarations.SchemaVersion)]
         public PostBox PostBox
         {
-            get
-            {
-                
-                return __PostBox;
-            }
-            set { __PostBox = value; }
+            get { return _PostBox; }
+            set { _PostBox = value; }
         }
 
         public void MakeSchemaCompliant()

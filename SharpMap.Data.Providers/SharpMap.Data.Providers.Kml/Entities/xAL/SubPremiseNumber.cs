@@ -21,37 +21,37 @@ namespace SharpMap.Entities.xAL
     [XmlType(TypeName = "SubPremiseNumber", Namespace = Declarations.SchemaVersion), Serializable]
     public class SubPremiseNumber
     {
-        [XmlIgnore] private string __Code;
-        [XmlIgnore] private string __Indicator;
+        [XmlIgnore] private string _Code;
+        [XmlIgnore] private string _Indicator;
 
-        [XmlIgnore] private Occurrence __IndicatorOccurrence;
+        [XmlIgnore] private Occurrence _IndicatorOccurrence;
 
-        [XmlIgnore] public bool __IndicatorOccurrenceSpecified;
+        [XmlIgnore] public bool _IndicatorOccurrenceSpecified;
 
-        [XmlIgnore] public bool __NumberTypeOccurrenceSpecified;
+        [XmlIgnore] public bool _NumberTypeOccurrenceSpecified;
 
-        [XmlIgnore] private string __PremiseNumberSeparator;
+        [XmlIgnore] private string _PremiseNumberSeparator;
 
-        [XmlIgnore] private string __Type;
-        [XmlIgnore] private string __Value;
+        [XmlIgnore] private string _Type;
+        [XmlIgnore] private string _Value;
         [XmlIgnore] private Occurrence _occurrence;
         [XmlAnyAttribute] public XmlAttribute[] AnyAttr;
 
         [XmlAttribute(AttributeName = "Indicator")]
         public string Indicator
         {
-            get { return __Indicator; }
-            set { __Indicator = value; }
+            get { return _Indicator; }
+            set { _Indicator = value; }
         }
 
         [XmlAttribute(AttributeName = "IndicatorOccurrence")]
         public Occurrence IndicatorOccurrence
         {
-            get { return __IndicatorOccurrence; }
+            get { return _IndicatorOccurrence; }
             set
             {
-                __IndicatorOccurrence = value;
-                __IndicatorOccurrenceSpecified = true;
+                _IndicatorOccurrence = value;
+                _IndicatorOccurrenceSpecified = true;
             }
         }
 
@@ -62,36 +62,36 @@ namespace SharpMap.Entities.xAL
             set
             {
                 _occurrence = value;
-                __NumberTypeOccurrenceSpecified = true;
+                _NumberTypeOccurrenceSpecified = true;
             }
         }
 
         [XmlAttribute(AttributeName = "PremiseNumberSeparator")]
         public string PremiseNumberSeparator
         {
-            get { return __PremiseNumberSeparator; }
-            set { __PremiseNumberSeparator = value; }
+            get { return _PremiseNumberSeparator; }
+            set { _PremiseNumberSeparator = value; }
         }
 
         [XmlAttribute(AttributeName = "Type")]
         public string Type
         {
-            get { return __Type; }
-            set { __Type = value; }
+            get { return _Type; }
+            set { _Type = value; }
         }
 
         [XmlAttribute(AttributeName = "Code")]
         public string Code
         {
-            get { return __Code; }
-            set { __Code = value; }
+            get { return _Code; }
+            set { _Code = value; }
         }
 
         [XmlText(DataType = "string")]
         public string Value
         {
-            get { return __Value; }
-            set { __Value = value; }
+            get { return _Value; }
+            set { _Value = value; }
         }
 
         public void MakeSchemaCompliant()

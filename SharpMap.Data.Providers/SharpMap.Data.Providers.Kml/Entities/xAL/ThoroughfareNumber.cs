@@ -22,81 +22,81 @@ namespace SharpMap.Entities.xAL
      Serializable]
     public class ThoroughfareNumber
     {
-        [XmlIgnore] private string __Code;
-        [XmlIgnore] private string __Indicator;
-        [XmlIgnore] private Occurrence __IndicatorOccurrence;
+        [XmlIgnore] private string _Code;
+        [XmlIgnore] private string _Indicator;
+        [XmlIgnore] private Occurrence _IndicatorOccurrence;
 
-        [XmlIgnore] public bool __IndicatorOccurrenceSpecified;
-        [XmlIgnore] private NumberOccurrence __NumberOccurrence;
+        [XmlIgnore] public bool _IndicatorOccurrenceSpecified;
+        [XmlIgnore] private NumberOccurrence _NumberOccurrence;
 
-        [XmlIgnore] public bool __NumberOccurrenceSpecified;
-        [XmlIgnore] private NumberType __NumberType;
+        [XmlIgnore] public bool _NumberOccurrenceSpecified;
+        [XmlIgnore] private NumberType _NumberType;
 
-        [XmlIgnore] public bool __NumberTypeSpecified;
+        [XmlIgnore] public bool _NumberTypeSpecified;
 
-        [XmlIgnore] private string __Type;
-        [XmlIgnore] private string __Value;
+        [XmlIgnore] private string _Type;
+        [XmlIgnore] private string _Value;
         [XmlAnyAttribute] public XmlAttribute[] AnyAttr;
 
         [XmlAttribute(AttributeName = "NumberType")]
         public NumberType NumberType
         {
-            get { return __NumberType; }
+            get { return _NumberType; }
             set
             {
-                __NumberType = value;
-                __NumberTypeSpecified = true;
+                _NumberType = value;
+                _NumberTypeSpecified = true;
             }
         }
 
         [XmlAttribute(AttributeName = "Type")]
         public string Type
         {
-            get { return __Type; }
-            set { __Type = value; }
+            get { return _Type; }
+            set { _Type = value; }
         }
 
         [XmlAttribute(AttributeName = "Indicator")]
         public string Indicator
         {
-            get { return __Indicator; }
-            set { __Indicator = value; }
+            get { return _Indicator; }
+            set { _Indicator = value; }
         }
 
         [XmlAttribute(AttributeName = "IndicatorOccurrence")]
         public Occurrence IndicatorOccurrence
         {
-            get { return __IndicatorOccurrence; }
+            get { return _IndicatorOccurrence; }
             set
             {
-                __IndicatorOccurrence = value;
-                __IndicatorOccurrenceSpecified = true;
+                _IndicatorOccurrence = value;
+                _IndicatorOccurrenceSpecified = true;
             }
         }
 
         [XmlAttribute(AttributeName = "NumberOccurrence")]
         public NumberOccurrence NumberOccurrence
         {
-            get { return __NumberOccurrence; }
+            get { return _NumberOccurrence; }
             set
             {
-                __NumberOccurrence = value;
-                __NumberOccurrenceSpecified = true;
+                _NumberOccurrence = value;
+                _NumberOccurrenceSpecified = true;
             }
         }
 
         [XmlAttribute(AttributeName = "Code")]
         public string Code
         {
-            get { return __Code; }
-            set { __Code = value; }
+            get { return _Code; }
+            set { _Code = value; }
         }
 
         [XmlText(DataType = "string")]
         public string Value
         {
-            get { return __Value; }
-            set { __Value = value; }
+            get { return _Value; }
+            set { _Value = value; }
         }
 
         public void MakeSchemaCompliant()

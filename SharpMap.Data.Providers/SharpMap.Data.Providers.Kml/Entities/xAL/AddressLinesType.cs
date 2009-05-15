@@ -23,7 +23,7 @@ namespace SharpMap.Entities.xAL
     [XmlType(TypeName = "AddressLinesType", Namespace = Declarations.SchemaVersion), Serializable]
     public class AddressLinesType
     {
-        [XmlIgnore] private List<AddressLine> __AddressLine;
+        [XmlIgnore] private List<AddressLine> _AddressLine;
 
         [XmlAnyElement] public XmlElement[] Any;
         [XmlAnyAttribute] public XmlAttribute[] AnyAttr;
@@ -34,10 +34,10 @@ namespace SharpMap.Entities.xAL
         {
             get
             {
-                if (__AddressLine == null) __AddressLine = new List<AddressLine>();
-                return __AddressLine;
+                if (_AddressLine == null) _AddressLine = new List<AddressLine>();
+                return _AddressLine;
             }
-            set { __AddressLine = value; }
+            set { _AddressLine = value; }
         }
 
         public void MakeSchemaCompliant()

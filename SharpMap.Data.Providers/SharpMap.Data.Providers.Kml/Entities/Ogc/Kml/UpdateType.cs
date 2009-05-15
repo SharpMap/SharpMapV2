@@ -22,12 +22,12 @@ namespace SharpMap.Entities.Ogc.Kml
     [XmlType(TypeName = "UpdateType", Namespace = Declarations.SchemaVersion), Serializable]
     public class UpdateType
     {
-        [XmlIgnore] private List<Change> __Change;
-        [XmlIgnore] private List<Create> __Create;
-        [XmlIgnore] private List<Delete> __Delete;
-        [XmlIgnore] private string __targetHref;
-        [XmlIgnore] private List<string> __UpdateExtensionGroup;
-        [XmlIgnore] private List<string> __UpdateOpExtensionGroup;
+        [XmlIgnore] private List<Change> _Change;
+        [XmlIgnore] private List<Create> _Create;
+        [XmlIgnore] private List<Delete> _Delete;
+        [XmlIgnore] private string _targetHref;
+        [XmlIgnore] private List<string> _UpdateExtensionGroup;
+        [XmlIgnore] private List<string> _UpdateOpExtensionGroup;
 
         public UpdateType()
         {
@@ -38,8 +38,8 @@ namespace SharpMap.Entities.Ogc.Kml
             Namespace = Declarations.SchemaVersion)]
         public string targetHref
         {
-            get { return __targetHref; }
-            set { __targetHref = value; }
+            get { return _targetHref; }
+            set { _targetHref = value; }
         }
 
         [XmlElement(Type = typeof (Create), ElementName = "Create", IsNullable = false, Form = XmlSchemaForm.Qualified,
@@ -48,10 +48,10 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (__Create == null) __Create = new List<Create>();
-                return __Create;
+                if (_Create == null) _Create = new List<Create>();
+                return _Create;
             }
-            set { __Create = value; }
+            set { _Create = value; }
         }
 
         [XmlElement(Type = typeof (Delete), ElementName = "Delete", IsNullable = false, Form = XmlSchemaForm.Qualified,
@@ -60,10 +60,10 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (__Delete == null) __Delete = new List<Delete>();
-                return __Delete;
+                if (_Delete == null) _Delete = new List<Delete>();
+                return _Delete;
             }
-            set { __Delete = value; }
+            set { _Delete = value; }
         }
 
         [XmlElement(Type = typeof (Change), ElementName = "Change", IsNullable = false, Form = XmlSchemaForm.Qualified,
@@ -72,10 +72,10 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (__Change == null) __Change = new List<Change>();
-                return __Change;
+                if (_Change == null) _Change = new List<Change>();
+                return _Change;
             }
-            set { __Change = value; }
+            set { _Change = value; }
         }
 
         [XmlElement(Type = typeof (string), ElementName = "UpdateOpExtensionGroup", IsNullable = false,
@@ -84,10 +84,10 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (__UpdateOpExtensionGroup == null) __UpdateOpExtensionGroup = new List<string>();
-                return __UpdateOpExtensionGroup;
+                if (_UpdateOpExtensionGroup == null) _UpdateOpExtensionGroup = new List<string>();
+                return _UpdateOpExtensionGroup;
             }
-            set { __UpdateOpExtensionGroup = value; }
+            set { _UpdateOpExtensionGroup = value; }
         }
 
         [XmlElement(Type = typeof (string), ElementName = "UpdateExtensionGroup", IsNullable = false,
@@ -96,10 +96,10 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (__UpdateExtensionGroup == null) __UpdateExtensionGroup = new List<string>();
-                return __UpdateExtensionGroup;
+                if (_UpdateExtensionGroup == null) _UpdateExtensionGroup = new List<string>();
+                return _UpdateExtensionGroup;
             }
-            set { __UpdateExtensionGroup = value; }
+            set { _UpdateExtensionGroup = value; }
         }
 
         public void MakeSchemaCompliant()

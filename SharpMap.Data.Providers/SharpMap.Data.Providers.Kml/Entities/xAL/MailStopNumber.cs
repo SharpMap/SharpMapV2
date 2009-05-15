@@ -21,30 +21,30 @@ namespace SharpMap.Entities.xAL
     [XmlType(TypeName = "MailStopNumber", Namespace = Declarations.SchemaVersion), Serializable]
     public class MailStopNumber
     {
-        [XmlIgnore] private string __Code;
-        [XmlIgnore] private string __NameNumberSeparator;
-        [XmlIgnore] private string __Value;
+        [XmlIgnore] private string _Code;
+        [XmlIgnore] private string _NameNumberSeparator;
+        [XmlIgnore] private string _Value;
         [XmlAnyAttribute] public XmlAttribute[] AnyAttr;
 
         [XmlAttribute(AttributeName = "NameNumberSeparator")]
         public string NameNumberSeparator
         {
-            get { return __NameNumberSeparator; }
-            set { __NameNumberSeparator = value; }
+            get { return _NameNumberSeparator; }
+            set { _NameNumberSeparator = value; }
         }
 
         [XmlAttribute(AttributeName = "Code")]
         public string Code
         {
-            get { return __Code; }
-            set { __Code = value; }
+            get { return _Code; }
+            set { _Code = value; }
         }
 
         [XmlText(DataType = "string")]
         public string Value
         {
-            get { return __Value; }
-            set { __Value = value; }
+            get { return _Value; }
+            set { _Value = value; }
         }
 
         public void MakeSchemaCompliant()

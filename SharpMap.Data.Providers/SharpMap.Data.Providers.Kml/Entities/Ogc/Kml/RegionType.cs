@@ -43,35 +43,27 @@ namespace SharpMap.Entities.Ogc.Kml
     [XmlInclude(typeof (ViewVolumeType))]
     public class RegionType : AbstractObjectType
     {
-        [XmlIgnore] private LatLonAltBox __LatLonAltBox;
+        [XmlIgnore] private LatLonAltBox _LatLonAltBox;
 
-        [XmlIgnore] private Lod __Lod;
-        [XmlIgnore] private List<RegionObjectExtensionGroup> __RegionObjectExtensionGroup;
+        [XmlIgnore] private Lod _Lod;
+        [XmlIgnore] private List<RegionObjectExtensionGroup> _RegionObjectExtensionGroup;
 
-        [XmlIgnore] private List<string> __RegionSimpleExtensionGroup;
+        [XmlIgnore] private List<string> _RegionSimpleExtensionGroup;
 
         [XmlElement(Type = typeof (LatLonAltBox), ElementName = "LatLonAltBox", IsNullable = false,
             Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public LatLonAltBox LatLonAltBox
         {
-            get
-            {
-                
-                return __LatLonAltBox;
-            }
-            set { __LatLonAltBox = value; }
+            get { return _LatLonAltBox; }
+            set { _LatLonAltBox = value; }
         }
 
         [XmlElement(Type = typeof (Lod), ElementName = "Lod", IsNullable = false, Form = XmlSchemaForm.Qualified,
             Namespace = Declarations.SchemaVersion)]
         public Lod Lod
         {
-            get
-            {
-                
-                return __Lod;
-            }
-            set { __Lod = value; }
+            get { return _Lod; }
+            set { _Lod = value; }
         }
 
         [XmlElement(Type = typeof (string), ElementName = "RegionSimpleExtensionGroup", IsNullable = false,
@@ -80,10 +72,10 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (__RegionSimpleExtensionGroup == null) __RegionSimpleExtensionGroup = new List<string>();
-                return __RegionSimpleExtensionGroup;
+                if (_RegionSimpleExtensionGroup == null) _RegionSimpleExtensionGroup = new List<string>();
+                return _RegionSimpleExtensionGroup;
             }
-            set { __RegionSimpleExtensionGroup = value; }
+            set { _RegionSimpleExtensionGroup = value; }
         }
 
         [XmlElement(Type = typeof (RegionObjectExtensionGroup), ElementName = "RegionObjectExtensionGroup",
@@ -92,11 +84,11 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (__RegionObjectExtensionGroup == null)
-                    __RegionObjectExtensionGroup = new List<RegionObjectExtensionGroup>();
-                return __RegionObjectExtensionGroup;
+                if (_RegionObjectExtensionGroup == null)
+                    _RegionObjectExtensionGroup = new List<RegionObjectExtensionGroup>();
+                return _RegionObjectExtensionGroup;
             }
-            set { __RegionObjectExtensionGroup = value; }
+            set { _RegionObjectExtensionGroup = value; }
         }
 
         public new void MakeSchemaCompliant()

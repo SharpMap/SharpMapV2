@@ -22,39 +22,39 @@ namespace SharpMap.Entities.xAL
      Serializable]
     public class ThoroughfareNumberPrefix
     {
-        [XmlIgnore] private string __Code;
-        [XmlIgnore] private string __NumberPrefixSeparator;
+        [XmlIgnore] private string _Code;
+        [XmlIgnore] private string _NumberPrefixSeparator;
 
-        [XmlIgnore] private string __Type;
-        [XmlIgnore] private string __Value;
+        [XmlIgnore] private string _Type;
+        [XmlIgnore] private string _Value;
         [XmlAnyAttribute] public XmlAttribute[] AnyAttr;
 
         [XmlAttribute(AttributeName = "NumberPrefixSeparator")]
         public string NumberPrefixSeparator
         {
-            get { return __NumberPrefixSeparator; }
-            set { __NumberPrefixSeparator = value; }
+            get { return _NumberPrefixSeparator; }
+            set { _NumberPrefixSeparator = value; }
         }
 
         [XmlAttribute(AttributeName = "Type")]
         public string Type
         {
-            get { return __Type; }
-            set { __Type = value; }
+            get { return _Type; }
+            set { _Type = value; }
         }
 
         [XmlAttribute(AttributeName = "Code")]
         public string Code
         {
-            get { return __Code; }
-            set { __Code = value; }
+            get { return _Code; }
+            set { _Code = value; }
         }
 
         [XmlText(DataType = "string")]
         public string Value
         {
-            get { return __Value; }
-            set { __Value = value; }
+            get { return _Value; }
+            set { _Value = value; }
         }
 
         public void MakeSchemaCompliant()

@@ -21,45 +21,45 @@ namespace SharpMap.Entities.xAL
     [XmlType(TypeName = "PremiseName", Namespace = Declarations.SchemaVersion), Serializable]
     public class PremiseName
     {
-        [XmlIgnore] private string __Code;
-        [XmlIgnore] private string __Type;
+        [XmlIgnore] private string _Code;
+        [XmlIgnore] private string _Type;
 
-        [XmlIgnore] private Occurrence __TypeOccurrence;
+        [XmlIgnore] private Occurrence _TypeOccurrence;
 
-        [XmlIgnore] public bool __TypeOccurrenceSpecified;
-        [XmlIgnore] private string __Value;
+        [XmlIgnore] public bool _TypeOccurrenceSpecified;
+        [XmlIgnore] private string _Value;
         [XmlAnyAttribute] public XmlAttribute[] AnyAttr;
 
         [XmlAttribute(AttributeName = "Type")]
         public string Type
         {
-            get { return __Type; }
-            set { __Type = value; }
+            get { return _Type; }
+            set { _Type = value; }
         }
 
         [XmlAttribute(AttributeName = "TypeOccurrence")]
         public Occurrence TypeOccurrence
         {
-            get { return __TypeOccurrence; }
+            get { return _TypeOccurrence; }
             set
             {
-                __TypeOccurrence = value;
-                __TypeOccurrenceSpecified = true;
+                _TypeOccurrence = value;
+                _TypeOccurrenceSpecified = true;
             }
         }
 
         [XmlAttribute(AttributeName = "Code")]
         public string Code
         {
-            get { return __Code; }
-            set { __Code = value; }
+            get { return _Code; }
+            set { _Code = value; }
         }
 
         [XmlText(DataType = "string")]
         public string Value
         {
-            get { return __Value; }
-            set { __Value = value; }
+            get { return _Value; }
+            set { _Value = value; }
         }
 
         public void MakeSchemaCompliant()

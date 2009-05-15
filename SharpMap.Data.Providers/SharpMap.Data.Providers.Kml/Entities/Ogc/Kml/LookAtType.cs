@@ -43,31 +43,31 @@ namespace SharpMap.Entities.Ogc.Kml
     [XmlInclude(typeof (ViewVolumeType))]
     public class LookAtType : AbstractViewType
     {
-        [XmlIgnore] private double __altitude;
-        [XmlIgnore] private string __altitudeModeGroup;
+        [XmlIgnore] private double _altitude;
+        [XmlIgnore] private string _altitudeModeGroup;
 
-        [XmlIgnore] public bool __altitudeSpecified;
-
-
-        [XmlIgnore] private double __heading;
-
-        [XmlIgnore] public bool __headingSpecified;
-        [XmlIgnore] private double __latitude;
-
-        [XmlIgnore] public bool __latitudeSpecified;
-        [XmlIgnore] private double __longitude;
-
-        [XmlIgnore] public bool __longitudeSpecified;
-        [XmlIgnore] private List<LookAtObjectExtensionGroup> __LookAtObjectExtensionGroup;
-        [XmlIgnore] private List<string> __LookAtSimpleExtensionGroup;
-        [XmlIgnore] private double __range;
-
-        [XmlIgnore] public bool __rangeSpecified;
+        [XmlIgnore] public bool _altitudeSpecified;
 
 
-        [XmlIgnore] private double __tilt;
+        [XmlIgnore] private double _heading;
 
-        [XmlIgnore] public bool __tiltSpecified;
+        [XmlIgnore] public bool _headingSpecified;
+        [XmlIgnore] private double _latitude;
+
+        [XmlIgnore] public bool _latitudeSpecified;
+        [XmlIgnore] private double _longitude;
+
+        [XmlIgnore] public bool _longitudeSpecified;
+        [XmlIgnore] private List<LookAtObjectExtensionGroup> _LookAtObjectExtensionGroup;
+        [XmlIgnore] private List<string> _LookAtSimpleExtensionGroup;
+        [XmlIgnore] private double _range;
+
+        [XmlIgnore] public bool _rangeSpecified;
+
+
+        [XmlIgnore] private double _tilt;
+
+        [XmlIgnore] public bool _tiltSpecified;
 
         public LookAtType()
         {
@@ -83,11 +83,11 @@ namespace SharpMap.Entities.Ogc.Kml
             Namespace = Declarations.SchemaVersion)]
         public double longitude
         {
-            get { return __longitude; }
+            get { return _longitude; }
             set
             {
-                __longitude = value;
-                __longitudeSpecified = true;
+                _longitude = value;
+                _longitudeSpecified = true;
             }
         }
 
@@ -95,11 +95,11 @@ namespace SharpMap.Entities.Ogc.Kml
             Namespace = Declarations.SchemaVersion)]
         public double latitude
         {
-            get { return __latitude; }
+            get { return _latitude; }
             set
             {
-                __latitude = value;
-                __latitudeSpecified = true;
+                _latitude = value;
+                _latitudeSpecified = true;
             }
         }
 
@@ -107,11 +107,11 @@ namespace SharpMap.Entities.Ogc.Kml
             Namespace = Declarations.SchemaVersion)]
         public double altitude
         {
-            get { return __altitude; }
+            get { return _altitude; }
             set
             {
-                __altitude = value;
-                __altitudeSpecified = true;
+                _altitude = value;
+                _altitudeSpecified = true;
             }
         }
 
@@ -119,11 +119,11 @@ namespace SharpMap.Entities.Ogc.Kml
             Namespace = Declarations.SchemaVersion)]
         public double heading
         {
-            get { return __heading; }
+            get { return _heading; }
             set
             {
-                __heading = value;
-                __headingSpecified = true;
+                _heading = value;
+                _headingSpecified = true;
             }
         }
 
@@ -132,11 +132,11 @@ namespace SharpMap.Entities.Ogc.Kml
             Namespace = Declarations.SchemaVersion)]
         public double tilt
         {
-            get { return __tilt; }
+            get { return _tilt; }
             set
             {
-                __tilt = value;
-                __tiltSpecified = true;
+                _tilt = value;
+                _tiltSpecified = true;
             }
         }
 
@@ -145,11 +145,11 @@ namespace SharpMap.Entities.Ogc.Kml
             Namespace = Declarations.SchemaVersion)]
         public double range
         {
-            get { return __range; }
+            get { return _range; }
             set
             {
-                __range = value;
-                __rangeSpecified = true;
+                _range = value;
+                _rangeSpecified = true;
             }
         }
 
@@ -157,8 +157,8 @@ namespace SharpMap.Entities.Ogc.Kml
             Namespace = Declarations.SchemaVersion)]
         public string altitudeModeGroup
         {
-            get { return __altitudeModeGroup; }
-            set { __altitudeModeGroup = value; }
+            get { return _altitudeModeGroup; }
+            set { _altitudeModeGroup = value; }
         }
 
         [XmlElement(Type = typeof (string), ElementName = "LookAtSimpleExtensionGroup", IsNullable = false,
@@ -167,10 +167,10 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (__LookAtSimpleExtensionGroup == null) __LookAtSimpleExtensionGroup = new List<string>();
-                return __LookAtSimpleExtensionGroup;
+                if (_LookAtSimpleExtensionGroup == null) _LookAtSimpleExtensionGroup = new List<string>();
+                return _LookAtSimpleExtensionGroup;
             }
-            set { __LookAtSimpleExtensionGroup = value; }
+            set { _LookAtSimpleExtensionGroup = value; }
         }
 
         [XmlElement(Type = typeof (LookAtObjectExtensionGroup), ElementName = "LookAtObjectExtensionGroup",
@@ -179,11 +179,11 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (__LookAtObjectExtensionGroup == null)
-                    __LookAtObjectExtensionGroup = new List<LookAtObjectExtensionGroup>();
-                return __LookAtObjectExtensionGroup;
+                if (_LookAtObjectExtensionGroup == null)
+                    _LookAtObjectExtensionGroup = new List<LookAtObjectExtensionGroup>();
+                return _LookAtObjectExtensionGroup;
             }
-            set { __LookAtObjectExtensionGroup = value; }
+            set { _LookAtObjectExtensionGroup = value; }
         }
 
         public new void MakeSchemaCompliant()
