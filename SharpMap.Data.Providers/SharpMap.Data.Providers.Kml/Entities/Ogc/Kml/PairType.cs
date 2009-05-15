@@ -57,12 +57,12 @@ namespace SharpMap.Entities.Ogc.Kml
 
         public PairType()
         {
-            key = StyleState.Normal;
+            _key = StyleState.Normal;
         }
 
         [XmlElement(ElementName = "key", IsNullable = false, Form = XmlSchemaForm.Qualified,
             Namespace = Declarations.SchemaVersion)]
-        public StyleState key
+        public StyleState Key
         {
             get { return _key; }
             set
@@ -74,7 +74,7 @@ namespace SharpMap.Entities.Ogc.Kml
 
         [XmlElement(ElementName = "styleUrl", IsNullable = false, Form = XmlSchemaForm.Qualified, DataType = "anyURI",
             Namespace = Declarations.SchemaVersion)]
-        public string styleUrl
+        public string StyleUrl
         {
             get { return _styleUrl; }
             set { _styleUrl = value; }

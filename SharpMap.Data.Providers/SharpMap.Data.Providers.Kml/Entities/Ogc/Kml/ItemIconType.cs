@@ -50,7 +50,7 @@ namespace SharpMap.Entities.Ogc.Kml
 
         [XmlElement(ElementName = "state", IsNullable = false, Form = XmlSchemaForm.Qualified,
             Namespace = Declarations.SchemaVersion)]
-        public string state
+        public string State
         {
             get { return _state; }
             set { _state = value; }
@@ -58,7 +58,7 @@ namespace SharpMap.Entities.Ogc.Kml
 
         [XmlElement(ElementName = "href", IsNullable = false, Form = XmlSchemaForm.Qualified, DataType = "string",
             Namespace = Declarations.SchemaVersion)]
-        public string href
+        public string Href
         {
             get { return _href; }
             set { _href = value; }

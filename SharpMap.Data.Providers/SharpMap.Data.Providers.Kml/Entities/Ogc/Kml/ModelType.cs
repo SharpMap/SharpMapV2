@@ -57,7 +57,7 @@ namespace SharpMap.Entities.Ogc.Kml
 
         [XmlElement(ElementName = "altitudeModeGroup", IsNullable = false, Form = XmlSchemaForm.Qualified,
             Namespace = Declarations.SchemaVersion)]
-        public string altitudeModeGroup
+        public string AltitudeModeGroup
         {
             get { return _altitudeModeGroup; }
             set { _altitudeModeGroup = value; }

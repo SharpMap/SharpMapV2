@@ -12,13 +12,20 @@
 //  *  Author: John Diss 2009
 //  * 
 //  */
+using System;
+
 namespace RegexSource
 {
     internal class Program
     {
         private static void Main(string[] args)
         {
-            RegexToLowerApp.Run();
+            //Console.WriteLine("Choose an app: Type a for lower, type b for upper.");
+            //string a = Console.ReadLine();
+            //if (String.Compare(a, "a", StringComparison.InvariantCultureIgnoreCase) == 0)
+                RegexToLowerApp.Run();
+            //else if (String.Compare(a, "b", StringComparison.InvariantCultureIgnoreCase) == 0)
+            //    RegexToLowerApp.Run();
         }
     }
 }

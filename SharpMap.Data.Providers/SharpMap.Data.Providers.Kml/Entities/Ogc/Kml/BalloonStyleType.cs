@@ -55,7 +55,7 @@ namespace SharpMap.Entities.Ogc.Kml
 
         public BalloonStyleType()
         {
-            displayMode = DisplayMode.Default;
+            _displayMode = DisplayMode.Default;
         }
 
         [XmlElement(ElementName = "color", IsNullable = false, Form = XmlSchemaForm.Qualified, DataType = "hexBinary",
@@ -84,7 +84,7 @@ namespace SharpMap.Entities.Ogc.Kml
 
         [XmlElement(ElementName = "text", IsNullable = false, Form = XmlSchemaForm.Qualified, DataType = "string",
             Namespace = Declarations.SchemaVersion)]
-        public string text
+        public string Text
         {
             get { return _text; }
             set { _text = value; }
@@ -93,7 +93,7 @@ namespace SharpMap.Entities.Ogc.Kml
 
         [XmlElement(ElementName = "displayMode", IsNullable = false, Form = XmlSchemaForm.Qualified,
             Namespace = Declarations.SchemaVersion)]
-        public DisplayMode displayMode
+        public DisplayMode DisplayMode
         {
             get { return _displayMode; }
             set

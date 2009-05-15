@@ -67,16 +67,16 @@ namespace SharpMap.Entities.Ogc.Kml
 
         public ViewVolumeType()
         {
-            leftFov = 0.0;
-            rightFov = 0.0;
-            bottomFov = 0.0;
-            topFov = 0.0;
-            near = 0.0;
+            _leftFov = 0.0;
+            _rightFov = 0.0;
+            _bottomFov = 0.0;
+            _topFov = 0.0;
+            _near = 0.0;
         }
 
         [XmlElement(ElementName = "leftFov", IsNullable = false, Form = XmlSchemaForm.Qualified, DataType = "double",
             Namespace = Declarations.SchemaVersion)]
-        public double leftFov
+        public double LeftFov
         {
             get { return _leftFov; }
             set
@@ -88,7 +88,7 @@ namespace SharpMap.Entities.Ogc.Kml
 
         [XmlElement(ElementName = "rightFov", IsNullable = false, Form = XmlSchemaForm.Qualified, DataType = "double",
             Namespace = Declarations.SchemaVersion)]
-        public double rightFov
+        public double RightFov
         {
             get { return _rightFov; }
             set
@@ -100,7 +100,7 @@ namespace SharpMap.Entities.Ogc.Kml
 
         [XmlElement(ElementName = "bottomFov", IsNullable = false, Form = XmlSchemaForm.Qualified, DataType = "double",
             Namespace = Declarations.SchemaVersion)]
-        public double bottomFov
+        public double BottomFov
         {
             get { return _bottomFov; }
             set
@@ -113,7 +113,7 @@ namespace SharpMap.Entities.Ogc.Kml
 
         [XmlElement(ElementName = "topFov", IsNullable = false, Form = XmlSchemaForm.Qualified, DataType = "double",
             Namespace = Declarations.SchemaVersion)]
-        public double topFov
+        public double TopFov
         {
             get { return _topFov; }
             set
@@ -126,7 +126,7 @@ namespace SharpMap.Entities.Ogc.Kml
 
         [XmlElement(ElementName = "near", IsNullable = false, Form = XmlSchemaForm.Qualified, DataType = "double",
             Namespace = Declarations.SchemaVersion)]
-        public double near
+        public double Near
         {
             get { return _near; }
             set

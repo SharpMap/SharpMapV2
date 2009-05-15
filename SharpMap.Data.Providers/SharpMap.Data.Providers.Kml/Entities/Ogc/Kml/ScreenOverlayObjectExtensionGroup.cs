@@ -42,14 +42,14 @@ namespace SharpMap.Entities.Ogc.Kml
         }
 
         [XmlAttribute(AttributeName = "id", DataType = "ID")]
-        public string id
+        public string Id
         {
             get { return _id; }
             set { _id = value; }
         }
 
         [XmlAttribute(AttributeName = "targetId", DataType = "NCName")]
-        public string targetId
+        public string TargetId
         {
             get { return _targetId; }
             set { _targetId = value; }

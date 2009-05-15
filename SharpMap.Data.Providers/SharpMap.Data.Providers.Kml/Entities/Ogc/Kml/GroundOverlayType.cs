@@ -53,13 +53,13 @@ namespace SharpMap.Entities.Ogc.Kml
 
         public GroundOverlayType()
         {
-            altitude = 0.0;
+            _altitude = 0.0;
         }
 
 
         [XmlElement(ElementName = "altitude", IsNullable = false, Form = XmlSchemaForm.Qualified, DataType = "double",
             Namespace = Declarations.SchemaVersion)]
-        public double altitude
+        public double Altitude
         {
             get { return _altitude; }
             set
@@ -71,7 +71,7 @@ namespace SharpMap.Entities.Ogc.Kml
 
         [XmlElement(ElementName = "altitudeModeGroup", IsNullable = false, Form = XmlSchemaForm.Qualified,
             Namespace = Declarations.SchemaVersion)]
-        public string altitudeModeGroup
+        public string AltitudeModeGroup
         {
             get { return _altitudeModeGroup; }
             set { _altitudeModeGroup = value; }

@@ -57,7 +57,7 @@ namespace SharpMap.Entities.Ogc.Kml
 
         [XmlElement(ElementName = "when", IsNullable = false, Form = XmlSchemaForm.Qualified, DataType = "dateTime",
             Namespace = Declarations.SchemaVersion)]
-        public DateTime when
+        public DateTime When
         {
             get { return _when; }
             set
@@ -68,7 +68,7 @@ namespace SharpMap.Entities.Ogc.Kml
         }
 
         [XmlIgnore]
-        public DateTime whenUtc
+        public DateTime WhenUtc
         {
             get { return _when.ToUniversalTime(); }
             set

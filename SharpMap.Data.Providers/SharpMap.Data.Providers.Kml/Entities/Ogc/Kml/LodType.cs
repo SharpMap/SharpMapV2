@@ -62,15 +62,15 @@ namespace SharpMap.Entities.Ogc.Kml
 
         public LodType()
         {
-            minLodPixels = 0.0;
-            maxLodPixels = -1.0;
-            minFadeExtent = 0.0;
-            maxFadeExtent = 0.0;
+            _minLodPixels = 0.0;
+            _maxLodPixels = -1.0;
+            _minFadeExtent = 0.0;
+            _maxFadeExtent = 0.0;
         }
 
         [XmlElement(ElementName = "minLodPixels", IsNullable = false, Form = XmlSchemaForm.Qualified,
             DataType = "double", Namespace = Declarations.SchemaVersion)]
-        public double minLodPixels
+        public double MinLodPixels
         {
             get { return _minLodPixels; }
             set
@@ -82,7 +82,7 @@ namespace SharpMap.Entities.Ogc.Kml
 
         [XmlElement(ElementName = "maxLodPixels", IsNullable = false, Form = XmlSchemaForm.Qualified,
             DataType = "double", Namespace = Declarations.SchemaVersion)]
-        public double maxLodPixels
+        public double MaxLodPixels
         {
             get { return _maxLodPixels; }
             set
@@ -95,7 +95,7 @@ namespace SharpMap.Entities.Ogc.Kml
 
         [XmlElement(ElementName = "minFadeExtent", IsNullable = false, Form = XmlSchemaForm.Qualified,
             DataType = "double", Namespace = Declarations.SchemaVersion)]
-        public double minFadeExtent
+        public double MinFadeExtent
         {
             get { return _minFadeExtent; }
             set
@@ -108,7 +108,7 @@ namespace SharpMap.Entities.Ogc.Kml
 
         [XmlElement(ElementName = "maxFadeExtent", IsNullable = false, Form = XmlSchemaForm.Qualified,
             DataType = "double", Namespace = Declarations.SchemaVersion)]
-        public double maxFadeExtent
+        public double MaxFadeExtent
         {
             get { return _maxFadeExtent; }
             set

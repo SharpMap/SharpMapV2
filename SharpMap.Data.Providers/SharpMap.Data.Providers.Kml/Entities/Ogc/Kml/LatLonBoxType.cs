@@ -51,13 +51,13 @@ namespace SharpMap.Entities.Ogc.Kml
 
         public LatLonBoxType()
         {
-            rotation = 0.0;
+            _rotation = 0.0;
         }
 
 
         [XmlElement(ElementName = "rotation", IsNullable = false, Form = XmlSchemaForm.Qualified, DataType = "double",
             Namespace = Declarations.SchemaVersion)]
-        public double rotation
+        public double Rotation
         {
             get { return _rotation; }
             set

@@ -31,12 +31,12 @@ namespace SharpMap.Entities.Ogc.Kml
 
         public UpdateType()
         {
-            targetHref = string.Empty;
+            _targetHref = string.Empty;
         }
 
         [XmlElement(ElementName = "targetHref", IsNullable = false, Form = XmlSchemaForm.Qualified, DataType = "anyURI",
             Namespace = Declarations.SchemaVersion)]
-        public string targetHref
+        public string TargetHref
         {
             get { return _targetHref; }
             set { _targetHref = value; }

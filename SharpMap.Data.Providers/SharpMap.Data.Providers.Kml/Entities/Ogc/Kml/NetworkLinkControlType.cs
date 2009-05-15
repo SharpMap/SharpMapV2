@@ -67,14 +67,14 @@ namespace SharpMap.Entities.Ogc.Kml
         public NetworkLinkControlType()
         {
             _expires = DateTime.Now;
-            minRefreshPeriod = 0.0;
-            maxSessionLength = -1.0;
+            _minRefreshPeriod = 0.0;
+            _maxSessionLength = -1.0;
         }
 
 
         [XmlElement(ElementName = "minRefreshPeriod", IsNullable = false, Form = XmlSchemaForm.Qualified,
             DataType = "double", Namespace = Declarations.SchemaVersion)]
-        public double minRefreshPeriod
+        public double MinRefreshPeriod
         {
             get { return _minRefreshPeriod; }
             set
@@ -87,7 +87,7 @@ namespace SharpMap.Entities.Ogc.Kml
 
         [XmlElement(ElementName = "maxSessionLength", IsNullable = false, Form = XmlSchemaForm.Qualified,
             DataType = "double", Namespace = Declarations.SchemaVersion)]
-        public double maxSessionLength
+        public double MaxSessionLength
         {
             get { return _maxSessionLength; }
             set
@@ -99,7 +99,7 @@ namespace SharpMap.Entities.Ogc.Kml
 
         [XmlElement(ElementName = "cookie", IsNullable = false, Form = XmlSchemaForm.Qualified, DataType = "string",
             Namespace = Declarations.SchemaVersion)]
-        public string cookie
+        public string Cookie
         {
             get { return _cookie; }
             set { _cookie = value; }
@@ -107,7 +107,7 @@ namespace SharpMap.Entities.Ogc.Kml
 
         [XmlElement(ElementName = "message", IsNullable = false, Form = XmlSchemaForm.Qualified, DataType = "string",
             Namespace = Declarations.SchemaVersion)]
-        public string message
+        public string Message
         {
             get { return _message; }
             set { _message = value; }
@@ -115,7 +115,7 @@ namespace SharpMap.Entities.Ogc.Kml
 
         [XmlElement(ElementName = "linkName", IsNullable = false, Form = XmlSchemaForm.Qualified, DataType = "string",
             Namespace = Declarations.SchemaVersion)]
-        public string linkName
+        public string LinkName
         {
             get { return _linkName; }
             set { _linkName = value; }
@@ -123,7 +123,7 @@ namespace SharpMap.Entities.Ogc.Kml
 
         [XmlElement(ElementName = "linkDescription", IsNullable = false, Form = XmlSchemaForm.Qualified,
             DataType = "string", Namespace = Declarations.SchemaVersion)]
-        public string linkDescription
+        public string LinkDescription
         {
             get { return _linkDescription; }
             set { _linkDescription = value; }
@@ -131,7 +131,7 @@ namespace SharpMap.Entities.Ogc.Kml
 
         [XmlElement(Type = typeof (linkSnippet), ElementName = "linkSnippet", IsNullable = false,
             Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
-        public linkSnippet linkSnippet
+        public linkSnippet LinkSnippet
         {
             get { return _linkSnippet; }
             set { _linkSnippet = value; }
@@ -140,7 +140,7 @@ namespace SharpMap.Entities.Ogc.Kml
 
         [XmlElement(ElementName = "expires", IsNullable = false, Form = XmlSchemaForm.Qualified, DataType = "dateTime",
             Namespace = Declarations.SchemaVersion)]
-        public DateTime expires
+        public DateTime Expires
         {
             get { return _expires; }
             set
@@ -151,7 +151,7 @@ namespace SharpMap.Entities.Ogc.Kml
         }
 
         [XmlIgnore]
-        public DateTime expiresUtc
+        public DateTime ExpiresUtc
         {
             get { return _expires.ToUniversalTime(); }
             set

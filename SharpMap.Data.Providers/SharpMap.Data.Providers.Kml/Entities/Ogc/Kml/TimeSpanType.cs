@@ -62,7 +62,7 @@ namespace SharpMap.Entities.Ogc.Kml
 
         [XmlElement(ElementName = "begin", IsNullable = false, Form = XmlSchemaForm.Qualified, DataType = "dateTime",
             Namespace = Declarations.SchemaVersion)]
-        public DateTime begin
+        public DateTime Begin
         {
             get { return _begin; }
             set
@@ -73,7 +73,7 @@ namespace SharpMap.Entities.Ogc.Kml
         }
 
         [XmlIgnore]
-        public DateTime beginUtc
+        public DateTime BeginUtc
         {
             get { return _begin.ToUniversalTime(); }
             set
@@ -86,7 +86,7 @@ namespace SharpMap.Entities.Ogc.Kml
 
         [XmlElement(ElementName = "end", IsNullable = false, Form = XmlSchemaForm.Qualified, DataType = "dateTime",
             Namespace = Declarations.SchemaVersion)]
-        public DateTime end
+        public DateTime End
         {
             get { return _end; }
             set
@@ -97,7 +97,7 @@ namespace SharpMap.Entities.Ogc.Kml
         }
 
         [XmlIgnore]
-        public DateTime endUtc
+        public DateTime EndUtc
         {
             get { return _end.ToUniversalTime(); }
             set

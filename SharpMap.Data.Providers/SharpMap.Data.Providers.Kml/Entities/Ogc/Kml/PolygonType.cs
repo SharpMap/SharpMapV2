@@ -59,13 +59,13 @@ namespace SharpMap.Entities.Ogc.Kml
 
         public PolygonType()
         {
-            extrude = false;
-            tessellate = false;
+            _extrude = false;
+            _tessellate = false;
         }
 
         [XmlElement(ElementName = "extrude", IsNullable = false, Form = XmlSchemaForm.Qualified, DataType = "boolean",
             Namespace = Declarations.SchemaVersion)]
-        public bool extrude
+        public bool Extrude
         {
             get { return _extrude; }
             set
@@ -78,7 +78,7 @@ namespace SharpMap.Entities.Ogc.Kml
 
         [XmlElement(ElementName = "tessellate", IsNullable = false, Form = XmlSchemaForm.Qualified, DataType = "boolean"
             , Namespace = Declarations.SchemaVersion)]
-        public bool tessellate
+        public bool Tessellate
         {
             get { return _tessellate; }
             set
@@ -90,7 +90,7 @@ namespace SharpMap.Entities.Ogc.Kml
 
         [XmlElement(ElementName = "altitudeModeGroup", IsNullable = false, Form = XmlSchemaForm.Qualified,
             Namespace = Declarations.SchemaVersion)]
-        public string altitudeModeGroup
+        public string AltitudeModeGroup
         {
             get { return _altitudeModeGroup; }
             set { _altitudeModeGroup = value; }
@@ -98,7 +98,7 @@ namespace SharpMap.Entities.Ogc.Kml
 
         [XmlElement(Type = typeof (outerBoundaryIs), ElementName = "outerBoundaryIs", IsNullable = false,
             Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
-        public outerBoundaryIs outerBoundaryIs
+        public outerBoundaryIs OuterBoundaryIs
         {
             get { return _outerBoundaryIs; }
             set { _outerBoundaryIs = value; }
@@ -106,7 +106,7 @@ namespace SharpMap.Entities.Ogc.Kml
 
         [XmlElement(Type = typeof (innerBoundaryIs), ElementName = "innerBoundaryIs", IsNullable = false,
             Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
-        public List<innerBoundaryIs> innerBoundaryIs
+        public List<innerBoundaryIs> InnerBoundaryIs
         {
             get
             {

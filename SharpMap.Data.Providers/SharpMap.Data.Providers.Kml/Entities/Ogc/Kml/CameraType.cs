@@ -71,17 +71,17 @@ namespace SharpMap.Entities.Ogc.Kml
 
         public CameraType()
         {
-            longitude = 0.0;
-            latitude = 0.0;
-            altitude = 0.0;
-            heading = 0.0;
-            tilt = 0.0;
-            roll = 0.0;
+            _longitude = 0.0;
+            _latitude = 0.0;
+            _altitude = 0.0;
+            _heading = 0.0;
+            _tilt = 0.0;
+            _roll = 0.0;
         }
 
         [XmlElement(ElementName = "longitude", IsNullable = false, Form = XmlSchemaForm.Qualified, DataType = "double",
             Namespace = Declarations.SchemaVersion)]
-        public double longitude
+        public double Longitude
         {
             get { return _longitude; }
             set
@@ -93,7 +93,7 @@ namespace SharpMap.Entities.Ogc.Kml
 
         [XmlElement(ElementName = "latitude", IsNullable = false, Form = XmlSchemaForm.Qualified, DataType = "double",
             Namespace = Declarations.SchemaVersion)]
-        public double latitude
+        public double Latitude
         {
             get { return _latitude; }
             set
@@ -105,7 +105,7 @@ namespace SharpMap.Entities.Ogc.Kml
 
         [XmlElement(ElementName = "altitude", IsNullable = false, Form = XmlSchemaForm.Qualified, DataType = "double",
             Namespace = Declarations.SchemaVersion)]
-        public double altitude
+        public double Altitude
         {
             get { return _altitude; }
             set
@@ -117,7 +117,7 @@ namespace SharpMap.Entities.Ogc.Kml
 
         [XmlElement(ElementName = "heading", IsNullable = false, Form = XmlSchemaForm.Qualified, DataType = "double",
             Namespace = Declarations.SchemaVersion)]
-        public double heading
+        public double Heading
         {
             get { return _heading; }
             set
@@ -130,7 +130,7 @@ namespace SharpMap.Entities.Ogc.Kml
 
         [XmlElement(ElementName = "tilt", IsNullable = false, Form = XmlSchemaForm.Qualified, DataType = "double",
             Namespace = Declarations.SchemaVersion)]
-        public double tilt
+        public double Tilt
         {
             get { return _tilt; }
             set
@@ -143,7 +143,7 @@ namespace SharpMap.Entities.Ogc.Kml
 
         [XmlElement(ElementName = "roll", IsNullable = false, Form = XmlSchemaForm.Qualified, DataType = "double",
             Namespace = Declarations.SchemaVersion)]
-        public double roll
+        public double Roll
         {
             get { return _roll; }
             set
@@ -155,7 +155,7 @@ namespace SharpMap.Entities.Ogc.Kml
 
         [XmlElement(ElementName = "altitudeModeGroup", IsNullable = false, Form = XmlSchemaForm.Qualified,
             Namespace = Declarations.SchemaVersion)]
-        public string altitudeModeGroup
+        public string AltitudeModeGroup
         {
             get { return _altitudeModeGroup; }
             set { _altitudeModeGroup = value; }

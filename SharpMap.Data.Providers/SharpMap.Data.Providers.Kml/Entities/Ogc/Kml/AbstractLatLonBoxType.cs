@@ -64,15 +64,15 @@ namespace SharpMap.Entities.Ogc.Kml
 
         public AbstractLatLonBoxType()
         {
-            north = 180.0;
-            south = -180.0;
-            east = 180.0;
-            west = -180.0;
+            _north = 180.0;
+            _south = -180.0;
+            _east = 180.0;
+            _west = -180.0;
         }
 
         [XmlElement(ElementName = "north", IsNullable = false, Form = XmlSchemaForm.Qualified, DataType = "double",
             Namespace = Declarations.SchemaVersion)]
-        public double north
+        public double North
         {
             get { return _north; }
             set
@@ -84,7 +84,7 @@ namespace SharpMap.Entities.Ogc.Kml
 
         [XmlElement(ElementName = "south", IsNullable = false, Form = XmlSchemaForm.Qualified, DataType = "double",
             Namespace = Declarations.SchemaVersion)]
-        public double south
+        public double South
         {
             get { return _south; }
             set
@@ -96,7 +96,7 @@ namespace SharpMap.Entities.Ogc.Kml
 
         [XmlElement(ElementName = "east", IsNullable = false, Form = XmlSchemaForm.Qualified, DataType = "double",
             Namespace = Declarations.SchemaVersion)]
-        public double east
+        public double East
         {
             get { return _east; }
             set
@@ -109,7 +109,7 @@ namespace SharpMap.Entities.Ogc.Kml
 
         [XmlElement(ElementName = "west", IsNullable = false, Form = XmlSchemaForm.Qualified, DataType = "double",
             Namespace = Declarations.SchemaVersion)]
-        public double west
+        public double West
         {
             get { return _west; }
             set

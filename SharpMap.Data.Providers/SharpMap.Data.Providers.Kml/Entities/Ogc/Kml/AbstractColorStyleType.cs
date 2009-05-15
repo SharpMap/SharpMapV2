@@ -53,7 +53,7 @@ namespace SharpMap.Entities.Ogc.Kml
 
         public AbstractColorStyleType()
         {
-            colorMode = ColorMode.Normal;
+            _colorMode = ColorMode.Normal;
         }
 
         [XmlElement(ElementName = "color", IsNullable = false, Form = XmlSchemaForm.Qualified, DataType = "hexBinary",
@@ -67,7 +67,7 @@ namespace SharpMap.Entities.Ogc.Kml
 
         [XmlElement(ElementName = "colorMode", IsNullable = false, Form = XmlSchemaForm.Qualified,
             Namespace = Declarations.SchemaVersion)]
-        public ColorMode colorMode
+        public ColorMode ColorMode
         {
             get { return _colorMode; }
             set

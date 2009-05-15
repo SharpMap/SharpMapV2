@@ -61,7 +61,7 @@ namespace SharpMap.Entities.Ogc.Kml
         [XmlIgnore] private Author _author;
         [XmlIgnore] private string _description;
         [XmlIgnore] private ExtendedData _extendedData;
-        [XmlIgnore] private Atom.Link _link;
+        [XmlIgnore] private Atom.Link _atomLink;
         [XmlIgnore] private Metadata _metadata;
         [XmlIgnore] private string _name;
         [XmlIgnore] private bool _open;
@@ -128,14 +128,14 @@ namespace SharpMap.Entities.Ogc.Kml
 
         [XmlElement(Type = typeof (Atom.Link), ElementName = "link", IsNullable = false, Form = XmlSchemaForm.Qualified,
             Namespace = "http://www.w3.org/2005/Atom")]
-        public Atom.Link Link
+        public Atom.Link AtomLink
         {
             get
             {
-                if (_link == null) _link = new Atom.Link();
-                return _link;
+                if (_atomLink == null) _atomLink = new Atom.Link();
+                return _atomLink;
             }
-            set { _link = value; }
+            set { _atomLink = value; }
         }
 
         [XmlElement(ElementName = "address", IsNullable = false, Form = XmlSchemaForm.Qualified, DataType = "string",

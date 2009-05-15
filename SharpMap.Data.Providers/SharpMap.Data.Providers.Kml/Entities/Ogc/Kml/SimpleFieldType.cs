@@ -28,14 +28,14 @@ namespace SharpMap.Entities.Ogc.Kml
         [XmlIgnore] private string _type;
 
         [XmlAttribute(AttributeName = "type", DataType = "string")]
-        public string type
+        public string Type
         {
             get { return _type; }
             set { _type = value; }
         }
 
         [XmlAttribute(AttributeName = "name", DataType = "string")]
-        public string name
+        public string Name
         {
             get { return _name; }
             set { _name = value; }
@@ -43,7 +43,7 @@ namespace SharpMap.Entities.Ogc.Kml
 
         [XmlElement(ElementName = "displayName", IsNullable = false, Form = XmlSchemaForm.Qualified, DataType = "string"
             , Namespace = Declarations.SchemaVersion)]
-        public string displayName
+        public string DisplayName
         {
             get { return _displayName; }
             set { _displayName = value; }

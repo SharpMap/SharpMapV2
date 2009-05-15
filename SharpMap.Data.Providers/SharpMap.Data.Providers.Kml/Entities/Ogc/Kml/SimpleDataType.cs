@@ -26,11 +26,11 @@ namespace SharpMap.Entities.Ogc.Kml
 
         public SimpleDataType()
         {
-            name = string.Empty;
+            _name = string.Empty;
         }
 
         [XmlAttribute(AttributeName = "name", DataType = "string")]
-        public string name
+        public string Name
         {
             get { return _name; }
             set { _name = value; }

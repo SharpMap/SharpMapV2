@@ -51,13 +51,13 @@ namespace SharpMap.Entities.Ogc.Kml
 
         public LabelStyleType()
         {
-            scale = 1.0;
+            _scale = 1.0;
         }
 
 
         [XmlElement(ElementName = "scale", IsNullable = false, Form = XmlSchemaForm.Qualified, DataType = "double",
             Namespace = Declarations.SchemaVersion)]
-        public double scale
+        public double Scale
         {
             get { return _scale; }
             set

@@ -56,14 +56,14 @@ namespace SharpMap.Entities.Ogc.Kml
 
         public ListStyleType()
         {
-            listItemType = ListItemType.Check;
-            maxSnippetLines = 2;
+            _listItemType = ListItemType.Check;
+            _maxSnippetLines = 2;
         }
 
 
         [XmlElement(ElementName = "listItemType", IsNullable = false, Form = XmlSchemaForm.Qualified,
             Namespace = Declarations.SchemaVersion)]
-        public ListItemType listItemType
+        public ListItemType ListItemType
         {
             get { return _listItemType; }
             set
@@ -96,7 +96,7 @@ namespace SharpMap.Entities.Ogc.Kml
 
         [XmlElement(ElementName = "maxSnippetLines", IsNullable = false, Form = XmlSchemaForm.Qualified,
             DataType = "int", Namespace = Declarations.SchemaVersion)]
-        public int maxSnippetLines
+        public int MaxSnippetLines
         {
             get { return _maxSnippetLines; }
             set

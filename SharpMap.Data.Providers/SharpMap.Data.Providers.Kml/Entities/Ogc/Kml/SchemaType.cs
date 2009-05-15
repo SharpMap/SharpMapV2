@@ -28,14 +28,14 @@ namespace SharpMap.Entities.Ogc.Kml
         [XmlIgnore] private List<SimpleField> _simpleField;
 
         [XmlAttribute(AttributeName = "name", DataType = "string")]
-        public string name
+        public string Name
         {
             get { return _name; }
             set { _name = value; }
         }
 
         [XmlAttribute(AttributeName = "id", DataType = "ID")]
-        public string id
+        public string Id
         {
             get { return _id; }
             set { _id = value; }

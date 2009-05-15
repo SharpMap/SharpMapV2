@@ -55,14 +55,14 @@ namespace SharpMap.Entities.Ogc.Kml
 
         public LatLonAltBoxType()
         {
-            minAltitude = 0.0;
-            maxAltitude = 0.0;
+            _minAltitude = 0.0;
+            _maxAltitude = 0.0;
         }
 
 
         [XmlElement(ElementName = "minAltitude", IsNullable = false, Form = XmlSchemaForm.Qualified, DataType = "double"
             , Namespace = Declarations.SchemaVersion)]
-        public double minAltitude
+        public double MinAltitude
         {
             get { return _minAltitude; }
             set
@@ -75,7 +75,7 @@ namespace SharpMap.Entities.Ogc.Kml
 
         [XmlElement(ElementName = "maxAltitude", IsNullable = false, Form = XmlSchemaForm.Qualified, DataType = "double"
             , Namespace = Declarations.SchemaVersion)]
-        public double maxAltitude
+        public double MaxAltitude
         {
             get { return _maxAltitude; }
             set
@@ -87,7 +87,7 @@ namespace SharpMap.Entities.Ogc.Kml
 
         [XmlElement(ElementName = "altitudeModeGroup", IsNullable = false, Form = XmlSchemaForm.Qualified,
             Namespace = Declarations.SchemaVersion)]
-        public string altitudeModeGroup
+        public string AltitudeModeGroup
         {
             get { return _altitudeModeGroup; }
             set { _altitudeModeGroup = value; }

@@ -56,12 +56,12 @@ namespace SharpMap.Entities.Ogc.Kml
 
         public ScreenOverlayType()
         {
-            rotation = 0.0;
+            _rotation = 0.0;
         }
 
         [XmlElement(Type = typeof (OverlayXY), ElementName = "overlayXY", IsNullable = false,
             Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
-        public OverlayXY overlayXY
+        public OverlayXY OverlayXY
         {
             get { return _overlayXY; }
             set { _overlayXY = value; }
@@ -69,7 +69,7 @@ namespace SharpMap.Entities.Ogc.Kml
 
         [XmlElement(Type = typeof (ScreenXY), ElementName = "screenXY", IsNullable = false,
             Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
-        public ScreenXY screenXY
+        public ScreenXY ScreenXY
         {
             get { return _screenXY; }
             set { _screenXY = value; }
@@ -77,7 +77,7 @@ namespace SharpMap.Entities.Ogc.Kml
 
         [XmlElement(Type = typeof (RotationXY), ElementName = "rotationXY", IsNullable = false,
             Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
-        public RotationXY rotationXY
+        public RotationXY RotationXY
         {
             get { return _rotationXY; }
             set { _rotationXY = value; }
@@ -85,7 +85,7 @@ namespace SharpMap.Entities.Ogc.Kml
 
         [XmlElement(Type = typeof (Size), ElementName = "size", IsNullable = false, Form = XmlSchemaForm.Qualified,
             Namespace = Declarations.SchemaVersion)]
-        public Size size
+        public Size Size
         {
             get { return _size; }
             set { _size = value; }
@@ -94,7 +94,7 @@ namespace SharpMap.Entities.Ogc.Kml
 
         [XmlElement(ElementName = "rotation", IsNullable = false, Form = XmlSchemaForm.Qualified, DataType = "double",
             Namespace = Declarations.SchemaVersion)]
-        public double rotation
+        public double Rotation
         {
             get { return _rotation; }
             set

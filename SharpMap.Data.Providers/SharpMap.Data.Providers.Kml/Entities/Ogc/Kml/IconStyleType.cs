@@ -56,14 +56,14 @@ namespace SharpMap.Entities.Ogc.Kml
 
         public IconStyleType()
         {
-            scale = 1.0;
-            heading = 0.0;
+            _scale = 1.0;
+            _heading = 0.0;
         }
 
 
         [XmlElement(ElementName = "scale", IsNullable = false, Form = XmlSchemaForm.Qualified, DataType = "double",
             Namespace = Declarations.SchemaVersion)]
-        public double scale
+        public double Scale
         {
             get { return _scale; }
             set
@@ -76,7 +76,7 @@ namespace SharpMap.Entities.Ogc.Kml
 
         [XmlElement(ElementName = "heading", IsNullable = false, Form = XmlSchemaForm.Qualified, DataType = "double",
             Namespace = Declarations.SchemaVersion)]
-        public double heading
+        public double Heading
         {
             get { return _heading; }
             set
@@ -96,7 +96,7 @@ namespace SharpMap.Entities.Ogc.Kml
 
         [XmlElement(Type = typeof (HotSpot), ElementName = "hotSpot", IsNullable = false, Form = XmlSchemaForm.Qualified
             , Namespace = Declarations.SchemaVersion)]
-        public HotSpot hotSpot
+        public HotSpot HotSpot
         {
             get { return _hotSpot; }
             set { _hotSpot = value; }

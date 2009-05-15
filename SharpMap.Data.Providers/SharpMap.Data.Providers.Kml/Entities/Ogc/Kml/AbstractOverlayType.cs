@@ -56,7 +56,7 @@ namespace SharpMap.Entities.Ogc.Kml
 
         public AbstractOverlayType()
         {
-            drawOrder = 0;
+            _drawOrder = 0;
         }
 
         [XmlElement(ElementName = "color", IsNullable = false, Form = XmlSchemaForm.Qualified, DataType = "hexBinary",
@@ -69,7 +69,7 @@ namespace SharpMap.Entities.Ogc.Kml
 
         [XmlElement(ElementName = "drawOrder", IsNullable = false, Form = XmlSchemaForm.Qualified, DataType = "int",
             Namespace = Declarations.SchemaVersion)]
-        public int drawOrder
+        public int DrawOrder
         {
             get { return _drawOrder; }
             set

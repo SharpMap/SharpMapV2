@@ -57,15 +57,15 @@ namespace SharpMap.Entities.Ogc.Kml
 
         public LocationType()
         {
-            longitude = 0.0;
-            latitude = 0.0;
-            altitude = 0.0;
+            _longitude = 0.0;
+            _latitude = 0.0;
+            _altitude = 0.0;
         }
 
 
         [XmlElement(ElementName = "longitude", IsNullable = false, Form = XmlSchemaForm.Qualified, DataType = "double",
             Namespace = Declarations.SchemaVersion)]
-        public double longitude
+        public double Longitude
         {
             get { return _longitude; }
             set
@@ -78,7 +78,7 @@ namespace SharpMap.Entities.Ogc.Kml
 
         [XmlElement(ElementName = "latitude", IsNullable = false, Form = XmlSchemaForm.Qualified, DataType = "double",
             Namespace = Declarations.SchemaVersion)]
-        public double latitude
+        public double Latitude
         {
             get { return _latitude; }
             set
@@ -91,7 +91,7 @@ namespace SharpMap.Entities.Ogc.Kml
 
         [XmlElement(ElementName = "altitude", IsNullable = false, Form = XmlSchemaForm.Qualified, DataType = "double",
             Namespace = Declarations.SchemaVersion)]
-        public double altitude
+        public double Altitude
         {
             get { return _altitude; }
             set

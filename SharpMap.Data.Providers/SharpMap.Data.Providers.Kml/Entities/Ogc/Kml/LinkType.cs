@@ -69,16 +69,16 @@ namespace SharpMap.Entities.Ogc.Kml
 
         public LinkType()
         {
-            refreshMode = RefreshMode.OnChange;
-            refreshInterval = 4.0;
-            viewRefreshMode = ViewRefreshMode.Never;
-            viewRefreshTime = 4.0;
-            viewBoundScale = 1.0;
+            _refreshMode = RefreshMode.OnChange;
+            _refreshInterval = 4.0;
+            _viewRefreshMode = ViewRefreshMode.Never;
+            _viewRefreshTime = 4.0;
+            _viewBoundScale = 1.0;
         }
 
         [XmlElement(ElementName = "refreshMode", IsNullable = false, Form = XmlSchemaForm.Qualified,
             Namespace = Declarations.SchemaVersion)]
-        public RefreshMode refreshMode
+        public RefreshMode RefreshMode
         {
             get { return _refreshMode; }
             set
@@ -90,7 +90,7 @@ namespace SharpMap.Entities.Ogc.Kml
 
         [XmlElement(ElementName = "refreshInterval", IsNullable = false, Form = XmlSchemaForm.Qualified,
             DataType = "double", Namespace = Declarations.SchemaVersion)]
-        public double refreshInterval
+        public double RefreshInterval
         {
             get { return _refreshInterval; }
             set
@@ -102,7 +102,7 @@ namespace SharpMap.Entities.Ogc.Kml
 
         [XmlElement(ElementName = "viewRefreshMode", IsNullable = false, Form = XmlSchemaForm.Qualified,
             Namespace = Declarations.SchemaVersion)]
-        public ViewRefreshMode viewRefreshMode
+        public ViewRefreshMode ViewRefreshMode
         {
             get { return _viewRefreshMode; }
             set
@@ -115,7 +115,7 @@ namespace SharpMap.Entities.Ogc.Kml
 
         [XmlElement(ElementName = "viewRefreshTime", IsNullable = false, Form = XmlSchemaForm.Qualified,
             DataType = "double", Namespace = Declarations.SchemaVersion)]
-        public double viewRefreshTime
+        public double ViewRefreshTime
         {
             get { return _viewRefreshTime; }
             set
@@ -128,7 +128,7 @@ namespace SharpMap.Entities.Ogc.Kml
 
         [XmlElement(ElementName = "viewBoundScale", IsNullable = false, Form = XmlSchemaForm.Qualified,
             DataType = "double", Namespace = Declarations.SchemaVersion)]
-        public double viewBoundScale
+        public double ViewBoundScale
         {
             get { return _viewBoundScale; }
             set
@@ -140,7 +140,7 @@ namespace SharpMap.Entities.Ogc.Kml
 
         [XmlElement(ElementName = "viewFormat", IsNullable = false, Form = XmlSchemaForm.Qualified, DataType = "string",
             Namespace = Declarations.SchemaVersion)]
-        public string viewFormat
+        public string ViewFormat
         {
             get { return _viewFormat; }
             set { _viewFormat = value; }
@@ -148,7 +148,7 @@ namespace SharpMap.Entities.Ogc.Kml
 
         [XmlElement(ElementName = "httpQuery", IsNullable = false, Form = XmlSchemaForm.Qualified, DataType = "string",
             Namespace = Declarations.SchemaVersion)]
-        public string httpQuery
+        public string HttpQuery
         {
             get { return _httpQuery; }
             set { _httpQuery = value; }

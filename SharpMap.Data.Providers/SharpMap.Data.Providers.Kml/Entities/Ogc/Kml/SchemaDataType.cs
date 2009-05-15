@@ -28,7 +28,7 @@ namespace SharpMap.Entities.Ogc.Kml
         [XmlIgnore] private List<SimpleData> _simpleData;
 
         [XmlAttribute(AttributeName = "schemaUrl", DataType = "anyURI")]
-        public string schemaUrl
+        public string SchemaUrl
         {
             get { return _schemaUrl; }
             set { _schemaUrl = value; }

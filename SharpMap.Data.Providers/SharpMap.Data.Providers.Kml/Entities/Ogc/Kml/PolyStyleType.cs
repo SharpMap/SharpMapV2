@@ -58,13 +58,13 @@ namespace SharpMap.Entities.Ogc.Kml
 
         public PolyStyleType()
         {
-            fill = true;
-            outline = true;
+            _fill = true;
+            _outline = true;
         }
 
         [XmlElement(ElementName = "fill", IsNullable = false, Form = XmlSchemaForm.Qualified, DataType = "boolean",
             Namespace = Declarations.SchemaVersion)]
-        public bool fill
+        public bool Fill
         {
             get { return _fill; }
             set
@@ -76,7 +76,7 @@ namespace SharpMap.Entities.Ogc.Kml
 
         [XmlElement(ElementName = "outline", IsNullable = false, Form = XmlSchemaForm.Qualified, DataType = "boolean",
             Namespace = Declarations.SchemaVersion)]
-        public bool outline
+        public bool Outline
         {
             get { return _outline; }
             set

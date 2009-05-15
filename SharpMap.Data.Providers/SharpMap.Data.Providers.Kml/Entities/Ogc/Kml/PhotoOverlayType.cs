@@ -59,13 +59,13 @@ namespace SharpMap.Entities.Ogc.Kml
 
         public PhotoOverlayType()
         {
-            rotation = 0.0;
-            shape = Shape.Rectangle;
+            _rotation = 0.0;
+            _shape = Shape.Rectangle;
         }
 
         [XmlElement(ElementName = "rotation", IsNullable = false, Form = XmlSchemaForm.Qualified, DataType = "double",
             Namespace = Declarations.SchemaVersion)]
-        public double rotation
+        public double Rotation
         {
             get { return _rotation; }
             set
@@ -102,7 +102,7 @@ namespace SharpMap.Entities.Ogc.Kml
 
         [XmlElement(ElementName = "shape", IsNullable = false, Form = XmlSchemaForm.Qualified,
             Namespace = Declarations.SchemaVersion)]
-        public Shape shape
+        public Shape Shape
         {
             get { return _shape; }
             set

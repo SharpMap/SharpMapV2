@@ -51,13 +51,13 @@ namespace SharpMap.Entities.Ogc.Kml
 
         public LineStyleType()
         {
-            width = 1.0;
+            _width = 1.0;
         }
 
 
         [XmlElement(ElementName = "width", IsNullable = false, Form = XmlSchemaForm.Qualified, DataType = "double",
             Namespace = Declarations.SchemaVersion)]
-        public double width
+        public double Width
         {
             get { return _width; }
             set

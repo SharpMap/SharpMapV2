@@ -49,7 +49,7 @@ namespace SharpMap.Entities.Ogc.Kml
 
         [XmlElement(ElementName = "href", IsNullable = false, Form = XmlSchemaForm.Qualified, DataType = "string",
             Namespace = Declarations.SchemaVersion)]
-        public string href
+        public string Href
         {
             get { return _href; }
             set { _href = value; }

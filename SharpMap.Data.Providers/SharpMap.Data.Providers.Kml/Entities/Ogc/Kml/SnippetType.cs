@@ -28,11 +28,11 @@ namespace SharpMap.Entities.Ogc.Kml
 
         public SnippetType()
         {
-            maxLines = 2;
+            _maxLines = 2;
         }
 
         [XmlAttribute(AttributeName = "maxLines", DataType = "int")]
-        public int maxLines
+        public int MaxLines
         {
             get { return _maxLines; }
             set

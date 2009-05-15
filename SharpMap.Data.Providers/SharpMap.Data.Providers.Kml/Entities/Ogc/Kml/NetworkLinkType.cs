@@ -56,14 +56,14 @@ namespace SharpMap.Entities.Ogc.Kml
 
         public NetworkLinkType()
         {
-            refreshVisibility = false;
-            flyToView = false;
+            _refreshVisibility = false;
+            _flyToView = false;
         }
 
 
         [XmlElement(ElementName = "refreshVisibility", IsNullable = false, Form = XmlSchemaForm.Qualified,
             DataType = "boolean", Namespace = Declarations.SchemaVersion)]
-        public bool refreshVisibility
+        public bool RefreshVisibility
         {
             get { return _refreshVisibility; }
             set
@@ -76,7 +76,7 @@ namespace SharpMap.Entities.Ogc.Kml
 
         [XmlElement(ElementName = "flyToView", IsNullable = false, Form = XmlSchemaForm.Qualified, DataType = "boolean",
             Namespace = Declarations.SchemaVersion)]
-        public bool flyToView
+        public bool FlyToView
         {
             get { return _flyToView; }
             set
@@ -96,7 +96,7 @@ namespace SharpMap.Entities.Ogc.Kml
 
         [XmlElement(Type = typeof (Link), ElementName = "Link", IsNullable = false, Form = XmlSchemaForm.Qualified,
             Namespace = Declarations.SchemaVersion)]
-        public Link link
+        public  Link Link
         {
             get { return _link; }
             set { _link = value; }

@@ -59,14 +59,14 @@ namespace SharpMap.Entities.Ogc.Kml
 
         public OrientationType()
         {
-            heading = 0.0;
-            tilt = 0.0;
-            roll = 0.0;
+            _heading = 0.0;
+            _tilt = 0.0;
+            _roll = 0.0;
         }
 
         [XmlElement(ElementName = "heading", IsNullable = false, Form = XmlSchemaForm.Qualified, DataType = "double",
             Namespace = Declarations.SchemaVersion)]
-        public double heading
+        public double Heading
         {
             get { return _heading; }
             set
@@ -79,7 +79,7 @@ namespace SharpMap.Entities.Ogc.Kml
 
         [XmlElement(ElementName = "tilt", IsNullable = false, Form = XmlSchemaForm.Qualified, DataType = "double",
             Namespace = Declarations.SchemaVersion)]
-        public double tilt
+        public double Tilt
         {
             get { return _tilt; }
             set
@@ -92,7 +92,7 @@ namespace SharpMap.Entities.Ogc.Kml
 
         [XmlElement(ElementName = "roll", IsNullable = false, Form = XmlSchemaForm.Qualified, DataType = "double",
             Namespace = Declarations.SchemaVersion)]
-        public double roll
+        public double Roll
         {
             get { return _roll; }
             set

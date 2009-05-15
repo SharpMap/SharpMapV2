@@ -60,16 +60,16 @@ namespace SharpMap.Entities.Ogc.Kml
 
         public ImagePyramidType()
         {
-            tileSize = 256;
-            maxWidth = 0;
-            maxHeight = 0;
-            gridOrigin = GridOrigin.LowerLeft;
+            _tileSize = 256;
+            _maxWidth = 0;
+            _maxHeight = 0;
+            _gridOrigin = GridOrigin.LowerLeft;
         }
 
 
         [XmlElement(ElementName = "tileSize", IsNullable = false, Form = XmlSchemaForm.Qualified, DataType = "int",
             Namespace = Declarations.SchemaVersion)]
-        public int tileSize
+        public int TileSize
         {
             get { return _tileSize; }
             set
@@ -82,7 +82,7 @@ namespace SharpMap.Entities.Ogc.Kml
 
         [XmlElement(ElementName = "maxWidth", IsNullable = false, Form = XmlSchemaForm.Qualified, DataType = "int",
             Namespace = Declarations.SchemaVersion)]
-        public int maxWidth
+        public int MaxWidth
         {
             get { return _maxWidth; }
             set
@@ -95,7 +95,7 @@ namespace SharpMap.Entities.Ogc.Kml
 
         [XmlElement(ElementName = "maxHeight", IsNullable = false, Form = XmlSchemaForm.Qualified, DataType = "int",
             Namespace = Declarations.SchemaVersion)]
-        public int maxHeight
+        public int MaxHeight
         {
             get { return _maxHeight; }
             set
@@ -108,7 +108,7 @@ namespace SharpMap.Entities.Ogc.Kml
 
         [XmlElement(ElementName = "gridOrigin", IsNullable = false, Form = XmlSchemaForm.Qualified,
             Namespace = Declarations.SchemaVersion)]
-        public GridOrigin gridOrigin
+        public GridOrigin GridOrigin
         {
             get { return _gridOrigin; }
             set
