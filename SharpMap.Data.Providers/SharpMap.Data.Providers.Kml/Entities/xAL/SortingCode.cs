@@ -1,6 +1,6 @@
 // /*
 //  *  The attached / following is part of SharpMap.Data.Providers.Kml
-//  *  SharpMap.Data.Providers.Kml is free software © 2008 Newgrove Consultants Limited, 
+//  *  SharpMap.Data.Providers.Kml is free software ï¿½ 2008 Newgrove Consultants Limited, 
 //  *  www.newgrove.com; you can redistribute it and/or modify it under the terms 
 //  *  of the current GNU Lesser General Public License (LGPL) as published by and 
 //  *  available from the Free Software Foundation, Inc., 
@@ -20,21 +20,21 @@ namespace SharpMap.Entities.xAL
     [XmlType(TypeName = "SortingCode", Namespace = Declarations.SchemaVersion), Serializable]
     public class SortingCode
     {
-        [XmlIgnore] private string _Code;
-        [XmlIgnore] private string _Type;
+        [XmlIgnore] private string _code;
+        [XmlIgnore] private string _type;
 
         [XmlAttribute(AttributeName = "Type")]
         public string Type
         {
-            get { return _Type; }
-            set { _Type = value; }
+            get { return _type; }
+            set { _type = value; }
         }
 
         [XmlAttribute(AttributeName = "Code")]
         public string Code
         {
-            get { return _Code; }
-            set { _Code = value; }
+            get { return _code; }
+            set { _code = value; }
         }
 
         public void MakeSchemaCompliant()

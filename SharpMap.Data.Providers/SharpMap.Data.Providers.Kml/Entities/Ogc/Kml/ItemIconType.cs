@@ -1,6 +1,6 @@
 // /*
 //  *  The attached / following is part of SharpMap.Data.Providers.Kml
-//  *  SharpMap.Data.Providers.Kml is free software © 2008 Newgrove Consultants Limited, 
+//  *  SharpMap.Data.Providers.Kml is free software ï¿½ 2008 Newgrove Consultants Limited, 
 //  *  www.newgrove.com; you can redistribute it and/or modify it under the terms 
 //  *  of the current GNU Lesser General Public License (LGPL) as published by and 
 //  *  available from the Free Software Foundation, Inc., 
@@ -44,8 +44,8 @@ namespace SharpMap.Entities.Ogc.Kml
     public class ItemIconType : AbstractObjectType
     {
         [XmlIgnore] private string _href;
-        [XmlIgnore] private List<ItemIconObjectExtensionGroup> _ItemIconObjectExtensionGroup;
-        [XmlIgnore] private List<string> _ItemIconSimpleExtensionGroup;
+        [XmlIgnore] private List<ItemIconObjectExtensionGroup> _itemIconObjectExtensionGroup;
+        [XmlIgnore] private List<string> _itemIconSimpleExtensionGroup;
         [XmlIgnore] private string _state;
 
         [XmlElement(ElementName = "state", IsNullable = false, Form = XmlSchemaForm.Qualified,
@@ -70,10 +70,10 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (_ItemIconSimpleExtensionGroup == null) _ItemIconSimpleExtensionGroup = new List<string>();
-                return _ItemIconSimpleExtensionGroup;
+                if (_itemIconSimpleExtensionGroup == null) _itemIconSimpleExtensionGroup = new List<string>();
+                return _itemIconSimpleExtensionGroup;
             }
-            set { _ItemIconSimpleExtensionGroup = value; }
+            set { _itemIconSimpleExtensionGroup = value; }
         }
 
         [XmlElement(Type = typeof (ItemIconObjectExtensionGroup), ElementName = "ItemIconObjectExtensionGroup",
@@ -82,11 +82,11 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (_ItemIconObjectExtensionGroup == null)
-                    _ItemIconObjectExtensionGroup = new List<ItemIconObjectExtensionGroup>();
-                return _ItemIconObjectExtensionGroup;
+                if (_itemIconObjectExtensionGroup == null)
+                    _itemIconObjectExtensionGroup = new List<ItemIconObjectExtensionGroup>();
+                return _itemIconObjectExtensionGroup;
             }
-            set { _ItemIconObjectExtensionGroup = value; }
+            set { _itemIconObjectExtensionGroup = value; }
         }
 
         public new void MakeSchemaCompliant()

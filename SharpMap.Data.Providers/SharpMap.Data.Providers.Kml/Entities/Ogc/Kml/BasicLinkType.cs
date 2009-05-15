@@ -1,6 +1,6 @@
 // /*
 //  *  The attached / following is part of SharpMap.Data.Providers.Kml
-//  *  SharpMap.Data.Providers.Kml is free software © 2008 Newgrove Consultants Limited, 
+//  *  SharpMap.Data.Providers.Kml is free software ï¿½ 2008 Newgrove Consultants Limited, 
 //  *  www.newgrove.com; you can redistribute it and/or modify it under the terms 
 //  *  of the current GNU Lesser General Public License (LGPL) as published by and 
 //  *  available from the Free Software Foundation, Inc., 
@@ -43,8 +43,8 @@ namespace SharpMap.Entities.Ogc.Kml
     [XmlInclude(typeof (ViewVolumeType))]
     public class BasicLinkType : AbstractObjectType
     {
-        [XmlIgnore] private List<BasicLinkObjectExtensionGroup> _BasicLinkObjectExtensionGroup;
-        [XmlIgnore] private List<string> _BasicLinkSimpleExtensionGroup;
+        [XmlIgnore] private List<BasicLinkObjectExtensionGroup> _basicLinkObjectExtensionGroup;
+        [XmlIgnore] private List<string> _basicLinkSimpleExtensionGroup;
         [XmlIgnore] private string _href;
 
         [XmlElement(ElementName = "href", IsNullable = false, Form = XmlSchemaForm.Qualified, DataType = "string",
@@ -61,10 +61,10 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (_BasicLinkSimpleExtensionGroup == null) _BasicLinkSimpleExtensionGroup = new List<string>();
-                return _BasicLinkSimpleExtensionGroup;
+                if (_basicLinkSimpleExtensionGroup == null) _basicLinkSimpleExtensionGroup = new List<string>();
+                return _basicLinkSimpleExtensionGroup;
             }
-            set { _BasicLinkSimpleExtensionGroup = value; }
+            set { _basicLinkSimpleExtensionGroup = value; }
         }
 
         [XmlElement(Type = typeof (BasicLinkObjectExtensionGroup), ElementName = "BasicLinkObjectExtensionGroup",
@@ -73,11 +73,11 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (_BasicLinkObjectExtensionGroup == null)
-                    _BasicLinkObjectExtensionGroup = new List<BasicLinkObjectExtensionGroup>();
-                return _BasicLinkObjectExtensionGroup;
+                if (_basicLinkObjectExtensionGroup == null)
+                    _basicLinkObjectExtensionGroup = new List<BasicLinkObjectExtensionGroup>();
+                return _basicLinkObjectExtensionGroup;
             }
-            set { _BasicLinkObjectExtensionGroup = value; }
+            set { _basicLinkObjectExtensionGroup = value; }
         }
 
         public new void MakeSchemaCompliant()

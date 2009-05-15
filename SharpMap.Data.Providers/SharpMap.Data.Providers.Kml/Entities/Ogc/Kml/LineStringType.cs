@@ -1,6 +1,6 @@
 // /*
 //  *  The attached / following is part of SharpMap.Data.Providers.Kml
-//  *  SharpMap.Data.Providers.Kml is free software © 2008 Newgrove Consultants Limited, 
+//  *  SharpMap.Data.Providers.Kml is free software ï¿½ 2008 Newgrove Consultants Limited, 
 //  *  www.newgrove.com; you can redistribute it and/or modify it under the terms 
 //  *  of the current GNU Lesser General Public License (LGPL) as published by and 
 //  *  available from the Free Software Foundation, Inc., 
@@ -48,8 +48,8 @@ namespace SharpMap.Entities.Ogc.Kml
         [XmlIgnore] private bool _extrude;
 
         [XmlIgnore] public bool _extrudeSpecified;
-        [XmlIgnore] private List<LineStringObjectExtensionGroup> _LineStringObjectExtensionGroup;
-        [XmlIgnore] private List<string> _LineStringSimpleExtensionGroup;
+        [XmlIgnore] private List<LineStringObjectExtensionGroup> _lineStringObjectExtensionGroup;
+        [XmlIgnore] private List<string> _lineStringSimpleExtensionGroup;
 
 
         [XmlIgnore] private bool _tessellate;
@@ -109,10 +109,10 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (_LineStringSimpleExtensionGroup == null) _LineStringSimpleExtensionGroup = new List<string>();
-                return _LineStringSimpleExtensionGroup;
+                if (_lineStringSimpleExtensionGroup == null) _lineStringSimpleExtensionGroup = new List<string>();
+                return _lineStringSimpleExtensionGroup;
             }
-            set { _LineStringSimpleExtensionGroup = value; }
+            set { _lineStringSimpleExtensionGroup = value; }
         }
 
         [XmlElement(Type = typeof (LineStringObjectExtensionGroup), ElementName = "LineStringObjectExtensionGroup",
@@ -121,11 +121,11 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (_LineStringObjectExtensionGroup == null)
-                    _LineStringObjectExtensionGroup = new List<LineStringObjectExtensionGroup>();
-                return _LineStringObjectExtensionGroup;
+                if (_lineStringObjectExtensionGroup == null)
+                    _lineStringObjectExtensionGroup = new List<LineStringObjectExtensionGroup>();
+                return _lineStringObjectExtensionGroup;
             }
-            set { _LineStringObjectExtensionGroup = value; }
+            set { _lineStringObjectExtensionGroup = value; }
         }
 
         public new void MakeSchemaCompliant()

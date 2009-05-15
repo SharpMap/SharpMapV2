@@ -1,6 +1,6 @@
 // /*
 //  *  The attached / following is part of SharpMap.Data.Providers.Kml
-//  *  SharpMap.Data.Providers.Kml is free software © 2008 Newgrove Consultants Limited, 
+//  *  SharpMap.Data.Providers.Kml is free software ï¿½ 2008 Newgrove Consultants Limited, 
 //  *  www.newgrove.com; you can redistribute it and/or modify it under the terms 
 //  *  of the current GNU Lesser General Public License (LGPL) as published by and 
 //  *  available from the Free Software Foundation, Inc., 
@@ -43,8 +43,8 @@ namespace SharpMap.Entities.Ogc.Kml
     [XmlInclude(typeof (ViewVolumeType))]
     public abstract class AbstractColorStyleType : AbstractSubStyleType
     {
-        [XmlIgnore] private List<AbstractColorStyleObjectExtensionGroup> _AbstractColorStyleObjectExtensionGroup;
-        [XmlIgnore] private List<string> _AbstractColorStyleSimpleExtensionGroup;
+        [XmlIgnore] private List<AbstractColorStyleObjectExtensionGroup> _abstractColorStyleObjectExtensionGroup;
+        [XmlIgnore] private List<string> _abstractColorStyleSimpleExtensionGroup;
         [XmlIgnore] private byte[] _color;
 
         [XmlIgnore] private ColorMode _colorMode;
@@ -83,11 +83,11 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (_AbstractColorStyleSimpleExtensionGroup == null)
-                    _AbstractColorStyleSimpleExtensionGroup = new List<string>();
-                return _AbstractColorStyleSimpleExtensionGroup;
+                if (_abstractColorStyleSimpleExtensionGroup == null)
+                    _abstractColorStyleSimpleExtensionGroup = new List<string>();
+                return _abstractColorStyleSimpleExtensionGroup;
             }
-            set { _AbstractColorStyleSimpleExtensionGroup = value; }
+            set { _abstractColorStyleSimpleExtensionGroup = value; }
         }
 
         [XmlElement(Type = typeof (AbstractColorStyleObjectExtensionGroup),
@@ -97,11 +97,11 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (_AbstractColorStyleObjectExtensionGroup == null)
-                    _AbstractColorStyleObjectExtensionGroup = new List<AbstractColorStyleObjectExtensionGroup>();
-                return _AbstractColorStyleObjectExtensionGroup;
+                if (_abstractColorStyleObjectExtensionGroup == null)
+                    _abstractColorStyleObjectExtensionGroup = new List<AbstractColorStyleObjectExtensionGroup>();
+                return _abstractColorStyleObjectExtensionGroup;
             }
-            set { _AbstractColorStyleObjectExtensionGroup = value; }
+            set { _abstractColorStyleObjectExtensionGroup = value; }
         }
 
         public new void MakeSchemaCompliant()

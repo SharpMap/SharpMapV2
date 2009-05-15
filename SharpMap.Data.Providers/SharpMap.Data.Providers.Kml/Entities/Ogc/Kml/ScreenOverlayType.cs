@@ -1,6 +1,6 @@
 // /*
 //  *  The attached / following is part of SharpMap.Data.Providers.Kml
-//  *  SharpMap.Data.Providers.Kml is free software © 2008 Newgrove Consultants Limited, 
+//  *  SharpMap.Data.Providers.Kml is free software ï¿½ 2008 Newgrove Consultants Limited, 
 //  *  www.newgrove.com; you can redistribute it and/or modify it under the terms 
 //  *  of the current GNU Lesser General Public License (LGPL) as published by and 
 //  *  available from the Free Software Foundation, Inc., 
@@ -48,8 +48,8 @@ namespace SharpMap.Entities.Ogc.Kml
 
         [XmlIgnore] public bool _rotationSpecified;
         [XmlIgnore] private RotationXY _rotationXY;
-        [XmlIgnore] private List<ScreenOverlayObjectExtensionGroup> _ScreenOverlayObjectExtensionGroup;
-        [XmlIgnore] private List<string> _ScreenOverlaySimpleExtensionGroup;
+        [XmlIgnore] private List<ScreenOverlayObjectExtensionGroup> _screenOverlayObjectExtensionGroup;
+        [XmlIgnore] private List<string> _screenOverlaySimpleExtensionGroup;
 
         [XmlIgnore] private ScreenXY _screenXY;
         [XmlIgnore] private Size _size;
@@ -110,11 +110,11 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (_ScreenOverlaySimpleExtensionGroup == null)
-                    _ScreenOverlaySimpleExtensionGroup = new List<string>();
-                return _ScreenOverlaySimpleExtensionGroup;
+                if (_screenOverlaySimpleExtensionGroup == null)
+                    _screenOverlaySimpleExtensionGroup = new List<string>();
+                return _screenOverlaySimpleExtensionGroup;
             }
-            set { _ScreenOverlaySimpleExtensionGroup = value; }
+            set { _screenOverlaySimpleExtensionGroup = value; }
         }
 
         [XmlElement(Type = typeof (ScreenOverlayObjectExtensionGroup), ElementName = "ScreenOverlayObjectExtensionGroup"
@@ -123,11 +123,11 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (_ScreenOverlayObjectExtensionGroup == null)
-                    _ScreenOverlayObjectExtensionGroup = new List<ScreenOverlayObjectExtensionGroup>();
-                return _ScreenOverlayObjectExtensionGroup;
+                if (_screenOverlayObjectExtensionGroup == null)
+                    _screenOverlayObjectExtensionGroup = new List<ScreenOverlayObjectExtensionGroup>();
+                return _screenOverlayObjectExtensionGroup;
             }
-            set { _ScreenOverlayObjectExtensionGroup = value; }
+            set { _screenOverlayObjectExtensionGroup = value; }
         }
 
         public new void MakeSchemaCompliant()

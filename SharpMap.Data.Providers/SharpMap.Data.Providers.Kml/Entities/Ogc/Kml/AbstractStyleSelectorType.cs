@@ -1,6 +1,6 @@
 // /*
 //  *  The attached / following is part of SharpMap.Data.Providers.Kml
-//  *  SharpMap.Data.Providers.Kml is free software © 2008 Newgrove Consultants Limited, 
+//  *  SharpMap.Data.Providers.Kml is free software ï¿½ 2008 Newgrove Consultants Limited, 
 //  *  www.newgrove.com; you can redistribute it and/or modify it under the terms 
 //  *  of the current GNU Lesser General Public License (LGPL) as published by and 
 //  *  available from the Free Software Foundation, Inc., 
@@ -43,8 +43,8 @@ namespace SharpMap.Entities.Ogc.Kml
     [XmlInclude(typeof (ViewVolumeType))]
     public abstract class AbstractStyleSelectorType : AbstractObjectType
     {
-        [XmlIgnore] private List<AbstractStyleSelectorObjectExtensionGroup> _AbstractStyleSelectorObjectExtensionGroup;
-        [XmlIgnore] private List<string> _AbstractStyleSelectorSimpleExtensionGroup;
+        [XmlIgnore] private List<AbstractStyleSelectorObjectExtensionGroup> _abstractStyleSelectorObjectExtensionGroup;
+        [XmlIgnore] private List<string> _abstractStyleSelectorSimpleExtensionGroup;
 
         [XmlElement(Type = typeof (string), ElementName = "AbstractStyleSelectorSimpleExtensionGroup",
             IsNullable = false, Form = XmlSchemaForm.Qualified,
@@ -53,11 +53,11 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (_AbstractStyleSelectorSimpleExtensionGroup == null)
-                    _AbstractStyleSelectorSimpleExtensionGroup = new List<string>();
-                return _AbstractStyleSelectorSimpleExtensionGroup;
+                if (_abstractStyleSelectorSimpleExtensionGroup == null)
+                    _abstractStyleSelectorSimpleExtensionGroup = new List<string>();
+                return _abstractStyleSelectorSimpleExtensionGroup;
             }
-            set { _AbstractStyleSelectorSimpleExtensionGroup = value; }
+            set { _abstractStyleSelectorSimpleExtensionGroup = value; }
         }
 
         [XmlElement(Type = typeof (AbstractStyleSelectorObjectExtensionGroup),
@@ -67,11 +67,11 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (_AbstractStyleSelectorObjectExtensionGroup == null)
-                    _AbstractStyleSelectorObjectExtensionGroup = new List<AbstractStyleSelectorObjectExtensionGroup>();
-                return _AbstractStyleSelectorObjectExtensionGroup;
+                if (_abstractStyleSelectorObjectExtensionGroup == null)
+                    _abstractStyleSelectorObjectExtensionGroup = new List<AbstractStyleSelectorObjectExtensionGroup>();
+                return _abstractStyleSelectorObjectExtensionGroup;
             }
-            set { _AbstractStyleSelectorObjectExtensionGroup = value; }
+            set { _abstractStyleSelectorObjectExtensionGroup = value; }
         }
 
         public new void MakeSchemaCompliant()

@@ -1,6 +1,6 @@
 // /*
 //  *  The attached / following is part of SharpMap.Data.Providers.Kml
-//  *  SharpMap.Data.Providers.Kml is free software © 2008 Newgrove Consultants Limited, 
+//  *  SharpMap.Data.Providers.Kml is free software ï¿½ 2008 Newgrove Consultants Limited, 
 //  *  www.newgrove.com; you can redistribute it and/or modify it under the terms 
 //  *  of the current GNU Lesser General Public License (LGPL) as published by and 
 //  *  available from the Free Software Foundation, Inc., 
@@ -23,13 +23,13 @@ namespace SharpMap.Entities.xAL
     [XmlType(TypeName = "DependentThoroughfare", Namespace = Declarations.SchemaVersion), Serializable]
     public class DependentThoroughfare
     {
-        [XmlIgnore] private List<AddressLine> _AddressLine;
-        [XmlIgnore] private ThoroughfareLeadingTypeType _ThoroughfareLeadingType;
-        [XmlIgnore] private List<ThoroughfareNameType> _ThoroughfareName;
-        [XmlIgnore] private ThoroughfarePostDirectionType _ThoroughfarePostDirection;
-        [XmlIgnore] private ThoroughfarePreDirectionType _ThoroughfarePreDirection;
-        [XmlIgnore] private ThoroughfareTrailingTypeType _ThoroughfareTrailingType;
-        [XmlIgnore] private string _Type;
+        [XmlIgnore] private List<AddressLine> _addressLine;
+        [XmlIgnore] private ThoroughfareLeadingTypeType _thoroughfareLeadingType;
+        [XmlIgnore] private List<ThoroughfareNameType> _thoroughfareName;
+        [XmlIgnore] private ThoroughfarePostDirectionType _thoroughfarePostDirection;
+        [XmlIgnore] private ThoroughfarePreDirectionType _thoroughfarePreDirection;
+        [XmlIgnore] private ThoroughfareTrailingTypeType _thoroughfareTrailingType;
+        [XmlIgnore] private string _type;
         [XmlAnyElement] public XmlElement[] Any;
 
         [XmlAnyAttribute] public XmlAttribute[] AnyAttr;
@@ -37,8 +37,8 @@ namespace SharpMap.Entities.xAL
         [XmlAttribute(AttributeName = "Type")]
         public string Type
         {
-            get { return _Type; }
-            set { _Type = value; }
+            get { return _type; }
+            set { _type = value; }
         }
 
         [XmlElement(Type = typeof (AddressLine), ElementName = "AddressLine", IsNullable = false,
@@ -47,26 +47,26 @@ namespace SharpMap.Entities.xAL
         {
             get
             {
-                if (_AddressLine == null) _AddressLine = new List<AddressLine>();
-                return _AddressLine;
+                if (_addressLine == null) _addressLine = new List<AddressLine>();
+                return _addressLine;
             }
-            set { _AddressLine = value; }
+            set { _addressLine = value; }
         }
 
         [XmlElement(Type = typeof (ThoroughfarePreDirectionType), ElementName = "ThoroughfarePreDirection",
             IsNullable = false, Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public ThoroughfarePreDirectionType ThoroughfarePreDirection
         {
-            get { return _ThoroughfarePreDirection; }
-            set { _ThoroughfarePreDirection = value; }
+            get { return _thoroughfarePreDirection; }
+            set { _thoroughfarePreDirection = value; }
         }
 
         [XmlElement(Type = typeof (ThoroughfareLeadingTypeType), ElementName = "ThoroughfareLeadingType",
             IsNullable = false, Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public ThoroughfareLeadingTypeType ThoroughfareLeadingType
         {
-            get { return _ThoroughfareLeadingType; }
-            set { _ThoroughfareLeadingType = value; }
+            get { return _thoroughfareLeadingType; }
+            set { _thoroughfareLeadingType = value; }
         }
 
         [XmlElement(Type = typeof (ThoroughfareNameType), ElementName = "ThoroughfareName", IsNullable = false,
@@ -75,18 +75,18 @@ namespace SharpMap.Entities.xAL
         {
             get
             {
-                if (_ThoroughfareName == null) _ThoroughfareName = new List<ThoroughfareNameType>();
-                return _ThoroughfareName;
+                if (_thoroughfareName == null) _thoroughfareName = new List<ThoroughfareNameType>();
+                return _thoroughfareName;
             }
-            set { _ThoroughfareName = value; }
+            set { _thoroughfareName = value; }
         }
 
         [XmlElement(Type = typeof (ThoroughfareTrailingTypeType), ElementName = "ThoroughfareTrailingType",
             IsNullable = false, Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public ThoroughfareTrailingTypeType ThoroughfareTrailingType
         {
-            get { return _ThoroughfareTrailingType; }
-            set { _ThoroughfareTrailingType = value; }
+            get { return _thoroughfareTrailingType; }
+            set { _thoroughfareTrailingType = value; }
         }
 
         [XmlElement(Type = typeof (ThoroughfarePostDirectionType), ElementName = "ThoroughfarePostDirection",
@@ -95,11 +95,11 @@ namespace SharpMap.Entities.xAL
         {
             get
             {
-                if (_ThoroughfarePostDirection == null)
-                    _ThoroughfarePostDirection = new ThoroughfarePostDirectionType();
-                return _ThoroughfarePostDirection;
+                if (_thoroughfarePostDirection == null)
+                    _thoroughfarePostDirection = new ThoroughfarePostDirectionType();
+                return _thoroughfarePostDirection;
             }
-            set { _ThoroughfarePostDirection = value; }
+            set { _thoroughfarePostDirection = value; }
         }
 
         public void MakeSchemaCompliant()

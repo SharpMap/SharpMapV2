@@ -1,6 +1,6 @@
 // /*
 //  *  The attached / following is part of SharpMap.Data.Providers.Kml
-//  *  SharpMap.Data.Providers.Kml is free software © 2008 Newgrove Consultants Limited, 
+//  *  SharpMap.Data.Providers.Kml is free software ï¿½ 2008 Newgrove Consultants Limited, 
 //  *  www.newgrove.com; you can redistribute it and/or modify it under the terms 
 //  *  of the current GNU Lesser General Public License (LGPL) as published by and 
 //  *  available from the Free Software Foundation, Inc., 
@@ -48,8 +48,8 @@ namespace SharpMap.Entities.Ogc.Kml
         [XmlIgnore] private bool _extrude;
 
         [XmlIgnore] public bool _extrudeSpecified;
-        [XmlIgnore] private List<LinearRingObjectExtensionGroup> _LinearRingObjectExtensionGroup;
-        [XmlIgnore] private List<string> _LinearRingSimpleExtensionGroup;
+        [XmlIgnore] private List<LinearRingObjectExtensionGroup> _linearRingObjectExtensionGroup;
+        [XmlIgnore] private List<string> _linearRingSimpleExtensionGroup;
 
 
         [XmlIgnore] private bool _tessellate;
@@ -109,10 +109,10 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (_LinearRingSimpleExtensionGroup == null) _LinearRingSimpleExtensionGroup = new List<string>();
-                return _LinearRingSimpleExtensionGroup;
+                if (_linearRingSimpleExtensionGroup == null) _linearRingSimpleExtensionGroup = new List<string>();
+                return _linearRingSimpleExtensionGroup;
             }
-            set { _LinearRingSimpleExtensionGroup = value; }
+            set { _linearRingSimpleExtensionGroup = value; }
         }
 
         [XmlElement(Type = typeof (LinearRingObjectExtensionGroup), ElementName = "LinearRingObjectExtensionGroup",
@@ -121,11 +121,11 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (_LinearRingObjectExtensionGroup == null)
-                    _LinearRingObjectExtensionGroup = new List<LinearRingObjectExtensionGroup>();
-                return _LinearRingObjectExtensionGroup;
+                if (_linearRingObjectExtensionGroup == null)
+                    _linearRingObjectExtensionGroup = new List<LinearRingObjectExtensionGroup>();
+                return _linearRingObjectExtensionGroup;
             }
-            set { _LinearRingObjectExtensionGroup = value; }
+            set { _linearRingObjectExtensionGroup = value; }
         }
 
         public new void MakeSchemaCompliant()

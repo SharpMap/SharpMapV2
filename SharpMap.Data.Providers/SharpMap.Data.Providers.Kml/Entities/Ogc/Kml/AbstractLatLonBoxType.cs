@@ -1,6 +1,6 @@
 // /*
 //  *  The attached / following is part of SharpMap.Data.Providers.Kml
-//  *  SharpMap.Data.Providers.Kml is free software © 2008 Newgrove Consultants Limited, 
+//  *  SharpMap.Data.Providers.Kml is free software ï¿½ 2008 Newgrove Consultants Limited, 
 //  *  www.newgrove.com; you can redistribute it and/or modify it under the terms 
 //  *  of the current GNU Lesser General Public License (LGPL) as published by and 
 //  *  available from the Free Software Foundation, Inc., 
@@ -43,8 +43,8 @@ namespace SharpMap.Entities.Ogc.Kml
     [XmlInclude(typeof (ViewVolumeType))]
     public abstract class AbstractLatLonBoxType : AbstractObjectType
     {
-        [XmlIgnore] private List<AbstractLatLonBoxObjectExtensionGroup> _AbstractLatLonBoxObjectExtensionGroup;
-        [XmlIgnore] private List<string> _AbstractLatLonBoxSimpleExtensionGroup;
+        [XmlIgnore] private List<AbstractLatLonBoxObjectExtensionGroup> _abstractLatLonBoxObjectExtensionGroup;
+        [XmlIgnore] private List<string> _abstractLatLonBoxSimpleExtensionGroup;
         [XmlIgnore] private double _east;
 
         [XmlIgnore] public bool _eastSpecified;
@@ -125,11 +125,11 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (_AbstractLatLonBoxSimpleExtensionGroup == null)
-                    _AbstractLatLonBoxSimpleExtensionGroup = new List<string>();
-                return _AbstractLatLonBoxSimpleExtensionGroup;
+                if (_abstractLatLonBoxSimpleExtensionGroup == null)
+                    _abstractLatLonBoxSimpleExtensionGroup = new List<string>();
+                return _abstractLatLonBoxSimpleExtensionGroup;
             }
-            set { _AbstractLatLonBoxSimpleExtensionGroup = value; }
+            set { _abstractLatLonBoxSimpleExtensionGroup = value; }
         }
 
         [XmlElement(Type = typeof (AbstractLatLonBoxObjectExtensionGroup),
@@ -139,11 +139,11 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (_AbstractLatLonBoxObjectExtensionGroup == null)
-                    _AbstractLatLonBoxObjectExtensionGroup = new List<AbstractLatLonBoxObjectExtensionGroup>();
-                return _AbstractLatLonBoxObjectExtensionGroup;
+                if (_abstractLatLonBoxObjectExtensionGroup == null)
+                    _abstractLatLonBoxObjectExtensionGroup = new List<AbstractLatLonBoxObjectExtensionGroup>();
+                return _abstractLatLonBoxObjectExtensionGroup;
             }
-            set { _AbstractLatLonBoxObjectExtensionGroup = value; }
+            set { _abstractLatLonBoxObjectExtensionGroup = value; }
         }
 
         public new void MakeSchemaCompliant()

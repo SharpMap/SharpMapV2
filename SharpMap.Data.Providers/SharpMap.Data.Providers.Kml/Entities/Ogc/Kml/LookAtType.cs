@@ -1,6 +1,6 @@
 // /*
 //  *  The attached / following is part of SharpMap.Data.Providers.Kml
-//  *  SharpMap.Data.Providers.Kml is free software © 2008 Newgrove Consultants Limited, 
+//  *  SharpMap.Data.Providers.Kml is free software ï¿½ 2008 Newgrove Consultants Limited, 
 //  *  www.newgrove.com; you can redistribute it and/or modify it under the terms 
 //  *  of the current GNU Lesser General Public License (LGPL) as published by and 
 //  *  available from the Free Software Foundation, Inc., 
@@ -58,8 +58,8 @@ namespace SharpMap.Entities.Ogc.Kml
         [XmlIgnore] private double _longitude;
 
         [XmlIgnore] public bool _longitudeSpecified;
-        [XmlIgnore] private List<LookAtObjectExtensionGroup> _LookAtObjectExtensionGroup;
-        [XmlIgnore] private List<string> _LookAtSimpleExtensionGroup;
+        [XmlIgnore] private List<LookAtObjectExtensionGroup> _lookAtObjectExtensionGroup;
+        [XmlIgnore] private List<string> _lookAtSimpleExtensionGroup;
         [XmlIgnore] private double _range;
 
         [XmlIgnore] public bool _rangeSpecified;
@@ -167,10 +167,10 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (_LookAtSimpleExtensionGroup == null) _LookAtSimpleExtensionGroup = new List<string>();
-                return _LookAtSimpleExtensionGroup;
+                if (_lookAtSimpleExtensionGroup == null) _lookAtSimpleExtensionGroup = new List<string>();
+                return _lookAtSimpleExtensionGroup;
             }
-            set { _LookAtSimpleExtensionGroup = value; }
+            set { _lookAtSimpleExtensionGroup = value; }
         }
 
         [XmlElement(Type = typeof (LookAtObjectExtensionGroup), ElementName = "LookAtObjectExtensionGroup",
@@ -179,11 +179,11 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (_LookAtObjectExtensionGroup == null)
-                    _LookAtObjectExtensionGroup = new List<LookAtObjectExtensionGroup>();
-                return _LookAtObjectExtensionGroup;
+                if (_lookAtObjectExtensionGroup == null)
+                    _lookAtObjectExtensionGroup = new List<LookAtObjectExtensionGroup>();
+                return _lookAtObjectExtensionGroup;
             }
-            set { _LookAtObjectExtensionGroup = value; }
+            set { _lookAtObjectExtensionGroup = value; }
         }
 
         public new void MakeSchemaCompliant()

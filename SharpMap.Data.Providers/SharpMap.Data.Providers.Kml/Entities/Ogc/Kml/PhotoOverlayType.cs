@@ -1,6 +1,6 @@
 // /*
 //  *  The attached / following is part of SharpMap.Data.Providers.Kml
-//  *  SharpMap.Data.Providers.Kml is free software © 2008 Newgrove Consultants Limited, 
+//  *  SharpMap.Data.Providers.Kml is free software ï¿½ 2008 Newgrove Consultants Limited, 
 //  *  www.newgrove.com; you can redistribute it and/or modify it under the terms 
 //  *  of the current GNU Lesser General Public License (LGPL) as published by and 
 //  *  available from the Free Software Foundation, Inc., 
@@ -43,10 +43,10 @@ namespace SharpMap.Entities.Ogc.Kml
     [XmlInclude(typeof (ViewVolumeType))]
     public class PhotoOverlayType : AbstractOverlayType
     {
-        [XmlIgnore] private ImagePyramid _ImagePyramid;
-        [XmlIgnore] private List<PhotoOverlayObjectExtensionGroup> _PhotoOverlayObjectExtensionGroup;
-        [XmlIgnore] private List<string> _PhotoOverlaySimpleExtensionGroup;
-        [XmlIgnore] private Point _Point;
+        [XmlIgnore] private ImagePyramid _imagePyramid;
+        [XmlIgnore] private List<PhotoOverlayObjectExtensionGroup> _photoOverlayObjectExtensionGroup;
+        [XmlIgnore] private List<string> _photoOverlaySimpleExtensionGroup;
+        [XmlIgnore] private Point _point;
         [XmlIgnore] private double _rotation;
 
         [XmlIgnore] public bool _rotationSpecified;
@@ -55,7 +55,7 @@ namespace SharpMap.Entities.Ogc.Kml
         [XmlIgnore] public bool _shapeSpecified;
 
 
-        [XmlIgnore] private ViewVolume _ViewVolume;
+        [XmlIgnore] private ViewVolume _viewVolume;
 
         public PhotoOverlayType()
         {
@@ -79,24 +79,24 @@ namespace SharpMap.Entities.Ogc.Kml
             Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public ViewVolume ViewVolume
         {
-            get { return _ViewVolume; }
-            set { _ViewVolume = value; }
+            get { return _viewVolume; }
+            set { _viewVolume = value; }
         }
 
         [XmlElement(Type = typeof (ImagePyramid), ElementName = "ImagePyramid", IsNullable = false,
             Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public ImagePyramid ImagePyramid
         {
-            get { return _ImagePyramid; }
-            set { _ImagePyramid = value; }
+            get { return _imagePyramid; }
+            set { _imagePyramid = value; }
         }
 
         [XmlElement(Type = typeof (Point), ElementName = "Point", IsNullable = false, Form = XmlSchemaForm.Qualified,
             Namespace = Declarations.SchemaVersion)]
         public Point Point
         {
-            get { return _Point; }
-            set { _Point = value; }
+            get { return _point; }
+            set { _point = value; }
         }
 
 
@@ -118,10 +118,10 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (_PhotoOverlaySimpleExtensionGroup == null) _PhotoOverlaySimpleExtensionGroup = new List<string>();
-                return _PhotoOverlaySimpleExtensionGroup;
+                if (_photoOverlaySimpleExtensionGroup == null) _photoOverlaySimpleExtensionGroup = new List<string>();
+                return _photoOverlaySimpleExtensionGroup;
             }
-            set { _PhotoOverlaySimpleExtensionGroup = value; }
+            set { _photoOverlaySimpleExtensionGroup = value; }
         }
 
         [XmlElement(Type = typeof (PhotoOverlayObjectExtensionGroup), ElementName = "PhotoOverlayObjectExtensionGroup",
@@ -130,11 +130,11 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (_PhotoOverlayObjectExtensionGroup == null)
-                    _PhotoOverlayObjectExtensionGroup = new List<PhotoOverlayObjectExtensionGroup>();
-                return _PhotoOverlayObjectExtensionGroup;
+                if (_photoOverlayObjectExtensionGroup == null)
+                    _photoOverlayObjectExtensionGroup = new List<PhotoOverlayObjectExtensionGroup>();
+                return _photoOverlayObjectExtensionGroup;
             }
-            set { _PhotoOverlayObjectExtensionGroup = value; }
+            set { _photoOverlayObjectExtensionGroup = value; }
         }
 
         public new void MakeSchemaCompliant()

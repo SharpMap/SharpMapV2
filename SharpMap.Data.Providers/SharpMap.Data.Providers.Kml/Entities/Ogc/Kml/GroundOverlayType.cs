@@ -1,6 +1,6 @@
 // /*
 //  *  The attached / following is part of SharpMap.Data.Providers.Kml
-//  *  SharpMap.Data.Providers.Kml is free software © 2008 Newgrove Consultants Limited, 
+//  *  SharpMap.Data.Providers.Kml is free software ï¿½ 2008 Newgrove Consultants Limited, 
 //  *  www.newgrove.com; you can redistribute it and/or modify it under the terms 
 //  *  of the current GNU Lesser General Public License (LGPL) as published by and 
 //  *  available from the Free Software Foundation, Inc., 
@@ -47,9 +47,9 @@ namespace SharpMap.Entities.Ogc.Kml
         [XmlIgnore] private string _altitudeModeGroup;
 
         [XmlIgnore] public bool _altitudeSpecified;
-        [XmlIgnore] private List<GroundOverlayObjectExtensionGroup> _GroundOverlayObjectExtensionGroup;
-        [XmlIgnore] private List<string> _GroundOverlaySimpleExtensionGroup;
-        [XmlIgnore] private LatLonBox _LatLonBox;
+        [XmlIgnore] private List<GroundOverlayObjectExtensionGroup> _groundOverlayObjectExtensionGroup;
+        [XmlIgnore] private List<string> _groundOverlaySimpleExtensionGroup;
+        [XmlIgnore] private LatLonBox _latLonBox;
 
         public GroundOverlayType()
         {
@@ -81,8 +81,8 @@ namespace SharpMap.Entities.Ogc.Kml
             Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public LatLonBox LatLonBox
         {
-            get { return _LatLonBox; }
-            set { _LatLonBox = value; }
+            get { return _latLonBox; }
+            set { _latLonBox = value; }
         }
 
         [XmlElement(Type = typeof (string), ElementName = "GroundOverlaySimpleExtensionGroup", IsNullable = false,
@@ -91,11 +91,11 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (_GroundOverlaySimpleExtensionGroup == null)
-                    _GroundOverlaySimpleExtensionGroup = new List<string>();
-                return _GroundOverlaySimpleExtensionGroup;
+                if (_groundOverlaySimpleExtensionGroup == null)
+                    _groundOverlaySimpleExtensionGroup = new List<string>();
+                return _groundOverlaySimpleExtensionGroup;
             }
-            set { _GroundOverlaySimpleExtensionGroup = value; }
+            set { _groundOverlaySimpleExtensionGroup = value; }
         }
 
         [XmlElement(Type = typeof (GroundOverlayObjectExtensionGroup), ElementName = "GroundOverlayObjectExtensionGroup"
@@ -104,11 +104,11 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (_GroundOverlayObjectExtensionGroup == null)
-                    _GroundOverlayObjectExtensionGroup = new List<GroundOverlayObjectExtensionGroup>();
-                return _GroundOverlayObjectExtensionGroup;
+                if (_groundOverlayObjectExtensionGroup == null)
+                    _groundOverlayObjectExtensionGroup = new List<GroundOverlayObjectExtensionGroup>();
+                return _groundOverlayObjectExtensionGroup;
             }
-            set { _GroundOverlayObjectExtensionGroup = value; }
+            set { _groundOverlayObjectExtensionGroup = value; }
         }
 
         public new void MakeSchemaCompliant()

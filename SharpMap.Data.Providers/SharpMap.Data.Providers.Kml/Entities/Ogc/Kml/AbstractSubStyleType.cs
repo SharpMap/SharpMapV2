@@ -1,6 +1,6 @@
 // /*
 //  *  The attached / following is part of SharpMap.Data.Providers.Kml
-//  *  SharpMap.Data.Providers.Kml is free software © 2008 Newgrove Consultants Limited, 
+//  *  SharpMap.Data.Providers.Kml is free software ï¿½ 2008 Newgrove Consultants Limited, 
 //  *  www.newgrove.com; you can redistribute it and/or modify it under the terms 
 //  *  of the current GNU Lesser General Public License (LGPL) as published by and 
 //  *  available from the Free Software Foundation, Inc., 
@@ -43,8 +43,8 @@ namespace SharpMap.Entities.Ogc.Kml
     [XmlInclude(typeof (ViewVolumeType))]
     public abstract class AbstractSubStyleType : AbstractObjectType
     {
-        [XmlIgnore] private List<AbstractSubStyleObjectExtensionGroup> _AbstractSubStyleObjectExtensionGroup;
-        [XmlIgnore] private List<string> _AbstractSubStyleSimpleExtensionGroup;
+        [XmlIgnore] private List<AbstractSubStyleObjectExtensionGroup> _abstractSubStyleObjectExtensionGroup;
+        [XmlIgnore] private List<string> _abstractSubStyleSimpleExtensionGroup;
 
         [XmlElement(Type = typeof (string), ElementName = "AbstractSubStyleSimpleExtensionGroup", IsNullable = false,
             Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
@@ -52,11 +52,11 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (_AbstractSubStyleSimpleExtensionGroup == null)
-                    _AbstractSubStyleSimpleExtensionGroup = new List<string>();
-                return _AbstractSubStyleSimpleExtensionGroup;
+                if (_abstractSubStyleSimpleExtensionGroup == null)
+                    _abstractSubStyleSimpleExtensionGroup = new List<string>();
+                return _abstractSubStyleSimpleExtensionGroup;
             }
-            set { _AbstractSubStyleSimpleExtensionGroup = value; }
+            set { _abstractSubStyleSimpleExtensionGroup = value; }
         }
 
         [XmlElement(Type = typeof (AbstractSubStyleObjectExtensionGroup),
@@ -66,11 +66,11 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (_AbstractSubStyleObjectExtensionGroup == null)
-                    _AbstractSubStyleObjectExtensionGroup = new List<AbstractSubStyleObjectExtensionGroup>();
-                return _AbstractSubStyleObjectExtensionGroup;
+                if (_abstractSubStyleObjectExtensionGroup == null)
+                    _abstractSubStyleObjectExtensionGroup = new List<AbstractSubStyleObjectExtensionGroup>();
+                return _abstractSubStyleObjectExtensionGroup;
             }
-            set { _AbstractSubStyleObjectExtensionGroup = value; }
+            set { _abstractSubStyleObjectExtensionGroup = value; }
         }
 
         public new virtual void MakeSchemaCompliant()

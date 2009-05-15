@@ -1,6 +1,6 @@
 // /*
 //  *  The attached / following is part of SharpMap.Data.Providers.Kml
-//  *  SharpMap.Data.Providers.Kml is free software © 2008 Newgrove Consultants Limited, 
+//  *  SharpMap.Data.Providers.Kml is free software ï¿½ 2008 Newgrove Consultants Limited, 
 //  *  www.newgrove.com; you can redistribute it and/or modify it under the terms 
 //  *  of the current GNU Lesser General Public License (LGPL) as published by and 
 //  *  available from the Free Software Foundation, Inc., 
@@ -49,10 +49,10 @@ namespace SharpMap.Entities.Ogc.Kml
     [XmlInclude(typeof (ViewVolumeType))]
     public class MultiGeometryType : AbstractGeometryType
     {
-        [XmlIgnore] private List<AbstractGeometryGroup> _AbstractGeometryGroup;
-        [XmlIgnore] private List<MultiGeometryObjectExtensionGroup> _MultiGeometryObjectExtensionGroup;
+        [XmlIgnore] private List<AbstractGeometryGroup> _abstractGeometryGroup;
+        [XmlIgnore] private List<MultiGeometryObjectExtensionGroup> _multiGeometryObjectExtensionGroup;
 
-        [XmlIgnore] private List<string> _MultiGeometrySimpleExtensionGroup;
+        [XmlIgnore] private List<string> _multiGeometrySimpleExtensionGroup;
 
         [XmlElement(Type = typeof (AbstractGeometryGroup), ElementName = "AbstractGeometryGroup", IsNullable = false,
             Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
@@ -60,10 +60,10 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (_AbstractGeometryGroup == null) _AbstractGeometryGroup = new List<AbstractGeometryGroup>();
-                return _AbstractGeometryGroup;
+                if (_abstractGeometryGroup == null) _abstractGeometryGroup = new List<AbstractGeometryGroup>();
+                return _abstractGeometryGroup;
             }
-            set { _AbstractGeometryGroup = value; }
+            set { _abstractGeometryGroup = value; }
         }
 
         [XmlElement(Type = typeof (string), ElementName = "MultiGeometrySimpleExtensionGroup", IsNullable = false,
@@ -72,11 +72,11 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (_MultiGeometrySimpleExtensionGroup == null)
-                    _MultiGeometrySimpleExtensionGroup = new List<string>();
-                return _MultiGeometrySimpleExtensionGroup;
+                if (_multiGeometrySimpleExtensionGroup == null)
+                    _multiGeometrySimpleExtensionGroup = new List<string>();
+                return _multiGeometrySimpleExtensionGroup;
             }
-            set { _MultiGeometrySimpleExtensionGroup = value; }
+            set { _multiGeometrySimpleExtensionGroup = value; }
         }
 
         [XmlElement(Type = typeof (MultiGeometryObjectExtensionGroup), ElementName = "MultiGeometryObjectExtensionGroup"
@@ -85,11 +85,11 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (_MultiGeometryObjectExtensionGroup == null)
-                    _MultiGeometryObjectExtensionGroup = new List<MultiGeometryObjectExtensionGroup>();
-                return _MultiGeometryObjectExtensionGroup;
+                if (_multiGeometryObjectExtensionGroup == null)
+                    _multiGeometryObjectExtensionGroup = new List<MultiGeometryObjectExtensionGroup>();
+                return _multiGeometryObjectExtensionGroup;
             }
-            set { _MultiGeometryObjectExtensionGroup = value; }
+            set { _multiGeometryObjectExtensionGroup = value; }
         }
 
         public new void MakeSchemaCompliant()

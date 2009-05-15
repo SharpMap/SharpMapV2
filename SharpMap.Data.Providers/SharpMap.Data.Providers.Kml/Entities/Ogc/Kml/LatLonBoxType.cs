@@ -1,6 +1,6 @@
 // /*
 //  *  The attached / following is part of SharpMap.Data.Providers.Kml
-//  *  SharpMap.Data.Providers.Kml is free software © 2008 Newgrove Consultants Limited, 
+//  *  SharpMap.Data.Providers.Kml is free software ï¿½ 2008 Newgrove Consultants Limited, 
 //  *  www.newgrove.com; you can redistribute it and/or modify it under the terms 
 //  *  of the current GNU Lesser General Public License (LGPL) as published by and 
 //  *  available from the Free Software Foundation, Inc., 
@@ -43,8 +43,8 @@ namespace SharpMap.Entities.Ogc.Kml
     [XmlInclude(typeof (ViewVolumeType))]
     public class LatLonBoxType : AbstractLatLonBoxType
     {
-        [XmlIgnore] private List<LatLonBoxObjectExtensionGroup> _LatLonBoxObjectExtensionGroup;
-        [XmlIgnore] private List<string> _LatLonBoxSimpleExtensionGroup;
+        [XmlIgnore] private List<LatLonBoxObjectExtensionGroup> _latLonBoxObjectExtensionGroup;
+        [XmlIgnore] private List<string> _latLonBoxSimpleExtensionGroup;
         [XmlIgnore] private double _rotation;
 
         [XmlIgnore] public bool _rotationSpecified;
@@ -73,10 +73,10 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (_LatLonBoxSimpleExtensionGroup == null) _LatLonBoxSimpleExtensionGroup = new List<string>();
-                return _LatLonBoxSimpleExtensionGroup;
+                if (_latLonBoxSimpleExtensionGroup == null) _latLonBoxSimpleExtensionGroup = new List<string>();
+                return _latLonBoxSimpleExtensionGroup;
             }
-            set { _LatLonBoxSimpleExtensionGroup = value; }
+            set { _latLonBoxSimpleExtensionGroup = value; }
         }
 
         [XmlElement(Type = typeof (LatLonBoxObjectExtensionGroup), ElementName = "LatLonBoxObjectExtensionGroup",
@@ -85,11 +85,11 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (_LatLonBoxObjectExtensionGroup == null)
-                    _LatLonBoxObjectExtensionGroup = new List<LatLonBoxObjectExtensionGroup>();
-                return _LatLonBoxObjectExtensionGroup;
+                if (_latLonBoxObjectExtensionGroup == null)
+                    _latLonBoxObjectExtensionGroup = new List<LatLonBoxObjectExtensionGroup>();
+                return _latLonBoxObjectExtensionGroup;
             }
-            set { _LatLonBoxObjectExtensionGroup = value; }
+            set { _latLonBoxObjectExtensionGroup = value; }
         }
 
         public new void MakeSchemaCompliant()

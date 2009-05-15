@@ -1,6 +1,6 @@
 // /*
 //  *  The attached / following is part of SharpMap.Data.Providers.Kml
-//  *  SharpMap.Data.Providers.Kml is free software © 2008 Newgrove Consultants Limited, 
+//  *  SharpMap.Data.Providers.Kml is free software ï¿½ 2008 Newgrove Consultants Limited, 
 //  *  www.newgrove.com; you can redistribute it and/or modify it under the terms 
 //  *  of the current GNU Lesser General Public License (LGPL) as published by and 
 //  *  available from the Free Software Foundation, Inc., 
@@ -44,8 +44,8 @@ namespace SharpMap.Entities.Ogc.Kml
     public class LatLonAltBoxType : AbstractLatLonBoxType
     {
         [XmlIgnore] private string _altitudeModeGroup;
-        [XmlIgnore] private List<LatLonAltBoxObjectExtensionGroup> _LatLonAltBoxObjectExtensionGroup;
-        [XmlIgnore] private List<string> _LatLonAltBoxSimpleExtensionGroup;
+        [XmlIgnore] private List<LatLonAltBoxObjectExtensionGroup> _latLonAltBoxObjectExtensionGroup;
+        [XmlIgnore] private List<string> _latLonAltBoxSimpleExtensionGroup;
         [XmlIgnore] private double _maxAltitude;
 
         [XmlIgnore] public bool _maxAltitudeSpecified;
@@ -99,10 +99,10 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (_LatLonAltBoxSimpleExtensionGroup == null) _LatLonAltBoxSimpleExtensionGroup = new List<string>();
-                return _LatLonAltBoxSimpleExtensionGroup;
+                if (_latLonAltBoxSimpleExtensionGroup == null) _latLonAltBoxSimpleExtensionGroup = new List<string>();
+                return _latLonAltBoxSimpleExtensionGroup;
             }
-            set { _LatLonAltBoxSimpleExtensionGroup = value; }
+            set { _latLonAltBoxSimpleExtensionGroup = value; }
         }
 
         [XmlElement(Type = typeof (LatLonAltBoxObjectExtensionGroup), ElementName = "LatLonAltBoxObjectExtensionGroup",
@@ -111,11 +111,11 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (_LatLonAltBoxObjectExtensionGroup == null)
-                    _LatLonAltBoxObjectExtensionGroup = new List<LatLonAltBoxObjectExtensionGroup>();
-                return _LatLonAltBoxObjectExtensionGroup;
+                if (_latLonAltBoxObjectExtensionGroup == null)
+                    _latLonAltBoxObjectExtensionGroup = new List<LatLonAltBoxObjectExtensionGroup>();
+                return _latLonAltBoxObjectExtensionGroup;
             }
-            set { _LatLonAltBoxObjectExtensionGroup = value; }
+            set { _latLonAltBoxObjectExtensionGroup = value; }
         }
 
         public new void MakeSchemaCompliant()

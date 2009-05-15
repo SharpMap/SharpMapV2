@@ -1,6 +1,6 @@
 // /*
 //  *  The attached / following is part of SharpMap.Data.Providers.Kml
-//  *  SharpMap.Data.Providers.Kml is free software © 2008 Newgrove Consultants Limited, 
+//  *  SharpMap.Data.Providers.Kml is free software ï¿½ 2008 Newgrove Consultants Limited, 
 //  *  www.newgrove.com; you can redistribute it and/or modify it under the terms 
 //  *  of the current GNU Lesser General Public License (LGPL) as published by and 
 //  *  available from the Free Software Foundation, Inc., 
@@ -24,38 +24,38 @@ namespace SharpMap.Entities.xAL
      Serializable]
     public class AdministrativeArea
     {
-        [XmlIgnore] private List<AddressLine> _AddressLine;
-        [XmlIgnore] private List<AdministrativeAreaName> _AdministrativeAreaName;
-        [XmlIgnore] private string _Indicator;
-        [XmlIgnore] private Locality _Locality;
-        [XmlIgnore] private PostalCode _PostalCode;
-        [XmlIgnore] private PostOffice _PostOffice;
-        [XmlIgnore] private SubAdministrativeArea _SubAdministrativeArea;
-        [XmlIgnore] private string _Type;
+        [XmlIgnore] private List<AddressLine> _addressLine;
+        [XmlIgnore] private List<AdministrativeAreaName> _administrativeAreaName;
+        [XmlIgnore] private string _indicator;
+        [XmlIgnore] private Locality _locality;
+        [XmlIgnore] private PostalCode _postalCode;
+        [XmlIgnore] private PostOffice _postOffice;
+        [XmlIgnore] private SubAdministrativeArea _subAdministrativeArea;
+        [XmlIgnore] private string _type;
 
-        [XmlIgnore] private string _UsageType;
+        [XmlIgnore] private string _usageType;
         [XmlAnyElement] public XmlElement[] Any;
         [XmlAnyAttribute] public XmlAttribute[] AnyAttr;
 
         [XmlAttribute(AttributeName = "Type")]
         public string Type
         {
-            get { return _Type; }
-            set { _Type = value; }
+            get { return _type; }
+            set { _type = value; }
         }
 
         [XmlAttribute(AttributeName = "UsageType")]
         public string UsageType
         {
-            get { return _UsageType; }
-            set { _UsageType = value; }
+            get { return _usageType; }
+            set { _usageType = value; }
         }
 
         [XmlAttribute(AttributeName = "Indicator")]
         public string Indicator
         {
-            get { return _Indicator; }
-            set { _Indicator = value; }
+            get { return _indicator; }
+            set { _indicator = value; }
         }
 
         [XmlElement(Type = typeof (AddressLine), ElementName = "AddressLine", IsNullable = false,
@@ -64,10 +64,10 @@ namespace SharpMap.Entities.xAL
         {
             get
             {
-                if (_AddressLine == null) _AddressLine = new List<AddressLine>();
-                return _AddressLine;
+                if (_addressLine == null) _addressLine = new List<AddressLine>();
+                return _addressLine;
             }
-            set { _AddressLine = value; }
+            set { _addressLine = value; }
         }
 
         [XmlElement(Type = typeof (AdministrativeAreaName), ElementName = "AdministrativeAreaName", IsNullable = false,
@@ -76,42 +76,42 @@ namespace SharpMap.Entities.xAL
         {
             get
             {
-                if (_AdministrativeAreaName == null) _AdministrativeAreaName = new List<AdministrativeAreaName>();
-                return _AdministrativeAreaName;
+                if (_administrativeAreaName == null) _administrativeAreaName = new List<AdministrativeAreaName>();
+                return _administrativeAreaName;
             }
-            set { _AdministrativeAreaName = value; }
+            set { _administrativeAreaName = value; }
         }
 
         [XmlElement(Type = typeof (SubAdministrativeArea), ElementName = "SubAdministrativeArea", IsNullable = false,
             Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public SubAdministrativeArea SubAdministrativeArea
         {
-            get { return _SubAdministrativeArea; }
-            set { _SubAdministrativeArea = value; }
+            get { return _subAdministrativeArea; }
+            set { _subAdministrativeArea = value; }
         }
 
         [XmlElement(Type = typeof (Locality), ElementName = "Locality", IsNullable = false,
             Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public Locality Locality
         {
-            get { return _Locality; }
-            set { _Locality = value; }
+            get { return _locality; }
+            set { _locality = value; }
         }
 
         [XmlElement(Type = typeof (PostOffice), ElementName = "PostOffice", IsNullable = false,
             Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public PostOffice PostOffice
         {
-            get { return _PostOffice; }
-            set { _PostOffice = value; }
+            get { return _postOffice; }
+            set { _postOffice = value; }
         }
 
         [XmlElement(Type = typeof (PostalCode), ElementName = "PostalCode", IsNullable = false,
             Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public PostalCode PostalCode
         {
-            get { return _PostalCode; }
-            set { _PostalCode = value; }
+            get { return _postalCode; }
+            set { _postalCode = value; }
         }
 
         public void MakeSchemaCompliant()

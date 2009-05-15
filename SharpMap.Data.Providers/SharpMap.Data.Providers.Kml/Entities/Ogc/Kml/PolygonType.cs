@@ -1,6 +1,6 @@
 // /*
 //  *  The attached / following is part of SharpMap.Data.Providers.Kml
-//  *  SharpMap.Data.Providers.Kml is free software © 2008 Newgrove Consultants Limited, 
+//  *  SharpMap.Data.Providers.Kml is free software ï¿½ 2008 Newgrove Consultants Limited, 
 //  *  www.newgrove.com; you can redistribute it and/or modify it under the terms 
 //  *  of the current GNU Lesser General Public License (LGPL) as published by and 
 //  *  available from the Free Software Foundation, Inc., 
@@ -49,8 +49,8 @@ namespace SharpMap.Entities.Ogc.Kml
         [XmlIgnore] public bool _extrudeSpecified;
         [XmlIgnore] private List<innerBoundaryIs> _innerBoundaryIs;
         [XmlIgnore] private outerBoundaryIs _outerBoundaryIs;
-        [XmlIgnore] private List<PolygonObjectExtensionGroup> _PolygonObjectExtensionGroup;
-        [XmlIgnore] private List<string> _PolygonSimpleExtensionGroup;
+        [XmlIgnore] private List<PolygonObjectExtensionGroup> _polygonObjectExtensionGroup;
+        [XmlIgnore] private List<string> _polygonSimpleExtensionGroup;
 
 
         [XmlIgnore] private bool _tessellate;
@@ -122,10 +122,10 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (_PolygonSimpleExtensionGroup == null) _PolygonSimpleExtensionGroup = new List<string>();
-                return _PolygonSimpleExtensionGroup;
+                if (_polygonSimpleExtensionGroup == null) _polygonSimpleExtensionGroup = new List<string>();
+                return _polygonSimpleExtensionGroup;
             }
-            set { _PolygonSimpleExtensionGroup = value; }
+            set { _polygonSimpleExtensionGroup = value; }
         }
 
         [XmlElement(Type = typeof (PolygonObjectExtensionGroup), ElementName = "PolygonObjectExtensionGroup",
@@ -134,11 +134,11 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (_PolygonObjectExtensionGroup == null)
-                    _PolygonObjectExtensionGroup = new List<PolygonObjectExtensionGroup>();
-                return _PolygonObjectExtensionGroup;
+                if (_polygonObjectExtensionGroup == null)
+                    _polygonObjectExtensionGroup = new List<PolygonObjectExtensionGroup>();
+                return _polygonObjectExtensionGroup;
             }
-            set { _PolygonObjectExtensionGroup = value; }
+            set { _polygonObjectExtensionGroup = value; }
         }
 
         public new void MakeSchemaCompliant()

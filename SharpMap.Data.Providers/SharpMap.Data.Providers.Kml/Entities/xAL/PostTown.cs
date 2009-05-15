@@ -1,6 +1,6 @@
 // /*
 //  *  The attached / following is part of SharpMap.Data.Providers.Kml
-//  *  SharpMap.Data.Providers.Kml is free software © 2008 Newgrove Consultants Limited, 
+//  *  SharpMap.Data.Providers.Kml is free software ï¿½ 2008 Newgrove Consultants Limited, 
 //  *  www.newgrove.com; you can redistribute it and/or modify it under the terms 
 //  *  of the current GNU Lesser General Public License (LGPL) as published by and 
 //  *  available from the Free Software Foundation, Inc., 
@@ -23,18 +23,18 @@ namespace SharpMap.Entities.xAL
     [XmlType(TypeName = "PostTown", Namespace = Declarations.SchemaVersion), Serializable]
     public class PostTown
     {
-        [XmlIgnore] private List<AddressLine> _AddressLine;
-        [XmlIgnore] private List<PostTownName> _PostTownName;
-        [XmlIgnore] private PostTownSuffix _PostTownSuffix;
-        [XmlIgnore] private string _Type;
+        [XmlIgnore] private List<AddressLine> _addressLine;
+        [XmlIgnore] private List<PostTownName> _postTownName;
+        [XmlIgnore] private PostTownSuffix _postTownSuffix;
+        [XmlIgnore] private string _type;
 
         [XmlAnyAttribute] public XmlAttribute[] AnyAttr;
 
         [XmlAttribute(AttributeName = "Type")]
         public string Type
         {
-            get { return _Type; }
-            set { _Type = value; }
+            get { return _type; }
+            set { _type = value; }
         }
 
         [XmlElement(Type = typeof (AddressLine), ElementName = "AddressLine", IsNullable = false,
@@ -43,10 +43,10 @@ namespace SharpMap.Entities.xAL
         {
             get
             {
-                if (_AddressLine == null) _AddressLine = new List<AddressLine>();
-                return _AddressLine;
+                if (_addressLine == null) _addressLine = new List<AddressLine>();
+                return _addressLine;
             }
-            set { _AddressLine = value; }
+            set { _addressLine = value; }
         }
 
         [XmlElement(Type = typeof (PostTownName), ElementName = "PostTownName", IsNullable = false,
@@ -55,18 +55,18 @@ namespace SharpMap.Entities.xAL
         {
             get
             {
-                if (_PostTownName == null) _PostTownName = new List<PostTownName>();
-                return _PostTownName;
+                if (_postTownName == null) _postTownName = new List<PostTownName>();
+                return _postTownName;
             }
-            set { _PostTownName = value; }
+            set { _postTownName = value; }
         }
 
         [XmlElement(Type = typeof (PostTownSuffix), ElementName = "PostTownSuffix", IsNullable = false,
             Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public PostTownSuffix PostTownSuffix
         {
-            get { return _PostTownSuffix; }
-            set { _PostTownSuffix = value; }
+            get { return _postTownSuffix; }
+            set { _postTownSuffix = value; }
         }
 
         public void MakeSchemaCompliant()

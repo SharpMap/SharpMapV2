@@ -1,6 +1,6 @@
 // /*
 //  *  The attached / following is part of SharpMap.Data.Providers.Kml
-//  *  SharpMap.Data.Providers.Kml is free software © 2008 Newgrove Consultants Limited, 
+//  *  SharpMap.Data.Providers.Kml is free software ï¿½ 2008 Newgrove Consultants Limited, 
 //  *  www.newgrove.com; you can redistribute it and/or modify it under the terms 
 //  *  of the current GNU Lesser General Public License (LGPL) as published by and 
 //  *  available from the Free Software Foundation, Inc., 
@@ -23,12 +23,12 @@ namespace SharpMap.Entities.xAL
     [XmlType(TypeName = "FirmType", Namespace = Declarations.SchemaVersion), Serializable]
     public class FirmType
     {
-        [XmlIgnore] private List<AddressLine> _AddressLine;
-        [XmlIgnore] private List<Department> _Department;
-        [XmlIgnore] private List<FirmName> _FirmName;
-        [XmlIgnore] private MailStopType _MailStop;
-        [XmlIgnore] private PostalCode _PostalCode;
-        [XmlIgnore] private string _Type;
+        [XmlIgnore] private List<AddressLine> _addressLine;
+        [XmlIgnore] private List<Department> _department;
+        [XmlIgnore] private List<FirmName> _firmName;
+        [XmlIgnore] private MailStopType _mailStop;
+        [XmlIgnore] private PostalCode _postalCode;
+        [XmlIgnore] private string _type;
         [XmlAnyElement] public XmlElement[] Any;
 
         [XmlAnyAttribute] public XmlAttribute[] AnyAttr;
@@ -36,8 +36,8 @@ namespace SharpMap.Entities.xAL
         [XmlAttribute(AttributeName = "Type")]
         public string Type
         {
-            get { return _Type; }
-            set { _Type = value; }
+            get { return _type; }
+            set { _type = value; }
         }
 
         [XmlElement(Type = typeof (AddressLine), ElementName = "AddressLine", IsNullable = false,
@@ -46,10 +46,10 @@ namespace SharpMap.Entities.xAL
         {
             get
             {
-                if (_AddressLine == null) _AddressLine = new List<AddressLine>();
-                return _AddressLine;
+                if (_addressLine == null) _addressLine = new List<AddressLine>();
+                return _addressLine;
             }
-            set { _AddressLine = value; }
+            set { _addressLine = value; }
         }
 
         [XmlElement(Type = typeof (FirmName), ElementName = "FirmName", IsNullable = false,
@@ -58,10 +58,10 @@ namespace SharpMap.Entities.xAL
         {
             get
             {
-                if (_FirmName == null) _FirmName = new List<FirmName>();
-                return _FirmName;
+                if (_firmName == null) _firmName = new List<FirmName>();
+                return _firmName;
             }
-            set { _FirmName = value; }
+            set { _firmName = value; }
         }
 
         [XmlElement(Type = typeof (Department), ElementName = "Department", IsNullable = false,
@@ -70,26 +70,26 @@ namespace SharpMap.Entities.xAL
         {
             get
             {
-                if (_Department == null) _Department = new List<Department>();
-                return _Department;
+                if (_department == null) _department = new List<Department>();
+                return _department;
             }
-            set { _Department = value; }
+            set { _department = value; }
         }
 
         [XmlElement(Type = typeof (MailStopType), ElementName = "MailStop", IsNullable = false,
             Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public MailStopType MailStop
         {
-            get { return _MailStop; }
-            set { _MailStop = value; }
+            get { return _mailStop; }
+            set { _mailStop = value; }
         }
 
         [XmlElement(Type = typeof (PostalCode), ElementName = "PostalCode", IsNullable = false,
             Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public PostalCode PostalCode
         {
-            get { return _PostalCode; }
-            set { _PostalCode = value; }
+            get { return _postalCode; }
+            set { _postalCode = value; }
         }
 
         public void MakeSchemaCompliant()

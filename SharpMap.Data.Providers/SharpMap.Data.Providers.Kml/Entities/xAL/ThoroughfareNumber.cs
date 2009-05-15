@@ -1,6 +1,6 @@
 // /*
 //  *  The attached / following is part of SharpMap.Data.Providers.Kml
-//  *  SharpMap.Data.Providers.Kml is free software © 2008 Newgrove Consultants Limited, 
+//  *  SharpMap.Data.Providers.Kml is free software ï¿½ 2008 Newgrove Consultants Limited, 
 //  *  www.newgrove.com; you can redistribute it and/or modify it under the terms 
 //  *  of the current GNU Lesser General Public License (LGPL) as published by and 
 //  *  available from the Free Software Foundation, Inc., 
@@ -22,81 +22,81 @@ namespace SharpMap.Entities.xAL
      Serializable]
     public class ThoroughfareNumber
     {
-        [XmlIgnore] private string _Code;
-        [XmlIgnore] private string _Indicator;
-        [XmlIgnore] private Occurrence _IndicatorOccurrence;
+        [XmlIgnore] private string _code;
+        [XmlIgnore] private string _indicator;
+        [XmlIgnore] private Occurrence _indicatorOccurrence;
 
-        [XmlIgnore] public bool _IndicatorOccurrenceSpecified;
-        [XmlIgnore] private NumberOccurrence _NumberOccurrence;
+        [XmlIgnore] public bool _indicatorOccurrenceSpecified;
+        [XmlIgnore] private NumberOccurrence _numberOccurrence;
 
-        [XmlIgnore] public bool _NumberOccurrenceSpecified;
-        [XmlIgnore] private NumberType _NumberType;
+        [XmlIgnore] public bool _numberOccurrenceSpecified;
+        [XmlIgnore] private NumberType _numberType;
 
-        [XmlIgnore] public bool _NumberTypeSpecified;
+        [XmlIgnore] public bool _numberTypeSpecified;
 
-        [XmlIgnore] private string _Type;
-        [XmlIgnore] private string _Value;
+        [XmlIgnore] private string _type;
+        [XmlIgnore] private string _value;
         [XmlAnyAttribute] public XmlAttribute[] AnyAttr;
 
         [XmlAttribute(AttributeName = "NumberType")]
         public NumberType NumberType
         {
-            get { return _NumberType; }
+            get { return _numberType; }
             set
             {
-                _NumberType = value;
-                _NumberTypeSpecified = true;
+                _numberType = value;
+                _numberTypeSpecified = true;
             }
         }
 
         [XmlAttribute(AttributeName = "Type")]
         public string Type
         {
-            get { return _Type; }
-            set { _Type = value; }
+            get { return _type; }
+            set { _type = value; }
         }
 
         [XmlAttribute(AttributeName = "Indicator")]
         public string Indicator
         {
-            get { return _Indicator; }
-            set { _Indicator = value; }
+            get { return _indicator; }
+            set { _indicator = value; }
         }
 
         [XmlAttribute(AttributeName = "IndicatorOccurrence")]
         public Occurrence IndicatorOccurrence
         {
-            get { return _IndicatorOccurrence; }
+            get { return _indicatorOccurrence; }
             set
             {
-                _IndicatorOccurrence = value;
-                _IndicatorOccurrenceSpecified = true;
+                _indicatorOccurrence = value;
+                _indicatorOccurrenceSpecified = true;
             }
         }
 
         [XmlAttribute(AttributeName = "NumberOccurrence")]
         public NumberOccurrence NumberOccurrence
         {
-            get { return _NumberOccurrence; }
+            get { return _numberOccurrence; }
             set
             {
-                _NumberOccurrence = value;
-                _NumberOccurrenceSpecified = true;
+                _numberOccurrence = value;
+                _numberOccurrenceSpecified = true;
             }
         }
 
         [XmlAttribute(AttributeName = "Code")]
         public string Code
         {
-            get { return _Code; }
-            set { _Code = value; }
+            get { return _code; }
+            set { _code = value; }
         }
 
         [XmlText(DataType = "string")]
         public string Value
         {
-            get { return _Value; }
-            set { _Value = value; }
+            get { return _value; }
+            set { _value = value; }
         }
 
         public void MakeSchemaCompliant()

@@ -1,6 +1,6 @@
 // /*
 //  *  The attached / following is part of SharpMap.Data.Providers.Kml
-//  *  SharpMap.Data.Providers.Kml is free software © 2008 Newgrove Consultants Limited, 
+//  *  SharpMap.Data.Providers.Kml is free software ï¿½ 2008 Newgrove Consultants Limited, 
 //  *  www.newgrove.com; you can redistribute it and/or modify it under the terms 
 //  *  of the current GNU Lesser General Public License (LGPL) as published by and 
 //  *  available from the Free Software Foundation, Inc., 
@@ -22,12 +22,12 @@ namespace SharpMap.Entities.Ogc.Kml
     [XmlType(TypeName = "UpdateType", Namespace = Declarations.SchemaVersion), Serializable]
     public class UpdateType
     {
-        [XmlIgnore] private List<Change> _Change;
-        [XmlIgnore] private List<Create> _Create;
-        [XmlIgnore] private List<Delete> _Delete;
+        [XmlIgnore] private List<Change> _change;
+        [XmlIgnore] private List<Create> _create;
+        [XmlIgnore] private List<Delete> _delete;
         [XmlIgnore] private string _targetHref;
-        [XmlIgnore] private List<string> _UpdateExtensionGroup;
-        [XmlIgnore] private List<string> _UpdateOpExtensionGroup;
+        [XmlIgnore] private List<string> _updateExtensionGroup;
+        [XmlIgnore] private List<string> _updateOpExtensionGroup;
 
         public UpdateType()
         {
@@ -48,10 +48,10 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (_Create == null) _Create = new List<Create>();
-                return _Create;
+                if (_create == null) _create = new List<Create>();
+                return _create;
             }
-            set { _Create = value; }
+            set { _create = value; }
         }
 
         [XmlElement(Type = typeof (Delete), ElementName = "Delete", IsNullable = false, Form = XmlSchemaForm.Qualified,
@@ -60,10 +60,10 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (_Delete == null) _Delete = new List<Delete>();
-                return _Delete;
+                if (_delete == null) _delete = new List<Delete>();
+                return _delete;
             }
-            set { _Delete = value; }
+            set { _delete = value; }
         }
 
         [XmlElement(Type = typeof (Change), ElementName = "Change", IsNullable = false, Form = XmlSchemaForm.Qualified,
@@ -72,10 +72,10 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (_Change == null) _Change = new List<Change>();
-                return _Change;
+                if (_change == null) _change = new List<Change>();
+                return _change;
             }
-            set { _Change = value; }
+            set { _change = value; }
         }
 
         [XmlElement(Type = typeof (string), ElementName = "UpdateOpExtensionGroup", IsNullable = false,
@@ -84,10 +84,10 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (_UpdateOpExtensionGroup == null) _UpdateOpExtensionGroup = new List<string>();
-                return _UpdateOpExtensionGroup;
+                if (_updateOpExtensionGroup == null) _updateOpExtensionGroup = new List<string>();
+                return _updateOpExtensionGroup;
             }
-            set { _UpdateOpExtensionGroup = value; }
+            set { _updateOpExtensionGroup = value; }
         }
 
         [XmlElement(Type = typeof (string), ElementName = "UpdateExtensionGroup", IsNullable = false,
@@ -96,10 +96,10 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (_UpdateExtensionGroup == null) _UpdateExtensionGroup = new List<string>();
-                return _UpdateExtensionGroup;
+                if (_updateExtensionGroup == null) _updateExtensionGroup = new List<string>();
+                return _updateExtensionGroup;
             }
-            set { _UpdateExtensionGroup = value; }
+            set { _updateExtensionGroup = value; }
         }
 
         public void MakeSchemaCompliant()

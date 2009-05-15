@@ -1,6 +1,6 @@
 // /*
 //  *  The attached / following is part of SharpMap.Data.Providers.Kml
-//  *  SharpMap.Data.Providers.Kml is free software © 2008 Newgrove Consultants Limited, 
+//  *  SharpMap.Data.Providers.Kml is free software ï¿½ 2008 Newgrove Consultants Limited, 
 //  *  www.newgrove.com; you can redistribute it and/or modify it under the terms 
 //  *  of the current GNU Lesser General Public License (LGPL) as published by and 
 //  *  available from the Free Software Foundation, Inc., 
@@ -21,36 +21,36 @@ namespace SharpMap.Entities.xAL
     [XmlType(TypeName = "DependentLocalityNumber", Namespace = Declarations.SchemaVersion), Serializable]
     public class DependentLocalityNumber
     {
-        [XmlIgnore] private string _Code;
-        [XmlIgnore] private Occurrence _NameNumberOccurrence;
+        [XmlIgnore] private string _code;
+        [XmlIgnore] private Occurrence _nameNumberOccurrence;
 
-        [XmlIgnore] public bool _NameNumberOccurrenceSpecified;
-        [XmlIgnore] private string _Value;
+        [XmlIgnore] public bool _nameNumberOccurrenceSpecified;
+        [XmlIgnore] private string _value;
         [XmlAnyAttribute] public XmlAttribute[] AnyAttr;
 
         [XmlAttribute(AttributeName = "NameNumberOccurrence")]
         public Occurrence NameNumberOccurrence
         {
-            get { return _NameNumberOccurrence; }
+            get { return _nameNumberOccurrence; }
             set
             {
-                _NameNumberOccurrence = value;
-                _NameNumberOccurrenceSpecified = true;
+                _nameNumberOccurrence = value;
+                _nameNumberOccurrenceSpecified = true;
             }
         }
 
         [XmlAttribute(AttributeName = "Code")]
         public string Code
         {
-            get { return _Code; }
-            set { _Code = value; }
+            get { return _code; }
+            set { _code = value; }
         }
 
         [XmlText(DataType = "string")]
         public string Value
         {
-            get { return _Value; }
-            set { _Value = value; }
+            get { return _value; }
+            set { _value = value; }
         }
 
         public void MakeSchemaCompliant()

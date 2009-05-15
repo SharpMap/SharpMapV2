@@ -1,6 +1,6 @@
 // /*
 //  *  The attached / following is part of SharpMap.Data.Providers.Kml
-//  *  SharpMap.Data.Providers.Kml is free software © 2008 Newgrove Consultants Limited, 
+//  *  SharpMap.Data.Providers.Kml is free software ï¿½ 2008 Newgrove Consultants Limited, 
 //  *  www.newgrove.com; you can redistribute it and/or modify it under the terms 
 //  *  of the current GNU Lesser General Public License (LGPL) as published by and 
 //  *  available from the Free Software Foundation, Inc., 
@@ -23,11 +23,11 @@ namespace SharpMap.Entities.xAL
     [XmlType(TypeName = "PostalRouteType", Namespace = Declarations.SchemaVersion), Serializable]
     public class PostalRouteType
     {
-        [XmlIgnore] private List<AddressLine> _AddressLine;
-        [XmlIgnore] private List<PostalRouteName> _PostalRouteName;
-        [XmlIgnore] private PostalRouteNumber _PostalRouteNumber;
-        [XmlIgnore] private PostBox _PostBox;
-        [XmlIgnore] private string _Type;
+        [XmlIgnore] private List<AddressLine> _addressLine;
+        [XmlIgnore] private List<PostalRouteName> _postalRouteName;
+        [XmlIgnore] private PostalRouteNumber _postalRouteNumber;
+        [XmlIgnore] private PostBox _postBox;
+        [XmlIgnore] private string _type;
         [XmlAnyElement] public XmlElement[] Any;
 
         [XmlAnyAttribute] public XmlAttribute[] AnyAttr;
@@ -35,8 +35,8 @@ namespace SharpMap.Entities.xAL
         [XmlAttribute(AttributeName = "Type")]
         public string Type
         {
-            get { return _Type; }
-            set { _Type = value; }
+            get { return _type; }
+            set { _type = value; }
         }
 
         [XmlElement(Type = typeof (AddressLine), ElementName = "AddressLine", IsNullable = false,
@@ -45,10 +45,10 @@ namespace SharpMap.Entities.xAL
         {
             get
             {
-                if (_AddressLine == null) _AddressLine = new List<AddressLine>();
-                return _AddressLine;
+                if (_addressLine == null) _addressLine = new List<AddressLine>();
+                return _addressLine;
             }
-            set { _AddressLine = value; }
+            set { _addressLine = value; }
         }
 
         [XmlElement(Type = typeof (PostalRouteName), ElementName = "PostalRouteName", IsNullable = false,
@@ -57,26 +57,26 @@ namespace SharpMap.Entities.xAL
         {
             get
             {
-                if (_PostalRouteName == null) _PostalRouteName = new List<PostalRouteName>();
-                return _PostalRouteName;
+                if (_postalRouteName == null) _postalRouteName = new List<PostalRouteName>();
+                return _postalRouteName;
             }
-            set { _PostalRouteName = value; }
+            set { _postalRouteName = value; }
         }
 
         [XmlElement(Type = typeof (PostalRouteNumber), ElementName = "PostalRouteNumber", IsNullable = false,
             Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public PostalRouteNumber PostalRouteNumber
         {
-            get { return _PostalRouteNumber; }
-            set { _PostalRouteNumber = value; }
+            get { return _postalRouteNumber; }
+            set { _postalRouteNumber = value; }
         }
 
         [XmlElement(Type = typeof (PostBox), ElementName = "PostBox", IsNullable = false, Form = XmlSchemaForm.Qualified
             , Namespace = Declarations.SchemaVersion)]
         public PostBox PostBox
         {
-            get { return _PostBox; }
-            set { _PostBox = value; }
+            get { return _postBox; }
+            set { _postBox = value; }
         }
 
         public void MakeSchemaCompliant()

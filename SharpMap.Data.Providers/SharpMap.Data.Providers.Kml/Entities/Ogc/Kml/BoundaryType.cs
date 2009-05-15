@@ -1,6 +1,6 @@
 // /*
 //  *  The attached / following is part of SharpMap.Data.Providers.Kml
-//  *  SharpMap.Data.Providers.Kml is free software © 2008 Newgrove Consultants Limited, 
+//  *  SharpMap.Data.Providers.Kml is free software ï¿½ 2008 Newgrove Consultants Limited, 
 //  *  www.newgrove.com; you can redistribute it and/or modify it under the terms 
 //  *  of the current GNU Lesser General Public License (LGPL) as published by and 
 //  *  available from the Free Software Foundation, Inc., 
@@ -43,16 +43,16 @@ namespace SharpMap.Entities.Ogc.Kml
     [XmlInclude(typeof (ViewVolumeType))]
     public class BoundaryType
     {
-        [XmlIgnore] private List<BoundaryObjectExtensionGroup> _BoundaryObjectExtensionGroup;
-        [XmlIgnore] private List<string> _BoundarySimpleExtensionGroup;
-        [XmlIgnore] private LinearRing _LinearRing;
+        [XmlIgnore] private List<BoundaryObjectExtensionGroup> _boundaryObjectExtensionGroup;
+        [XmlIgnore] private List<string> _boundarySimpleExtensionGroup;
+        [XmlIgnore] private LinearRing _linearRing;
 
         [XmlElement(Type = typeof (LinearRing), ElementName = "LinearRing", IsNullable = false,
             Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public LinearRing LinearRing
         {
-            get { return _LinearRing; }
-            set { _LinearRing = value; }
+            get { return _linearRing; }
+            set { _linearRing = value; }
         }
 
         [XmlElement(Type = typeof (string), ElementName = "BoundarySimpleExtensionGroup", IsNullable = false,
@@ -61,10 +61,10 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (_BoundarySimpleExtensionGroup == null) _BoundarySimpleExtensionGroup = new List<string>();
-                return _BoundarySimpleExtensionGroup;
+                if (_boundarySimpleExtensionGroup == null) _boundarySimpleExtensionGroup = new List<string>();
+                return _boundarySimpleExtensionGroup;
             }
-            set { _BoundarySimpleExtensionGroup = value; }
+            set { _boundarySimpleExtensionGroup = value; }
         }
 
         [XmlElement(Type = typeof (BoundaryObjectExtensionGroup), ElementName = "BoundaryObjectExtensionGroup",
@@ -73,11 +73,11 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (_BoundaryObjectExtensionGroup == null)
-                    _BoundaryObjectExtensionGroup = new List<BoundaryObjectExtensionGroup>();
-                return _BoundaryObjectExtensionGroup;
+                if (_boundaryObjectExtensionGroup == null)
+                    _boundaryObjectExtensionGroup = new List<BoundaryObjectExtensionGroup>();
+                return _boundaryObjectExtensionGroup;
             }
-            set { _BoundaryObjectExtensionGroup = value; }
+            set { _boundaryObjectExtensionGroup = value; }
         }
 
         public void MakeSchemaCompliant()

@@ -1,6 +1,6 @@
 // /*
 //  *  The attached / following is part of SharpMap.Data.Providers.Kml
-//  *  SharpMap.Data.Providers.Kml is free software © 2008 Newgrove Consultants Limited, 
+//  *  SharpMap.Data.Providers.Kml is free software ï¿½ 2008 Newgrove Consultants Limited, 
 //  *  www.newgrove.com; you can redistribute it and/or modify it under the terms 
 //  *  of the current GNU Lesser General Public License (LGPL) as published by and 
 //  *  available from the Free Software Foundation, Inc., 
@@ -47,8 +47,8 @@ namespace SharpMap.Entities.Ogc.Kml
         [XmlIgnore] private string _altitudeModeGroup;
 
         [XmlIgnore] public bool _altitudeSpecified;
-        [XmlIgnore] private List<CameraObjectExtensionGroup> _CameraObjectExtensionGroup;
-        [XmlIgnore] private List<string> _CameraSimpleExtensionGroup;
+        [XmlIgnore] private List<CameraObjectExtensionGroup> _cameraObjectExtensionGroup;
+        [XmlIgnore] private List<string> _cameraSimpleExtensionGroup;
 
 
         [XmlIgnore] private double _heading;
@@ -167,10 +167,10 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (_CameraSimpleExtensionGroup == null) _CameraSimpleExtensionGroup = new List<string>();
-                return _CameraSimpleExtensionGroup;
+                if (_cameraSimpleExtensionGroup == null) _cameraSimpleExtensionGroup = new List<string>();
+                return _cameraSimpleExtensionGroup;
             }
-            set { _CameraSimpleExtensionGroup = value; }
+            set { _cameraSimpleExtensionGroup = value; }
         }
 
         [XmlElement(Type = typeof (CameraObjectExtensionGroup), ElementName = "CameraObjectExtensionGroup",
@@ -179,11 +179,11 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (_CameraObjectExtensionGroup == null)
-                    _CameraObjectExtensionGroup = new List<CameraObjectExtensionGroup>();
-                return _CameraObjectExtensionGroup;
+                if (_cameraObjectExtensionGroup == null)
+                    _cameraObjectExtensionGroup = new List<CameraObjectExtensionGroup>();
+                return _cameraObjectExtensionGroup;
             }
-            set { _CameraObjectExtensionGroup = value; }
+            set { _cameraObjectExtensionGroup = value; }
         }
 
         public new void MakeSchemaCompliant()

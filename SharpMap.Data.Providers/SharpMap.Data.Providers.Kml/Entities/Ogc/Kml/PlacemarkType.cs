@@ -1,6 +1,6 @@
 // /*
 //  *  The attached / following is part of SharpMap.Data.Providers.Kml
-//  *  SharpMap.Data.Providers.Kml is free software © 2008 Newgrove Consultants Limited, 
+//  *  SharpMap.Data.Providers.Kml is free software ï¿½ 2008 Newgrove Consultants Limited, 
 //  *  www.newgrove.com; you can redistribute it and/or modify it under the terms 
 //  *  of the current GNU Lesser General Public License (LGPL) as published by and 
 //  *  available from the Free Software Foundation, Inc., 
@@ -49,17 +49,17 @@ namespace SharpMap.Entities.Ogc.Kml
     [XmlInclude(typeof (ViewVolumeType))]
     public class PlacemarkType : AbstractFeatureType
     {
-        [XmlIgnore] private AbstractGeometryGroup _AbstractGeometryGroup;
-        [XmlIgnore] private List<PlacemarkObjectExtensionGroup> _PlacemarkObjectExtensionGroup;
+        [XmlIgnore] private AbstractGeometryGroup _abstractGeometryGroup;
+        [XmlIgnore] private List<PlacemarkObjectExtensionGroup> _placemarkObjectExtensionGroup;
 
-        [XmlIgnore] private List<string> _PlacemarkSimpleExtensionGroup;
+        [XmlIgnore] private List<string> _placemarkSimpleExtensionGroup;
 
         [XmlElement(Type = typeof (AbstractGeometryGroup), ElementName = "AbstractGeometryGroup", IsNullable = false,
             Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public AbstractGeometryGroup AbstractGeometryGroup
         {
-            get { return _AbstractGeometryGroup; }
-            set { _AbstractGeometryGroup = value; }
+            get { return _abstractGeometryGroup; }
+            set { _abstractGeometryGroup = value; }
         }
 
         [XmlElement(Type = typeof (string), ElementName = "PlacemarkSimpleExtensionGroup", IsNullable = false,
@@ -68,10 +68,10 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (_PlacemarkSimpleExtensionGroup == null) _PlacemarkSimpleExtensionGroup = new List<string>();
-                return _PlacemarkSimpleExtensionGroup;
+                if (_placemarkSimpleExtensionGroup == null) _placemarkSimpleExtensionGroup = new List<string>();
+                return _placemarkSimpleExtensionGroup;
             }
-            set { _PlacemarkSimpleExtensionGroup = value; }
+            set { _placemarkSimpleExtensionGroup = value; }
         }
 
         [XmlElement(Type = typeof (PlacemarkObjectExtensionGroup), ElementName = "PlacemarkObjectExtensionGroup",
@@ -80,11 +80,11 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (_PlacemarkObjectExtensionGroup == null)
-                    _PlacemarkObjectExtensionGroup = new List<PlacemarkObjectExtensionGroup>();
-                return _PlacemarkObjectExtensionGroup;
+                if (_placemarkObjectExtensionGroup == null)
+                    _placemarkObjectExtensionGroup = new List<PlacemarkObjectExtensionGroup>();
+                return _placemarkObjectExtensionGroup;
             }
-            set { _PlacemarkObjectExtensionGroup = value; }
+            set { _placemarkObjectExtensionGroup = value; }
         }
 
         public new void MakeSchemaCompliant()

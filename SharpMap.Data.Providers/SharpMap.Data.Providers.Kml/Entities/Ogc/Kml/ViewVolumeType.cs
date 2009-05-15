@@ -1,6 +1,6 @@
 // /*
 //  *  The attached / following is part of SharpMap.Data.Providers.Kml
-//  *  SharpMap.Data.Providers.Kml is free software © 2008 Newgrove Consultants Limited, 
+//  *  SharpMap.Data.Providers.Kml is free software ï¿½ 2008 Newgrove Consultants Limited, 
 //  *  www.newgrove.com; you can redistribute it and/or modify it under the terms 
 //  *  of the current GNU Lesser General Public License (LGPL) as published by and 
 //  *  available from the Free Software Foundation, Inc., 
@@ -62,8 +62,8 @@ namespace SharpMap.Entities.Ogc.Kml
         [XmlIgnore] private double _topFov;
 
         [XmlIgnore] public bool _topFovSpecified;
-        [XmlIgnore] private List<ViewVolumeObjectExtensionGroup> _ViewVolumeObjectExtensionGroup;
-        [XmlIgnore] private List<string> _ViewVolumeSimpleExtensionGroup;
+        [XmlIgnore] private List<ViewVolumeObjectExtensionGroup> _viewVolumeObjectExtensionGroup;
+        [XmlIgnore] private List<string> _viewVolumeSimpleExtensionGroup;
 
         public ViewVolumeType()
         {
@@ -142,10 +142,10 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (_ViewVolumeSimpleExtensionGroup == null) _ViewVolumeSimpleExtensionGroup = new List<string>();
-                return _ViewVolumeSimpleExtensionGroup;
+                if (_viewVolumeSimpleExtensionGroup == null) _viewVolumeSimpleExtensionGroup = new List<string>();
+                return _viewVolumeSimpleExtensionGroup;
             }
-            set { _ViewVolumeSimpleExtensionGroup = value; }
+            set { _viewVolumeSimpleExtensionGroup = value; }
         }
 
         [XmlElement(Type = typeof (ViewVolumeObjectExtensionGroup), ElementName = "ViewVolumeObjectExtensionGroup",
@@ -154,11 +154,11 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (_ViewVolumeObjectExtensionGroup == null)
-                    _ViewVolumeObjectExtensionGroup = new List<ViewVolumeObjectExtensionGroup>();
-                return _ViewVolumeObjectExtensionGroup;
+                if (_viewVolumeObjectExtensionGroup == null)
+                    _viewVolumeObjectExtensionGroup = new List<ViewVolumeObjectExtensionGroup>();
+                return _viewVolumeObjectExtensionGroup;
             }
-            set { _ViewVolumeObjectExtensionGroup = value; }
+            set { _viewVolumeObjectExtensionGroup = value; }
         }
 
         public new void MakeSchemaCompliant()

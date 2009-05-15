@@ -1,6 +1,6 @@
 // /*
 //  *  The attached / following is part of SharpMap.Data.Providers.Kml
-//  *  SharpMap.Data.Providers.Kml is free software © 2008 Newgrove Consultants Limited, 
+//  *  SharpMap.Data.Providers.Kml is free software ï¿½ 2008 Newgrove Consultants Limited, 
 //  *  www.newgrove.com; you can redistribute it and/or modify it under the terms 
 //  *  of the current GNU Lesser General Public License (LGPL) as published by and 
 //  *  available from the Free Software Foundation, Inc., 
@@ -43,8 +43,8 @@ namespace SharpMap.Entities.Ogc.Kml
     [XmlInclude(typeof (ViewVolumeType))]
     public class AliasType : AbstractObjectType
     {
-        [XmlIgnore] private List<AliasObjectExtensionGroup> _AliasObjectExtensionGroup;
-        [XmlIgnore] private List<string> _AliasSimpleExtensionGroup;
+        [XmlIgnore] private List<AliasObjectExtensionGroup> _aliasObjectExtensionGroup;
+        [XmlIgnore] private List<string> _aliasSimpleExtensionGroup;
         [XmlIgnore] private string _sourceHref;
         [XmlIgnore] private string _targetHref;
 
@@ -70,10 +70,10 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (_AliasSimpleExtensionGroup == null) _AliasSimpleExtensionGroup = new List<string>();
-                return _AliasSimpleExtensionGroup;
+                if (_aliasSimpleExtensionGroup == null) _aliasSimpleExtensionGroup = new List<string>();
+                return _aliasSimpleExtensionGroup;
             }
-            set { _AliasSimpleExtensionGroup = value; }
+            set { _aliasSimpleExtensionGroup = value; }
         }
 
         [XmlElement(Type = typeof (AliasObjectExtensionGroup), ElementName = "AliasObjectExtensionGroup",
@@ -82,11 +82,11 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (_AliasObjectExtensionGroup == null)
-                    _AliasObjectExtensionGroup = new List<AliasObjectExtensionGroup>();
-                return _AliasObjectExtensionGroup;
+                if (_aliasObjectExtensionGroup == null)
+                    _aliasObjectExtensionGroup = new List<AliasObjectExtensionGroup>();
+                return _aliasObjectExtensionGroup;
             }
-            set { _AliasObjectExtensionGroup = value; }
+            set { _aliasObjectExtensionGroup = value; }
         }
 
         public new void MakeSchemaCompliant()

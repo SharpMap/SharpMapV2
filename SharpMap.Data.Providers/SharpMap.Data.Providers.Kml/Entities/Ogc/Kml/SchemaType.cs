@@ -1,6 +1,6 @@
 // /*
 //  *  The attached / following is part of SharpMap.Data.Providers.Kml
-//  *  SharpMap.Data.Providers.Kml is free software © 2008 Newgrove Consultants Limited, 
+//  *  SharpMap.Data.Providers.Kml is free software ï¿½ 2008 Newgrove Consultants Limited, 
 //  *  www.newgrove.com; you can redistribute it and/or modify it under the terms 
 //  *  of the current GNU Lesser General Public License (LGPL) as published by and 
 //  *  available from the Free Software Foundation, Inc., 
@@ -24,8 +24,8 @@ namespace SharpMap.Entities.Ogc.Kml
     {
         [XmlIgnore] private string _id;
         [XmlIgnore] private string _name;
-        [XmlIgnore] private List<string> _SchemaExtension;
-        [XmlIgnore] private List<SimpleField> _SimpleField;
+        [XmlIgnore] private List<string> _schemaExtension;
+        [XmlIgnore] private List<SimpleField> _simpleField;
 
         [XmlAttribute(AttributeName = "name", DataType = "string")]
         public string name
@@ -47,10 +47,10 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (_SimpleField == null) _SimpleField = new List<SimpleField>();
-                return _SimpleField;
+                if (_simpleField == null) _simpleField = new List<SimpleField>();
+                return _simpleField;
             }
-            set { _SimpleField = value; }
+            set { _simpleField = value; }
         }
 
         [XmlElement(Type = typeof (string), ElementName = "SchemaExtension", IsNullable = false,
@@ -59,10 +59,10 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (_SchemaExtension == null) _SchemaExtension = new List<string>();
-                return _SchemaExtension;
+                if (_schemaExtension == null) _schemaExtension = new List<string>();
+                return _schemaExtension;
             }
-            set { _SchemaExtension = value; }
+            set { _schemaExtension = value; }
         }
 
         public void MakeSchemaCompliant()

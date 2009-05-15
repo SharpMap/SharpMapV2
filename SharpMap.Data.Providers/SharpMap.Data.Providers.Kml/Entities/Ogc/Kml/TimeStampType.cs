@@ -1,6 +1,6 @@
 // /*
 //  *  The attached / following is part of SharpMap.Data.Providers.Kml
-//  *  SharpMap.Data.Providers.Kml is free software © 2008 Newgrove Consultants Limited, 
+//  *  SharpMap.Data.Providers.Kml is free software ï¿½ 2008 Newgrove Consultants Limited, 
 //  *  www.newgrove.com; you can redistribute it and/or modify it under the terms 
 //  *  of the current GNU Lesser General Public License (LGPL) as published by and 
 //  *  available from the Free Software Foundation, Inc., 
@@ -43,8 +43,8 @@ namespace SharpMap.Entities.Ogc.Kml
     [XmlInclude(typeof (ViewVolumeType))]
     public class TimeStampType : AbstractTimePrimitiveType
     {
-        [XmlIgnore] private List<TimeStampObjectExtensionGroup> _TimeStampObjectExtensionGroup;
-        [XmlIgnore] private List<string> _TimeStampSimpleExtensionGroup;
+        [XmlIgnore] private List<TimeStampObjectExtensionGroup> _timeStampObjectExtensionGroup;
+        [XmlIgnore] private List<string> _timeStampSimpleExtensionGroup;
         [XmlIgnore] private DateTime _when;
 
         [XmlIgnore] public bool _whenSpecified;
@@ -84,10 +84,10 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (_TimeStampSimpleExtensionGroup == null) _TimeStampSimpleExtensionGroup = new List<string>();
-                return _TimeStampSimpleExtensionGroup;
+                if (_timeStampSimpleExtensionGroup == null) _timeStampSimpleExtensionGroup = new List<string>();
+                return _timeStampSimpleExtensionGroup;
             }
-            set { _TimeStampSimpleExtensionGroup = value; }
+            set { _timeStampSimpleExtensionGroup = value; }
         }
 
         [XmlElement(Type = typeof (TimeStampObjectExtensionGroup), ElementName = "TimeStampObjectExtensionGroup",
@@ -96,11 +96,11 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (_TimeStampObjectExtensionGroup == null)
-                    _TimeStampObjectExtensionGroup = new List<TimeStampObjectExtensionGroup>();
-                return _TimeStampObjectExtensionGroup;
+                if (_timeStampObjectExtensionGroup == null)
+                    _timeStampObjectExtensionGroup = new List<TimeStampObjectExtensionGroup>();
+                return _timeStampObjectExtensionGroup;
             }
-            set { _TimeStampObjectExtensionGroup = value; }
+            set { _timeStampObjectExtensionGroup = value; }
         }
 
         public new void MakeSchemaCompliant()

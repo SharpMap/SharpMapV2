@@ -1,6 +1,6 @@
 // /*
 //  *  The attached / following is part of SharpMap.Data.Providers.Kml
-//  *  SharpMap.Data.Providers.Kml is free software © 2008 Newgrove Consultants Limited, 
+//  *  SharpMap.Data.Providers.Kml is free software ï¿½ 2008 Newgrove Consultants Limited, 
 //  *  www.newgrove.com; you can redistribute it and/or modify it under the terms 
 //  *  of the current GNU Lesser General Public License (LGPL) as published by and 
 //  *  available from the Free Software Foundation, Inc., 
@@ -45,7 +45,7 @@ namespace SharpMap.Entities.Ogc.Kml
     [XmlInclude(typeof (ViewVolumeType))]
     public class NetworkLinkControlType
     {
-        [XmlIgnore] private AbstractViewGroup _AbstractViewGroup;
+        [XmlIgnore] private AbstractViewGroup _abstractViewGroup;
         [XmlIgnore] private string _cookie;
         [XmlIgnore] private DateTime _expires;
 
@@ -60,9 +60,9 @@ namespace SharpMap.Entities.Ogc.Kml
         [XmlIgnore] private double _minRefreshPeriod;
 
         [XmlIgnore] public bool _minRefreshPeriodSpecified;
-        [XmlIgnore] private List<NetworkLinkControlObjectExtensionGroup> _NetworkLinkControlObjectExtensionGroup;
-        [XmlIgnore] private List<string> _NetworkLinkControlSimpleExtensionGroup;
-        [XmlIgnore] private Update _Update;
+        [XmlIgnore] private List<NetworkLinkControlObjectExtensionGroup> _networkLinkControlObjectExtensionGroup;
+        [XmlIgnore] private List<string> _networkLinkControlSimpleExtensionGroup;
+        [XmlIgnore] private Update _update;
 
         public NetworkLinkControlType()
         {
@@ -165,16 +165,16 @@ namespace SharpMap.Entities.Ogc.Kml
             Namespace = Declarations.SchemaVersion)]
         public Update Update
         {
-            get { return _Update; }
-            set { _Update = value; }
+            get { return _update; }
+            set { _update = value; }
         }
 
         [XmlElement(Type = typeof (AbstractViewGroup), ElementName = "AbstractViewGroup", IsNullable = false,
             Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public AbstractViewGroup AbstractViewGroup
         {
-            get { return _AbstractViewGroup; }
-            set { _AbstractViewGroup = value; }
+            get { return _abstractViewGroup; }
+            set { _abstractViewGroup = value; }
         }
 
         [XmlElement(Type = typeof (string), ElementName = "NetworkLinkControlSimpleExtensionGroup", IsNullable = false,
@@ -183,11 +183,11 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (_NetworkLinkControlSimpleExtensionGroup == null)
-                    _NetworkLinkControlSimpleExtensionGroup = new List<string>();
-                return _NetworkLinkControlSimpleExtensionGroup;
+                if (_networkLinkControlSimpleExtensionGroup == null)
+                    _networkLinkControlSimpleExtensionGroup = new List<string>();
+                return _networkLinkControlSimpleExtensionGroup;
             }
-            set { _NetworkLinkControlSimpleExtensionGroup = value; }
+            set { _networkLinkControlSimpleExtensionGroup = value; }
         }
 
         [XmlElement(Type = typeof (NetworkLinkControlObjectExtensionGroup),
@@ -197,11 +197,11 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (_NetworkLinkControlObjectExtensionGroup == null)
-                    _NetworkLinkControlObjectExtensionGroup = new List<NetworkLinkControlObjectExtensionGroup>();
-                return _NetworkLinkControlObjectExtensionGroup;
+                if (_networkLinkControlObjectExtensionGroup == null)
+                    _networkLinkControlObjectExtensionGroup = new List<NetworkLinkControlObjectExtensionGroup>();
+                return _networkLinkControlObjectExtensionGroup;
             }
-            set { _NetworkLinkControlObjectExtensionGroup = value; }
+            set { _networkLinkControlObjectExtensionGroup = value; }
         }
 
         public void MakeSchemaCompliant()

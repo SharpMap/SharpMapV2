@@ -1,6 +1,6 @@
 // /*
 //  *  The attached / following is part of SharpMap.Data.Providers.Kml
-//  *  SharpMap.Data.Providers.Kml is free software © 2008 Newgrove Consultants Limited, 
+//  *  SharpMap.Data.Providers.Kml is free software ï¿½ 2008 Newgrove Consultants Limited, 
 //  *  www.newgrove.com; you can redistribute it and/or modify it under the terms 
 //  *  of the current GNU Lesser General Public License (LGPL) as published by and 
 //  *  available from the Free Software Foundation, Inc., 
@@ -46,8 +46,8 @@ namespace SharpMap.Entities.Ogc.Kml
         [XmlIgnore] private double _heading;
 
         [XmlIgnore] public bool _headingSpecified;
-        [XmlIgnore] private List<OrientationObjectExtensionGroup> _OrientationObjectExtensionGroup;
-        [XmlIgnore] private List<string> _OrientationSimpleExtensionGroup;
+        [XmlIgnore] private List<OrientationObjectExtensionGroup> _orientationObjectExtensionGroup;
+        [XmlIgnore] private List<string> _orientationSimpleExtensionGroup;
         [XmlIgnore] private double _roll;
 
         [XmlIgnore] public bool _rollSpecified;
@@ -108,10 +108,10 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (_OrientationSimpleExtensionGroup == null) _OrientationSimpleExtensionGroup = new List<string>();
-                return _OrientationSimpleExtensionGroup;
+                if (_orientationSimpleExtensionGroup == null) _orientationSimpleExtensionGroup = new List<string>();
+                return _orientationSimpleExtensionGroup;
             }
-            set { _OrientationSimpleExtensionGroup = value; }
+            set { _orientationSimpleExtensionGroup = value; }
         }
 
         [XmlElement(Type = typeof (OrientationObjectExtensionGroup), ElementName = "OrientationObjectExtensionGroup",
@@ -120,11 +120,11 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (_OrientationObjectExtensionGroup == null)
-                    _OrientationObjectExtensionGroup = new List<OrientationObjectExtensionGroup>();
-                return _OrientationObjectExtensionGroup;
+                if (_orientationObjectExtensionGroup == null)
+                    _orientationObjectExtensionGroup = new List<OrientationObjectExtensionGroup>();
+                return _orientationObjectExtensionGroup;
             }
-            set { _OrientationObjectExtensionGroup = value; }
+            set { _orientationObjectExtensionGroup = value; }
         }
 
         public new void MakeSchemaCompliant()

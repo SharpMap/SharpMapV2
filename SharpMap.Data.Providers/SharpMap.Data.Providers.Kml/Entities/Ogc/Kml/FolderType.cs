@@ -1,6 +1,6 @@
 // /*
 //  *  The attached / following is part of SharpMap.Data.Providers.Kml
-//  *  SharpMap.Data.Providers.Kml is free software © 2008 Newgrove Consultants Limited, 
+//  *  SharpMap.Data.Providers.Kml is free software ï¿½ 2008 Newgrove Consultants Limited, 
 //  *  www.newgrove.com; you can redistribute it and/or modify it under the terms 
 //  *  of the current GNU Lesser General Public License (LGPL) as published by and 
 //  *  available from the Free Software Foundation, Inc., 
@@ -47,10 +47,10 @@ namespace SharpMap.Entities.Ogc.Kml
     [XmlInclude(typeof (ViewVolumeType))]
     public class FolderType : AbstractContainerType
     {
-        [XmlIgnore] private List<AbstractFeatureGroup> _AbstractFeatureGroup;
-        [XmlIgnore] private List<FolderObjectExtensionGroup> _FolderObjectExtensionGroup;
+        [XmlIgnore] private List<AbstractFeatureGroup> _abstractFeatureGroup;
+        [XmlIgnore] private List<FolderObjectExtensionGroup> _folderObjectExtensionGroup;
 
-        [XmlIgnore] private List<string> _FolderSimpleExtensionGroup;
+        [XmlIgnore] private List<string> _folderSimpleExtensionGroup;
 
         [XmlElement(Type = typeof (AbstractFeatureGroup), ElementName = "AbstractFeatureGroup", IsNullable = false,
             Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
@@ -58,10 +58,10 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (_AbstractFeatureGroup == null) _AbstractFeatureGroup = new List<AbstractFeatureGroup>();
-                return _AbstractFeatureGroup;
+                if (_abstractFeatureGroup == null) _abstractFeatureGroup = new List<AbstractFeatureGroup>();
+                return _abstractFeatureGroup;
             }
-            set { _AbstractFeatureGroup = value; }
+            set { _abstractFeatureGroup = value; }
         }
 
         [XmlElement(Type = typeof (string), ElementName = "FolderSimpleExtensionGroup", IsNullable = false,
@@ -70,10 +70,10 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (_FolderSimpleExtensionGroup == null) _FolderSimpleExtensionGroup = new List<string>();
-                return _FolderSimpleExtensionGroup;
+                if (_folderSimpleExtensionGroup == null) _folderSimpleExtensionGroup = new List<string>();
+                return _folderSimpleExtensionGroup;
             }
-            set { _FolderSimpleExtensionGroup = value; }
+            set { _folderSimpleExtensionGroup = value; }
         }
 
         [XmlElement(Type = typeof (FolderObjectExtensionGroup), ElementName = "FolderObjectExtensionGroup",
@@ -82,11 +82,11 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (_FolderObjectExtensionGroup == null)
-                    _FolderObjectExtensionGroup = new List<FolderObjectExtensionGroup>();
-                return _FolderObjectExtensionGroup;
+                if (_folderObjectExtensionGroup == null)
+                    _folderObjectExtensionGroup = new List<FolderObjectExtensionGroup>();
+                return _folderObjectExtensionGroup;
             }
-            set { _FolderObjectExtensionGroup = value; }
+            set { _folderObjectExtensionGroup = value; }
         }
 
         public new void MakeSchemaCompliant()

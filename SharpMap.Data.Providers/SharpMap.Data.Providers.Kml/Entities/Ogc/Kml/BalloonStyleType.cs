@@ -1,6 +1,6 @@
 // /*
 //  *  The attached / following is part of SharpMap.Data.Providers.Kml
-//  *  SharpMap.Data.Providers.Kml is free software © 2008 Newgrove Consultants Limited, 
+//  *  SharpMap.Data.Providers.Kml is free software ï¿½ 2008 Newgrove Consultants Limited, 
 //  *  www.newgrove.com; you can redistribute it and/or modify it under the terms 
 //  *  of the current GNU Lesser General Public License (LGPL) as published by and 
 //  *  available from the Free Software Foundation, Inc., 
@@ -43,8 +43,8 @@ namespace SharpMap.Entities.Ogc.Kml
     [XmlInclude(typeof (ViewVolumeType))]
     public class BalloonStyleType : AbstractSubStyleType
     {
-        [XmlIgnore] private List<BalloonStyleObjectExtensionGroup> _BalloonStyleObjectExtensionGroup;
-        [XmlIgnore] private List<string> _BalloonStyleSimpleExtensionGroup;
+        [XmlIgnore] private List<BalloonStyleObjectExtensionGroup> _balloonStyleObjectExtensionGroup;
+        [XmlIgnore] private List<string> _balloonStyleSimpleExtensionGroup;
         [XmlIgnore] private byte[] _bgColor;
         [XmlIgnore] private byte[] _color;
         [XmlIgnore] private DisplayMode _displayMode;
@@ -109,10 +109,10 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (_BalloonStyleSimpleExtensionGroup == null) _BalloonStyleSimpleExtensionGroup = new List<string>();
-                return _BalloonStyleSimpleExtensionGroup;
+                if (_balloonStyleSimpleExtensionGroup == null) _balloonStyleSimpleExtensionGroup = new List<string>();
+                return _balloonStyleSimpleExtensionGroup;
             }
-            set { _BalloonStyleSimpleExtensionGroup = value; }
+            set { _balloonStyleSimpleExtensionGroup = value; }
         }
 
         [XmlElement(Type = typeof (BalloonStyleObjectExtensionGroup), ElementName = "BalloonStyleObjectExtensionGroup",
@@ -121,11 +121,11 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (_BalloonStyleObjectExtensionGroup == null)
-                    _BalloonStyleObjectExtensionGroup = new List<BalloonStyleObjectExtensionGroup>();
-                return _BalloonStyleObjectExtensionGroup;
+                if (_balloonStyleObjectExtensionGroup == null)
+                    _balloonStyleObjectExtensionGroup = new List<BalloonStyleObjectExtensionGroup>();
+                return _balloonStyleObjectExtensionGroup;
             }
-            set { _BalloonStyleObjectExtensionGroup = value; }
+            set { _balloonStyleObjectExtensionGroup = value; }
         }
     }
 }

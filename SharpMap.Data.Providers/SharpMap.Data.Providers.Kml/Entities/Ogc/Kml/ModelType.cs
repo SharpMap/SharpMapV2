@@ -1,6 +1,6 @@
 // /*
 //  *  The attached / following is part of SharpMap.Data.Providers.Kml
-//  *  SharpMap.Data.Providers.Kml is free software © 2008 Newgrove Consultants Limited, 
+//  *  SharpMap.Data.Providers.Kml is free software ï¿½ 2008 Newgrove Consultants Limited, 
 //  *  www.newgrove.com; you can redistribute it and/or modify it under the terms 
 //  *  of the current GNU Lesser General Public License (LGPL) as published by and 
 //  *  available from the Free Software Foundation, Inc., 
@@ -44,16 +44,16 @@ namespace SharpMap.Entities.Ogc.Kml
     public class ModelType : AbstractGeometryType
     {
         [XmlIgnore] private string _altitudeModeGroup;
-        [XmlIgnore] private Link _Link;
+        [XmlIgnore] private Link _link;
 
-        [XmlIgnore] private Location _Location;
-        [XmlIgnore] private List<ModelObjectExtensionGroup> _ModelObjectExtensionGroup;
-        [XmlIgnore] private List<string> _ModelSimpleExtensionGroup;
+        [XmlIgnore] private Location _location;
+        [XmlIgnore] private List<ModelObjectExtensionGroup> _modelObjectExtensionGroup;
+        [XmlIgnore] private List<string> _modelSimpleExtensionGroup;
 
-        [XmlIgnore] private Orientation _Orientation;
-        [XmlIgnore] private ResourceMap _ResourceMap;
+        [XmlIgnore] private Orientation _orientation;
+        [XmlIgnore] private ResourceMap _resourceMap;
 
-        [XmlIgnore] private Scale _Scale;
+        [XmlIgnore] private Scale _scale;
 
         [XmlElement(ElementName = "altitudeModeGroup", IsNullable = false, Form = XmlSchemaForm.Qualified,
             Namespace = Declarations.SchemaVersion)]
@@ -67,40 +67,40 @@ namespace SharpMap.Entities.Ogc.Kml
             Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public Location Location
         {
-            get { return _Location; }
-            set { _Location = value; }
+            get { return _location; }
+            set { _location = value; }
         }
 
         [XmlElement(Type = typeof (Orientation), ElementName = "Orientation", IsNullable = false,
             Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public Orientation Orientation
         {
-            get { return _Orientation; }
-            set { _Orientation = value; }
+            get { return _orientation; }
+            set { _orientation = value; }
         }
 
         [XmlElement(Type = typeof (Scale), ElementName = "Scale", IsNullable = false, Form = XmlSchemaForm.Qualified,
             Namespace = Declarations.SchemaVersion)]
         public Scale Scale
         {
-            get { return _Scale; }
-            set { _Scale = value; }
+            get { return _scale; }
+            set { _scale = value; }
         }
 
         [XmlElement(Type = typeof (Link), ElementName = "Link", IsNullable = false, Form = XmlSchemaForm.Qualified,
             Namespace = Declarations.SchemaVersion)]
         public Link Link
         {
-            get { return _Link; }
-            set { _Link = value; }
+            get { return _link; }
+            set { _link = value; }
         }
 
         [XmlElement(Type = typeof (ResourceMap), ElementName = "ResourceMap", IsNullable = false,
             Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public ResourceMap ResourceMap
         {
-            get { return _ResourceMap; }
-            set { _ResourceMap = value; }
+            get { return _resourceMap; }
+            set { _resourceMap = value; }
         }
 
         [XmlElement(Type = typeof (string), ElementName = "ModelSimpleExtensionGroup", IsNullable = false,
@@ -109,10 +109,10 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (_ModelSimpleExtensionGroup == null) _ModelSimpleExtensionGroup = new List<string>();
-                return _ModelSimpleExtensionGroup;
+                if (_modelSimpleExtensionGroup == null) _modelSimpleExtensionGroup = new List<string>();
+                return _modelSimpleExtensionGroup;
             }
-            set { _ModelSimpleExtensionGroup = value; }
+            set { _modelSimpleExtensionGroup = value; }
         }
 
         [XmlElement(Type = typeof (ModelObjectExtensionGroup), ElementName = "ModelObjectExtensionGroup",
@@ -121,11 +121,11 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (_ModelObjectExtensionGroup == null)
-                    _ModelObjectExtensionGroup = new List<ModelObjectExtensionGroup>();
-                return _ModelObjectExtensionGroup;
+                if (_modelObjectExtensionGroup == null)
+                    _modelObjectExtensionGroup = new List<ModelObjectExtensionGroup>();
+                return _modelObjectExtensionGroup;
             }
-            set { _ModelObjectExtensionGroup = value; }
+            set { _modelObjectExtensionGroup = value; }
         }
 
         public new void MakeSchemaCompliant()

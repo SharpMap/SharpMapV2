@@ -1,6 +1,6 @@
 // /*
 //  *  The attached / following is part of SharpMap.Data.Providers.Kml
-//  *  SharpMap.Data.Providers.Kml is free software © 2008 Newgrove Consultants Limited, 
+//  *  SharpMap.Data.Providers.Kml is free software ï¿½ 2008 Newgrove Consultants Limited, 
 //  *  www.newgrove.com; you can redistribute it and/or modify it under the terms 
 //  *  of the current GNU Lesser General Public License (LGPL) as published by and 
 //  *  available from the Free Software Foundation, Inc., 
@@ -22,10 +22,10 @@ namespace SharpMap.Entities.Ogc.Kml
     [XmlType(TypeName = "SchemaDataType", Namespace = Declarations.SchemaVersion), Serializable]
     public class SchemaDataType : AbstractObjectType
     {
-        [XmlIgnore] private List<string> _SchemaDataExtension;
+        [XmlIgnore] private List<string> _schemaDataExtension;
         [XmlIgnore] private string _schemaUrl;
 
-        [XmlIgnore] private List<SimpleData> _SimpleData;
+        [XmlIgnore] private List<SimpleData> _simpleData;
 
         [XmlAttribute(AttributeName = "schemaUrl", DataType = "anyURI")]
         public string schemaUrl
@@ -40,10 +40,10 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (_SimpleData == null) _SimpleData = new List<SimpleData>();
-                return _SimpleData;
+                if (_simpleData == null) _simpleData = new List<SimpleData>();
+                return _simpleData;
             }
-            set { _SimpleData = value; }
+            set { _simpleData = value; }
         }
 
         [XmlElement(Type = typeof (string), ElementName = "SchemaDataExtension", IsNullable = false,
@@ -52,10 +52,10 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (_SchemaDataExtension == null) _SchemaDataExtension = new List<string>();
-                return _SchemaDataExtension;
+                if (_schemaDataExtension == null) _schemaDataExtension = new List<string>();
+                return _schemaDataExtension;
             }
-            set { _SchemaDataExtension = value; }
+            set { _schemaDataExtension = value; }
         }
 
         public new void MakeSchemaCompliant()

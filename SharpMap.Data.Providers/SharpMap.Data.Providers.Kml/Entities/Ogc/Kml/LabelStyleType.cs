@@ -1,6 +1,6 @@
 // /*
 //  *  The attached / following is part of SharpMap.Data.Providers.Kml
-//  *  SharpMap.Data.Providers.Kml is free software © 2008 Newgrove Consultants Limited, 
+//  *  SharpMap.Data.Providers.Kml is free software ï¿½ 2008 Newgrove Consultants Limited, 
 //  *  www.newgrove.com; you can redistribute it and/or modify it under the terms 
 //  *  of the current GNU Lesser General Public License (LGPL) as published by and 
 //  *  available from the Free Software Foundation, Inc., 
@@ -43,8 +43,8 @@ namespace SharpMap.Entities.Ogc.Kml
     [XmlInclude(typeof (ViewVolumeType))]
     public class LabelStyleType : AbstractColorStyleType
     {
-        [XmlIgnore] private List<LabelStyleObjectExtensionGroup> _LabelStyleObjectExtensionGroup;
-        [XmlIgnore] private List<string> _LabelStyleSimpleExtensionGroup;
+        [XmlIgnore] private List<LabelStyleObjectExtensionGroup> _labelStyleObjectExtensionGroup;
+        [XmlIgnore] private List<string> _labelStyleSimpleExtensionGroup;
         [XmlIgnore] private double _scale;
 
         [XmlIgnore] public bool _scaleSpecified;
@@ -73,10 +73,10 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (_LabelStyleSimpleExtensionGroup == null) _LabelStyleSimpleExtensionGroup = new List<string>();
-                return _LabelStyleSimpleExtensionGroup;
+                if (_labelStyleSimpleExtensionGroup == null) _labelStyleSimpleExtensionGroup = new List<string>();
+                return _labelStyleSimpleExtensionGroup;
             }
-            set { _LabelStyleSimpleExtensionGroup = value; }
+            set { _labelStyleSimpleExtensionGroup = value; }
         }
 
         [XmlElement(Type = typeof (LabelStyleObjectExtensionGroup), ElementName = "LabelStyleObjectExtensionGroup",
@@ -85,11 +85,11 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (_LabelStyleObjectExtensionGroup == null)
-                    _LabelStyleObjectExtensionGroup = new List<LabelStyleObjectExtensionGroup>();
-                return _LabelStyleObjectExtensionGroup;
+                if (_labelStyleObjectExtensionGroup == null)
+                    _labelStyleObjectExtensionGroup = new List<LabelStyleObjectExtensionGroup>();
+                return _labelStyleObjectExtensionGroup;
             }
-            set { _LabelStyleObjectExtensionGroup = value; }
+            set { _labelStyleObjectExtensionGroup = value; }
         }
 
         public new void MakeSchemaCompliant()

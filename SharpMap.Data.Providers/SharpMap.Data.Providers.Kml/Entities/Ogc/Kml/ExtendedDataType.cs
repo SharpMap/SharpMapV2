@@ -1,6 +1,6 @@
 // /*
 //  *  The attached / following is part of SharpMap.Data.Providers.Kml
-//  *  SharpMap.Data.Providers.Kml is free software © 2008 Newgrove Consultants Limited, 
+//  *  SharpMap.Data.Providers.Kml is free software ï¿½ 2008 Newgrove Consultants Limited, 
 //  *  www.newgrove.com; you can redistribute it and/or modify it under the terms 
 //  *  of the current GNU Lesser General Public License (LGPL) as published by and 
 //  *  available from the Free Software Foundation, Inc., 
@@ -23,9 +23,9 @@ namespace SharpMap.Entities.Ogc.Kml
     [XmlType(TypeName = "ExtendedDataType", Namespace = Declarations.SchemaVersion), Serializable]
     public class ExtendedDataType
     {
-        [XmlIgnore] private List<Data> _Data;
+        [XmlIgnore] private List<Data> _data;
 
-        [XmlIgnore] private List<SchemaData> _SchemaData;
+        [XmlIgnore] private List<SchemaData> _schemaData;
 
         [XmlAnyElement] public XmlElement[] Any;
 
@@ -35,10 +35,10 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (_Data == null) _Data = new List<Data>();
-                return _Data;
+                if (_data == null) _data = new List<Data>();
+                return _data;
             }
-            set { _Data = value; }
+            set { _data = value; }
         }
 
         [XmlElement(Type = typeof (SchemaData), ElementName = "SchemaData", IsNullable = false,
@@ -47,10 +47,10 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (_SchemaData == null) _SchemaData = new List<SchemaData>();
-                return _SchemaData;
+                if (_schemaData == null) _schemaData = new List<SchemaData>();
+                return _schemaData;
             }
-            set { _SchemaData = value; }
+            set { _schemaData = value; }
         }
 
         public void MakeSchemaCompliant()

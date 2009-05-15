@@ -1,6 +1,6 @@
 // /*
 //  *  The attached / following is part of SharpMap.Data.Providers.Kml
-//  *  SharpMap.Data.Providers.Kml is free software © 2008 Newgrove Consultants Limited, 
+//  *  SharpMap.Data.Providers.Kml is free software ï¿½ 2008 Newgrove Consultants Limited, 
 //  *  www.newgrove.com; you can redistribute it and/or modify it under the terms 
 //  *  of the current GNU Lesser General Public License (LGPL) as published by and 
 //  *  available from the Free Software Foundation, Inc., 
@@ -43,8 +43,8 @@ namespace SharpMap.Entities.Ogc.Kml
     [XmlInclude(typeof (ViewVolumeType))]
     public class LodType : AbstractObjectType
     {
-        [XmlIgnore] private List<LodObjectExtensionGroup> _LodObjectExtensionGroup;
-        [XmlIgnore] private List<string> _LodSimpleExtensionGroup;
+        [XmlIgnore] private List<LodObjectExtensionGroup> _lodObjectExtensionGroup;
+        [XmlIgnore] private List<string> _lodSimpleExtensionGroup;
         [XmlIgnore] private double _maxFadeExtent;
 
         [XmlIgnore] public bool _maxFadeExtentSpecified;
@@ -124,10 +124,10 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (_LodSimpleExtensionGroup == null) _LodSimpleExtensionGroup = new List<string>();
-                return _LodSimpleExtensionGroup;
+                if (_lodSimpleExtensionGroup == null) _lodSimpleExtensionGroup = new List<string>();
+                return _lodSimpleExtensionGroup;
             }
-            set { _LodSimpleExtensionGroup = value; }
+            set { _lodSimpleExtensionGroup = value; }
         }
 
         [XmlElement(Type = typeof (LodObjectExtensionGroup), ElementName = "LodObjectExtensionGroup", IsNullable = false
@@ -136,10 +136,10 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (_LodObjectExtensionGroup == null) _LodObjectExtensionGroup = new List<LodObjectExtensionGroup>();
-                return _LodObjectExtensionGroup;
+                if (_lodObjectExtensionGroup == null) _lodObjectExtensionGroup = new List<LodObjectExtensionGroup>();
+                return _lodObjectExtensionGroup;
             }
-            set { _LodObjectExtensionGroup = value; }
+            set { _lodObjectExtensionGroup = value; }
         }
 
         public new void MakeSchemaCompliant()

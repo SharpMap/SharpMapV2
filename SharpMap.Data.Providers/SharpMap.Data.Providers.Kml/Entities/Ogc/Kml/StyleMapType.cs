@@ -1,6 +1,6 @@
 // /*
 //  *  The attached / following is part of SharpMap.Data.Providers.Kml
-//  *  SharpMap.Data.Providers.Kml is free software © 2008 Newgrove Consultants Limited, 
+//  *  SharpMap.Data.Providers.Kml is free software ï¿½ 2008 Newgrove Consultants Limited, 
 //  *  www.newgrove.com; you can redistribute it and/or modify it under the terms 
 //  *  of the current GNU Lesser General Public License (LGPL) as published by and 
 //  *  available from the Free Software Foundation, Inc., 
@@ -43,10 +43,10 @@ namespace SharpMap.Entities.Ogc.Kml
     [XmlInclude(typeof (ViewVolumeType))]
     public class StyleMapType : AbstractStyleSelectorType
     {
-        [XmlIgnore] private List<Pair> _Pair;
-        [XmlIgnore] private List<StyleMapObjectExtensionGroup> _StyleMapObjectExtensionGroup;
+        [XmlIgnore] private List<Pair> _pair;
+        [XmlIgnore] private List<StyleMapObjectExtensionGroup> _styleMapObjectExtensionGroup;
 
-        [XmlIgnore] private List<string> _StyleMapSimpleExtensionGroup;
+        [XmlIgnore] private List<string> _styleMapSimpleExtensionGroup;
 
         [XmlElement(Type = typeof (Pair), ElementName = "Pair", IsNullable = false, Form = XmlSchemaForm.Qualified,
             Namespace = Declarations.SchemaVersion)]
@@ -54,10 +54,10 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (_Pair == null) _Pair = new List<Pair>();
-                return _Pair;
+                if (_pair == null) _pair = new List<Pair>();
+                return _pair;
             }
-            set { _Pair = value; }
+            set { _pair = value; }
         }
 
         [XmlElement(Type = typeof (string), ElementName = "StyleMapSimpleExtensionGroup", IsNullable = false,
@@ -66,10 +66,10 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (_StyleMapSimpleExtensionGroup == null) _StyleMapSimpleExtensionGroup = new List<string>();
-                return _StyleMapSimpleExtensionGroup;
+                if (_styleMapSimpleExtensionGroup == null) _styleMapSimpleExtensionGroup = new List<string>();
+                return _styleMapSimpleExtensionGroup;
             }
-            set { _StyleMapSimpleExtensionGroup = value; }
+            set { _styleMapSimpleExtensionGroup = value; }
         }
 
         [XmlElement(Type = typeof (StyleMapObjectExtensionGroup), ElementName = "StyleMapObjectExtensionGroup",
@@ -78,11 +78,11 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (_StyleMapObjectExtensionGroup == null)
-                    _StyleMapObjectExtensionGroup = new List<StyleMapObjectExtensionGroup>();
-                return _StyleMapObjectExtensionGroup;
+                if (_styleMapObjectExtensionGroup == null)
+                    _styleMapObjectExtensionGroup = new List<StyleMapObjectExtensionGroup>();
+                return _styleMapObjectExtensionGroup;
             }
-            set { _StyleMapObjectExtensionGroup = value; }
+            set { _styleMapObjectExtensionGroup = value; }
         }
 
         public new void MakeSchemaCompliant()

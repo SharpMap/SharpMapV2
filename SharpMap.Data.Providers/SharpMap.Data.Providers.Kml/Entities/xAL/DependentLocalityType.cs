@@ -1,6 +1,6 @@
 // /*
 //  *  The attached / following is part of SharpMap.Data.Providers.Kml
-//  *  SharpMap.Data.Providers.Kml is free software © 2008 Newgrove Consultants Limited, 
+//  *  SharpMap.Data.Providers.Kml is free software ï¿½ 2008 Newgrove Consultants Limited, 
 //  *  www.newgrove.com; you can redistribute it and/or modify it under the terms 
 //  *  of the current GNU Lesser General Public License (LGPL) as published by and 
 //  *  available from the Free Software Foundation, Inc., 
@@ -23,51 +23,51 @@ namespace SharpMap.Entities.xAL
     [XmlType(TypeName = "DependentLocalityType", Namespace = Declarations.SchemaVersion), Serializable]
     public class DependentLocalityType
     {
-        [XmlIgnore] private List<AddressLine> _AddressLine;
-        [XmlIgnore] private string _Connector;
-        [XmlIgnore] private DependentLocalityType _DependentLocality;
-        [XmlIgnore] private List<DependentLocalityName> _DependentLocalityName;
-        [XmlIgnore] private DependentLocalityNumber _DependentLocalityNumber;
-        [XmlIgnore] private string _Indicator;
-        [XmlIgnore] private LargeMailUserType _LargeMailUser;
-        [XmlIgnore] private PostalCode _PostalCode;
-        [XmlIgnore] private PostalRouteType _PostalRoute;
-        [XmlIgnore] private PostBox _PostBox;
-        [XmlIgnore] private PostOffice _PostOffice;
-        [XmlIgnore] private Premise _Premise;
-        [XmlIgnore] private Thoroughfare _Thoroughfare;
-        [XmlIgnore] private string _Type;
+        [XmlIgnore] private List<AddressLine> _addressLine;
+        [XmlIgnore] private string _connector;
+        [XmlIgnore] private DependentLocalityType _dependentLocality;
+        [XmlIgnore] private List<DependentLocalityName> _dependentLocalityName;
+        [XmlIgnore] private DependentLocalityNumber _dependentLocalityNumber;
+        [XmlIgnore] private string _indicator;
+        [XmlIgnore] private LargeMailUserType _largeMailUser;
+        [XmlIgnore] private PostalCode _postalCode;
+        [XmlIgnore] private PostalRouteType _postalRoute;
+        [XmlIgnore] private PostBox _postBox;
+        [XmlIgnore] private PostOffice _postOffice;
+        [XmlIgnore] private Premise _premise;
+        [XmlIgnore] private Thoroughfare _thoroughfare;
+        [XmlIgnore] private string _type;
 
-        [XmlIgnore] private string _UsageType;
+        [XmlIgnore] private string _usageType;
         [XmlAnyElement] public XmlElement[] Any;
         [XmlAnyAttribute] public XmlAttribute[] AnyAttr;
 
         [XmlAttribute(AttributeName = "Type")]
         public string Type
         {
-            get { return _Type; }
-            set { _Type = value; }
+            get { return _type; }
+            set { _type = value; }
         }
 
         [XmlAttribute(AttributeName = "UsageType")]
         public string UsageType
         {
-            get { return _UsageType; }
-            set { _UsageType = value; }
+            get { return _usageType; }
+            set { _usageType = value; }
         }
 
         [XmlAttribute(AttributeName = "Connector")]
         public string Connector
         {
-            get { return _Connector; }
-            set { _Connector = value; }
+            get { return _connector; }
+            set { _connector = value; }
         }
 
         [XmlAttribute(AttributeName = "Indicator")]
         public string Indicator
         {
-            get { return _Indicator; }
-            set { _Indicator = value; }
+            get { return _indicator; }
+            set { _indicator = value; }
         }
 
         [XmlElement(Type = typeof (AddressLine), ElementName = "AddressLine", IsNullable = false,
@@ -76,10 +76,10 @@ namespace SharpMap.Entities.xAL
         {
             get
             {
-                if (_AddressLine == null) _AddressLine = new List<AddressLine>();
-                return _AddressLine;
+                if (_addressLine == null) _addressLine = new List<AddressLine>();
+                return _addressLine;
             }
-            set { _AddressLine = value; }
+            set { _addressLine = value; }
         }
 
         [XmlElement(Type = typeof (DependentLocalityName), ElementName = "DependentLocalityName", IsNullable = false,
@@ -88,82 +88,82 @@ namespace SharpMap.Entities.xAL
         {
             get
             {
-                if (_DependentLocalityName == null) _DependentLocalityName = new List<DependentLocalityName>();
-                return _DependentLocalityName;
+                if (_dependentLocalityName == null) _dependentLocalityName = new List<DependentLocalityName>();
+                return _dependentLocalityName;
             }
-            set { _DependentLocalityName = value; }
+            set { _dependentLocalityName = value; }
         }
 
         [XmlElement(Type = typeof (DependentLocalityNumber), ElementName = "DependentLocalityNumber", IsNullable = false
             , Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public DependentLocalityNumber DependentLocalityNumber
         {
-            get { return _DependentLocalityNumber; }
-            set { _DependentLocalityNumber = value; }
+            get { return _dependentLocalityNumber; }
+            set { _dependentLocalityNumber = value; }
         }
 
         [XmlElement(Type = typeof (PostBox), ElementName = "PostBox", IsNullable = false, Form = XmlSchemaForm.Qualified
             , Namespace = Declarations.SchemaVersion)]
         public PostBox PostBox
         {
-            get { return _PostBox; }
-            set { _PostBox = value; }
+            get { return _postBox; }
+            set { _postBox = value; }
         }
 
         [XmlElement(Type = typeof (LargeMailUserType), ElementName = "LargeMailUser", IsNullable = false,
             Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public LargeMailUserType LargeMailUser
         {
-            get { return _LargeMailUser; }
-            set { _LargeMailUser = value; }
+            get { return _largeMailUser; }
+            set { _largeMailUser = value; }
         }
 
         [XmlElement(Type = typeof (PostOffice), ElementName = "PostOffice", IsNullable = false,
             Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public PostOffice PostOffice
         {
-            get { return _PostOffice; }
-            set { _PostOffice = value; }
+            get { return _postOffice; }
+            set { _postOffice = value; }
         }
 
         [XmlElement(Type = typeof (PostalRouteType), ElementName = "PostalRoute", IsNullable = false,
             Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public PostalRouteType PostalRoute
         {
-            get { return _PostalRoute; }
-            set { _PostalRoute = value; }
+            get { return _postalRoute; }
+            set { _postalRoute = value; }
         }
 
         [XmlElement(Type = typeof (Thoroughfare), ElementName = "Thoroughfare", IsNullable = false,
             Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public Thoroughfare Thoroughfare
         {
-            get { return _Thoroughfare; }
-            set { _Thoroughfare = value; }
+            get { return _thoroughfare; }
+            set { _thoroughfare = value; }
         }
 
         [XmlElement(Type = typeof (Premise), ElementName = "Premise", IsNullable = false, Form = XmlSchemaForm.Qualified
             , Namespace = Declarations.SchemaVersion)]
         public Premise Premise
         {
-            get { return _Premise; }
-            set { _Premise = value; }
+            get { return _premise; }
+            set { _premise = value; }
         }
 
         [XmlElement(Type = typeof (DependentLocalityType), ElementName = "DependentLocality", IsNullable = false,
             Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public DependentLocalityType DependentLocality
         {
-            get { return _DependentLocality; }
-            set { _DependentLocality = value; }
+            get { return _dependentLocality; }
+            set { _dependentLocality = value; }
         }
 
         [XmlElement(Type = typeof (PostalCode), ElementName = "PostalCode", IsNullable = false,
             Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public PostalCode PostalCode
         {
-            get { return _PostalCode; }
-            set { _PostalCode = value; }
+            get { return _postalCode; }
+            set { _postalCode = value; }
         }
 
         public void MakeSchemaCompliant()

@@ -1,6 +1,6 @@
 // /*
 //  *  The attached / following is part of SharpMap.Data.Providers.Kml
-//  *  SharpMap.Data.Providers.Kml is free software © 2008 Newgrove Consultants Limited, 
+//  *  SharpMap.Data.Providers.Kml is free software ï¿½ 2008 Newgrove Consultants Limited, 
 //  *  www.newgrove.com; you can redistribute it and/or modify it under the terms 
 //  *  of the current GNU Lesser General Public License (LGPL) as published by and 
 //  *  available from the Free Software Foundation, Inc., 
@@ -24,7 +24,7 @@ namespace SharpMap.Entities.Ogc.Kml
     {
         [XmlIgnore] private string _displayName;
         [XmlIgnore] private string _name;
-        [XmlIgnore] private List<string> _SimpleFieldExtension;
+        [XmlIgnore] private List<string> _simpleFieldExtension;
         [XmlIgnore] private string _type;
 
         [XmlAttribute(AttributeName = "type", DataType = "string")]
@@ -55,10 +55,10 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (_SimpleFieldExtension == null) _SimpleFieldExtension = new List<string>();
-                return _SimpleFieldExtension;
+                if (_simpleFieldExtension == null) _simpleFieldExtension = new List<string>();
+                return _simpleFieldExtension;
             }
-            set { _SimpleFieldExtension = value; }
+            set { _simpleFieldExtension = value; }
         }
 
         public void MakeSchemaCompliant()

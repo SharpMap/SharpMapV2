@@ -1,6 +1,6 @@
 // /*
 //  *  The attached / following is part of SharpMap.Data.Providers.Kml
-//  *  SharpMap.Data.Providers.Kml is free software © 2008 Newgrove Consultants Limited, 
+//  *  SharpMap.Data.Providers.Kml is free software ï¿½ 2008 Newgrove Consultants Limited, 
 //  *  www.newgrove.com; you can redistribute it and/or modify it under the terms 
 //  *  of the current GNU Lesser General Public License (LGPL) as published by and 
 //  *  available from the Free Software Foundation, Inc., 
@@ -43,8 +43,8 @@ namespace SharpMap.Entities.Ogc.Kml
     [XmlInclude(typeof (ViewVolumeType))]
     public abstract class AbstractContainerType : AbstractFeatureType
     {
-        [XmlIgnore] private List<AbstractContainerObjectExtensionGroup> _AbstractContainerObjectExtensionGroup;
-        [XmlIgnore] private List<string> _AbstractContainerSimpleExtensionGroup;
+        [XmlIgnore] private List<AbstractContainerObjectExtensionGroup> _abstractContainerObjectExtensionGroup;
+        [XmlIgnore] private List<string> _abstractContainerSimpleExtensionGroup;
 
         [XmlElement(Type = typeof (string), ElementName = "AbstractContainerSimpleExtensionGroup", IsNullable = false,
             Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
@@ -52,11 +52,11 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (_AbstractContainerSimpleExtensionGroup == null)
-                    _AbstractContainerSimpleExtensionGroup = new List<string>();
-                return _AbstractContainerSimpleExtensionGroup;
+                if (_abstractContainerSimpleExtensionGroup == null)
+                    _abstractContainerSimpleExtensionGroup = new List<string>();
+                return _abstractContainerSimpleExtensionGroup;
             }
-            set { _AbstractContainerSimpleExtensionGroup = value; }
+            set { _abstractContainerSimpleExtensionGroup = value; }
         }
 
         [XmlElement(Type = typeof (AbstractContainerObjectExtensionGroup),
@@ -66,11 +66,11 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (_AbstractContainerObjectExtensionGroup == null)
-                    _AbstractContainerObjectExtensionGroup = new List<AbstractContainerObjectExtensionGroup>();
-                return _AbstractContainerObjectExtensionGroup;
+                if (_abstractContainerObjectExtensionGroup == null)
+                    _abstractContainerObjectExtensionGroup = new List<AbstractContainerObjectExtensionGroup>();
+                return _abstractContainerObjectExtensionGroup;
             }
-            set { _AbstractContainerObjectExtensionGroup = value; }
+            set { _abstractContainerObjectExtensionGroup = value; }
         }
 
         public new void MakeSchemaCompliant()

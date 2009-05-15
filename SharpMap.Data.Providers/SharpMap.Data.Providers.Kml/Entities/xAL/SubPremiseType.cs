@@ -1,6 +1,6 @@
 // /*
 //  *  The attached / following is part of SharpMap.Data.Providers.Kml
-//  *  SharpMap.Data.Providers.Kml is free software © 2008 Newgrove Consultants Limited, 
+//  *  SharpMap.Data.Providers.Kml is free software ï¿½ 2008 Newgrove Consultants Limited, 
 //  *  www.newgrove.com; you can redistribute it and/or modify it under the terms 
 //  *  of the current GNU Lesser General Public License (LGPL) as published by and 
 //  *  available from the Free Software Foundation, Inc., 
@@ -23,18 +23,18 @@ namespace SharpMap.Entities.xAL
     [XmlType(TypeName = "SubPremiseType", Namespace = Declarations.SchemaVersion), Serializable]
     public class SubPremiseType
     {
-        [XmlIgnore] private List<AddressLine> _AddressLine;
-        [XmlIgnore] private List<BuildingNameType> _BuildingName;
-        [XmlIgnore] private FirmType _Firm;
-        [XmlIgnore] private MailStopType _MailStop;
-        [XmlIgnore] private PostalCode _PostalCode;
-        [XmlIgnore] private SubPremiseType _SubPremise;
-        [XmlIgnore] private SubPremiseLocation _SubPremiseLocation;
-        [XmlIgnore] private List<SubPremiseName> _SubPremiseName;
-        [XmlIgnore] private List<SubPremiseNumber> _SubPremiseNumber;
-        [XmlIgnore] private List<SubPremiseNumberPrefix> _SubPremiseNumberPrefix;
-        [XmlIgnore] private List<SubPremiseNumberSuffix> _SubPremiseNumberSuffix;
-        [XmlIgnore] private string _Type;
+        [XmlIgnore] private List<AddressLine> _addressLine;
+        [XmlIgnore] private List<BuildingNameType> _buildingName;
+        [XmlIgnore] private FirmType _firm;
+        [XmlIgnore] private MailStopType _mailStop;
+        [XmlIgnore] private PostalCode _postalCode;
+        [XmlIgnore] private SubPremiseType _subPremise;
+        [XmlIgnore] private SubPremiseLocation _subPremiseLocation;
+        [XmlIgnore] private List<SubPremiseName> _subPremiseName;
+        [XmlIgnore] private List<SubPremiseNumber> _subPremiseNumber;
+        [XmlIgnore] private List<SubPremiseNumberPrefix> _subPremiseNumberPrefix;
+        [XmlIgnore] private List<SubPremiseNumberSuffix> _subPremiseNumberSuffix;
+        [XmlIgnore] private string _type;
         [XmlAnyElement] public XmlElement[] Any;
 
         [XmlAnyAttribute] public XmlAttribute[] AnyAttr;
@@ -42,8 +42,8 @@ namespace SharpMap.Entities.xAL
         [XmlAttribute(AttributeName = "Type")]
         public string Type
         {
-            get { return _Type; }
-            set { _Type = value; }
+            get { return _type; }
+            set { _type = value; }
         }
 
         [XmlElement(Type = typeof (AddressLine), ElementName = "AddressLine", IsNullable = false,
@@ -52,10 +52,10 @@ namespace SharpMap.Entities.xAL
         {
             get
             {
-                if (_AddressLine == null) _AddressLine = new List<AddressLine>();
-                return _AddressLine;
+                if (_addressLine == null) _addressLine = new List<AddressLine>();
+                return _addressLine;
             }
-            set { _AddressLine = value; }
+            set { _addressLine = value; }
         }
 
         [XmlElement(Type = typeof (SubPremiseName), ElementName = "SubPremiseName", IsNullable = false,
@@ -64,18 +64,18 @@ namespace SharpMap.Entities.xAL
         {
             get
             {
-                if (_SubPremiseName == null) _SubPremiseName = new List<SubPremiseName>();
-                return _SubPremiseName;
+                if (_subPremiseName == null) _subPremiseName = new List<SubPremiseName>();
+                return _subPremiseName;
             }
-            set { _SubPremiseName = value; }
+            set { _subPremiseName = value; }
         }
 
         [XmlElement(Type = typeof (SubPremiseLocation), ElementName = "SubPremiseLocation", IsNullable = false,
             Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public SubPremiseLocation SubPremiseLocation
         {
-            get { return _SubPremiseLocation; }
-            set { _SubPremiseLocation = value; }
+            get { return _subPremiseLocation; }
+            set { _subPremiseLocation = value; }
         }
 
         [XmlElement(Type = typeof (SubPremiseNumber), ElementName = "SubPremiseNumber", IsNullable = false,
@@ -84,10 +84,10 @@ namespace SharpMap.Entities.xAL
         {
             get
             {
-                if (_SubPremiseNumber == null) _SubPremiseNumber = new List<SubPremiseNumber>();
-                return _SubPremiseNumber;
+                if (_subPremiseNumber == null) _subPremiseNumber = new List<SubPremiseNumber>();
+                return _subPremiseNumber;
             }
-            set { _SubPremiseNumber = value; }
+            set { _subPremiseNumber = value; }
         }
 
         [XmlElement(Type = typeof (SubPremiseNumberPrefix), ElementName = "SubPremiseNumberPrefix", IsNullable = false,
@@ -96,10 +96,10 @@ namespace SharpMap.Entities.xAL
         {
             get
             {
-                if (_SubPremiseNumberPrefix == null) _SubPremiseNumberPrefix = new List<SubPremiseNumberPrefix>();
-                return _SubPremiseNumberPrefix;
+                if (_subPremiseNumberPrefix == null) _subPremiseNumberPrefix = new List<SubPremiseNumberPrefix>();
+                return _subPremiseNumberPrefix;
             }
-            set { _SubPremiseNumberPrefix = value; }
+            set { _subPremiseNumberPrefix = value; }
         }
 
         [XmlElement(Type = typeof (SubPremiseNumberSuffix), ElementName = "SubPremiseNumberSuffix", IsNullable = false,
@@ -108,10 +108,10 @@ namespace SharpMap.Entities.xAL
         {
             get
             {
-                if (_SubPremiseNumberSuffix == null) _SubPremiseNumberSuffix = new List<SubPremiseNumberSuffix>();
-                return _SubPremiseNumberSuffix;
+                if (_subPremiseNumberSuffix == null) _subPremiseNumberSuffix = new List<SubPremiseNumberSuffix>();
+                return _subPremiseNumberSuffix;
             }
-            set { _SubPremiseNumberSuffix = value; }
+            set { _subPremiseNumberSuffix = value; }
         }
 
         [XmlElement(Type = typeof (BuildingNameType), ElementName = "BuildingName", IsNullable = false,
@@ -120,42 +120,42 @@ namespace SharpMap.Entities.xAL
         {
             get
             {
-                if (_BuildingName == null) _BuildingName = new List<BuildingNameType>();
-                return _BuildingName;
+                if (_buildingName == null) _buildingName = new List<BuildingNameType>();
+                return _buildingName;
             }
-            set { _BuildingName = value; }
+            set { _buildingName = value; }
         }
 
         [XmlElement(Type = typeof (FirmType), ElementName = "Firm", IsNullable = false, Form = XmlSchemaForm.Qualified,
             Namespace = Declarations.SchemaVersion)]
         public FirmType Firm
         {
-            get { return _Firm; }
-            set { _Firm = value; }
+            get { return _firm; }
+            set { _firm = value; }
         }
 
         [XmlElement(Type = typeof (MailStopType), ElementName = "MailStop", IsNullable = false,
             Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public MailStopType MailStop
         {
-            get { return _MailStop; }
-            set { _MailStop = value; }
+            get { return _mailStop; }
+            set { _mailStop = value; }
         }
 
         [XmlElement(Type = typeof (PostalCode), ElementName = "PostalCode", IsNullable = false,
             Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public PostalCode PostalCode
         {
-            get { return _PostalCode; }
-            set { _PostalCode = value; }
+            get { return _postalCode; }
+            set { _postalCode = value; }
         }
 
         [XmlElement(Type = typeof (SubPremiseType), ElementName = "SubPremise", IsNullable = false,
             Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public SubPremiseType SubPremise
         {
-            get { return _SubPremise; }
-            set { _SubPremise = value; }
+            get { return _subPremise; }
+            set { _subPremise = value; }
         }
 
         public void MakeSchemaCompliant()

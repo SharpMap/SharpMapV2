@@ -1,6 +1,6 @@
 // /*
 //  *  The attached / following is part of SharpMap.Data.Providers.Kml
-//  *  SharpMap.Data.Providers.Kml is free software © 2008 Newgrove Consultants Limited, 
+//  *  SharpMap.Data.Providers.Kml is free software ï¿½ 2008 Newgrove Consultants Limited, 
 //  *  www.newgrove.com; you can redistribute it and/or modify it under the terms 
 //  *  of the current GNU Lesser General Public License (LGPL) as published by and 
 //  *  available from the Free Software Foundation, Inc., 
@@ -23,20 +23,20 @@ namespace SharpMap.Entities.xAL
     [XmlType(TypeName = "ThoroughfareNumberTo", Namespace = Declarations.SchemaVersion), Serializable]
     public class ThoroughfareNumberTo
     {
-        [XmlIgnore] private List<AddressLine> _AddressLine;
-        [XmlIgnore] private string _Code;
-        [XmlIgnore] private List<ThoroughfareNumber> _ThoroughfareNumber;
-        [XmlIgnore] private List<ThoroughfareNumberPrefix> _ThoroughfareNumberPrefix;
-        [XmlIgnore] private List<ThoroughfareNumberSuffix> _ThoroughfareNumberSuffix;
-        [XmlIgnore] private string _Value;
+        [XmlIgnore] private List<AddressLine> _addressLine;
+        [XmlIgnore] private string _code;
+        [XmlIgnore] private List<ThoroughfareNumber> _thoroughfareNumber;
+        [XmlIgnore] private List<ThoroughfareNumberPrefix> _thoroughfareNumberPrefix;
+        [XmlIgnore] private List<ThoroughfareNumberSuffix> _thoroughfareNumberSuffix;
+        [XmlIgnore] private string _value;
 
         [XmlAnyAttribute] public XmlAttribute[] AnyAttr;
 
         [XmlAttribute(AttributeName = "Code")]
         public string Code
         {
-            get { return _Code; }
-            set { _Code = value; }
+            get { return _code; }
+            set { _code = value; }
         }
 
         [XmlElement(Type = typeof (AddressLine), ElementName = "AddressLine", IsNullable = false,
@@ -45,10 +45,10 @@ namespace SharpMap.Entities.xAL
         {
             get
             {
-                if (_AddressLine == null) _AddressLine = new List<AddressLine>();
-                return _AddressLine;
+                if (_addressLine == null) _addressLine = new List<AddressLine>();
+                return _addressLine;
             }
-            set { _AddressLine = value; }
+            set { _addressLine = value; }
         }
 
         [XmlElement(Type = typeof (ThoroughfareNumberPrefix), ElementName = "ThoroughfareNumberPrefix",
@@ -57,11 +57,11 @@ namespace SharpMap.Entities.xAL
         {
             get
             {
-                if (_ThoroughfareNumberPrefix == null)
-                    _ThoroughfareNumberPrefix = new List<ThoroughfareNumberPrefix>();
-                return _ThoroughfareNumberPrefix;
+                if (_thoroughfareNumberPrefix == null)
+                    _thoroughfareNumberPrefix = new List<ThoroughfareNumberPrefix>();
+                return _thoroughfareNumberPrefix;
             }
-            set { _ThoroughfareNumberPrefix = value; }
+            set { _thoroughfareNumberPrefix = value; }
         }
 
         [XmlElement(Type = typeof (ThoroughfareNumber), ElementName = "ThoroughfareNumber", IsNullable = false,
@@ -70,10 +70,10 @@ namespace SharpMap.Entities.xAL
         {
             get
             {
-                if (_ThoroughfareNumber == null) _ThoroughfareNumber = new List<ThoroughfareNumber>();
-                return _ThoroughfareNumber;
+                if (_thoroughfareNumber == null) _thoroughfareNumber = new List<ThoroughfareNumber>();
+                return _thoroughfareNumber;
             }
-            set { _ThoroughfareNumber = value; }
+            set { _thoroughfareNumber = value; }
         }
 
         [XmlElement(Type = typeof (ThoroughfareNumberSuffix), ElementName = "ThoroughfareNumberSuffix",
@@ -82,18 +82,18 @@ namespace SharpMap.Entities.xAL
         {
             get
             {
-                if (_ThoroughfareNumberSuffix == null)
-                    _ThoroughfareNumberSuffix = new List<ThoroughfareNumberSuffix>();
-                return _ThoroughfareNumberSuffix;
+                if (_thoroughfareNumberSuffix == null)
+                    _thoroughfareNumberSuffix = new List<ThoroughfareNumberSuffix>();
+                return _thoroughfareNumberSuffix;
             }
-            set { _ThoroughfareNumberSuffix = value; }
+            set { _thoroughfareNumberSuffix = value; }
         }
 
         [XmlText(DataType = "string")]
         public string Value
         {
-            get { return _Value; }
-            set { _Value = value; }
+            get { return _value; }
+            set { _value = value; }
         }
 
         public void MakeSchemaCompliant()

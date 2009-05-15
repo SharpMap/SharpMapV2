@@ -1,6 +1,6 @@
 // /*
 //  *  The attached / following is part of SharpMap.Data.Providers.Kml
-//  *  SharpMap.Data.Providers.Kml is free software © 2008 Newgrove Consultants Limited, 
+//  *  SharpMap.Data.Providers.Kml is free software ï¿½ 2008 Newgrove Consultants Limited, 
 //  *  www.newgrove.com; you can redistribute it and/or modify it under the terms 
 //  *  of the current GNU Lesser General Public License (LGPL) as published by and 
 //  *  available from the Free Software Foundation, Inc., 
@@ -48,8 +48,8 @@ namespace SharpMap.Entities.Ogc.Kml
         [XmlIgnore] private bool _extrude;
 
         [XmlIgnore] public bool _extrudeSpecified;
-        [XmlIgnore] private List<PointObjectExtensionGroup> _PointObjectExtensionGroup;
-        [XmlIgnore] private List<string> _PointSimpleExtensionGroup;
+        [XmlIgnore] private List<PointObjectExtensionGroup> _pointObjectExtensionGroup;
+        [XmlIgnore] private List<string> _pointSimpleExtensionGroup;
 
         public PointType()
         {
@@ -91,10 +91,10 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (_PointSimpleExtensionGroup == null) _PointSimpleExtensionGroup = new List<string>();
-                return _PointSimpleExtensionGroup;
+                if (_pointSimpleExtensionGroup == null) _pointSimpleExtensionGroup = new List<string>();
+                return _pointSimpleExtensionGroup;
             }
-            set { _PointSimpleExtensionGroup = value; }
+            set { _pointSimpleExtensionGroup = value; }
         }
 
         [XmlElement(Type = typeof (PointObjectExtensionGroup), ElementName = "PointObjectExtensionGroup",
@@ -103,11 +103,11 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (_PointObjectExtensionGroup == null)
-                    _PointObjectExtensionGroup = new List<PointObjectExtensionGroup>();
-                return _PointObjectExtensionGroup;
+                if (_pointObjectExtensionGroup == null)
+                    _pointObjectExtensionGroup = new List<PointObjectExtensionGroup>();
+                return _pointObjectExtensionGroup;
             }
-            set { _PointObjectExtensionGroup = value; }
+            set { _pointObjectExtensionGroup = value; }
         }
 
         public new void MakeSchemaCompliant()

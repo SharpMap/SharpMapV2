@@ -1,6 +1,6 @@
 // /*
 //  *  The attached / following is part of SharpMap.Data.Providers.Kml
-//  *  SharpMap.Data.Providers.Kml is free software © 2008 Newgrove Consultants Limited, 
+//  *  SharpMap.Data.Providers.Kml is free software ï¿½ 2008 Newgrove Consultants Limited, 
 //  *  www.newgrove.com; you can redistribute it and/or modify it under the terms 
 //  *  of the current GNU Lesser General Public License (LGPL) as published by and 
 //  *  available from the Free Software Foundation, Inc., 
@@ -45,7 +45,7 @@ namespace SharpMap.Entities.Ogc.Kml
     [XmlInclude(typeof (ViewVolumeType))]
     public class ChangeType
     {
-        [XmlIgnore] private List<AbstractObjectGroup> _AbstractObjectGroup;
+        [XmlIgnore] private List<AbstractObjectGroup> _abstractObjectGroup;
 
         [XmlIgnore]
         public AbstractObjectGroup this[int index]
@@ -65,10 +65,10 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (_AbstractObjectGroup == null) _AbstractObjectGroup = new List<AbstractObjectGroup>();
-                return _AbstractObjectGroup;
+                if (_abstractObjectGroup == null) _abstractObjectGroup = new List<AbstractObjectGroup>();
+                return _abstractObjectGroup;
             }
-            set { _AbstractObjectGroup = value; }
+            set { _abstractObjectGroup = value; }
         }
 
         [DispId(-4)]

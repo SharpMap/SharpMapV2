@@ -1,6 +1,6 @@
 // /*
 //  *  The attached / following is part of SharpMap.Data.Providers.Kml
-//  *  SharpMap.Data.Providers.Kml is free software © 2008 Newgrove Consultants Limited, 
+//  *  SharpMap.Data.Providers.Kml is free software ï¿½ 2008 Newgrove Consultants Limited, 
 //  *  www.newgrove.com; you can redistribute it and/or modify it under the terms 
 //  *  of the current GNU Lesser General Public License (LGPL) as published by and 
 //  *  available from the Free Software Foundation, Inc., 
@@ -22,11 +22,11 @@ namespace SharpMap.Entities.xAL
     [XmlType(TypeName = "PremiseNumberRangeFrom", Namespace = Declarations.SchemaVersion), Serializable]
     public class PremiseNumberRangeFrom
     {
-        [XmlIgnore] private List<AddressLine> _AddressLine;
-        [XmlIgnore] private List<PremiseNumber> _PremiseNumber;
+        [XmlIgnore] private List<AddressLine> _addressLine;
+        [XmlIgnore] private List<PremiseNumber> _premiseNumber;
 
-        [XmlIgnore] private List<PremiseNumberPrefix> _PremiseNumberPrefix;
-        [XmlIgnore] private List<PremiseNumberSuffix> _PremiseNumberSuffix;
+        [XmlIgnore] private List<PremiseNumberPrefix> _premiseNumberPrefix;
+        [XmlIgnore] private List<PremiseNumberSuffix> _premiseNumberSuffix;
 
         [XmlElement(Type = typeof (AddressLine), ElementName = "AddressLine", IsNullable = false,
             Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
@@ -34,10 +34,10 @@ namespace SharpMap.Entities.xAL
         {
             get
             {
-                if (_AddressLine == null) _AddressLine = new List<AddressLine>();
-                return _AddressLine;
+                if (_addressLine == null) _addressLine = new List<AddressLine>();
+                return _addressLine;
             }
-            set { _AddressLine = value; }
+            set { _addressLine = value; }
         }
 
         [XmlElement(Type = typeof (PremiseNumberPrefix), ElementName = "PremiseNumberPrefix", IsNullable = false,
@@ -46,10 +46,10 @@ namespace SharpMap.Entities.xAL
         {
             get
             {
-                if (_PremiseNumberPrefix == null) _PremiseNumberPrefix = new List<PremiseNumberPrefix>();
-                return _PremiseNumberPrefix;
+                if (_premiseNumberPrefix == null) _premiseNumberPrefix = new List<PremiseNumberPrefix>();
+                return _premiseNumberPrefix;
             }
-            set { _PremiseNumberPrefix = value; }
+            set { _premiseNumberPrefix = value; }
         }
 
         [XmlElement(Type = typeof (PremiseNumber), ElementName = "PremiseNumber", IsNullable = false,
@@ -58,10 +58,10 @@ namespace SharpMap.Entities.xAL
         {
             get
             {
-                if (_PremiseNumber == null) _PremiseNumber = new List<PremiseNumber>();
-                return _PremiseNumber;
+                if (_premiseNumber == null) _premiseNumber = new List<PremiseNumber>();
+                return _premiseNumber;
             }
-            set { _PremiseNumber = value; }
+            set { _premiseNumber = value; }
         }
 
         [XmlElement(Type = typeof (PremiseNumberSuffix), ElementName = "PremiseNumberSuffix", IsNullable = false,
@@ -70,10 +70,10 @@ namespace SharpMap.Entities.xAL
         {
             get
             {
-                if (_PremiseNumberSuffix == null) _PremiseNumberSuffix = new List<PremiseNumberSuffix>();
-                return _PremiseNumberSuffix;
+                if (_premiseNumberSuffix == null) _premiseNumberSuffix = new List<PremiseNumberSuffix>();
+                return _premiseNumberSuffix;
             }
-            set { _PremiseNumberSuffix = value; }
+            set { _premiseNumberSuffix = value; }
         }
 
         public void MakeSchemaCompliant()

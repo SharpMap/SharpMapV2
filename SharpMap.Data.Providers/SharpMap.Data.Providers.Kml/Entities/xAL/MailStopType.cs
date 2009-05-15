@@ -1,6 +1,6 @@
 // /*
 //  *  The attached / following is part of SharpMap.Data.Providers.Kml
-//  *  SharpMap.Data.Providers.Kml is free software © 2008 Newgrove Consultants Limited, 
+//  *  SharpMap.Data.Providers.Kml is free software ï¿½ 2008 Newgrove Consultants Limited, 
 //  *  www.newgrove.com; you can redistribute it and/or modify it under the terms 
 //  *  of the current GNU Lesser General Public License (LGPL) as published by and 
 //  *  available from the Free Software Foundation, Inc., 
@@ -23,10 +23,10 @@ namespace SharpMap.Entities.xAL
     [XmlType(TypeName = "MailStopType", Namespace = Declarations.SchemaVersion), Serializable]
     public class MailStopType
     {
-        [XmlIgnore] private List<AddressLine> _AddressLine;
-        [XmlIgnore] private MailStopName _MailStopName;
-        [XmlIgnore] private MailStopNumber _MailStopNumber;
-        [XmlIgnore] private string _Type;
+        [XmlIgnore] private List<AddressLine> _addressLine;
+        [XmlIgnore] private MailStopName _mailStopName;
+        [XmlIgnore] private MailStopNumber _mailStopNumber;
+        [XmlIgnore] private string _type;
         [XmlAnyElement] public XmlElement[] Any;
 
         [XmlAnyAttribute] public XmlAttribute[] AnyAttr;
@@ -34,8 +34,8 @@ namespace SharpMap.Entities.xAL
         [XmlAttribute(AttributeName = "Type")]
         public string Type
         {
-            get { return _Type; }
-            set { _Type = value; }
+            get { return _type; }
+            set { _type = value; }
         }
 
         [XmlElement(Type = typeof (AddressLine), ElementName = "AddressLine", IsNullable = false,
@@ -44,26 +44,26 @@ namespace SharpMap.Entities.xAL
         {
             get
             {
-                if (_AddressLine == null) _AddressLine = new List<AddressLine>();
-                return _AddressLine;
+                if (_addressLine == null) _addressLine = new List<AddressLine>();
+                return _addressLine;
             }
-            set { _AddressLine = value; }
+            set { _addressLine = value; }
         }
 
         [XmlElement(Type = typeof (MailStopName), ElementName = "MailStopName", IsNullable = false,
             Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public MailStopName MailStopName
         {
-            get { return _MailStopName; }
-            set { _MailStopName = value; }
+            get { return _mailStopName; }
+            set { _mailStopName = value; }
         }
 
         [XmlElement(Type = typeof (MailStopNumber), ElementName = "MailStopNumber", IsNullable = false,
             Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public MailStopNumber MailStopNumber
         {
-            get { return _MailStopNumber; }
-            set { _MailStopNumber = value; }
+            get { return _mailStopNumber; }
+            set { _mailStopNumber = value; }
         }
 
         public void MakeSchemaCompliant()

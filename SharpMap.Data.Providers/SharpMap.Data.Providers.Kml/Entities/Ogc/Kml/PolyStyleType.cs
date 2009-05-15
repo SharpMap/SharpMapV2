@@ -1,6 +1,6 @@
 // /*
 //  *  The attached / following is part of SharpMap.Data.Providers.Kml
-//  *  SharpMap.Data.Providers.Kml is free software © 2008 Newgrove Consultants Limited, 
+//  *  SharpMap.Data.Providers.Kml is free software ï¿½ 2008 Newgrove Consultants Limited, 
 //  *  www.newgrove.com; you can redistribute it and/or modify it under the terms 
 //  *  of the current GNU Lesser General Public License (LGPL) as published by and 
 //  *  available from the Free Software Foundation, Inc., 
@@ -51,10 +51,10 @@ namespace SharpMap.Entities.Ogc.Kml
         [XmlIgnore] private bool _outline;
 
         [XmlIgnore] public bool _outlineSpecified;
-        [XmlIgnore] private List<PolyStyleObjectExtensionGroup> _PolyStyleObjectExtensionGroup;
+        [XmlIgnore] private List<PolyStyleObjectExtensionGroup> _polyStyleObjectExtensionGroup;
 
 
-        [XmlIgnore] private List<string> _PolyStyleSimpleExtensionGroup;
+        [XmlIgnore] private List<string> _polyStyleSimpleExtensionGroup;
 
         public PolyStyleType()
         {
@@ -92,10 +92,10 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (_PolyStyleSimpleExtensionGroup == null) _PolyStyleSimpleExtensionGroup = new List<string>();
-                return _PolyStyleSimpleExtensionGroup;
+                if (_polyStyleSimpleExtensionGroup == null) _polyStyleSimpleExtensionGroup = new List<string>();
+                return _polyStyleSimpleExtensionGroup;
             }
-            set { _PolyStyleSimpleExtensionGroup = value; }
+            set { _polyStyleSimpleExtensionGroup = value; }
         }
 
         [XmlElement(Type = typeof (PolyStyleObjectExtensionGroup), ElementName = "PolyStyleObjectExtensionGroup",
@@ -104,11 +104,11 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (_PolyStyleObjectExtensionGroup == null)
-                    _PolyStyleObjectExtensionGroup = new List<PolyStyleObjectExtensionGroup>();
-                return _PolyStyleObjectExtensionGroup;
+                if (_polyStyleObjectExtensionGroup == null)
+                    _polyStyleObjectExtensionGroup = new List<PolyStyleObjectExtensionGroup>();
+                return _polyStyleObjectExtensionGroup;
             }
-            set { _PolyStyleObjectExtensionGroup = value; }
+            set { _polyStyleObjectExtensionGroup = value; }
         }
 
         public new void MakeSchemaCompliant()

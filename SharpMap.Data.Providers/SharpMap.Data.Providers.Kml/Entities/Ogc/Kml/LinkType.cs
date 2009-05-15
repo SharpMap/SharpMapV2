@@ -1,6 +1,6 @@
 // /*
 //  *  The attached / following is part of SharpMap.Data.Providers.Kml
-//  *  SharpMap.Data.Providers.Kml is free software © 2008 Newgrove Consultants Limited, 
+//  *  SharpMap.Data.Providers.Kml is free software ï¿½ 2008 Newgrove Consultants Limited, 
 //  *  www.newgrove.com; you can redistribute it and/or modify it under the terms 
 //  *  of the current GNU Lesser General Public License (LGPL) as published by and 
 //  *  available from the Free Software Foundation, Inc., 
@@ -44,8 +44,8 @@ namespace SharpMap.Entities.Ogc.Kml
     public abstract class LinkType : BasicLinkType
     {
         [XmlIgnore] private string _httpQuery;
-        [XmlIgnore] private List<LinkObjectExtensionGroup> _LinkObjectExtensionGroup;
-        [XmlIgnore] private List<string> _LinkSimpleExtensionGroup;
+        [XmlIgnore] private List<LinkObjectExtensionGroup> _linkObjectExtensionGroup;
+        [XmlIgnore] private List<string> _linkSimpleExtensionGroup;
         [XmlIgnore] private double _refreshInterval;
 
         [XmlIgnore] public bool _refreshIntervalSpecified;
@@ -160,10 +160,10 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (_LinkSimpleExtensionGroup == null) _LinkSimpleExtensionGroup = new List<string>();
-                return _LinkSimpleExtensionGroup;
+                if (_linkSimpleExtensionGroup == null) _linkSimpleExtensionGroup = new List<string>();
+                return _linkSimpleExtensionGroup;
             }
-            set { _LinkSimpleExtensionGroup = value; }
+            set { _linkSimpleExtensionGroup = value; }
         }
 
         [XmlElement(Type = typeof (LinkObjectExtensionGroup), ElementName = "LinkObjectExtensionGroup",
@@ -172,11 +172,11 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (_LinkObjectExtensionGroup == null)
-                    _LinkObjectExtensionGroup = new List<LinkObjectExtensionGroup>();
-                return _LinkObjectExtensionGroup;
+                if (_linkObjectExtensionGroup == null)
+                    _linkObjectExtensionGroup = new List<LinkObjectExtensionGroup>();
+                return _linkObjectExtensionGroup;
             }
-            set { _LinkObjectExtensionGroup = value; }
+            set { _linkObjectExtensionGroup = value; }
         }
 
         public new void MakeSchemaCompliant()

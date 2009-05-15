@@ -1,6 +1,6 @@
 // /*
 //  *  The attached / following is part of SharpMap.Data.Providers.Kml
-//  *  SharpMap.Data.Providers.Kml is free software © 2008 Newgrove Consultants Limited, 
+//  *  SharpMap.Data.Providers.Kml is free software ï¿½ 2008 Newgrove Consultants Limited, 
 //  *  www.newgrove.com; you can redistribute it and/or modify it under the terms 
 //  *  of the current GNU Lesser General Public License (LGPL) as published by and 
 //  *  available from the Free Software Foundation, Inc., 
@@ -43,8 +43,8 @@ namespace SharpMap.Entities.Ogc.Kml
     [XmlInclude(typeof (ViewVolumeType))]
     public class ScaleType : AbstractObjectType
     {
-        [XmlIgnore] private List<ScaleObjectExtensionGroup> _ScaleObjectExtensionGroup;
-        [XmlIgnore] private List<string> _ScaleSimpleExtensionGroup;
+        [XmlIgnore] private List<ScaleObjectExtensionGroup> _scaleObjectExtensionGroup;
+        [XmlIgnore] private List<string> _scaleSimpleExtensionGroup;
         [XmlIgnore] private double _x;
 
         [XmlIgnore] public bool _xSpecified;
@@ -109,10 +109,10 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (_ScaleSimpleExtensionGroup == null) _ScaleSimpleExtensionGroup = new List<string>();
-                return _ScaleSimpleExtensionGroup;
+                if (_scaleSimpleExtensionGroup == null) _scaleSimpleExtensionGroup = new List<string>();
+                return _scaleSimpleExtensionGroup;
             }
-            set { _ScaleSimpleExtensionGroup = value; }
+            set { _scaleSimpleExtensionGroup = value; }
         }
 
         [XmlElement(Type = typeof (ScaleObjectExtensionGroup), ElementName = "ScaleObjectExtensionGroup",
@@ -121,11 +121,11 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (_ScaleObjectExtensionGroup == null)
-                    _ScaleObjectExtensionGroup = new List<ScaleObjectExtensionGroup>();
-                return _ScaleObjectExtensionGroup;
+                if (_scaleObjectExtensionGroup == null)
+                    _scaleObjectExtensionGroup = new List<ScaleObjectExtensionGroup>();
+                return _scaleObjectExtensionGroup;
             }
-            set { _ScaleObjectExtensionGroup = value; }
+            set { _scaleObjectExtensionGroup = value; }
         }
 
         public new void MakeSchemaCompliant()

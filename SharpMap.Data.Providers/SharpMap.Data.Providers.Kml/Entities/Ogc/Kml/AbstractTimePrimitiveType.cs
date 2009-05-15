@@ -1,6 +1,6 @@
 // /*
 //  *  The attached / following is part of SharpMap.Data.Providers.Kml
-//  *  SharpMap.Data.Providers.Kml is free software © 2008 Newgrove Consultants Limited, 
+//  *  SharpMap.Data.Providers.Kml is free software ï¿½ 2008 Newgrove Consultants Limited, 
 //  *  www.newgrove.com; you can redistribute it and/or modify it under the terms 
 //  *  of the current GNU Lesser General Public License (LGPL) as published by and 
 //  *  available from the Free Software Foundation, Inc., 
@@ -43,8 +43,8 @@ namespace SharpMap.Entities.Ogc.Kml
     [XmlInclude(typeof (ViewVolumeType))]
     public abstract class AbstractTimePrimitiveType : AbstractObjectType
     {
-        [XmlIgnore] private List<AbstractTimePrimitiveObjectExtensionGroup> _AbstractTimePrimitiveObjectExtensionGroup;
-        [XmlIgnore] private List<string> _AbstractTimePrimitiveSimpleExtensionGroup;
+        [XmlIgnore] private List<AbstractTimePrimitiveObjectExtensionGroup> _abstractTimePrimitiveObjectExtensionGroup;
+        [XmlIgnore] private List<string> _abstractTimePrimitiveSimpleExtensionGroup;
 
         [XmlElement(Type = typeof (string), ElementName = "AbstractTimePrimitiveSimpleExtensionGroup",
             IsNullable = false, Form = XmlSchemaForm.Qualified,
@@ -53,11 +53,11 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (_AbstractTimePrimitiveSimpleExtensionGroup == null)
-                    _AbstractTimePrimitiveSimpleExtensionGroup = new List<string>();
-                return _AbstractTimePrimitiveSimpleExtensionGroup;
+                if (_abstractTimePrimitiveSimpleExtensionGroup == null)
+                    _abstractTimePrimitiveSimpleExtensionGroup = new List<string>();
+                return _abstractTimePrimitiveSimpleExtensionGroup;
             }
-            set { _AbstractTimePrimitiveSimpleExtensionGroup = value; }
+            set { _abstractTimePrimitiveSimpleExtensionGroup = value; }
         }
 
         [XmlElement(Type = typeof (AbstractTimePrimitiveObjectExtensionGroup),
@@ -67,11 +67,11 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (_AbstractTimePrimitiveObjectExtensionGroup == null)
-                    _AbstractTimePrimitiveObjectExtensionGroup = new List<AbstractTimePrimitiveObjectExtensionGroup>();
-                return _AbstractTimePrimitiveObjectExtensionGroup;
+                if (_abstractTimePrimitiveObjectExtensionGroup == null)
+                    _abstractTimePrimitiveObjectExtensionGroup = new List<AbstractTimePrimitiveObjectExtensionGroup>();
+                return _abstractTimePrimitiveObjectExtensionGroup;
             }
-            set { _AbstractTimePrimitiveObjectExtensionGroup = value; }
+            set { _abstractTimePrimitiveObjectExtensionGroup = value; }
         }
 
         public new void MakeSchemaCompliant()

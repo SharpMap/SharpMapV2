@@ -1,6 +1,6 @@
 // /*
 //  *  The attached / following is part of SharpMap.Data.Providers.Kml
-//  *  SharpMap.Data.Providers.Kml is free software © 2008 Newgrove Consultants Limited, 
+//  *  SharpMap.Data.Providers.Kml is free software ï¿½ 2008 Newgrove Consultants Limited, 
 //  *  www.newgrove.com; you can redistribute it and/or modify it under the terms 
 //  *  of the current GNU Lesser General Public License (LGPL) as published by and 
 //  *  available from the Free Software Foundation, Inc., 
@@ -43,8 +43,8 @@ namespace SharpMap.Entities.Ogc.Kml
     [XmlInclude(typeof (ViewVolumeType))]
     public class LineStyleType : AbstractColorStyleType
     {
-        [XmlIgnore] private List<LineStyleObjectExtensionGroup> _LineStyleObjectExtensionGroup;
-        [XmlIgnore] private List<string> _LineStyleSimpleExtensionGroup;
+        [XmlIgnore] private List<LineStyleObjectExtensionGroup> _lineStyleObjectExtensionGroup;
+        [XmlIgnore] private List<string> _lineStyleSimpleExtensionGroup;
         [XmlIgnore] private double _width;
 
         [XmlIgnore] public bool _widthSpecified;
@@ -73,10 +73,10 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (_LineStyleSimpleExtensionGroup == null) _LineStyleSimpleExtensionGroup = new List<string>();
-                return _LineStyleSimpleExtensionGroup;
+                if (_lineStyleSimpleExtensionGroup == null) _lineStyleSimpleExtensionGroup = new List<string>();
+                return _lineStyleSimpleExtensionGroup;
             }
-            set { _LineStyleSimpleExtensionGroup = value; }
+            set { _lineStyleSimpleExtensionGroup = value; }
         }
 
         [XmlElement(Type = typeof (LineStyleObjectExtensionGroup), ElementName = "LineStyleObjectExtensionGroup",
@@ -85,11 +85,11 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (_LineStyleObjectExtensionGroup == null)
-                    _LineStyleObjectExtensionGroup = new List<LineStyleObjectExtensionGroup>();
-                return _LineStyleObjectExtensionGroup;
+                if (_lineStyleObjectExtensionGroup == null)
+                    _lineStyleObjectExtensionGroup = new List<LineStyleObjectExtensionGroup>();
+                return _lineStyleObjectExtensionGroup;
             }
-            set { _LineStyleObjectExtensionGroup = value; }
+            set { _lineStyleObjectExtensionGroup = value; }
         }
 
         public new void MakeSchemaCompliant()

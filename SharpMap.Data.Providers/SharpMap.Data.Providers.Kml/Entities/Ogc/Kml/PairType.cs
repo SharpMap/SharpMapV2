@@ -1,6 +1,6 @@
 // /*
 //  *  The attached / following is part of SharpMap.Data.Providers.Kml
-//  *  SharpMap.Data.Providers.Kml is free software © 2008 Newgrove Consultants Limited, 
+//  *  SharpMap.Data.Providers.Kml is free software ï¿½ 2008 Newgrove Consultants Limited, 
 //  *  www.newgrove.com; you can redistribute it and/or modify it under the terms 
 //  *  of the current GNU Lesser General Public License (LGPL) as published by and 
 //  *  available from the Free Software Foundation, Inc., 
@@ -45,12 +45,12 @@ namespace SharpMap.Entities.Ogc.Kml
     [XmlInclude(typeof (ViewVolumeType))]
     public class PairType : AbstractObjectType
     {
-        [XmlIgnore] private AbstractStyleSelectorGroup _AbstractStyleSelectorGroup;
+        [XmlIgnore] private AbstractStyleSelectorGroup _abstractStyleSelectorGroup;
         [XmlIgnore] private StyleState _key;
 
         [XmlIgnore] public bool _keySpecified;
-        [XmlIgnore] private List<PairObjectExtensionGroup> _PairObjectExtensionGroup;
-        [XmlIgnore] private List<string> _PairSimpleExtensionGroup;
+        [XmlIgnore] private List<PairObjectExtensionGroup> _pairObjectExtensionGroup;
+        [XmlIgnore] private List<string> _pairSimpleExtensionGroup;
 
 
         [XmlIgnore] private string _styleUrl;
@@ -84,8 +84,8 @@ namespace SharpMap.Entities.Ogc.Kml
             IsNullable = false, Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public AbstractStyleSelectorGroup AbstractStyleSelectorGroup
         {
-            get { return _AbstractStyleSelectorGroup; }
-            set { _AbstractStyleSelectorGroup = value; }
+            get { return _abstractStyleSelectorGroup; }
+            set { _abstractStyleSelectorGroup = value; }
         }
 
         [XmlElement(Type = typeof (string), ElementName = "PairSimpleExtensionGroup", IsNullable = false,
@@ -94,10 +94,10 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (_PairSimpleExtensionGroup == null) _PairSimpleExtensionGroup = new List<string>();
-                return _PairSimpleExtensionGroup;
+                if (_pairSimpleExtensionGroup == null) _pairSimpleExtensionGroup = new List<string>();
+                return _pairSimpleExtensionGroup;
             }
-            set { _PairSimpleExtensionGroup = value; }
+            set { _pairSimpleExtensionGroup = value; }
         }
 
         [XmlElement(Type = typeof (PairObjectExtensionGroup), ElementName = "PairObjectExtensionGroup",
@@ -106,11 +106,11 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (_PairObjectExtensionGroup == null)
-                    _PairObjectExtensionGroup = new List<PairObjectExtensionGroup>();
-                return _PairObjectExtensionGroup;
+                if (_pairObjectExtensionGroup == null)
+                    _pairObjectExtensionGroup = new List<PairObjectExtensionGroup>();
+                return _pairObjectExtensionGroup;
             }
-            set { _PairObjectExtensionGroup = value; }
+            set { _pairObjectExtensionGroup = value; }
         }
 
         public new void MakeSchemaCompliant()

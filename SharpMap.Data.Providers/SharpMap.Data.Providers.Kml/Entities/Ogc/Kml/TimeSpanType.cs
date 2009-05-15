@@ -1,6 +1,6 @@
 // /*
 //  *  The attached / following is part of SharpMap.Data.Providers.Kml
-//  *  SharpMap.Data.Providers.Kml is free software © 2008 Newgrove Consultants Limited, 
+//  *  SharpMap.Data.Providers.Kml is free software ï¿½ 2008 Newgrove Consultants Limited, 
 //  *  www.newgrove.com; you can redistribute it and/or modify it under the terms 
 //  *  of the current GNU Lesser General Public License (LGPL) as published by and 
 //  *  available from the Free Software Foundation, Inc., 
@@ -51,8 +51,8 @@ namespace SharpMap.Entities.Ogc.Kml
         [XmlIgnore] private DateTime _end;
 
         [XmlIgnore] public bool _endSpecified;
-        [XmlIgnore] private List<TimeSpanObjectExtensionGroup> _TimeSpanObjectExtensionGroup;
-        [XmlIgnore] private List<string> _TimeSpanSimpleExtensionGroup;
+        [XmlIgnore] private List<TimeSpanObjectExtensionGroup> _timeSpanObjectExtensionGroup;
+        [XmlIgnore] private List<string> _timeSpanSimpleExtensionGroup;
 
         public TimeSpanType()
         {
@@ -113,10 +113,10 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (_TimeSpanSimpleExtensionGroup == null) _TimeSpanSimpleExtensionGroup = new List<string>();
-                return _TimeSpanSimpleExtensionGroup;
+                if (_timeSpanSimpleExtensionGroup == null) _timeSpanSimpleExtensionGroup = new List<string>();
+                return _timeSpanSimpleExtensionGroup;
             }
-            set { _TimeSpanSimpleExtensionGroup = value; }
+            set { _timeSpanSimpleExtensionGroup = value; }
         }
 
         [XmlElement(Type = typeof (TimeSpanObjectExtensionGroup), ElementName = "TimeSpanObjectExtensionGroup",
@@ -125,11 +125,11 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (_TimeSpanObjectExtensionGroup == null)
-                    _TimeSpanObjectExtensionGroup = new List<TimeSpanObjectExtensionGroup>();
-                return _TimeSpanObjectExtensionGroup;
+                if (_timeSpanObjectExtensionGroup == null)
+                    _timeSpanObjectExtensionGroup = new List<TimeSpanObjectExtensionGroup>();
+                return _timeSpanObjectExtensionGroup;
             }
-            set { _TimeSpanObjectExtensionGroup = value; }
+            set { _timeSpanObjectExtensionGroup = value; }
         }
 
         public new void MakeSchemaCompliant()

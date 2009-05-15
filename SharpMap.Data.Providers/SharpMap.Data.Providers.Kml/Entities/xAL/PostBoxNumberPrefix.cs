@@ -1,6 +1,6 @@
 // /*
 //  *  The attached / following is part of SharpMap.Data.Providers.Kml
-//  *  SharpMap.Data.Providers.Kml is free software © 2008 Newgrove Consultants Limited, 
+//  *  SharpMap.Data.Providers.Kml is free software ï¿½ 2008 Newgrove Consultants Limited, 
 //  *  www.newgrove.com; you can redistribute it and/or modify it under the terms 
 //  *  of the current GNU Lesser General Public License (LGPL) as published by and 
 //  *  available from the Free Software Foundation, Inc., 
@@ -21,30 +21,30 @@ namespace SharpMap.Entities.xAL
     [XmlType(TypeName = "PostBoxNumberPrefix", Namespace = Declarations.SchemaVersion), Serializable]
     public class PostBoxNumberPrefix
     {
-        [XmlIgnore] private string _Code;
-        [XmlIgnore] private string _NumberPrefixSeparator;
-        [XmlIgnore] private string _Value;
+        [XmlIgnore] private string _code;
+        [XmlIgnore] private string _numberPrefixSeparator;
+        [XmlIgnore] private string _value;
         [XmlAnyAttribute] public XmlAttribute[] AnyAttr;
 
         [XmlAttribute(AttributeName = "NumberPrefixSeparator")]
         public string NumberPrefixSeparator
         {
-            get { return _NumberPrefixSeparator; }
-            set { _NumberPrefixSeparator = value; }
+            get { return _numberPrefixSeparator; }
+            set { _numberPrefixSeparator = value; }
         }
 
         [XmlAttribute(AttributeName = "Code")]
         public string Code
         {
-            get { return _Code; }
-            set { _Code = value; }
+            get { return _code; }
+            set { _code = value; }
         }
 
         [XmlText(DataType = "string")]
         public string Value
         {
-            get { return _Value; }
-            set { _Value = value; }
+            get { return _value; }
+            set { _value = value; }
         }
 
         public void MakeSchemaCompliant()

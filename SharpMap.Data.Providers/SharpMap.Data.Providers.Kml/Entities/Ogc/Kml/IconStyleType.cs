@@ -1,6 +1,6 @@
 // /*
 //  *  The attached / following is part of SharpMap.Data.Providers.Kml
-//  *  SharpMap.Data.Providers.Kml is free software © 2008 Newgrove Consultants Limited, 
+//  *  SharpMap.Data.Providers.Kml is free software ï¿½ 2008 Newgrove Consultants Limited, 
 //  *  www.newgrove.com; you can redistribute it and/or modify it under the terms 
 //  *  of the current GNU Lesser General Public License (LGPL) as published by and 
 //  *  available from the Free Software Foundation, Inc., 
@@ -47,9 +47,9 @@ namespace SharpMap.Entities.Ogc.Kml
 
         [XmlIgnore] public bool _headingSpecified;
         [XmlIgnore] private HotSpot _hotSpot;
-        [XmlIgnore] private Icon _Icon;
-        [XmlIgnore] private List<IconStyleObjectExtensionGroup> _IconStyleObjectExtensionGroup;
-        [XmlIgnore] private List<string> _IconStyleSimpleExtensionGroup;
+        [XmlIgnore] private Icon _icon;
+        [XmlIgnore] private List<IconStyleObjectExtensionGroup> _iconStyleObjectExtensionGroup;
+        [XmlIgnore] private List<string> _iconStyleSimpleExtensionGroup;
         [XmlIgnore] private double _scale;
 
         [XmlIgnore] public bool _scaleSpecified;
@@ -90,8 +90,8 @@ namespace SharpMap.Entities.Ogc.Kml
             Namespace = Declarations.SchemaVersion)]
         public Icon Icon
         {
-            get { return _Icon; }
-            set { _Icon = value; }
+            get { return _icon; }
+            set { _icon = value; }
         }
 
         [XmlElement(Type = typeof (HotSpot), ElementName = "hotSpot", IsNullable = false, Form = XmlSchemaForm.Qualified
@@ -108,10 +108,10 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (_IconStyleSimpleExtensionGroup == null) _IconStyleSimpleExtensionGroup = new List<string>();
-                return _IconStyleSimpleExtensionGroup;
+                if (_iconStyleSimpleExtensionGroup == null) _iconStyleSimpleExtensionGroup = new List<string>();
+                return _iconStyleSimpleExtensionGroup;
             }
-            set { _IconStyleSimpleExtensionGroup = value; }
+            set { _iconStyleSimpleExtensionGroup = value; }
         }
 
         [XmlElement(Type = typeof (IconStyleObjectExtensionGroup), ElementName = "IconStyleObjectExtensionGroup",
@@ -120,11 +120,11 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (_IconStyleObjectExtensionGroup == null)
-                    _IconStyleObjectExtensionGroup = new List<IconStyleObjectExtensionGroup>();
-                return _IconStyleObjectExtensionGroup;
+                if (_iconStyleObjectExtensionGroup == null)
+                    _iconStyleObjectExtensionGroup = new List<IconStyleObjectExtensionGroup>();
+                return _iconStyleObjectExtensionGroup;
             }
-            set { _IconStyleObjectExtensionGroup = value; }
+            set { _iconStyleObjectExtensionGroup = value; }
         }
 
         public new void MakeSchemaCompliant()

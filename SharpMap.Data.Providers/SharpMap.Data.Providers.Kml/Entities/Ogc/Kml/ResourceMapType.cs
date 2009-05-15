@@ -1,6 +1,6 @@
 // /*
 //  *  The attached / following is part of SharpMap.Data.Providers.Kml
-//  *  SharpMap.Data.Providers.Kml is free software © 2008 Newgrove Consultants Limited, 
+//  *  SharpMap.Data.Providers.Kml is free software ï¿½ 2008 Newgrove Consultants Limited, 
 //  *  www.newgrove.com; you can redistribute it and/or modify it under the terms 
 //  *  of the current GNU Lesser General Public License (LGPL) as published by and 
 //  *  available from the Free Software Foundation, Inc., 
@@ -43,10 +43,10 @@ namespace SharpMap.Entities.Ogc.Kml
     [XmlInclude(typeof (ViewVolumeType))]
     public class ResourceMapType : AbstractObjectType
     {
-        [XmlIgnore] private List<Alias> _Alias;
-        [XmlIgnore] private List<ResourceMapObjectExtensionGroup> _ResourceMapObjectExtensionGroup;
+        [XmlIgnore] private List<Alias> _alias;
+        [XmlIgnore] private List<ResourceMapObjectExtensionGroup> _resourceMapObjectExtensionGroup;
 
-        [XmlIgnore] private List<string> _ResourceMapSimpleExtensionGroup;
+        [XmlIgnore] private List<string> _resourceMapSimpleExtensionGroup;
 
         [XmlElement(Type = typeof (Alias), ElementName = "Alias", IsNullable = false, Form = XmlSchemaForm.Qualified,
             Namespace = Declarations.SchemaVersion)]
@@ -54,10 +54,10 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (_Alias == null) _Alias = new List<Alias>();
-                return _Alias;
+                if (_alias == null) _alias = new List<Alias>();
+                return _alias;
             }
-            set { _Alias = value; }
+            set { _alias = value; }
         }
 
         [XmlElement(Type = typeof (string), ElementName = "ResourceMapSimpleExtensionGroup", IsNullable = false,
@@ -66,10 +66,10 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (_ResourceMapSimpleExtensionGroup == null) _ResourceMapSimpleExtensionGroup = new List<string>();
-                return _ResourceMapSimpleExtensionGroup;
+                if (_resourceMapSimpleExtensionGroup == null) _resourceMapSimpleExtensionGroup = new List<string>();
+                return _resourceMapSimpleExtensionGroup;
             }
-            set { _ResourceMapSimpleExtensionGroup = value; }
+            set { _resourceMapSimpleExtensionGroup = value; }
         }
 
         [XmlElement(Type = typeof (ResourceMapObjectExtensionGroup), ElementName = "ResourceMapObjectExtensionGroup",
@@ -78,11 +78,11 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (_ResourceMapObjectExtensionGroup == null)
-                    _ResourceMapObjectExtensionGroup = new List<ResourceMapObjectExtensionGroup>();
-                return _ResourceMapObjectExtensionGroup;
+                if (_resourceMapObjectExtensionGroup == null)
+                    _resourceMapObjectExtensionGroup = new List<ResourceMapObjectExtensionGroup>();
+                return _resourceMapObjectExtensionGroup;
             }
-            set { _ResourceMapObjectExtensionGroup = value; }
+            set { _resourceMapObjectExtensionGroup = value; }
         }
 
         public new void MakeSchemaCompliant()

@@ -1,6 +1,6 @@
 // /*
 //  *  The attached / following is part of SharpMap.Data.Providers.Kml
-//  *  SharpMap.Data.Providers.Kml is free software © 2008 Newgrove Consultants Limited, 
+//  *  SharpMap.Data.Providers.Kml is free software ï¿½ 2008 Newgrove Consultants Limited, 
 //  *  www.newgrove.com; you can redistribute it and/or modify it under the terms 
 //  *  of the current GNU Lesser General Public License (LGPL) as published by and 
 //  *  available from the Free Software Foundation, Inc., 
@@ -43,8 +43,8 @@ namespace SharpMap.Entities.Ogc.Kml
     [XmlInclude(typeof (ViewVolumeType))]
     public abstract class AbstractGeometryType : AbstractObjectType
     {
-        [XmlIgnore] private List<AbstractGeometryObjectExtensionGroup> _AbstractGeometryObjectExtensionGroup;
-        [XmlIgnore] private List<string> _AbstractGeometrySimpleExtensionGroup;
+        [XmlIgnore] private List<AbstractGeometryObjectExtensionGroup> _abstractGeometryObjectExtensionGroup;
+        [XmlIgnore] private List<string> _abstractGeometrySimpleExtensionGroup;
 
         [XmlElement(Type = typeof (string), ElementName = "AbstractGeometrySimpleExtensionGroup", IsNullable = false,
             Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
@@ -52,11 +52,11 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (_AbstractGeometrySimpleExtensionGroup == null)
-                    _AbstractGeometrySimpleExtensionGroup = new List<string>();
-                return _AbstractGeometrySimpleExtensionGroup;
+                if (_abstractGeometrySimpleExtensionGroup == null)
+                    _abstractGeometrySimpleExtensionGroup = new List<string>();
+                return _abstractGeometrySimpleExtensionGroup;
             }
-            set { _AbstractGeometrySimpleExtensionGroup = value; }
+            set { _abstractGeometrySimpleExtensionGroup = value; }
         }
 
         [XmlElement(Type = typeof (AbstractGeometryObjectExtensionGroup),
@@ -66,11 +66,11 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (_AbstractGeometryObjectExtensionGroup == null)
-                    _AbstractGeometryObjectExtensionGroup = new List<AbstractGeometryObjectExtensionGroup>();
-                return _AbstractGeometryObjectExtensionGroup;
+                if (_abstractGeometryObjectExtensionGroup == null)
+                    _abstractGeometryObjectExtensionGroup = new List<AbstractGeometryObjectExtensionGroup>();
+                return _abstractGeometryObjectExtensionGroup;
             }
-            set { _AbstractGeometryObjectExtensionGroup = value; }
+            set { _abstractGeometryObjectExtensionGroup = value; }
         }
 
         public new void MakeSchemaCompliant()

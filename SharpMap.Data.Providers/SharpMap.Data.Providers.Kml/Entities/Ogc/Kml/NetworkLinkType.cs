@@ -1,6 +1,6 @@
 // /*
 //  *  The attached / following is part of SharpMap.Data.Providers.Kml
-//  *  SharpMap.Data.Providers.Kml is free software © 2008 Newgrove Consultants Limited, 
+//  *  SharpMap.Data.Providers.Kml is free software ï¿½ 2008 Newgrove Consultants Limited, 
 //  *  www.newgrove.com; you can redistribute it and/or modify it under the terms 
 //  *  of the current GNU Lesser General Public License (LGPL) as published by and 
 //  *  available from the Free Software Foundation, Inc., 
@@ -46,13 +46,13 @@ namespace SharpMap.Entities.Ogc.Kml
         [XmlIgnore] private bool _flyToView;
 
         [XmlIgnore] public bool _flyToViewSpecified;
-        [XmlIgnore] private Link _Link;
-        [XmlIgnore] private List<NetworkLinkObjectExtensionGroup> _NetworkLinkObjectExtensionGroup;
-        [XmlIgnore] private List<string> _NetworkLinkSimpleExtensionGroup;
+        [XmlIgnore] private Link _link;
+        [XmlIgnore] private List<NetworkLinkObjectExtensionGroup> _networkLinkObjectExtensionGroup;
+        [XmlIgnore] private List<string> _networkLinkSimpleExtensionGroup;
         [XmlIgnore] private bool _refreshVisibility;
 
         [XmlIgnore] public bool _refreshVisibilitySpecified;
-        [XmlIgnore] private Url _Url;
+        [XmlIgnore] private Url _url;
 
         public NetworkLinkType()
         {
@@ -90,16 +90,16 @@ namespace SharpMap.Entities.Ogc.Kml
             Namespace = Declarations.SchemaVersion)]
         public Url Url
         {
-            get { return _Url; }
-            set { _Url = value; }
+            get { return _url; }
+            set { _url = value; }
         }
 
         [XmlElement(Type = typeof (Link), ElementName = "Link", IsNullable = false, Form = XmlSchemaForm.Qualified,
             Namespace = Declarations.SchemaVersion)]
         public Link link
         {
-            get { return _Link; }
-            set { _Link = value; }
+            get { return _link; }
+            set { _link = value; }
         }
 
         [XmlElement(Type = typeof (string), ElementName = "NetworkLinkSimpleExtensionGroup", IsNullable = false,
@@ -108,10 +108,10 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (_NetworkLinkSimpleExtensionGroup == null) _NetworkLinkSimpleExtensionGroup = new List<string>();
-                return _NetworkLinkSimpleExtensionGroup;
+                if (_networkLinkSimpleExtensionGroup == null) _networkLinkSimpleExtensionGroup = new List<string>();
+                return _networkLinkSimpleExtensionGroup;
             }
-            set { _NetworkLinkSimpleExtensionGroup = value; }
+            set { _networkLinkSimpleExtensionGroup = value; }
         }
 
         [XmlElement(Type = typeof (NetworkLinkObjectExtensionGroup), ElementName = "NetworkLinkObjectExtensionGroup",
@@ -120,11 +120,11 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (_NetworkLinkObjectExtensionGroup == null)
-                    _NetworkLinkObjectExtensionGroup = new List<NetworkLinkObjectExtensionGroup>();
-                return _NetworkLinkObjectExtensionGroup;
+                if (_networkLinkObjectExtensionGroup == null)
+                    _networkLinkObjectExtensionGroup = new List<NetworkLinkObjectExtensionGroup>();
+                return _networkLinkObjectExtensionGroup;
             }
-            set { _NetworkLinkObjectExtensionGroup = value; }
+            set { _networkLinkObjectExtensionGroup = value; }
         }
 
         public new void MakeSchemaCompliant()

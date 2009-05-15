@@ -1,6 +1,6 @@
 // /*
 //  *  The attached / following is part of SharpMap.Data.Providers.Kml
-//  *  SharpMap.Data.Providers.Kml is free software © 2008 Newgrove Consultants Limited, 
+//  *  SharpMap.Data.Providers.Kml is free software ï¿½ 2008 Newgrove Consultants Limited, 
 //  *  www.newgrove.com; you can redistribute it and/or modify it under the terms 
 //  *  of the current GNU Lesser General Public License (LGPL) as published by and 
 //  *  available from the Free Software Foundation, Inc., 
@@ -43,64 +43,64 @@ namespace SharpMap.Entities.Ogc.Kml
     [XmlInclude(typeof (ViewVolumeType))]
     public class StyleType : AbstractStyleSelectorType
     {
-        [XmlIgnore] private BalloonStyle _BalloonStyle;
-        [XmlIgnore] private IconStyle _IconStyle;
+        [XmlIgnore] private BalloonStyle _balloonStyle;
+        [XmlIgnore] private IconStyle _iconStyle;
 
-        [XmlIgnore] private LabelStyle _LabelStyle;
+        [XmlIgnore] private LabelStyle _labelStyle;
 
-        [XmlIgnore] private LineStyle _LineStyle;
-        [XmlIgnore] private ListStyle _ListStyle;
+        [XmlIgnore] private LineStyle _lineStyle;
+        [XmlIgnore] private ListStyle _listStyle;
 
-        [XmlIgnore] private PolyStyle _PolyStyle;
-        [XmlIgnore] private List<StyleObjectExtensionGroup> _StyleObjectExtensionGroup;
-        [XmlIgnore] private List<string> _StyleSimpleExtensionGroup;
+        [XmlIgnore] private PolyStyle _polyStyle;
+        [XmlIgnore] private List<StyleObjectExtensionGroup> _styleObjectExtensionGroup;
+        [XmlIgnore] private List<string> _styleSimpleExtensionGroup;
 
         [XmlElement(Type = typeof (IconStyle), ElementName = "IconStyle", IsNullable = false,
             Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public IconStyle IconStyle
         {
-            get { return _IconStyle; }
-            set { _IconStyle = value; }
+            get { return _iconStyle; }
+            set { _iconStyle = value; }
         }
 
         [XmlElement(Type = typeof (LabelStyle), ElementName = "LabelStyle", IsNullable = false,
             Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public LabelStyle LabelStyle
         {
-            get { return _LabelStyle; }
-            set { _LabelStyle = value; }
+            get { return _labelStyle; }
+            set { _labelStyle = value; }
         }
 
         [XmlElement(Type = typeof (LineStyle), ElementName = "LineStyle", IsNullable = false,
             Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public LineStyle LineStyle
         {
-            get { return _LineStyle; }
-            set { _LineStyle = value; }
+            get { return _lineStyle; }
+            set { _lineStyle = value; }
         }
 
         [XmlElement(Type = typeof (PolyStyle), ElementName = "PolyStyle", IsNullable = false,
             Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public PolyStyle PolyStyle
         {
-            get { return _PolyStyle; }
-            set { _PolyStyle = value; }
+            get { return _polyStyle; }
+            set { _polyStyle = value; }
         }
 
         [XmlElement(Type = typeof (BalloonStyle), ElementName = "BalloonStyle", IsNullable = false,
             Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public BalloonStyle BalloonStyle
         {
-            get { return _BalloonStyle; }
-            set { _BalloonStyle = value; }
+            get { return _balloonStyle; }
+            set { _balloonStyle = value; }
         }
 
         [XmlElement(Type = typeof (ListStyle), ElementName = "ListStyle", IsNullable = false,
             Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public ListStyle ListStyle
         {
-            get { return _ListStyle; }
-            set { _ListStyle = value; }
+            get { return _listStyle; }
+            set { _listStyle = value; }
         }
 
         [XmlElement(Type = typeof (string), ElementName = "StyleSimpleExtensionGroup", IsNullable = false,
@@ -109,10 +109,10 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (_StyleSimpleExtensionGroup == null) _StyleSimpleExtensionGroup = new List<string>();
-                return _StyleSimpleExtensionGroup;
+                if (_styleSimpleExtensionGroup == null) _styleSimpleExtensionGroup = new List<string>();
+                return _styleSimpleExtensionGroup;
             }
-            set { _StyleSimpleExtensionGroup = value; }
+            set { _styleSimpleExtensionGroup = value; }
         }
 
         [XmlElement(Type = typeof (StyleObjectExtensionGroup), ElementName = "StyleObjectExtensionGroup",
@@ -121,11 +121,11 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (_StyleObjectExtensionGroup == null)
-                    _StyleObjectExtensionGroup = new List<StyleObjectExtensionGroup>();
-                return _StyleObjectExtensionGroup;
+                if (_styleObjectExtensionGroup == null)
+                    _styleObjectExtensionGroup = new List<StyleObjectExtensionGroup>();
+                return _styleObjectExtensionGroup;
             }
-            set { _StyleObjectExtensionGroup = value; }
+            set { _styleObjectExtensionGroup = value; }
         }
 
         public new void MakeSchemaCompliant()

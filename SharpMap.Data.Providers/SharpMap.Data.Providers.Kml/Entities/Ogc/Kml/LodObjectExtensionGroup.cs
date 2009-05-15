@@ -1,6 +1,6 @@
 // /*
 //  *  The attached / following is part of SharpMap.Data.Providers.Kml
-//  *  SharpMap.Data.Providers.Kml is free software © 2008 Newgrove Consultants Limited, 
+//  *  SharpMap.Data.Providers.Kml is free software ï¿½ 2008 Newgrove Consultants Limited, 
 //  *  www.newgrove.com; you can redistribute it and/or modify it under the terms 
 //  *  of the current GNU Lesser General Public License (LGPL) as published by and 
 //  *  available from the Free Software Foundation, Inc., 
@@ -26,7 +26,7 @@ namespace SharpMap.Entities.Ogc.Kml
     public abstract class LodObjectExtensionGroup
     {
         [XmlIgnore] private string _id;
-        [XmlIgnore] private List<string> _ObjectSimpleExtensionGroup;
+        [XmlIgnore] private List<string> _objectSimpleExtensionGroup;
         [XmlIgnore] private string _targetId;
 
         [XmlIgnore]
@@ -61,10 +61,10 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (_ObjectSimpleExtensionGroup == null) _ObjectSimpleExtensionGroup = new List<string>();
-                return _ObjectSimpleExtensionGroup;
+                if (_objectSimpleExtensionGroup == null) _objectSimpleExtensionGroup = new List<string>();
+                return _objectSimpleExtensionGroup;
             }
-            set { _ObjectSimpleExtensionGroup = value; }
+            set { _objectSimpleExtensionGroup = value; }
         }
 
         [DispId(-4)]

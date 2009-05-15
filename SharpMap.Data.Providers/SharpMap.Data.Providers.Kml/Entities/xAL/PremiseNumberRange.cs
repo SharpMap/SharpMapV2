@@ -1,6 +1,6 @@
 // /*
 //  *  The attached / following is part of SharpMap.Data.Providers.Kml
-//  *  SharpMap.Data.Providers.Kml is free software © 2008 Newgrove Consultants Limited, 
+//  *  SharpMap.Data.Providers.Kml is free software ï¿½ 2008 Newgrove Consultants Limited, 
 //  *  www.newgrove.com; you can redistribute it and/or modify it under the terms 
 //  *  of the current GNU Lesser General Public License (LGPL) as published by and 
 //  *  available from the Free Software Foundation, Inc., 
@@ -21,66 +21,66 @@ namespace SharpMap.Entities.xAL
     [XmlType(TypeName = "PremiseNumberRange", Namespace = Declarations.SchemaVersion), Serializable]
     public class PremiseNumberRange
     {
-        [XmlIgnore] private string _Indicator;
-        [XmlIgnore] private Occurrence _IndicatorOccurence;
+        [XmlIgnore] private string _indicator;
+        [XmlIgnore] private Occurrence _indicatorOccurence;
 
-        [XmlIgnore] public bool _IndicatorOccurenceSpecified;
-        [XmlIgnore] private NumberOccurrence _NumberRangeOccurence;
+        [XmlIgnore] public bool _indicatorOccurenceSpecified;
+        [XmlIgnore] private NumberOccurrence _numberRangeOccurence;
 
-        [XmlIgnore] public bool _NumberRangeOccurenceSpecified;
-        [XmlIgnore] private PremiseNumberRangeFrom _PremiseNumberRangeFrom;
-        [XmlIgnore] private PremiseNumberRangeTo _PremiseNumberRangeTo;
-        [XmlIgnore] private string _RangeType;
-        [XmlIgnore] private string _Separator;
-        [XmlIgnore] private string _Type;
+        [XmlIgnore] public bool _numberRangeOccurenceSpecified;
+        [XmlIgnore] private PremiseNumberRangeFrom _premiseNumberRangeFrom;
+        [XmlIgnore] private PremiseNumberRangeTo _premiseNumberRangeTo;
+        [XmlIgnore] private string _rangeType;
+        [XmlIgnore] private string _separator;
+        [XmlIgnore] private string _type;
 
         [XmlAttribute(AttributeName = "RangeType")]
         public string RangeType
         {
-            get { return _RangeType; }
-            set { _RangeType = value; }
+            get { return _rangeType; }
+            set { _rangeType = value; }
         }
 
         [XmlAttribute(AttributeName = "Indicator")]
         public string Indicator
         {
-            get { return _Indicator; }
-            set { _Indicator = value; }
+            get { return _indicator; }
+            set { _indicator = value; }
         }
 
         [XmlAttribute(AttributeName = "Separator")]
         public string Separator
         {
-            get { return _Separator; }
-            set { _Separator = value; }
+            get { return _separator; }
+            set { _separator = value; }
         }
 
         [XmlAttribute(AttributeName = "Type")]
         public string Type
         {
-            get { return _Type; }
-            set { _Type = value; }
+            get { return _type; }
+            set { _type = value; }
         }
 
         [XmlAttribute(AttributeName = "IndicatorOccurence")]
         public Occurrence IndicatorOccurence
         {
-            get { return _IndicatorOccurence; }
+            get { return _indicatorOccurence; }
             set
             {
-                _IndicatorOccurence = value;
-                _IndicatorOccurenceSpecified = true;
+                _indicatorOccurence = value;
+                _indicatorOccurenceSpecified = true;
             }
         }
 
         [XmlAttribute(AttributeName = "NumberRangeOccurence")]
         public NumberOccurrence NumberRangeOccurence
         {
-            get { return _NumberRangeOccurence; }
+            get { return _numberRangeOccurence; }
             set
             {
-                _NumberRangeOccurence = value;
-                _NumberRangeOccurenceSpecified = true;
+                _numberRangeOccurence = value;
+                _numberRangeOccurenceSpecified = true;
             }
         }
 
@@ -88,16 +88,16 @@ namespace SharpMap.Entities.xAL
             Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public PremiseNumberRangeFrom PremiseNumberRangeFrom
         {
-            get { return _PremiseNumberRangeFrom; }
-            set { _PremiseNumberRangeFrom = value; }
+            get { return _premiseNumberRangeFrom; }
+            set { _premiseNumberRangeFrom = value; }
         }
 
         [XmlElement(Type = typeof (PremiseNumberRangeTo), ElementName = "PremiseNumberRangeTo", IsNullable = false,
             Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public PremiseNumberRangeTo PremiseNumberRangeTo
         {
-            get { return _PremiseNumberRangeTo; }
-            set { _PremiseNumberRangeTo = value; }
+            get { return _premiseNumberRangeTo; }
+            set { _premiseNumberRangeTo = value; }
         }
 
         public void MakeSchemaCompliant()

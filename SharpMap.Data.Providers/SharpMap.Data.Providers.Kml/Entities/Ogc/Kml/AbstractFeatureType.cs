@@ -1,6 +1,6 @@
 // /*
 //  *  The attached / following is part of SharpMap.Data.Providers.Kml
-//  *  SharpMap.Data.Providers.Kml is free software © 2008 Newgrove Consultants Limited, 
+//  *  SharpMap.Data.Providers.Kml is free software ï¿½ 2008 Newgrove Consultants Limited, 
 //  *  www.newgrove.com; you can redistribute it and/or modify it under the terms 
 //  *  of the current GNU Lesser General Public License (LGPL) as published by and 
 //  *  available from the Free Software Foundation, Inc., 
@@ -51,27 +51,27 @@ namespace SharpMap.Entities.Ogc.Kml
     [XmlInclude(typeof (ViewVolumeType))]
     public abstract class AbstractFeatureType : AbstractObjectType
     {
-        [XmlIgnore] private List<AbstractFeatureObjectExtensionGroup> _AbstractFeatureObjectExtensionGroup;
-        [XmlIgnore] private List<string> _AbstractFeatureSimpleExtensionGroup;
-        [XmlIgnore] private List<AbstractStyleSelectorGroup> _AbstractStyleSelectorGroup;
-        [XmlIgnore] private AbstractTimePrimitiveGroup _AbstractTimePrimitiveGroup;
-        [XmlIgnore] private AbstractViewGroup _AbstractViewGroup;
+        [XmlIgnore] private List<AbstractFeatureObjectExtensionGroup> _abstractFeatureObjectExtensionGroup;
+        [XmlIgnore] private List<string> _abstractFeatureSimpleExtensionGroup;
+        [XmlIgnore] private List<AbstractStyleSelectorGroup> _abstractStyleSelectorGroup;
+        [XmlIgnore] private AbstractTimePrimitiveGroup _abstractTimePrimitiveGroup;
+        [XmlIgnore] private AbstractViewGroup _abstractViewGroup;
         [XmlIgnore] private string _address;
-        [XmlIgnore] private AddressDetails _AddressDetails;
+        [XmlIgnore] private AddressDetails _addressDetails;
         [XmlIgnore] private Author _author;
         [XmlIgnore] private string _description;
-        [XmlIgnore] private ExtendedData _ExtendedData;
+        [XmlIgnore] private ExtendedData _extendedData;
         [XmlIgnore] private Atom.Link _link;
-        [XmlIgnore] private Metadata _Metadata;
+        [XmlIgnore] private Metadata _metadata;
         [XmlIgnore] private string _name;
         [XmlIgnore] private bool _open;
 
         [XmlIgnore] public bool _openSpecified;
         [XmlIgnore] private string _phoneNumber;
-        [XmlIgnore] private Region _Region;
+        [XmlIgnore] private Region _region;
         //[XmlIgnore]
         //private string _snippet;
-        [XmlIgnore] private Snippet _Snippet;
+        [XmlIgnore] private Snippet _snippet;
         [XmlIgnore] private string _styleUrl;
 
         [XmlIgnore] private bool _visibility;
@@ -150,8 +150,8 @@ namespace SharpMap.Entities.Ogc.Kml
             Form = XmlSchemaForm.Qualified, Namespace = "urn:oasis:names:tc:ciq:xsdschema:xAL:2.0")]
         public AddressDetails AddressDetails
         {
-            get { return _AddressDetails; }
-            set { _AddressDetails = value; }
+            get { return _addressDetails; }
+            set { _addressDetails = value; }
         }
 
         [XmlElement(ElementName = "phoneNumber", IsNullable = false, Form = XmlSchemaForm.Qualified, DataType = "string"
@@ -166,8 +166,8 @@ namespace SharpMap.Entities.Ogc.Kml
             , Namespace = Declarations.SchemaVersion)]
         public Snippet Snippet
         {
-            get { return _Snippet; }
-            set { _Snippet = value; }
+            get { return _snippet; }
+            set { _snippet = value; }
         }
 
         //[XmlElement(ElementName = "snippet", IsNullable = false, Form = XmlSchemaForm.Qualified, DataType = "string",
@@ -190,16 +190,16 @@ namespace SharpMap.Entities.Ogc.Kml
             Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public AbstractViewGroup AbstractViewGroup
         {
-            get { return _AbstractViewGroup; }
-            set { _AbstractViewGroup = value; }
+            get { return _abstractViewGroup; }
+            set { _abstractViewGroup = value; }
         }
 
         [XmlElement(Type = typeof (AbstractTimePrimitiveGroup), ElementName = "AbstractTimePrimitiveGroup",
             IsNullable = false, Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public AbstractTimePrimitiveGroup AbstractTimePrimitiveGroup
         {
-            get { return _AbstractTimePrimitiveGroup; }
-            set { _AbstractTimePrimitiveGroup = value; }
+            get { return _abstractTimePrimitiveGroup; }
+            set { _abstractTimePrimitiveGroup = value; }
         }
 
         [XmlElement(ElementName = "styleUrl", IsNullable = false, Form = XmlSchemaForm.Qualified, DataType = "anyURI",
@@ -216,35 +216,35 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (_AbstractStyleSelectorGroup == null)
-                    _AbstractStyleSelectorGroup = new List<AbstractStyleSelectorGroup>();
-                return _AbstractStyleSelectorGroup;
+                if (_abstractStyleSelectorGroup == null)
+                    _abstractStyleSelectorGroup = new List<AbstractStyleSelectorGroup>();
+                return _abstractStyleSelectorGroup;
             }
-            set { _AbstractStyleSelectorGroup = value; }
+            set { _abstractStyleSelectorGroup = value; }
         }
 
         [XmlElement(Type = typeof (Region), ElementName = "Region", IsNullable = false, Form = XmlSchemaForm.Qualified,
             Namespace = Declarations.SchemaVersion)]
         public Region Region
         {
-            get { return _Region; }
-            set { _Region = value; }
+            get { return _region; }
+            set { _region = value; }
         }
 
         [XmlElement(Type = typeof (Metadata), ElementName = "Metadata", IsNullable = false,
             Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public Metadata Metadata
         {
-            get { return _Metadata; }
-            set { _Metadata = value; }
+            get { return _metadata; }
+            set { _metadata = value; }
         }
 
         [XmlElement(Type = typeof (ExtendedData), ElementName = "ExtendedData", IsNullable = false,
             Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public ExtendedData ExtendedData
         {
-            get { return _ExtendedData; }
-            set { _ExtendedData = value; }
+            get { return _extendedData; }
+            set { _extendedData = value; }
         }
 
         [XmlElement(Type = typeof (string), ElementName = "AbstractFeatureSimpleExtensionGroup", IsNullable = false,
@@ -253,11 +253,11 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (_AbstractFeatureSimpleExtensionGroup == null)
-                    _AbstractFeatureSimpleExtensionGroup = new List<string>();
-                return _AbstractFeatureSimpleExtensionGroup;
+                if (_abstractFeatureSimpleExtensionGroup == null)
+                    _abstractFeatureSimpleExtensionGroup = new List<string>();
+                return _abstractFeatureSimpleExtensionGroup;
             }
-            set { _AbstractFeatureSimpleExtensionGroup = value; }
+            set { _abstractFeatureSimpleExtensionGroup = value; }
         }
 
         [XmlElement(Type = typeof (AbstractFeatureObjectExtensionGroup),
@@ -267,11 +267,11 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (_AbstractFeatureObjectExtensionGroup == null)
-                    _AbstractFeatureObjectExtensionGroup = new List<AbstractFeatureObjectExtensionGroup>();
-                return _AbstractFeatureObjectExtensionGroup;
+                if (_abstractFeatureObjectExtensionGroup == null)
+                    _abstractFeatureObjectExtensionGroup = new List<AbstractFeatureObjectExtensionGroup>();
+                return _abstractFeatureObjectExtensionGroup;
             }
-            set { _AbstractFeatureObjectExtensionGroup = value; }
+            set { _abstractFeatureObjectExtensionGroup = value; }
         }
     }
 }

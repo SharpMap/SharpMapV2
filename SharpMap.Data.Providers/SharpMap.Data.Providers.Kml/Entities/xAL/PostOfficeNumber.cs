@@ -1,6 +1,6 @@
 // /*
 //  *  The attached / following is part of SharpMap.Data.Providers.Kml
-//  *  SharpMap.Data.Providers.Kml is free software © 2008 Newgrove Consultants Limited, 
+//  *  SharpMap.Data.Providers.Kml is free software ï¿½ 2008 Newgrove Consultants Limited, 
 //  *  www.newgrove.com; you can redistribute it and/or modify it under the terms 
 //  *  of the current GNU Lesser General Public License (LGPL) as published by and 
 //  *  available from the Free Software Foundation, Inc., 
@@ -21,45 +21,45 @@ namespace SharpMap.Entities.xAL
     [XmlType(TypeName = "PostOfficeNumber", Namespace = Declarations.SchemaVersion), Serializable]
     public class PostOfficeNumber
     {
-        [XmlIgnore] private string _Code;
-        [XmlIgnore] private string _Indicator;
+        [XmlIgnore] private string _code;
+        [XmlIgnore] private string _indicator;
 
-        [XmlIgnore] private Occurrence _IndicatorOccurrence;
+        [XmlIgnore] private Occurrence _indicatorOccurrence;
 
-        [XmlIgnore] public bool _IndicatorOccurrenceSpecified;
-        [XmlIgnore] private string _Value;
+        [XmlIgnore] public bool _indicatorOccurrenceSpecified;
+        [XmlIgnore] private string _value;
         [XmlAnyAttribute] public XmlAttribute[] AnyAttr;
 
         [XmlAttribute(AttributeName = "Indicator")]
         public string Indicator
         {
-            get { return _Indicator; }
-            set { _Indicator = value; }
+            get { return _indicator; }
+            set { _indicator = value; }
         }
 
         [XmlAttribute(AttributeName = "IndicatorOccurrence")]
         public Occurrence IndicatorOccurrence
         {
-            get { return _IndicatorOccurrence; }
+            get { return _indicatorOccurrence; }
             set
             {
-                _IndicatorOccurrence = value;
-                _IndicatorOccurrenceSpecified = true;
+                _indicatorOccurrence = value;
+                _indicatorOccurrenceSpecified = true;
             }
         }
 
         [XmlAttribute(AttributeName = "Code")]
         public string Code
         {
-            get { return _Code; }
-            set { _Code = value; }
+            get { return _code; }
+            set { _code = value; }
         }
 
         [XmlText(DataType = "string")]
         public string Value
         {
-            get { return _Value; }
-            set { _Value = value; }
+            get { return _value; }
+            set { _value = value; }
         }
 
         public void MakeSchemaCompliant()

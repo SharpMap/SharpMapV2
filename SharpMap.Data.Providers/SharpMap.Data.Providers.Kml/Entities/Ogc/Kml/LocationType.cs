@@ -1,6 +1,6 @@
 // /*
 //  *  The attached / following is part of SharpMap.Data.Providers.Kml
-//  *  SharpMap.Data.Providers.Kml is free software © 2008 Newgrove Consultants Limited, 
+//  *  SharpMap.Data.Providers.Kml is free software ï¿½ 2008 Newgrove Consultants Limited, 
 //  *  www.newgrove.com; you can redistribute it and/or modify it under the terms 
 //  *  of the current GNU Lesser General Public License (LGPL) as published by and 
 //  *  available from the Free Software Foundation, Inc., 
@@ -49,8 +49,8 @@ namespace SharpMap.Entities.Ogc.Kml
         [XmlIgnore] private double _latitude;
 
         [XmlIgnore] public bool _latitudeSpecified;
-        [XmlIgnore] private List<LocationObjectExtensionGroup> _LocationObjectExtensionGroup;
-        [XmlIgnore] private List<string> _LocationSimpleExtensionGroup;
+        [XmlIgnore] private List<LocationObjectExtensionGroup> _locationObjectExtensionGroup;
+        [XmlIgnore] private List<string> _locationSimpleExtensionGroup;
         [XmlIgnore] private double _longitude;
 
         [XmlIgnore] public bool _longitudeSpecified;
@@ -107,10 +107,10 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (_LocationSimpleExtensionGroup == null) _LocationSimpleExtensionGroup = new List<string>();
-                return _LocationSimpleExtensionGroup;
+                if (_locationSimpleExtensionGroup == null) _locationSimpleExtensionGroup = new List<string>();
+                return _locationSimpleExtensionGroup;
             }
-            set { _LocationSimpleExtensionGroup = value; }
+            set { _locationSimpleExtensionGroup = value; }
         }
 
         [XmlElement(Type = typeof (LocationObjectExtensionGroup), ElementName = "LocationObjectExtensionGroup",
@@ -119,11 +119,11 @@ namespace SharpMap.Entities.Ogc.Kml
         {
             get
             {
-                if (_LocationObjectExtensionGroup == null)
-                    _LocationObjectExtensionGroup = new List<LocationObjectExtensionGroup>();
-                return _LocationObjectExtensionGroup;
+                if (_locationObjectExtensionGroup == null)
+                    _locationObjectExtensionGroup = new List<LocationObjectExtensionGroup>();
+                return _locationObjectExtensionGroup;
             }
-            set { _LocationObjectExtensionGroup = value; }
+            set { _locationObjectExtensionGroup = value; }
         }
 
         public new void MakeSchemaCompliant()
