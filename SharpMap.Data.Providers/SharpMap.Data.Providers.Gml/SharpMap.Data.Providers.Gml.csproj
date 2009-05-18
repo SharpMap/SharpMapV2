@@ -45,9 +45,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Gml_orig.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="ClassDiagram1.cd" />
     <None Include="Schema\basicTypes.xsd" />
     <None Include="Schema\coordinateOperations.xsd" />
     <None Include="Schema\coordinateReferenceSystems.xsd" />

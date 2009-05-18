@@ -95,27 +95,31 @@ namespace SharpMap.Data.Providers.Kml.Test
         [TestMethod]
         public void WritePlacemark()
         {
-            Placemark p = new Placemark();
-            p.AddressDetails = new AddressDetails
-                                   {
-                                       Address = new Address {Value = "12345 some street, somewhere , someplace"},
-                                       AddressType = "Postal Address"
-                                   };
-            p.Author = new Author
-                           {
-                               Email =
-                                   {
-                                       "someguy@someplace.thing"
-                                   },
-                               Name =
-                                   {
-                                       "Some Guy"
-                                   },
-                               Uri =
-                                   {
-                                       "www.someplace.thing"
-                                   }
-                           };
+            Placemark p = new Placemark
+                              {
+                                  AddressDetails = new AddressDetails
+                                                       {
+                                                           Address =
+                                                               new Address
+                                                                   {Value = "12345 some street, somewhere , someplace"},
+                                                           AddressType = "Postal Address"
+                                                       },
+                                  Author = new Author
+                                               {
+                                                   Email =
+                                                       {
+                                                           "someguy@someplace.thing"
+                                                       },
+                                                   Name =
+                                                       {
+                                                           "Some Guy"
+                                                       },
+                                                   Uri =
+                                                       {
+                                                           "www.someplace.thing"
+                                                       }
+                                               }
+                              };
 
             Serialize(p, Path.Combine(RootPath, "placemark.kml"));
         }
