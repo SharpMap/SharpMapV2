@@ -18,7 +18,7 @@ using System.Xml.Serialization;
 
 namespace SharpMap.Entities.Ogc.Gml
 {
-    [Serializable, XmlType(TypeName = "ClothoidType", Namespace = "http://www.opengis.net/gml/3.2")]
+    [Serializable, XmlType(TypeName = "ClothoidType", Namespace = Declarations.SchemaVersion)]
     public class ClothoidType : AbstractCurveSegmentType
     {
         [XmlIgnore] private double _endParameter;
@@ -40,7 +40,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(ElementName = "endParameter", IsNullable = false, Form = XmlSchemaForm.Qualified,
-            DataType = "double", Namespace = "http://www.opengis.net/gml/3.2")]
+            DataType = "double", Namespace = Declarations.SchemaVersion)]
         public double EndParameter
         {
             get { return _endParameter; }
@@ -63,7 +63,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(Type = typeof (RefLocation), ElementName = "refLocation", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public RefLocation RefLocation
         {
             get { return _refLocation; }
@@ -71,7 +71,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(ElementName = "scaleFactor", IsNullable = false, Form = XmlSchemaForm.Qualified,
-            DataType = "decimal", Namespace = "http://www.opengis.net/gml/3.2")]
+            DataType = "decimal", Namespace = Declarations.SchemaVersion)]
         public decimal ScaleFactor
         {
             get { return _scaleFactor; }
@@ -83,7 +83,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(ElementName = "startParameter", IsNullable = false, Form = XmlSchemaForm.Qualified,
-            DataType = "double", Namespace = "http://www.opengis.net/gml/3.2")]
+            DataType = "double", Namespace = Declarations.SchemaVersion)]
         public double StartParameter
         {
             get { return _startParameter; }

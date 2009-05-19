@@ -17,7 +17,7 @@ using System.Xml.Serialization;
 
 namespace SharpMap.Entities.Ogc.Gml
 {
-    [Serializable, XmlType(TypeName = "AbstractGeometricPrimitiveType", Namespace = "http://www.opengis.net/gml/3.2")]
+    [Serializable, XmlType(TypeName = "AbstractGeometricPrimitiveType", Namespace = Declarations.SchemaVersion)]
     public abstract class AbstractGeometricPrimitiveType : AbstractGeometryType
     {
         public override void MakeSchemaCompliant()

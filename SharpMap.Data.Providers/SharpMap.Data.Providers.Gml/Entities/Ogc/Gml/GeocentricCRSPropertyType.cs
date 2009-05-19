@@ -18,7 +18,7 @@ using System.Xml.Serialization;
 
 namespace SharpMap.Entities.Ogc.Gml
 {
-    [Serializable, XmlType(TypeName = "GeocentricCRSPropertyType", Namespace = "http://www.opengis.net/gml/3.2")]
+    [Serializable, XmlType(TypeName = "GeocentricCRSPropertyType", Namespace = Declarations.SchemaVersion)]
     public class GeocentricCRSPropertyType
     {
         [XmlIgnore] private Actuate _actuate;
@@ -58,7 +58,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(Type = typeof (GeocentricCRS), ElementName = "GeocentricCRS", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public GeocentricCRS GeocentricCRS
         {
             get { return _geocentricCRS; }

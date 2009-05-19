@@ -18,7 +18,7 @@ using System.Xml.Serialization;
 
 namespace SharpMap.Entities.Ogc.Gml
 {
-    [Serializable, XmlType(TypeName = "TimeCalendarEraType", Namespace = "http://www.opengis.net/gml/3.2")]
+    [Serializable, XmlType(TypeName = "TimeCalendarEraType", Namespace = Declarations.SchemaVersion)]
     public class TimeCalendarEraType : DefinitionType
     {
         [XmlIgnore] private TimePeriodPropertyType _epochOfUse;
@@ -35,7 +35,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(Type = typeof (TimePeriodPropertyType), ElementName = "epochOfUse", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public TimePeriodPropertyType EpochOfUse
         {
             get { return _epochOfUse; }
@@ -43,7 +43,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(ElementName = "julianReference", IsNullable = false, Form = XmlSchemaForm.Qualified,
-            DataType = "decimal", Namespace = "http://www.opengis.net/gml/3.2")]
+            DataType = "decimal", Namespace = Declarations.SchemaVersion)]
         public decimal JulianReference
         {
             get { return _julianReference; }
@@ -55,7 +55,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(ElementName = "referenceDate", IsNullable = false, Form = XmlSchemaForm.Qualified, DataType = "date"
-            , Namespace = "http://www.opengis.net/gml/3.2")]
+            , Namespace = Declarations.SchemaVersion)]
         public DateTime ReferenceDate
         {
             get { return _referenceDate; }
@@ -78,7 +78,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(Type = typeof (StringOrRefType), ElementName = "referenceEvent", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public StringOrRefType ReferenceEvent
         {
             get { return _referenceEvent; }

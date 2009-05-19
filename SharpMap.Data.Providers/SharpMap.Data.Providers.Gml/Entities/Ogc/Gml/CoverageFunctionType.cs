@@ -18,7 +18,7 @@ using System.Xml.Serialization;
 
 namespace SharpMap.Entities.Ogc.Gml
 {
-    [Serializable, XmlType(TypeName = "CoverageFunctionType", Namespace = "http://www.opengis.net/gml/3.2")]
+    [Serializable, XmlType(TypeName = "CoverageFunctionType", Namespace = Declarations.SchemaVersion)]
     public class CoverageFunctionType
     {
         [XmlIgnore] private CoverageMappingRule _coverageMappingRule;
@@ -26,7 +26,7 @@ namespace SharpMap.Entities.Ogc.Gml
         [XmlIgnore] private MappingRule _mappingRule;
 
         [XmlElement(Type = typeof (CoverageMappingRule), ElementName = "CoverageMappingRule", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public CoverageMappingRule CoverageMappingRule
         {
             get { return _coverageMappingRule; }
@@ -34,7 +34,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(Type = typeof (GridFunction), ElementName = "GridFunction", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public GridFunction GridFunction
         {
             get { return _gridFunction; }
@@ -42,7 +42,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(Type = typeof (MappingRule), ElementName = "MappingRule", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public MappingRule MappingRule
         {
             get { return _mappingRule; }

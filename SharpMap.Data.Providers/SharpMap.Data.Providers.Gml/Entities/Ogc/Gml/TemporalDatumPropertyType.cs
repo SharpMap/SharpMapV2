@@ -18,7 +18,7 @@ using System.Xml.Serialization;
 
 namespace SharpMap.Entities.Ogc.Gml
 {
-    [Serializable, XmlType(TypeName = "TemporalDatumPropertyType", Namespace = "http://www.opengis.net/gml/3.2")]
+    [Serializable, XmlType(TypeName = "TemporalDatumPropertyType", Namespace = Declarations.SchemaVersion)]
     public class TemporalDatumPropertyType
     {
         [XmlIgnore] private Actuate _actuate;
@@ -97,7 +97,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(Type = typeof (TemporalDatum), ElementName = "TemporalDatum", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public TemporalDatum TemporalDatum
         {
             get { return _temporalDatum; }

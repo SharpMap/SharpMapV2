@@ -19,7 +19,7 @@ using System.Xml.Serialization;
 namespace SharpMap.Entities.Ogc.Gml
 {
     [Serializable,
-     XmlRoot(ElementName = "SecondDefiningParameter", Namespace = "http://www.opengis.net/gml/3.2", IsNullable = false)]
+     XmlRoot(ElementName = "SecondDefiningParameter", Namespace = Declarations.SchemaVersion, IsNullable = false)]
     public class SecondDefiningParameter
     {
         [XmlIgnore] private MeasureType _inverseFlattening;
@@ -33,7 +33,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(Type = typeof (MeasureType), ElementName = "inverseFlattening", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public MeasureType InverseFlattening
         {
             get { return _inverseFlattening; }
@@ -41,7 +41,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(ElementName = "isSphere", IsNullable = false, Form = XmlSchemaForm.Qualified, DataType = "boolean",
-            Namespace = "http://www.opengis.net/gml/3.2")]
+            Namespace = Declarations.SchemaVersion)]
         public bool IsSphere
         {
             get { return _isSphere; }
@@ -53,7 +53,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(Type = typeof (LengthType), ElementName = "semiMinorAxis", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public LengthType SemiMinorAxis
         {
             get { return _semiMinorAxis; }

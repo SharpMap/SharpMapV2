@@ -17,7 +17,7 @@ using System.Xml.Serialization;
 
 namespace SharpMap.Entities.Ogc.Gml
 {
-    [Serializable, XmlRoot(ElementName = "Quantity", Namespace = "http://www.opengis.net/gml/3.2", IsNullable = true)]
+    [Serializable, XmlRoot(ElementName = "Quantity", Namespace = Declarations.SchemaVersion, IsNullable = true)]
     public class Quantity : MeasureType
     {
         [XmlIgnore] private string _nilReason;

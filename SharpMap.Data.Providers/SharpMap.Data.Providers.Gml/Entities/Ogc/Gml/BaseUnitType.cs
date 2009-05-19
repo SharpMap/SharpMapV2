@@ -18,13 +18,13 @@ using System.Xml.Serialization;
 
 namespace SharpMap.Entities.Ogc.Gml
 {
-    [Serializable, XmlType(TypeName = "BaseUnitType", Namespace = "http://www.opengis.net/gml/3.2")]
+    [Serializable, XmlType(TypeName = "BaseUnitType", Namespace = Declarations.SchemaVersion)]
     public class BaseUnitType : UnitDefinitionType
     {
         [XmlIgnore] private ReferenceType _unitsSystem;
 
         [XmlElement(Type = typeof (ReferenceType), ElementName = "unitsSystem", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public ReferenceType UnitsSystem
         {
             get { return _unitsSystem; }

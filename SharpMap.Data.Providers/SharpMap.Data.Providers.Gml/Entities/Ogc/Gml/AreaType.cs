@@ -17,7 +17,7 @@ using System.Xml.Serialization;
 
 namespace SharpMap.Entities.Ogc.Gml
 {
-    [Serializable, XmlType(TypeName = "AreaType", Namespace = "http://www.opengis.net/gml/3.2")]
+    [Serializable, XmlType(TypeName = "AreaType", Namespace = Declarations.SchemaVersion)]
     public class AreaType : MeasureType
     {
         public override void MakeSchemaCompliant()

@@ -18,7 +18,7 @@ using System.Xml.Serialization;
 namespace SharpMap.Entities.Ogc.Gml
 {
     [Serializable,
-     XmlRoot(ElementName = "OffsetCurve", Namespace = "http://www.opengis.net/gml/3.2", IsNullable = false)]
+     XmlRoot(ElementName = "OffsetCurve", Namespace = Declarations.SchemaVersion, IsNullable = false)]
     public class OffsetCurve : OffsetCurveType
     {
         public override void MakeSchemaCompliant()

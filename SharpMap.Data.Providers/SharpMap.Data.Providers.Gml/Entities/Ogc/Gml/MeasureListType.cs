@@ -17,7 +17,7 @@ using System.Xml.Serialization;
 
 namespace SharpMap.Entities.Ogc.Gml
 {
-    [Serializable, XmlType(TypeName = "MeasureListType", Namespace = "http://www.opengis.net/gml/3.2")]
+    [Serializable, XmlType(TypeName = "MeasureListType", Namespace = Declarations.SchemaVersion)]
     public class MeasureListType
     {
         [XmlIgnore] private string _uom;

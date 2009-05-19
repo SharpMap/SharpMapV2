@@ -18,7 +18,7 @@ using System.Xml.Serialization;
 
 namespace SharpMap.Entities.Ogc.Gml
 {
-    [Serializable, XmlType(TypeName = "MetaDataPropertyType", Namespace = "http://www.opengis.net/gml/3.2"),
+    [Serializable, XmlType(TypeName = "MetaDataPropertyType", Namespace = Declarations.SchemaVersion),
      XmlInclude(typeof (GenericMetaDataType))]
     public class MetaDataPropertyType
     {
@@ -49,7 +49,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(Type = typeof (AbstractMetaData), ElementName = "AbstractMetaData", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public AbstractMetaData AbstractMetaData
         {
             get { return _abstractMetaData; }

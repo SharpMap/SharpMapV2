@@ -19,13 +19,13 @@ using System.Xml.Serialization;
 namespace SharpMap.Entities.Ogc.Gml
 {
     [Serializable,
-     XmlRoot(ElementName = "secondDefiningParameter", Namespace = "http://www.opengis.net/gml/3.2", IsNullable = false)]
+     XmlRoot(ElementName = "secondDefiningParameter", Namespace = Declarations.SchemaVersion, IsNullable = false)]
     public class SecondDefiningParameter_E
     {
         [XmlIgnore] private SecondDefiningParameter _secondDefiningParameter;
 
         [XmlElement(Type = typeof (SecondDefiningParameter), ElementName = "SecondDefiningParameter", IsNullable = false
-            , Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            , Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public SecondDefiningParameter SecondDefiningParameter
         {
             get { return _secondDefiningParameter; }

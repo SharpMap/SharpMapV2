@@ -18,7 +18,7 @@ using System.Xml.Serialization;
 namespace SharpMap.Entities.Ogc.Gml
 {
     [Serializable,
-     XmlRoot(ElementName = "CubicSpline", Namespace = "http://www.opengis.net/gml/3.2", IsNullable = false)]
+     XmlRoot(ElementName = "CubicSpline", Namespace = Declarations.SchemaVersion, IsNullable = false)]
     public class CubicSpline : CubicSplineType
     {
         public override void MakeSchemaCompliant()

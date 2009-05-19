@@ -18,13 +18,13 @@ using System.Xml.Serialization;
 
 namespace SharpMap.Entities.Ogc.Gml
 {
-    [Serializable, XmlType(TypeName = "ShellPropertyType", Namespace = "http://www.opengis.net/gml/3.2")]
+    [Serializable, XmlType(TypeName = "ShellPropertyType", Namespace = Declarations.SchemaVersion)]
     public class ShellPropertyType
     {
         [XmlIgnore] private Shell _shell;
 
         [XmlElement(Type = typeof (Shell), ElementName = "Shell", IsNullable = false, Form = XmlSchemaForm.Qualified,
-            Namespace = "http://www.opengis.net/gml/3.2")]
+            Namespace = Declarations.SchemaVersion)]
         public Shell Shell
         {
             get { return _shell; }

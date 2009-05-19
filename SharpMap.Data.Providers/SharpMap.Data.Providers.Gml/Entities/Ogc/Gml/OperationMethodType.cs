@@ -19,7 +19,7 @@ using System.Xml.Serialization;
 
 namespace SharpMap.Entities.Ogc.Gml
 {
-    [Serializable, XmlType(TypeName = "OperationMethodType", Namespace = "http://www.opengis.net/gml/3.2")]
+    [Serializable, XmlType(TypeName = "OperationMethodType", Namespace = Declarations.SchemaVersion)]
     public class OperationMethodType : IdentifiedObjectType
     {
         [XmlIgnore] private Formula _formula;
@@ -29,7 +29,7 @@ namespace SharpMap.Entities.Ogc.Gml
         [XmlIgnore] private string _targetDimensions;
 
         [XmlElement(Type = typeof (Formula), ElementName = "formula", IsNullable = false, Form = XmlSchemaForm.Qualified
-            , Namespace = "http://www.opengis.net/gml/3.2")]
+            , Namespace = Declarations.SchemaVersion)]
         public Formula Formula
         {
             get { return _formula; }
@@ -37,7 +37,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(Type = typeof (FormulaCitation), ElementName = "formulaCitation", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public FormulaCitation FormulaCitation
         {
             get { return _formulaCitation; }
@@ -45,7 +45,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(Type = typeof (ParameterProperty), ElementName = "parameter", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public List<ParameterProperty> Parameter
         {
             get
@@ -60,7 +60,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(ElementName = "sourceDimensions", IsNullable = false, Form = XmlSchemaForm.Qualified,
-            DataType = "positiveInteger", Namespace = "http://www.opengis.net/gml/3.2")]
+            DataType = "positiveInteger", Namespace = Declarations.SchemaVersion)]
         public string SourceDimensions
         {
             get { return _sourceDimensions; }
@@ -68,7 +68,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(ElementName = "targetDimensions", IsNullable = false, Form = XmlSchemaForm.Qualified,
-            DataType = "positiveInteger", Namespace = "http://www.opengis.net/gml/3.2")]
+            DataType = "positiveInteger", Namespace = Declarations.SchemaVersion)]
         public string TargetDimensions
         {
             get { return _targetDimensions; }

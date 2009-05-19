@@ -18,7 +18,7 @@ using System.Xml.Serialization;
 namespace SharpMap.Entities.Ogc.Gml
 {
     [Serializable,
-     XmlRoot(ElementName = "engineeringDatum", Namespace = "http://www.opengis.net/gml/3.2", IsNullable = false)]
+     XmlRoot(ElementName = "engineeringDatum", Namespace = Declarations.SchemaVersion, IsNullable = false)]
     public class EngineeringDatumProperty : EngineeringDatumPropertyType
     {
         public override void MakeSchemaCompliant()

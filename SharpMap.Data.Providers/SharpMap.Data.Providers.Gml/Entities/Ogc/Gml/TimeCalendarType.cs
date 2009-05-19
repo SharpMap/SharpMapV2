@@ -21,7 +21,7 @@ using System.Xml.Serialization;
 
 namespace SharpMap.Entities.Ogc.Gml
 {
-    [Serializable, XmlType(TypeName = "TimeCalendarType", Namespace = "http://www.opengis.net/gml/3.2")]
+    [Serializable, XmlType(TypeName = "TimeCalendarType", Namespace = Declarations.SchemaVersion)]
     public class TimeCalendarType : TimeReferenceSystemType
     {
         [XmlIgnore] private List<TimeCalendarEraPropertyType> _referenceFrame;
@@ -39,7 +39,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(Type = typeof (TimeCalendarEraPropertyType), ElementName = "referenceFrame", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public List<TimeCalendarEraPropertyType> ReferenceFrame
         {
             get

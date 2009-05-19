@@ -18,7 +18,7 @@ using System.Xml.Serialization;
 namespace SharpMap.Entities.Ogc.Gml
 {
     [Serializable,
-     XmlRoot(ElementName = "greenwichLongitude", Namespace = "http://www.opengis.net/gml/3.2", IsNullable = false)]
+     XmlRoot(ElementName = "greenwichLongitude", Namespace = Declarations.SchemaVersion, IsNullable = false)]
     public class GreenwichLongitude : AngleType
     {
         public override void MakeSchemaCompliant()

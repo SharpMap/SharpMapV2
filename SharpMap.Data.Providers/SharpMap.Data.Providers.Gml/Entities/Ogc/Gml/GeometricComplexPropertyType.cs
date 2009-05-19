@@ -18,7 +18,7 @@ using System.Xml.Serialization;
 
 namespace SharpMap.Entities.Ogc.Gml
 {
-    [Serializable, XmlType(TypeName = "GeometricComplexPropertyType", Namespace = "http://www.opengis.net/gml/3.2")]
+    [Serializable, XmlType(TypeName = "GeometricComplexPropertyType", Namespace = Declarations.SchemaVersion)]
     public class GeometricComplexPropertyType
     {
         [XmlIgnore] private Actuate _actuate;
@@ -64,7 +64,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(Type = typeof (CompositeCurve), ElementName = "CompositeCurve", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public CompositeCurve CompositeCurve
         {
             get { return _compositeCurve; }
@@ -72,7 +72,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(Type = typeof (CompositeSolid), ElementName = "CompositeSolid", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public CompositeSolid CompositeSolid
         {
             get { return _compositeSolid; }
@@ -80,7 +80,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(Type = typeof (CompositeSurface), ElementName = "CompositeSurface", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public CompositeSurface CompositeSurface
         {
             get { return _compositeSurface; }
@@ -88,7 +88,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(Type = typeof (GeometricComplex), ElementName = "GeometricComplex", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public GeometricComplex GeometricComplex
         {
             get { return _geometricComplex; }

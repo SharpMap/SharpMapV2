@@ -18,7 +18,7 @@ using System.Xml.Serialization;
 namespace SharpMap.Entities.Ogc.Gml
 {
     [Serializable,
-     XmlRoot(ElementName = "pixelInCell", Namespace = "http://www.opengis.net/gml/3.2", IsNullable = false)]
+     XmlRoot(ElementName = "pixelInCell", Namespace = Declarations.SchemaVersion, IsNullable = false)]
     public class PixelInCell : CodeWithAuthorityType
     {
         public override void MakeSchemaCompliant()

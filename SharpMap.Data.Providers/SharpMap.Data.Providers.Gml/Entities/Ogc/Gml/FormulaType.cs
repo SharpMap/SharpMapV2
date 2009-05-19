@@ -18,7 +18,7 @@ using System.Xml.Serialization;
 
 namespace SharpMap.Entities.Ogc.Gml
 {
-    [Serializable, XmlType(TypeName = "FormulaType", Namespace = "http://www.opengis.net/gml/3.2")]
+    [Serializable, XmlType(TypeName = "FormulaType", Namespace = Declarations.SchemaVersion)]
     public class FormulaType
     {
         [XmlIgnore] private double _a;
@@ -31,7 +31,7 @@ namespace SharpMap.Entities.Ogc.Gml
         [XmlIgnore] public bool _dSpecified;
 
         [XmlElement(ElementName = "a", IsNullable = false, Form = XmlSchemaForm.Qualified, DataType = "double",
-            Namespace = "http://www.opengis.net/gml/3.2")]
+            Namespace = Declarations.SchemaVersion)]
         public double a
         {
             get { return _a; }
@@ -43,7 +43,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(ElementName = "b", IsNullable = false, Form = XmlSchemaForm.Qualified, DataType = "double",
-            Namespace = "http://www.opengis.net/gml/3.2")]
+            Namespace = Declarations.SchemaVersion)]
         public double b
         {
             get { return _b; }
@@ -55,7 +55,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(ElementName = "c", IsNullable = false, Form = XmlSchemaForm.Qualified, DataType = "double",
-            Namespace = "http://www.opengis.net/gml/3.2")]
+            Namespace = Declarations.SchemaVersion)]
         public double c
         {
             get { return _c; }
@@ -67,7 +67,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(ElementName = "d", IsNullable = false, Form = XmlSchemaForm.Qualified, DataType = "double",
-            Namespace = "http://www.opengis.net/gml/3.2")]
+            Namespace = Declarations.SchemaVersion)]
         public double d
         {
             get { return _d; }

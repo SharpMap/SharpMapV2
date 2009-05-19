@@ -18,13 +18,13 @@ using System.Xml.Serialization;
 
 namespace SharpMap.Entities.Ogc.Gml
 {
-    [Serializable, XmlType(TypeName = "TimeReferenceSystemType", Namespace = "http://www.opengis.net/gml/3.2")]
+    [Serializable, XmlType(TypeName = "TimeReferenceSystemType", Namespace = Declarations.SchemaVersion)]
     public class TimeReferenceSystemType : DefinitionType
     {
         [XmlIgnore] private DomainOfValidity _domainOfValidity;
 
         [XmlElement(Type = typeof (DomainOfValidity), ElementName = "domainOfValidity", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public DomainOfValidity DomainOfValidity
         {
             get { return _domainOfValidity; }

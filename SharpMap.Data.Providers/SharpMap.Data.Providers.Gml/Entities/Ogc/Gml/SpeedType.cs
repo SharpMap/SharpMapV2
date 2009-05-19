@@ -17,7 +17,7 @@ using System.Xml.Serialization;
 
 namespace SharpMap.Entities.Ogc.Gml
 {
-    [Serializable, XmlType(TypeName = "SpeedType", Namespace = "http://www.opengis.net/gml/3.2")]
+    [Serializable, XmlType(TypeName = "SpeedType", Namespace = Declarations.SchemaVersion)]
     public class SpeedType : MeasureType
     {
         public override void MakeSchemaCompliant()

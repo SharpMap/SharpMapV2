@@ -19,7 +19,7 @@ using System.Xml.Serialization;
 
 namespace SharpMap.Entities.Ogc.Gml
 {
-    [Serializable, XmlType(TypeName = "AbstractGeneralConversionType", Namespace = "http://www.opengis.net/gml/3.2")]
+    [Serializable, XmlType(TypeName = "AbstractGeneralConversionType", Namespace = Declarations.SchemaVersion)]
     public abstract class AbstractGeneralConversionType : AbstractCoordinateOperationType
     {
         [XmlIgnore] private List<CoordinateOperationAccuracy> _coordinateOperationAccuracy;
@@ -34,7 +34,7 @@ namespace SharpMap.Entities.Ogc.Gml
         [XmlIgnore] private List<string> _scope;
 
         [XmlElement(Type = typeof (CoordinateOperationAccuracy), ElementName = "coordinateOperationAccuracy",
-            IsNullable = false, Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            IsNullable = false, Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public List<CoordinateOperationAccuracy> CoordinateOperationAccuracy
         {
             get
@@ -49,7 +49,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(Type = typeof (Description), ElementName = "description", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public Description Description
         {
             get { return _description; }
@@ -57,7 +57,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(Type = typeof (DescriptionReference), ElementName = "descriptionReference", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public DescriptionReference DescriptionReference
         {
             get { return _descriptionReference; }
@@ -65,7 +65,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(Type = typeof (DomainOfValidity), ElementName = "domainOfValidity", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public DomainOfValidity DomainOfValidity
         {
             get { return _domainOfValidity; }
@@ -80,7 +80,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(Type = typeof (Identifier), ElementName = "identifier", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public Identifier Identifier
         {
             get { return _identifier; }
@@ -88,7 +88,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(Type = typeof (MetaDataProperty), ElementName = "metaDataProperty", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public List<MetaDataProperty> MetaDataProperty
         {
             get
@@ -103,7 +103,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(Type = typeof (Name), ElementName = "name", IsNullable = false, Form = XmlSchemaForm.Qualified,
-            Namespace = "http://www.opengis.net/gml/3.2")]
+            Namespace = Declarations.SchemaVersion)]
         public List<Name> Name
         {
             get
@@ -118,7 +118,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(ElementName = "remarks", IsNullable = false, Form = XmlSchemaForm.Qualified, DataType = "string",
-            Namespace = "http://www.opengis.net/gml/3.2")]
+            Namespace = Declarations.SchemaVersion)]
         public string Remarks
         {
             get { return _remarks; }
@@ -126,7 +126,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(Type = typeof (string), ElementName = "scope", IsNullable = false, Form = XmlSchemaForm.Qualified,
-            DataType = "string", Namespace = "http://www.opengis.net/gml/3.2")]
+            DataType = "string", Namespace = Declarations.SchemaVersion)]
         public List<string> Scope
         {
             get

@@ -19,7 +19,7 @@ using System.Xml.Serialization;
 
 namespace SharpMap.Entities.Ogc.Gml
 {
-    [Serializable, XmlType(TypeName = "ConventionalUnitType", Namespace = "http://www.opengis.net/gml/3.2")]
+    [Serializable, XmlType(TypeName = "ConventionalUnitType", Namespace = Declarations.SchemaVersion)]
     public class ConventionalUnitType : UnitDefinitionType
     {
         [XmlIgnore] private ConversionToPreferredUnit _conversionToPreferredUnit;
@@ -27,7 +27,7 @@ namespace SharpMap.Entities.Ogc.Gml
         [XmlIgnore] private RoughConversionToPreferredUnit _roughConversionToPreferredUnit;
 
         [XmlElement(Type = typeof (ConversionToPreferredUnit), ElementName = "conversionToPreferredUnit",
-            IsNullable = false, Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            IsNullable = false, Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public ConversionToPreferredUnit ConversionToPreferredUnit
         {
             get { return _conversionToPreferredUnit; }
@@ -35,7 +35,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(Type = typeof (DerivationUnitTerm), ElementName = "derivationUnitTerm", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public List<DerivationUnitTerm> DerivationUnitTerm
         {
             get
@@ -50,7 +50,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(Type = typeof (RoughConversionToPreferredUnit), ElementName = "roughConversionToPreferredUnit",
-            IsNullable = false, Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            IsNullable = false, Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public RoughConversionToPreferredUnit RoughConversionToPreferredUnit
         {
             get { return _roughConversionToPreferredUnit; }

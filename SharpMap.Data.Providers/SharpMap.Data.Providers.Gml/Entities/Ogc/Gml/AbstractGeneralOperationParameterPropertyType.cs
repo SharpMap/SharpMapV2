@@ -19,7 +19,7 @@ using System.Xml.Serialization;
 namespace SharpMap.Entities.Ogc.Gml
 {
     [Serializable, XmlInclude(typeof (OperationParameterGroupType)), XmlInclude(typeof (OperationParameterType)),
-     XmlType(TypeName = "AbstractGeneralOperationParameterPropertyType", Namespace = "http://www.opengis.net/gml/3.2")]
+     XmlType(TypeName = "AbstractGeneralOperationParameterPropertyType", Namespace = Declarations.SchemaVersion)]
     public class AbstractGeneralOperationParameterPropertyType
     {
         [XmlIgnore] private AbstractGeneralOperationParameter _abstractGeneralOperationParameter;
@@ -41,7 +41,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(Type = typeof (AbstractGeneralOperationParameter), ElementName = "AbstractGeneralOperationParameter"
-            , IsNullable = false, Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            , IsNullable = false, Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public AbstractGeneralOperationParameter AbstractGeneralOperationParameter
         {
             get { return _abstractGeneralOperationParameter; }

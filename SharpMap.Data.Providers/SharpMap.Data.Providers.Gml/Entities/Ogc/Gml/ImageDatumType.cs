@@ -18,13 +18,13 @@ using System.Xml.Serialization;
 
 namespace SharpMap.Entities.Ogc.Gml
 {
-    [Serializable, XmlType(TypeName = "ImageDatumType", Namespace = "http://www.opengis.net/gml/3.2")]
+    [Serializable, XmlType(TypeName = "ImageDatumType", Namespace = Declarations.SchemaVersion)]
     public class ImageDatumType : AbstractDatumType
     {
         [XmlIgnore] private PixelInCell _pixelInCell;
 
         [XmlElement(Type = typeof (PixelInCell), ElementName = "pixelInCell", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public PixelInCell PixelInCell
         {
             get { return _pixelInCell; }

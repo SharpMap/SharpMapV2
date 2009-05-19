@@ -18,7 +18,7 @@ using System.Xml.Serialization;
 
 namespace SharpMap.Entities.Ogc.Gml
 {
-    [Serializable, XmlType(TypeName = "TopoSurfacePropertyType", Namespace = "http://www.opengis.net/gml/3.2")]
+    [Serializable, XmlType(TypeName = "TopoSurfacePropertyType", Namespace = Declarations.SchemaVersion)]
     public class TopoSurfacePropertyType
     {
         [XmlIgnore] private bool _owns;
@@ -42,7 +42,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(Type = typeof (TopoSurface), ElementName = "TopoSurface", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public TopoSurface TopoSurface
         {
             get { return _topoSurface; }

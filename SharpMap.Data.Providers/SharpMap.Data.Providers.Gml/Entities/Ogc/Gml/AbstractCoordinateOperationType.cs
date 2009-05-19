@@ -19,7 +19,7 @@ using System.Xml.Serialization;
 
 namespace SharpMap.Entities.Ogc.Gml
 {
-    [Serializable, XmlType(TypeName = "AbstractCoordinateOperationType", Namespace = "http://www.opengis.net/gml/3.2")]
+    [Serializable, XmlType(TypeName = "AbstractCoordinateOperationType", Namespace = Declarations.SchemaVersion)]
     public abstract class AbstractCoordinateOperationType : IdentifiedObjectType
     {
         [XmlIgnore] private List<CoordinateOperationAccuracy> _coordinateOperationAccuracy;
@@ -30,7 +30,7 @@ namespace SharpMap.Entities.Ogc.Gml
         [XmlIgnore] private TargetCRSProperty _targetCrsProperty;
 
         [XmlElement(Type = typeof (CoordinateOperationAccuracy), ElementName = "coordinateOperationAccuracy",
-            IsNullable = false, Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            IsNullable = false, Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public List<CoordinateOperationAccuracy> CoordinateOperationAccuracy
         {
             get
@@ -45,7 +45,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(Type = typeof (DomainOfValidity), ElementName = "domainOfValidity", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public DomainOfValidity DomainOfValidity
         {
             get { return _domainOfValidity; }
@@ -53,7 +53,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(ElementName = "operationVersion", IsNullable = false, Form = XmlSchemaForm.Qualified,
-            DataType = "string", Namespace = "http://www.opengis.net/gml/3.2")]
+            DataType = "string", Namespace = Declarations.SchemaVersion)]
         public string OperationVersion
         {
             get { return _operationVersion; }
@@ -61,7 +61,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(Type = typeof (string), ElementName = "scope", IsNullable = false, Form = XmlSchemaForm.Qualified,
-            DataType = "string", Namespace = "http://www.opengis.net/gml/3.2")]
+            DataType = "string", Namespace = Declarations.SchemaVersion)]
         public List<string> Scope
         {
             get
@@ -76,7 +76,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(Type = typeof (SourceCRSProperty), ElementName = "sourceCRS", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public SourceCRSProperty SourceCRS
         {
             get { return _sourceCRS; }
@@ -84,7 +84,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(Type = typeof (TargetCRSProperty), ElementName = "targetCRS", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public TargetCRSProperty TargetCRS
         {
             get { return _targetCrsProperty; }

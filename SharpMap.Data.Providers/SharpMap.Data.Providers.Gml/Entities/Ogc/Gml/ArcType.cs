@@ -19,7 +19,7 @@ using System.Xml.Serialization;
 
 namespace SharpMap.Entities.Ogc.Gml
 {
-    [Serializable, XmlType(TypeName = "ArcType", Namespace = "http://www.opengis.net/gml/3.2")]
+    [Serializable, XmlType(TypeName = "ArcType", Namespace = Declarations.SchemaVersion)]
     public class ArcType : ArcStringType
     {
         [XmlIgnore] private Coordinates _coordinates;
@@ -35,7 +35,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(Type = typeof (Coordinates), ElementName = "coordinates", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public Coordinates Coordinates
         {
             get { return _coordinates; }
@@ -50,7 +50,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(Type = typeof (PointProperty), ElementName = "pointProperty", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public List<PointProperty> PointProperty
         {
             get
@@ -65,7 +65,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(Type = typeof (PointRep), ElementName = "pointRep", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public List<PointRep> PointRep
         {
             get
@@ -80,7 +80,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(Type = typeof (Pos), ElementName = "pos", IsNullable = false, Form = XmlSchemaForm.Qualified,
-            Namespace = "http://www.opengis.net/gml/3.2")]
+            Namespace = Declarations.SchemaVersion)]
         public List<Pos> Pos
         {
             get
@@ -95,7 +95,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(Type = typeof (PosList), ElementName = "posList", IsNullable = false, Form = XmlSchemaForm.Qualified
-            , Namespace = "http://www.opengis.net/gml/3.2")]
+            , Namespace = Declarations.SchemaVersion)]
         public PosList PosList
         {
             get { return _posList; }

@@ -21,7 +21,7 @@ using System.Xml.Serialization;
 
 namespace SharpMap.Entities.Ogc.Gml
 {
-    [Serializable, XmlType(TypeName = "FeatureArrayPropertyType", Namespace = "http://www.opengis.net/gml/3.2"),
+    [Serializable, XmlType(TypeName = "FeatureArrayPropertyType", Namespace = Declarations.SchemaVersion),
      XmlInclude(typeof (ObservationType)), XmlInclude(typeof (DynamicFeatureType)),
      XmlInclude(typeof (AbstractCoverageType)), XmlInclude(typeof (AbstractFeatureCollectionType)),
      XmlInclude(typeof (BoundedFeatureType))]
@@ -30,7 +30,7 @@ namespace SharpMap.Entities.Ogc.Gml
         [XmlIgnore] private List<AbstractFeature> _abstractFeature;
 
         [XmlElement(Type = typeof (AbstractFeature), ElementName = "AbstractFeature", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public List<AbstractFeature> AbstractFeature
         {
             get

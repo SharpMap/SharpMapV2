@@ -17,7 +17,7 @@ using System.Xml.Serialization;
 
 namespace SharpMap.Entities.Ogc.Gml
 {
-    [Serializable, XmlRoot(ElementName = "Rectangle", Namespace = "http://www.opengis.net/gml/3.2", IsNullable = false)]
+    [Serializable, XmlRoot(ElementName = "Rectangle", Namespace = Declarations.SchemaVersion, IsNullable = false)]
     public class Rectangle : RectangleType
     {
         public override void MakeSchemaCompliant()

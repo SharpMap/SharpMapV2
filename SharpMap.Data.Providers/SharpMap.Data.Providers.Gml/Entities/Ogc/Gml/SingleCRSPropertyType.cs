@@ -18,7 +18,7 @@ using System.Xml.Serialization;
 
 namespace SharpMap.Entities.Ogc.Gml
 {
-    [Serializable, XmlType(TypeName = "SingleCRSPropertyType", Namespace = "http://www.opengis.net/gml/3.2"),
+    [Serializable, XmlType(TypeName = "SingleCRSPropertyType", Namespace = Declarations.SchemaVersion),
      XmlInclude(typeof (GeocentricCRSType)), XmlInclude(typeof (TemporalCRSType)),
      XmlInclude(typeof (AbstractGeneralDerivedCRSType)), XmlInclude(typeof (EngineeringCRSType)),
      XmlInclude(typeof (GeographicCRSType)), XmlInclude(typeof (GeodeticCRSType)), XmlInclude(typeof (VerticalCRSType)),
@@ -44,7 +44,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(Type = typeof (AbstractSingleCRS), ElementName = "AbstractSingleCRS", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public AbstractSingleCRS AbstractSingleCRS
         {
             get { return _abstractSingleCRS; }

@@ -17,7 +17,7 @@ using System.Xml.Serialization;
 
 namespace SharpMap.Entities.Ogc.Gml
 {
-    [Serializable, XmlRoot(ElementName = "dmsAngle", Namespace = "http://www.opengis.net/gml/3.2", IsNullable = false)]
+    [Serializable, XmlRoot(ElementName = "dmsAngle", Namespace = Declarations.SchemaVersion, IsNullable = false)]
     public class DmsAngle : DMSAngleType
     {
         public override void MakeSchemaCompliant()

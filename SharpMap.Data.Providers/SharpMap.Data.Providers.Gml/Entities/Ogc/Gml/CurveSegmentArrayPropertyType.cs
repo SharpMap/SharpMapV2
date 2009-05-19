@@ -23,7 +23,7 @@ namespace SharpMap.Entities.Ogc.Gml
 {
     [Serializable, XmlInclude(typeof (LineStringSegmentType)), XmlInclude(typeof (OffsetCurveType)),
      XmlInclude(typeof (ArcStringType)), XmlInclude(typeof (BSplineType)),
-     XmlType(TypeName = "CurveSegmentArrayPropertyType", Namespace = "http://www.opengis.net/gml/3.2"),
+     XmlType(TypeName = "CurveSegmentArrayPropertyType", Namespace = Declarations.SchemaVersion),
      XmlInclude(typeof (ClothoidType)), XmlInclude(typeof (ArcStringByBulgeType)), XmlInclude(typeof (CubicSplineType)),
      XmlInclude(typeof (ArcByCenterPointType)), XmlInclude(typeof (GeodesicStringType))]
     public class CurveSegmentArrayPropertyType
@@ -31,7 +31,7 @@ namespace SharpMap.Entities.Ogc.Gml
         [XmlIgnore] private List<AbstractCurveSegment> _abstractCurveSegment;
 
         [XmlElement(Type = typeof (AbstractCurveSegment), ElementName = "AbstractCurveSegment", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public List<AbstractCurveSegment> AbstractCurveSegment
         {
             get

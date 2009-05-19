@@ -21,13 +21,13 @@ using System.Xml.Serialization;
 
 namespace SharpMap.Entities.Ogc.Gml
 {
-    [Serializable, XmlType(TypeName = "TimeOrdinalReferenceSystemType", Namespace = "http://www.opengis.net/gml/3.2")]
+    [Serializable, XmlType(TypeName = "TimeOrdinalReferenceSystemType", Namespace = Declarations.SchemaVersion)]
     public class TimeOrdinalReferenceSystemType : TimeReferenceSystemType
     {
         [XmlIgnore] private List<TimeOrdinalEraPropertyType> _component;
 
         [XmlElement(Type = typeof (TimeOrdinalEraPropertyType), ElementName = "component", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public List<TimeOrdinalEraPropertyType> Component
         {
             get

@@ -18,7 +18,7 @@ using System.Xml.Serialization;
 
 namespace SharpMap.Entities.Ogc.Gml
 {
-    [Serializable, XmlType(TypeName = "DataBlockType", Namespace = "http://www.opengis.net/gml/3.2")]
+    [Serializable, XmlType(TypeName = "DataBlockType", Namespace = Declarations.SchemaVersion)]
     public class DataBlockType
     {
         [XmlIgnore] private string _doubleOrNilReasonTupleList;
@@ -26,7 +26,7 @@ namespace SharpMap.Entities.Ogc.Gml
         [XmlIgnore] private TupleList _tupleList;
 
         [XmlElement(ElementName = "doubleOrNilReasonTupleList", IsNullable = false, Form = XmlSchemaForm.Qualified,
-            Namespace = "http://www.opengis.net/gml/3.2")]
+            Namespace = Declarations.SchemaVersion)]
         public string DoubleOrNilReasonTupleList
         {
             get { return _doubleOrNilReasonTupleList; }
@@ -34,7 +34,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(Type = typeof (RangeParameters), ElementName = "rangeParameters", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public RangeParameters RangeParameters
         {
             get { return _rangeParameters; }
@@ -42,7 +42,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(Type = typeof (TupleList), ElementName = "tupleList", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public TupleList TupleList
         {
             get { return _tupleList; }

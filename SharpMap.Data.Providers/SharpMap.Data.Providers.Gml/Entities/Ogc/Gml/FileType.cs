@@ -18,7 +18,7 @@ using System.Xml.Serialization;
 
 namespace SharpMap.Entities.Ogc.Gml
 {
-    [Serializable, XmlType(TypeName = "FileType", Namespace = "http://www.opengis.net/gml/3.2")]
+    [Serializable, XmlType(TypeName = "FileType", Namespace = Declarations.SchemaVersion)]
     public class FileType
     {
         [XmlIgnore] private string _compression;
@@ -35,7 +35,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(ElementName = "compression", IsNullable = false, Form = XmlSchemaForm.Qualified, DataType = "anyURI"
-            , Namespace = "http://www.opengis.net/gml/3.2")]
+            , Namespace = Declarations.SchemaVersion)]
         public string Compression
         {
             get { return _compression; }
@@ -43,7 +43,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(ElementName = "fileName", IsNullable = false, Form = XmlSchemaForm.Qualified, DataType = "anyURI",
-            Namespace = "http://www.opengis.net/gml/3.2")]
+            Namespace = Declarations.SchemaVersion)]
         public string FileName
         {
             get { return _fileName; }
@@ -51,7 +51,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(ElementName = "fileReference", IsNullable = false, Form = XmlSchemaForm.Qualified,
-            DataType = "anyURI", Namespace = "http://www.opengis.net/gml/3.2")]
+            DataType = "anyURI", Namespace = Declarations.SchemaVersion)]
         public string FileReference
         {
             get { return _fileReference; }
@@ -59,7 +59,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(Type = typeof (CodeType), ElementName = "fileStructure", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public CodeType FileStructure
         {
             get { return _fileStructure; }
@@ -67,7 +67,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(ElementName = "mimeType", IsNullable = false, Form = XmlSchemaForm.Qualified, DataType = "anyURI",
-            Namespace = "http://www.opengis.net/gml/3.2")]
+            Namespace = Declarations.SchemaVersion)]
         public string MimeType
         {
             get { return _mimeType; }
@@ -75,7 +75,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(Type = typeof (RangeParameters), ElementName = "rangeParameters", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public RangeParameters RangeParameters
         {
             get { return _rangeParameters; }

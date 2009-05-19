@@ -18,13 +18,13 @@ using System.Xml.Serialization;
 
 namespace SharpMap.Entities.Ogc.Gml
 {
-    [Serializable, XmlType(TypeName = "IndirectEntryType", Namespace = "http://www.opengis.net/gml/3.2")]
+    [Serializable, XmlType(TypeName = "IndirectEntryType", Namespace = Declarations.SchemaVersion)]
     public class IndirectEntryType
     {
         [XmlIgnore] private DefinitionProxy _definitionProxy;
 
         [XmlElement(Type = typeof (DefinitionProxy), ElementName = "DefinitionProxy", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public DefinitionProxy DefinitionProxy
         {
             get { return _definitionProxy; }

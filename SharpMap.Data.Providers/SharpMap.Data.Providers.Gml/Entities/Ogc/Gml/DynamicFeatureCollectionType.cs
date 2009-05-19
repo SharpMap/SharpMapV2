@@ -18,13 +18,13 @@ using System.Xml.Serialization;
 
 namespace SharpMap.Entities.Ogc.Gml
 {
-    [Serializable, XmlType(TypeName = "DynamicFeatureCollectionType", Namespace = "http://www.opengis.net/gml/3.2")]
+    [Serializable, XmlType(TypeName = "DynamicFeatureCollectionType", Namespace = Declarations.SchemaVersion)]
     public class DynamicFeatureCollectionType : DynamicFeatureType
     {
         [XmlIgnore] private DynamicMembers _dynamicMembers;
 
         [XmlElement(Type = typeof (DynamicMembers), ElementName = "dynamicMembers", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public DynamicMembers DynamicMembers
         {
             get { return _dynamicMembers; }

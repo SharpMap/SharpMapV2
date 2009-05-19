@@ -18,7 +18,7 @@ using System.Xml.Serialization;
 namespace SharpMap.Entities.Ogc.Gml
 {
     [Serializable,
-     XmlRoot(ElementName = "AbstractSolid", Namespace = "http://www.opengis.net/gml/3.2", IsNullable = false)]
+     XmlRoot(ElementName = "AbstractSolid", Namespace = Declarations.SchemaVersion, IsNullable = false)]
     public class AbstractSolid : AbstractSolidType
     {
         public override void MakeSchemaCompliant()

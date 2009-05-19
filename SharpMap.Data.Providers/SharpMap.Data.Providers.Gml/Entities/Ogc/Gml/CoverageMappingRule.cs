@@ -18,7 +18,7 @@ using System.Xml.Serialization;
 namespace SharpMap.Entities.Ogc.Gml
 {
     [Serializable,
-     XmlRoot(ElementName = "CoverageMappingRule", Namespace = "http://www.opengis.net/gml/3.2", IsNullable = false)]
+     XmlRoot(ElementName = "CoverageMappingRule", Namespace = Declarations.SchemaVersion, IsNullable = false)]
     public class CoverageMappingRule : MappingRuleType
     {
         public override void MakeSchemaCompliant()

@@ -18,7 +18,7 @@ using System.Xml.Serialization;
 namespace SharpMap.Entities.Ogc.Gml
 {
     [Serializable,
-     XmlRoot(ElementName = "ConventionalUnit", Namespace = "http://www.opengis.net/gml/3.2", IsNullable = false)]
+     XmlRoot(ElementName = "ConventionalUnit", Namespace = Declarations.SchemaVersion, IsNullable = false)]
     public class ConventionalUnit : ConventionalUnitType
     {
         public override void MakeSchemaCompliant()

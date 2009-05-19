@@ -19,7 +19,7 @@ using System.Xml.Serialization;
 
 namespace SharpMap.Entities.Ogc.Gml
 {
-    [Serializable, XmlType(TypeName = "TinType", Namespace = "http://www.opengis.net/gml/3.2")]
+    [Serializable, XmlType(TypeName = "TinType", Namespace = Declarations.SchemaVersion)]
     public class TinType : SurfaceType
     {
         [XmlIgnore] private List<LineStringSegmentArrayPropertyType> _breakLines;
@@ -28,7 +28,7 @@ namespace SharpMap.Entities.Ogc.Gml
         [XmlIgnore] private List<LineStringSegmentArrayPropertyType> _stopLines;
 
         [XmlElement(Type = typeof (LineStringSegmentArrayPropertyType), ElementName = "breakLines", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public List<LineStringSegmentArrayPropertyType> BreakLines
         {
             get
@@ -43,7 +43,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(Type = typeof (ControlPoint), ElementName = "controlPoint", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public ControlPoint ControlPoint
         {
             get { return _controlPoint; }
@@ -51,7 +51,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(Type = typeof (LengthType), ElementName = "maxLength", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public LengthType MaxLength
         {
             get { return _maxLength; }
@@ -59,7 +59,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(Type = typeof (LineStringSegmentArrayPropertyType), ElementName = "stopLines", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public List<LineStringSegmentArrayPropertyType> StopLines
         {
             get

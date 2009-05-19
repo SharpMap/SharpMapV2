@@ -17,7 +17,7 @@ using System.Xml.Serialization;
 
 namespace SharpMap.Entities.Ogc.Gml
 {
-    [Serializable, XmlType(TypeName = "AbstractRingType", Namespace = "http://www.opengis.net/gml/3.2")]
+    [Serializable, XmlType(TypeName = "AbstractRingType", Namespace = Declarations.SchemaVersion)]
     public abstract class AbstractRingType
     {
         public virtual void MakeSchemaCompliant()

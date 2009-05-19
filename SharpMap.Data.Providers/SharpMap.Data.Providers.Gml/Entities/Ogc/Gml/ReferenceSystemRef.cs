@@ -18,7 +18,7 @@ using System.Xml.Serialization;
 namespace SharpMap.Entities.Ogc.Gml
 {
     [Serializable,
-     XmlRoot(ElementName = "referenceSystemRef", Namespace = "http://www.opengis.net/gml/3.2", IsNullable = false)]
+     XmlRoot(ElementName = "referenceSystemRef", Namespace = Declarations.SchemaVersion, IsNullable = false)]
     public class ReferenceSystemRef : CRSPropertyType
     {
         public override void MakeSchemaCompliant()

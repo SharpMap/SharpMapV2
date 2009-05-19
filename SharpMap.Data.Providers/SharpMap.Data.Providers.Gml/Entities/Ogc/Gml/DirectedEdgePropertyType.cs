@@ -18,7 +18,7 @@ using System.Xml.Serialization;
 
 namespace SharpMap.Entities.Ogc.Gml
 {
-    [Serializable, XmlType(TypeName = "DirectedEdgePropertyType", Namespace = "http://www.opengis.net/gml/3.2")]
+    [Serializable, XmlType(TypeName = "DirectedEdgePropertyType", Namespace = Declarations.SchemaVersion)]
     public class DirectedEdgePropertyType
     {
         [XmlIgnore] private Actuate _actuate;
@@ -64,7 +64,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(Type = typeof (Edge), ElementName = "Edge", IsNullable = false, Form = XmlSchemaForm.Qualified,
-            Namespace = "http://www.opengis.net/gml/3.2")]
+            Namespace = Declarations.SchemaVersion)]
         public Edge Edge
         {
             get { return _edge; }

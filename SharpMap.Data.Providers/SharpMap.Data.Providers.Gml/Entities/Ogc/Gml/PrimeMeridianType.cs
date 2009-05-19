@@ -18,13 +18,13 @@ using System.Xml.Serialization;
 
 namespace SharpMap.Entities.Ogc.Gml
 {
-    [Serializable, XmlType(TypeName = "PrimeMeridianType", Namespace = "http://www.opengis.net/gml/3.2")]
+    [Serializable, XmlType(TypeName = "PrimeMeridianType", Namespace = Declarations.SchemaVersion)]
     public class PrimeMeridianType : IdentifiedObjectType
     {
         [XmlIgnore] private GreenwichLongitude _greenwichLongitude;
 
         [XmlElement(Type = typeof (GreenwichLongitude), ElementName = "greenwichLongitude", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public GreenwichLongitude GreenwichLongitude
         {
             get { return _greenwichLongitude; }

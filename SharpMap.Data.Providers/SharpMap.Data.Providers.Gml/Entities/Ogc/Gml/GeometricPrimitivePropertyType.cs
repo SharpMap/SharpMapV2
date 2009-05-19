@@ -18,7 +18,7 @@ using System.Xml.Serialization;
 
 namespace SharpMap.Entities.Ogc.Gml
 {
-    [Serializable, XmlType(TypeName = "GeometricPrimitivePropertyType", Namespace = "http://www.opengis.net/gml/3.2"),
+    [Serializable, XmlType(TypeName = "GeometricPrimitivePropertyType", Namespace = Declarations.SchemaVersion),
      XmlInclude(typeof (AbstractSurfaceType)), XmlInclude(typeof (PointType)), XmlInclude(typeof (AbstractSolidType)),
      XmlInclude(typeof (AbstractCurveType))]
     public class GeometricPrimitivePropertyType
@@ -45,7 +45,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(Type = typeof (AbstractGeometricPrimitive), ElementName = "AbstractGeometricPrimitive",
-            IsNullable = false, Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            IsNullable = false, Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public AbstractGeometricPrimitive AbstractGeometricPrimitive
         {
             get { return _abstractGeometricPrimitive; }

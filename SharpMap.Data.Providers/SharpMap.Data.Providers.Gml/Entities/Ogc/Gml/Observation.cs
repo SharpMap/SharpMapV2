@@ -18,7 +18,7 @@ using System.Xml.Serialization;
 namespace SharpMap.Entities.Ogc.Gml
 {
     [Serializable,
-     XmlRoot(ElementName = "Observation", Namespace = "http://www.opengis.net/gml/3.2", IsNullable = false)]
+     XmlRoot(ElementName = "Observation", Namespace = Declarations.SchemaVersion, IsNullable = false)]
     public class Observation : ObservationType
     {
         public override void MakeSchemaCompliant()

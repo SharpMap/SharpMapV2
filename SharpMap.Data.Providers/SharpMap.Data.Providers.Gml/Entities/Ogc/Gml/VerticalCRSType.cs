@@ -18,14 +18,14 @@ using System.Xml.Serialization;
 
 namespace SharpMap.Entities.Ogc.Gml
 {
-    [Serializable, XmlType(TypeName = "VerticalCRSType", Namespace = "http://www.opengis.net/gml/3.2")]
+    [Serializable, XmlType(TypeName = "VerticalCRSType", Namespace = Declarations.SchemaVersion)]
     public class VerticalCRSType : AbstractCRSType
     {
         [XmlIgnore] private VerticalCSProperty _verticalCS;
         [XmlIgnore] private VerticalDatumProperty _verticalDatum;
 
         [XmlElement(Type = typeof (VerticalCSProperty), ElementName = "verticalCS", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public VerticalCSProperty VerticalCS
         {
             get { return _verticalCS; }
@@ -33,7 +33,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(Type = typeof (VerticalDatumProperty), ElementName = "verticalDatum", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public VerticalDatumProperty VerticalDatum
         {
             get { return _verticalDatum; }

@@ -18,13 +18,13 @@ using System.Xml.Serialization;
 
 namespace SharpMap.Entities.Ogc.Gml
 {
-    [Serializable, XmlType(TypeName = "ArrayType", Namespace = "http://www.opengis.net/gml/3.2")]
+    [Serializable, XmlType(TypeName = "ArrayType", Namespace = Declarations.SchemaVersion)]
     public class ArrayType : AbstractGMLType
     {
         [XmlIgnore] private Members _members;
 
         [XmlElement(Type = typeof (Members), ElementName = "members", IsNullable = false, Form = XmlSchemaForm.Qualified
-            , Namespace = "http://www.opengis.net/gml/3.2")]
+            , Namespace = Declarations.SchemaVersion)]
         public Members Members
         {
             get { return _members; }

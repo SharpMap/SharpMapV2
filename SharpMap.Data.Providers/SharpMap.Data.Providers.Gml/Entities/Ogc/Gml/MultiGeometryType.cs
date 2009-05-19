@@ -19,14 +19,14 @@ using System.Xml.Serialization;
 
 namespace SharpMap.Entities.Ogc.Gml
 {
-    [Serializable, XmlType(TypeName = "MultiGeometryType", Namespace = "http://www.opengis.net/gml/3.2")]
+    [Serializable, XmlType(TypeName = "MultiGeometryType", Namespace = Declarations.SchemaVersion)]
     public class MultiGeometryType : AbstractGeometricAggregateType
     {
         [XmlIgnore] private List<GeometryMember> _geometryMember;
         [XmlIgnore] private GeometryMembers _geometryMembers;
 
         [XmlElement(Type = typeof (GeometryMember), ElementName = "geometryMember", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public List<GeometryMember> GeometryMember
         {
             get
@@ -41,7 +41,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(Type = typeof (GeometryMembers), ElementName = "geometryMembers", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public GeometryMembers GeometryMembers
         {
             get { return _geometryMembers; }

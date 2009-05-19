@@ -18,7 +18,7 @@ using System.Xml.Serialization;
 
 namespace SharpMap.Entities.Ogc.Gml
 {
-    [Serializable, XmlType(TypeName = "ConversionToPreferredUnitType", Namespace = "http://www.opengis.net/gml/3.2")]
+    [Serializable, XmlType(TypeName = "ConversionToPreferredUnitType", Namespace = Declarations.SchemaVersion)]
     public class ConversionToPreferredUnitType : UnitOfMeasureType
     {
         [XmlIgnore] private double _factor;
@@ -26,7 +26,7 @@ namespace SharpMap.Entities.Ogc.Gml
         [XmlIgnore] public bool FactorSpecified = true;
 
         [XmlElement(ElementName = "factor", IsNullable = false, Form = XmlSchemaForm.Qualified, DataType = "double",
-            Namespace = "http://www.opengis.net/gml/3.2")]
+            Namespace = Declarations.SchemaVersion)]
         public double Factor
         {
             get { return _factor; }
@@ -38,7 +38,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(Type = typeof (Formula), ElementName = "formula", IsNullable = false, Form = XmlSchemaForm.Qualified
-            , Namespace = "http://www.opengis.net/gml/3.2")]
+            , Namespace = Declarations.SchemaVersion)]
         public Formula Formula
         {
             get { return _formula; }

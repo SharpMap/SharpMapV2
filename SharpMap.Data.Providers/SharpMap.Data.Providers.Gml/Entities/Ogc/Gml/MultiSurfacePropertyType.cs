@@ -18,7 +18,7 @@ using System.Xml.Serialization;
 
 namespace SharpMap.Entities.Ogc.Gml
 {
-    [Serializable, XmlType(TypeName = "MultiSurfacePropertyType", Namespace = "http://www.opengis.net/gml/3.2")]
+    [Serializable, XmlType(TypeName = "MultiSurfacePropertyType", Namespace = Declarations.SchemaVersion)]
     public class MultiSurfacePropertyType
     {
         [XmlIgnore] private Actuate _actuate;
@@ -68,7 +68,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(Type = typeof (MultiSurface), ElementName = "MultiSurface", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public MultiSurface MultiSurface
         {
             get { return _multiSurface; }

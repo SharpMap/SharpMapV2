@@ -18,7 +18,7 @@ using System.Xml.Serialization;
 
 namespace SharpMap.Entities.Ogc.Gml
 {
-    [Serializable, XmlType(TypeName = "PolarCSPropertyType", Namespace = "http://www.opengis.net/gml/3.2")]
+    [Serializable, XmlType(TypeName = "PolarCSPropertyType", Namespace = Declarations.SchemaVersion)]
     public class PolarCSPropertyType
     {
         [XmlIgnore] private Actuate _actuate;
@@ -72,7 +72,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(Type = typeof (PolarCS), ElementName = "PolarCS", IsNullable = false, Form = XmlSchemaForm.Qualified
-            , Namespace = "http://www.opengis.net/gml/3.2")]
+            , Namespace = Declarations.SchemaVersion)]
         public PolarCS PolarCS
         {
             get { return _polarCS; }

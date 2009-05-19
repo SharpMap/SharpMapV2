@@ -18,7 +18,7 @@ using System.Xml.Serialization;
 
 namespace SharpMap.Entities.Ogc.Gml
 {
-    [Serializable, XmlType(TypeName = "TimeOrdinalEraPropertyType", Namespace = "http://www.opengis.net/gml/3.2")]
+    [Serializable, XmlType(TypeName = "TimeOrdinalEraPropertyType", Namespace = Declarations.SchemaVersion)]
     public class TimeOrdinalEraPropertyType
     {
         [XmlIgnore] private Actuate _actuate;
@@ -111,7 +111,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(Type = typeof (TimeOrdinalEra), ElementName = "TimeOrdinalEra", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public TimeOrdinalEra TimeOrdinalEra
         {
             get { return _timeOrdinalEra; }

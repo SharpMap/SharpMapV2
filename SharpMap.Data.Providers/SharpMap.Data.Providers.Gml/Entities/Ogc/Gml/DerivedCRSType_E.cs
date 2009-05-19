@@ -18,7 +18,7 @@ using System.Xml.Serialization;
 namespace SharpMap.Entities.Ogc.Gml
 {
     [Serializable,
-     XmlRoot(ElementName = "derivedCRSType", Namespace = "http://www.opengis.net/gml/3.2", IsNullable = false)]
+     XmlRoot(ElementName = "derivedCRSType", Namespace = Declarations.SchemaVersion, IsNullable = false)]
     public class DerivedCRSType_E : CodeWithAuthorityType
     {
         public override void MakeSchemaCompliant()

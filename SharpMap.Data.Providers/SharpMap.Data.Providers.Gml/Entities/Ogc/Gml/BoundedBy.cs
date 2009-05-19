@@ -17,7 +17,7 @@ using System.Xml.Serialization;
 
 namespace SharpMap.Entities.Ogc.Gml
 {
-    [Serializable, XmlRoot(ElementName = "boundedBy", Namespace = "http://www.opengis.net/gml/3.2", IsNullable = true)]
+    [Serializable, XmlRoot(ElementName = "boundedBy", Namespace = Declarations.SchemaVersion, IsNullable = true)]
     public class BoundedBy : BoundingShapeType
     {
         public override void MakeSchemaCompliant()

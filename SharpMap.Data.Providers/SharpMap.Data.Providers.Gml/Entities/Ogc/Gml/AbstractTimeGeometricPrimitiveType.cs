@@ -18,7 +18,7 @@ using System.Xml.Serialization;
 namespace SharpMap.Entities.Ogc.Gml
 {
     [Serializable,
-     XmlType(TypeName = "AbstractTimeGeometricPrimitiveType", Namespace = "http://www.opengis.net/gml/3.2")]
+     XmlType(TypeName = "AbstractTimeGeometricPrimitiveType", Namespace = Declarations.SchemaVersion)]
     public abstract class AbstractTimeGeometricPrimitiveType : AbstractTimePrimitiveType
     {
         [XmlIgnore] private string _frame;

@@ -19,14 +19,14 @@ using System.Xml.Serialization;
 
 namespace SharpMap.Entities.Ogc.Gml
 {
-    [Serializable, XmlType(TypeName = "ParameterValueGroupType", Namespace = "http://www.opengis.net/gml/3.2")]
+    [Serializable, XmlType(TypeName = "ParameterValueGroupType", Namespace = Declarations.SchemaVersion)]
     public class ParameterValueGroupType : AbstractGeneralParameterValueType
     {
         [XmlIgnore] private GroupProperty _group;
         [XmlIgnore] private List<ParameterValueProperty> _parameterValue;
 
         [XmlElement(Type = typeof (GroupProperty), ElementName = "group", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public GroupProperty Group
         {
             get { return _group; }
@@ -34,7 +34,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(Type = typeof (ParameterValueProperty), ElementName = "parameterValue", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public List<ParameterValueProperty> ParameterValue
         {
             get

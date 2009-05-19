@@ -18,14 +18,14 @@ using System.Xml.Serialization;
 
 namespace SharpMap.Entities.Ogc.Gml
 {
-    [Serializable, XmlType(TypeName = "GridEnvelopeType", Namespace = "http://www.opengis.net/gml/3.2")]
+    [Serializable, XmlType(TypeName = "GridEnvelopeType", Namespace = Declarations.SchemaVersion)]
     public class GridEnvelopeType
     {
         [XmlIgnore] private string _high;
         [XmlIgnore] private string _low;
 
         [XmlElement(ElementName = "high", IsNullable = false, Form = XmlSchemaForm.Qualified,
-            Namespace = "http://www.opengis.net/gml/3.2")]
+            Namespace = Declarations.SchemaVersion)]
         public string High
         {
             get { return _high; }
@@ -33,7 +33,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(ElementName = "low", IsNullable = false, Form = XmlSchemaForm.Qualified,
-            Namespace = "http://www.opengis.net/gml/3.2")]
+            Namespace = Declarations.SchemaVersion)]
         public string Low
         {
             get { return _low; }

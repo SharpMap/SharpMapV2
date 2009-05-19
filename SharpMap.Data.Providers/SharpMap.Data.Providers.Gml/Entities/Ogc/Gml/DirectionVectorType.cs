@@ -18,7 +18,7 @@ using System.Xml.Serialization;
 
 namespace SharpMap.Entities.Ogc.Gml
 {
-    [Serializable, XmlType(TypeName = "DirectionVectorType", Namespace = "http://www.opengis.net/gml/3.2")]
+    [Serializable, XmlType(TypeName = "DirectionVectorType", Namespace = Declarations.SchemaVersion)]
     public class DirectionVectorType
     {
         [XmlIgnore] private AngleType _horizontalAngle;
@@ -26,7 +26,7 @@ namespace SharpMap.Entities.Ogc.Gml
         [XmlIgnore] private AngleType _verticalAngle;
 
         [XmlElement(Type = typeof (AngleType), ElementName = "horizontalAngle", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public AngleType HorizontalAngle
         {
             get { return _horizontalAngle; }
@@ -34,7 +34,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(Type = typeof (Vector), ElementName = "vector", IsNullable = false, Form = XmlSchemaForm.Qualified,
-            Namespace = "http://www.opengis.net/gml/3.2")]
+            Namespace = Declarations.SchemaVersion)]
         public Vector Vector
         {
             get { return _vector; }
@@ -42,7 +42,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(Type = typeof (AngleType), ElementName = "verticalAngle", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public AngleType VerticalAngle
         {
             get { return _verticalAngle; }

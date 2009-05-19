@@ -17,7 +17,7 @@ using System.Xml.Serialization;
 
 namespace SharpMap.Entities.Ogc.Gml
 {
-    [Serializable, XmlRoot(ElementName = "timeCS", Namespace = "http://www.opengis.net/gml/3.2", IsNullable = false)]
+    [Serializable, XmlRoot(ElementName = "timeCS", Namespace = Declarations.SchemaVersion, IsNullable = false)]
     public class TimeCSProperty : TimeCSPropertyType
     {
         public override void MakeSchemaCompliant()

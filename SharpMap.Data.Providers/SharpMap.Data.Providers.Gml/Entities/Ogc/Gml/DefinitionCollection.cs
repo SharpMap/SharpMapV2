@@ -18,7 +18,7 @@ using System.Xml.Serialization;
 namespace SharpMap.Entities.Ogc.Gml
 {
     [Serializable,
-     XmlRoot(ElementName = "DefinitionCollection", Namespace = "http://www.opengis.net/gml/3.2", IsNullable = false)]
+     XmlRoot(ElementName = "DefinitionCollection", Namespace = Declarations.SchemaVersion, IsNullable = false)]
     public class DefinitionCollection : DictionaryType
     {
         public override void MakeSchemaCompliant()

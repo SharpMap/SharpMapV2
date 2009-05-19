@@ -19,14 +19,14 @@ using System.Xml.Serialization;
 
 namespace SharpMap.Entities.Ogc.Gml
 {
-    [Serializable, XmlType(TypeName = "OperationParameterGroupType", Namespace = "http://www.opengis.net/gml/3.2")]
+    [Serializable, XmlType(TypeName = "OperationParameterGroupType", Namespace = Declarations.SchemaVersion)]
     public class OperationParameterGroupType : AbstractGeneralOperationParameterType
     {
         [XmlIgnore] private string _maximumOccurs;
         [XmlIgnore] private List<ParameterProperty> _parameter;
 
         [XmlElement(ElementName = "maximumOccurs", IsNullable = false, Form = XmlSchemaForm.Qualified,
-            DataType = "positiveInteger", Namespace = "http://www.opengis.net/gml/3.2")]
+            DataType = "positiveInteger", Namespace = Declarations.SchemaVersion)]
         public string MaximumOccurs
         {
             get { return _maximumOccurs; }
@@ -34,7 +34,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(Type = typeof (ParameterProperty), ElementName = "parameter", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public List<ParameterProperty> Parameter
         {
             get

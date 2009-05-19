@@ -22,7 +22,7 @@ using System.Xml.Serialization;
 namespace SharpMap.Entities.Ogc.Gml
 {
     [Serializable, XmlInclude(typeof (FaceType)), XmlInclude(typeof (NodeType)),
-     XmlType(TypeName = "TopoPrimitiveArrayAssociationType", Namespace = "http://www.opengis.net/gml/3.2"),
+     XmlType(TypeName = "TopoPrimitiveArrayAssociationType", Namespace = Declarations.SchemaVersion),
      XmlInclude(typeof (EdgeType)), XmlInclude(typeof (TopoSolidType))]
     public class TopoPrimitiveArrayAssociationType
     {
@@ -36,7 +36,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(Type = typeof (AbstractTopoPrimitive), ElementName = "AbstractTopoPrimitive", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public List<AbstractTopoPrimitive> AbstractTopoPrimitive
         {
             get

@@ -18,13 +18,13 @@ using System.Xml.Serialization;
 
 namespace SharpMap.Entities.Ogc.Gml
 {
-    [Serializable, XmlType(TypeName = "AbstractGeneralDerivedCRSType", Namespace = "http://www.opengis.net/gml/3.2")]
+    [Serializable, XmlType(TypeName = "AbstractGeneralDerivedCRSType", Namespace = Declarations.SchemaVersion)]
     public abstract class AbstractGeneralDerivedCRSType : AbstractCRSType
     {
         [XmlIgnore] private ConversionProperty _conversion;
 
         [XmlElement(Type = typeof (ConversionProperty), ElementName = "conversion", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public ConversionProperty Conversion
         {
             get { return _conversion; }

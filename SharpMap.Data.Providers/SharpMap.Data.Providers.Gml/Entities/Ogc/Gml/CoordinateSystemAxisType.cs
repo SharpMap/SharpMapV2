@@ -18,7 +18,7 @@ using System.Xml.Serialization;
 
 namespace SharpMap.Entities.Ogc.Gml
 {
-    [Serializable, XmlType(TypeName = "CoordinateSystemAxisType", Namespace = "http://www.opengis.net/gml/3.2")]
+    [Serializable, XmlType(TypeName = "CoordinateSystemAxisType", Namespace = Declarations.SchemaVersion)]
     public class CoordinateSystemAxisType : IdentifiedObjectType
     {
         [XmlIgnore] private AxisAbbrev _axisAbbrev;
@@ -31,7 +31,7 @@ namespace SharpMap.Entities.Ogc.Gml
         [XmlIgnore] public bool MinimumValueSpecified;
 
         [XmlElement(Type = typeof (AxisAbbrev), ElementName = "axisAbbrev", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public AxisAbbrev AxisAbbrev
         {
             get { return _axisAbbrev; }
@@ -39,7 +39,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(Type = typeof (AxisDirection), ElementName = "axisDirection", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public AxisDirection AxisDirection
         {
             get { return _axisDirection; }
@@ -47,7 +47,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(ElementName = "maximumValue", IsNullable = false, Form = XmlSchemaForm.Qualified,
-            DataType = "double", Namespace = "http://www.opengis.net/gml/3.2")]
+            DataType = "double", Namespace = Declarations.SchemaVersion)]
         public double MaximumValue
         {
             get { return _maximumValue; }
@@ -59,7 +59,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(ElementName = "minimumValue", IsNullable = false, Form = XmlSchemaForm.Qualified,
-            DataType = "double", Namespace = "http://www.opengis.net/gml/3.2")]
+            DataType = "double", Namespace = Declarations.SchemaVersion)]
         public double MinimumValue
         {
             get { return _minimumValue; }
@@ -71,7 +71,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(Type = typeof (RangeMeaning), ElementName = "rangeMeaning", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public RangeMeaning RangeMeaning
         {
             get { return _rangeMeaning; }

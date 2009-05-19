@@ -18,14 +18,14 @@ using System.Xml.Serialization;
 
 namespace SharpMap.Entities.Ogc.Gml
 {
-    [Serializable, XmlType(TypeName = "GridFunctionType", Namespace = "http://www.opengis.net/gml/3.2")]
+    [Serializable, XmlType(TypeName = "GridFunctionType", Namespace = Declarations.SchemaVersion)]
     public class GridFunctionType
     {
         [XmlIgnore] private SequenceRuleType _sequenceRule;
         [XmlIgnore] private string _startPoint;
 
         [XmlElement(Type = typeof (SequenceRuleType), ElementName = "sequenceRule", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public SequenceRuleType SequenceRule
         {
             get { return _sequenceRule; }
@@ -33,7 +33,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(ElementName = "startPoint", IsNullable = false, Form = XmlSchemaForm.Qualified,
-            Namespace = "http://www.opengis.net/gml/3.2")]
+            Namespace = Declarations.SchemaVersion)]
         public string StartPoint
         {
             get { return _startPoint; }

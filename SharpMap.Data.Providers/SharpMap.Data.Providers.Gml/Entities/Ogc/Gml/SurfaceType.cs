@@ -18,13 +18,13 @@ using System.Xml.Serialization;
 
 namespace SharpMap.Entities.Ogc.Gml
 {
-    [Serializable, XmlType(TypeName = "SurfaceType", Namespace = "http://www.opengis.net/gml/3.2")]
+    [Serializable, XmlType(TypeName = "SurfaceType", Namespace = Declarations.SchemaVersion)]
     public class SurfaceType : AbstractSurfaceType
     {
         [XmlIgnore] private Patches _patches;
 
         [XmlElement(Type = typeof (Patches), ElementName = "patches", IsNullable = false, Form = XmlSchemaForm.Qualified
-            , Namespace = "http://www.opengis.net/gml/3.2")]
+            , Namespace = Declarations.SchemaVersion)]
         public Patches Patches
         {
             get { return _patches; }

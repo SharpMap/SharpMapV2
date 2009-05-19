@@ -18,7 +18,7 @@ using System.Xml.Serialization;
 
 namespace SharpMap.Entities.Ogc.Gml
 {
-    [Serializable, XmlType(TypeName = "UnitDefinitionType", Namespace = "http://www.opengis.net/gml/3.2")]
+    [Serializable, XmlType(TypeName = "UnitDefinitionType", Namespace = Declarations.SchemaVersion)]
     public class UnitDefinitionType : DefinitionType
     {
         [XmlIgnore] private CatalogSymbol _catalogSymbol;
@@ -26,7 +26,7 @@ namespace SharpMap.Entities.Ogc.Gml
         [XmlIgnore] private QuantityTypeReference _quantityTypeReference;
 
         [XmlElement(Type = typeof (CatalogSymbol), ElementName = "catalogSymbol", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public CatalogSymbol CatalogSymbol
         {
             get { return _catalogSymbol; }
@@ -34,7 +34,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(Type = typeof (QuantityType), ElementName = "quantityType", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public QuantityType QuantityType
         {
             get { return _quantityType; }
@@ -42,7 +42,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(Type = typeof (QuantityTypeReference), ElementName = "quantityTypeReference", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public QuantityTypeReference QuantityTypeReference
         {
             get { return _quantityTypeReference; }

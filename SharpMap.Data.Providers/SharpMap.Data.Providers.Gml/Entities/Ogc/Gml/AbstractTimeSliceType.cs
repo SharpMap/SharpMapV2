@@ -18,14 +18,14 @@ using System.Xml.Serialization;
 
 namespace SharpMap.Entities.Ogc.Gml
 {
-    [Serializable, XmlType(TypeName = "AbstractTimeSliceType", Namespace = "http://www.opengis.net/gml/3.2")]
+    [Serializable, XmlType(TypeName = "AbstractTimeSliceType", Namespace = Declarations.SchemaVersion)]
     public abstract class AbstractTimeSliceType : AbstractGMLType
     {
         [XmlIgnore] private DataSource _dataSource;
         [XmlIgnore] private ValidTime _validTime;
 
         [XmlElement(Type = typeof (DataSource), ElementName = "dataSource", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public DataSource DataSource
         {
             get { return _dataSource; }
@@ -33,7 +33,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(Type = typeof (ValidTime), ElementName = "validTime", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public ValidTime ValidTime
         {
             get { return _validTime; }

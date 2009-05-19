@@ -18,7 +18,7 @@ using System.Xml.Serialization;
 namespace SharpMap.Entities.Ogc.Gml
 {
     [Serializable,
-     XmlRoot(ElementName = "compoundCRSRef", Namespace = "http://www.opengis.net/gml/3.2", IsNullable = false)]
+     XmlRoot(ElementName = "compoundCRSRef", Namespace = Declarations.SchemaVersion, IsNullable = false)]
     public class CompoundCRSRef : CompoundCRSPropertyType
     {
         public override void MakeSchemaCompliant()

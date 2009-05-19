@@ -18,13 +18,13 @@ using System.Xml.Serialization;
 
 namespace SharpMap.Entities.Ogc.Gml
 {
-    [Serializable, XmlType(TypeName = "KnotPropertyType", Namespace = "http://www.opengis.net/gml/3.2")]
+    [Serializable, XmlType(TypeName = "KnotPropertyType", Namespace = Declarations.SchemaVersion)]
     public class KnotPropertyType
     {
         [XmlIgnore] private KnotType _knot;
 
         [XmlElement(Type = typeof (KnotType), ElementName = "Knot", IsNullable = false, Form = XmlSchemaForm.Qualified,
-            Namespace = "http://www.opengis.net/gml/3.2")]
+            Namespace = Declarations.SchemaVersion)]
         public KnotType Knot
         {
             get { return _knot; }

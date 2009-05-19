@@ -18,7 +18,7 @@ using System.Xml.Serialization;
 namespace SharpMap.Entities.Ogc.Gml
 {
     [Serializable,
-     XmlRoot(ElementName = "valuesOfGroup", Namespace = "http://www.opengis.net/gml/3.2", IsNullable = false)]
+     XmlRoot(ElementName = "valuesOfGroup", Namespace = Declarations.SchemaVersion, IsNullable = false)]
     public class ValuesOfGroup : OperationParameterGroupPropertyType
     {
         public override void MakeSchemaCompliant()

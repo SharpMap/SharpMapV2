@@ -18,7 +18,7 @@ using System.Xml.Serialization;
 namespace SharpMap.Entities.Ogc.Gml
 {
     [Serializable,
-     XmlRoot(ElementName = "rangeParameters", Namespace = "http://www.opengis.net/gml/3.2", IsNullable = false)]
+     XmlRoot(ElementName = "rangeParameters", Namespace = Declarations.SchemaVersion, IsNullable = false)]
     public class RangeParameters : AssociationRoleType
     {
         public override void MakeSchemaCompliant()

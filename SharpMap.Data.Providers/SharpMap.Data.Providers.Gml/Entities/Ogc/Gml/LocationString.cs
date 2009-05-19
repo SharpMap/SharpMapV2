@@ -18,7 +18,7 @@ using System.Xml.Serialization;
 namespace SharpMap.Entities.Ogc.Gml
 {
     [Serializable,
-     XmlRoot(ElementName = "LocationString", Namespace = "http://www.opengis.net/gml/3.2", IsNullable = false)]
+     XmlRoot(ElementName = "LocationString", Namespace = Declarations.SchemaVersion, IsNullable = false)]
     public class LocationString : StringOrRefType
     {
         public override void MakeSchemaCompliant()

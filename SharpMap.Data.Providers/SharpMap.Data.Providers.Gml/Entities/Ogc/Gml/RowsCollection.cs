@@ -21,7 +21,7 @@ using System.Xml.Serialization;
 
 namespace SharpMap.Entities.Ogc.Gml
 {
-    [Serializable, XmlType(TypeName = "rows", Namespace = "http://www.opengis.net/gml/3.2")]
+    [Serializable, XmlType(TypeName = "rows", Namespace = Declarations.SchemaVersion)]
     public class RowsCollection
     {
         [XmlIgnore] private List<Row> _row;
@@ -39,7 +39,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(Type = typeof (Row), ElementName = "Row", IsNullable = false, Form = XmlSchemaForm.Qualified,
-            Namespace = "http://www.opengis.net/gml/3.2")]
+            Namespace = Declarations.SchemaVersion)]
         public List<Row> Row
         {
             get

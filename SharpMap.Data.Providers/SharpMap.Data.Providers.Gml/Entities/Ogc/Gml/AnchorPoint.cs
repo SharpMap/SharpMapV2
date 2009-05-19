@@ -18,7 +18,7 @@ using System.Xml.Serialization;
 namespace SharpMap.Entities.Ogc.Gml
 {
     [Serializable,
-     XmlRoot(ElementName = "anchorPoint", Namespace = "http://www.opengis.net/gml/3.2", IsNullable = false)]
+     XmlRoot(ElementName = "anchorPoint", Namespace = Declarations.SchemaVersion, IsNullable = false)]
     public class AnchorPoint : CodeType
     {
         public override void MakeSchemaCompliant()

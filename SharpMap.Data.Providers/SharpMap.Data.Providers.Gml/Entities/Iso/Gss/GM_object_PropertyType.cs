@@ -43,7 +43,7 @@ namespace SharpMap.Entities.Iso.Gss
         }
 
         [XmlElement(Type = typeof (AbstractGeometry), ElementName = "AbstractGeometry", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public AbstractGeometry AbstractGeometry
         {
             get { return _abstractGeometry; }

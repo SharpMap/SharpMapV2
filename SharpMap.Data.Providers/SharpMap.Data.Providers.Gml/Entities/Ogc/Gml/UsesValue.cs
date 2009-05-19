@@ -17,7 +17,7 @@ using System.Xml.Serialization;
 
 namespace SharpMap.Entities.Ogc.Gml
 {
-    [Serializable, XmlRoot(ElementName = "usesValue", Namespace = "http://www.opengis.net/gml/3.2", IsNullable = false)]
+    [Serializable, XmlRoot(ElementName = "usesValue", Namespace = Declarations.SchemaVersion, IsNullable = false)]
     public class UsesValue : AbstractGeneralParameterValuePropertyType
     {
         public override void MakeSchemaCompliant()

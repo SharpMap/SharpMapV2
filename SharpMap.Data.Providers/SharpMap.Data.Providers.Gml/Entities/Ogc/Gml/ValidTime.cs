@@ -17,7 +17,7 @@ using System.Xml.Serialization;
 
 namespace SharpMap.Entities.Ogc.Gml
 {
-    [Serializable, XmlRoot(ElementName = "validTime", Namespace = "http://www.opengis.net/gml/3.2", IsNullable = false)]
+    [Serializable, XmlRoot(ElementName = "validTime", Namespace = Declarations.SchemaVersion, IsNullable = false)]
     public class ValidTime : TimePrimitivePropertyType
     {
         public override void MakeSchemaCompliant()

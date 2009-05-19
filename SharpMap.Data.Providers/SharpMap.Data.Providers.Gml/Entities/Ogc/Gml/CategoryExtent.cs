@@ -18,7 +18,7 @@ using System.Xml.Serialization;
 namespace SharpMap.Entities.Ogc.Gml
 {
     [Serializable,
-     XmlRoot(ElementName = "CategoryExtent", Namespace = "http://www.opengis.net/gml/3.2", IsNullable = false)]
+     XmlRoot(ElementName = "CategoryExtent", Namespace = Declarations.SchemaVersion, IsNullable = false)]
     public class CategoryExtent : CategoryExtentType
     {
         public override void MakeSchemaCompliant()

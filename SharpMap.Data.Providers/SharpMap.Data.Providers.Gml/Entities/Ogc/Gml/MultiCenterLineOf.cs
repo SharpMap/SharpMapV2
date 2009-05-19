@@ -18,7 +18,7 @@ using System.Xml.Serialization;
 namespace SharpMap.Entities.Ogc.Gml
 {
     [Serializable,
-     XmlRoot(ElementName = "multiCenterLineOf", Namespace = "http://www.opengis.net/gml/3.2", IsNullable = false)]
+     XmlRoot(ElementName = "multiCenterLineOf", Namespace = Declarations.SchemaVersion, IsNullable = false)]
     public class MultiCenterLineOf : MultiCurvePropertyType
     {
         public override void MakeSchemaCompliant()

@@ -18,7 +18,7 @@ using System.Xml.Serialization;
 
 namespace SharpMap.Entities.Ogc.Gml
 {
-    [Serializable, XmlType(TypeName = "RectangleType", Namespace = "http://www.opengis.net/gml/3.2")]
+    [Serializable, XmlType(TypeName = "RectangleType", Namespace = Declarations.SchemaVersion)]
     public class RectangleType : AbstractSurfacePatchType
     {
         [XmlIgnore] private Exterior _exterior;
@@ -31,7 +31,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(Type = typeof (Exterior), ElementName = "exterior", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public Exterior Exterior
         {
             get { return _exterior; }

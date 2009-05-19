@@ -17,7 +17,7 @@ using System.Xml.Serialization;
 
 namespace SharpMap.Entities.Ogc.Gml
 {
-    [Serializable, XmlType(TypeName = "CircleType", Namespace = "http://www.opengis.net/gml/3.2")]
+    [Serializable, XmlType(TypeName = "CircleType", Namespace = Declarations.SchemaVersion)]
     public class CircleType : ArcType
     {
         public override void MakeSchemaCompliant()

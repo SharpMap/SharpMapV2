@@ -22,7 +22,7 @@ using System.Xml.Serialization;
 namespace SharpMap.Entities.Ogc.Gml
 {
     [Serializable,
-     XmlType(TypeName = "LineStringSegmentArrayPropertyType", Namespace = "http://www.opengis.net/gml/3.2")]
+     XmlType(TypeName = "LineStringSegmentArrayPropertyType", Namespace = Declarations.SchemaVersion)]
     public class LineStringSegmentArrayPropertyType
     {
         [XmlIgnore] private List<LineStringSegment> _lineStringSegment;
@@ -40,7 +40,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(Type = typeof (LineStringSegment), ElementName = "LineStringSegment", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public List<LineStringSegment> LineStringSegment
         {
             get

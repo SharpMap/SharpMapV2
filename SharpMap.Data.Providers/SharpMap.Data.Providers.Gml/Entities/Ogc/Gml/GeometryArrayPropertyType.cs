@@ -21,7 +21,7 @@ using System.Xml.Serialization;
 
 namespace SharpMap.Entities.Ogc.Gml
 {
-    [Serializable, XmlType(TypeName = "GeometryArrayPropertyType", Namespace = "http://www.opengis.net/gml/3.2"),
+    [Serializable, XmlType(TypeName = "GeometryArrayPropertyType", Namespace = Declarations.SchemaVersion),
      XmlInclude(typeof (GridType)), XmlInclude(typeof (AbstractGeometricAggregateType)),
      XmlInclude(typeof (GeometricComplexType)), XmlInclude(typeof (AbstractGeometricPrimitiveType))]
     public class GeometryArrayPropertyType
@@ -36,7 +36,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(Type = typeof (AbstractGeometry), ElementName = "AbstractGeometry", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public List<AbstractGeometry> AbstractGeometry
         {
             get

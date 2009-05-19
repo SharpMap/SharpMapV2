@@ -18,14 +18,14 @@ using System.Xml.Serialization;
 
 namespace SharpMap.Entities.Ogc.Gml
 {
-    [Serializable, XmlType(TypeName = "EllipsoidType", Namespace = "http://www.opengis.net/gml/3.2")]
+    [Serializable, XmlType(TypeName = "EllipsoidType", Namespace = Declarations.SchemaVersion)]
     public class EllipsoidType : IdentifiedObjectType
     {
         [XmlIgnore] private SecondDefiningParameter_E _secondDefiningParameter;
         [XmlIgnore] private SemiMajorAxis _semiMajorAxis;
 
         [XmlElement(Type = typeof (SecondDefiningParameter_E), ElementName = "secondDefiningParameter",
-            IsNullable = false, Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            IsNullable = false, Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public SecondDefiningParameter_E SecondDefiningParameter
         {
             get { return _secondDefiningParameter; }
@@ -33,7 +33,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(Type = typeof (SemiMajorAxis), ElementName = "semiMajorAxis", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public SemiMajorAxis SemiMajorAxis
         {
             get { return _semiMajorAxis; }

@@ -18,7 +18,7 @@ using System.Xml.Serialization;
 namespace SharpMap.Entities.Ogc.Gml
 {
     [Serializable,
-     XmlRoot(ElementName = "indirectEntry", Namespace = "http://www.opengis.net/gml/3.2", IsNullable = false)]
+     XmlRoot(ElementName = "indirectEntry", Namespace = Declarations.SchemaVersion, IsNullable = false)]
     public class IndirectEntry : IndirectEntryType
     {
         public override void MakeSchemaCompliant()

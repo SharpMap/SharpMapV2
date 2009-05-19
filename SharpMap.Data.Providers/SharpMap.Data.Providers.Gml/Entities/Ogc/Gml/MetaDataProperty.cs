@@ -18,7 +18,7 @@ using System.Xml.Serialization;
 namespace SharpMap.Entities.Ogc.Gml
 {
     [Serializable,
-     XmlRoot(ElementName = "metaDataProperty", Namespace = "http://www.opengis.net/gml/3.2", IsNullable = false)]
+     XmlRoot(ElementName = "metaDataProperty", Namespace = Declarations.SchemaVersion, IsNullable = false)]
     public class MetaDataProperty : MetaDataPropertyType
     {
         public override void MakeSchemaCompliant()

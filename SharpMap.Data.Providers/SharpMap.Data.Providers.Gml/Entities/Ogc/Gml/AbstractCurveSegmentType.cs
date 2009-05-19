@@ -17,7 +17,7 @@ using System.Xml.Serialization;
 
 namespace SharpMap.Entities.Ogc.Gml
 {
-    [Serializable, XmlType(TypeName = "AbstractCurveSegmentType", Namespace = "http://www.opengis.net/gml/3.2")]
+    [Serializable, XmlType(TypeName = "AbstractCurveSegmentType", Namespace = Declarations.SchemaVersion)]
     public abstract class AbstractCurveSegmentType
     {
         [XmlIgnore] private string _numDerivativeInterior;

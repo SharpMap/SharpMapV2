@@ -43,7 +43,7 @@ namespace SharpMap.Entities.Iso.Gts
         }
 
         [XmlElement(Type = typeof (AbstractTimePrimitive), ElementName = "AbstractTimePrimitive", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public AbstractTimePrimitive AbstractTimePrimitive
         {
             get { return _abstractTimePrimitive; }

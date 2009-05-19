@@ -18,7 +18,7 @@ using System.Xml.Serialization;
 
 namespace SharpMap.Entities.Ogc.Gml
 {
-    [Serializable, XmlType(TypeName = "InlinePropertyType", Namespace = "http://www.opengis.net/gml/3.2")]
+    [Serializable, XmlType(TypeName = "InlinePropertyType", Namespace = Declarations.SchemaVersion)]
     public class InlinePropertyType
     {
         [XmlIgnore] private bool _owns;

@@ -18,7 +18,7 @@ using System.Xml.Serialization;
 
 namespace SharpMap.Entities.Ogc.Gml
 {
-    [Serializable, XmlType(TypeName = "MultiPointPropertyType", Namespace = "http://www.opengis.net/gml/3.2")]
+    [Serializable, XmlType(TypeName = "MultiPointPropertyType", Namespace = Declarations.SchemaVersion)]
     public class MultiPointPropertyType
     {
         [XmlIgnore] private Actuate _actuate;
@@ -68,7 +68,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(Type = typeof (MultiPoint), ElementName = "MultiPoint", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public MultiPoint MultiPoint
         {
             get { return _multiPoint; }

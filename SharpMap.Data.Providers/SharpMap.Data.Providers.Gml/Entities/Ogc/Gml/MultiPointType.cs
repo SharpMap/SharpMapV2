@@ -19,14 +19,14 @@ using System.Xml.Serialization;
 
 namespace SharpMap.Entities.Ogc.Gml
 {
-    [Serializable, XmlType(TypeName = "MultiPointType", Namespace = "http://www.opengis.net/gml/3.2")]
+    [Serializable, XmlType(TypeName = "MultiPointType", Namespace = Declarations.SchemaVersion)]
     public class MultiPointType : AbstractGeometricAggregateType
     {
         [XmlIgnore] private List<PointMember> _pointMember;
         [XmlIgnore] private PointMembers _pointMembers;
 
         [XmlElement(Type = typeof (PointMember), ElementName = "pointMember", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public List<PointMember> PointMember
         {
             get
@@ -41,7 +41,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(Type = typeof (PointMembers), ElementName = "pointMembers", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public PointMembers PointMembers
         {
             get { return _pointMembers; }

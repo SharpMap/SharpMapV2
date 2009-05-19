@@ -18,7 +18,7 @@ using System.Xml.Serialization;
 namespace SharpMap.Entities.Ogc.Gml
 {
     [Serializable,
-     XmlRoot(ElementName = "multiExtentOf", Namespace = "http://www.opengis.net/gml/3.2", IsNullable = false)]
+     XmlRoot(ElementName = "multiExtentOf", Namespace = Declarations.SchemaVersion, IsNullable = false)]
     public class MultiExtentOf : MultiSurfacePropertyType
     {
         public override void MakeSchemaCompliant()

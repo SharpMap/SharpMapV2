@@ -19,14 +19,14 @@ using System.Xml.Serialization;
 namespace SharpMap.Entities.Ogc.Gml
 {
     [Serializable, XmlInclude(typeof (ParameterValueType)),
-     XmlType(TypeName = "AbstractGeneralParameterValuePropertyType", Namespace = "http://www.opengis.net/gml/3.2"),
+     XmlType(TypeName = "AbstractGeneralParameterValuePropertyType", Namespace = Declarations.SchemaVersion),
      XmlInclude(typeof (ParameterValueGroupType))]
     public class AbstractGeneralParameterValuePropertyType
     {
         [XmlIgnore] private AbstractGeneralParameterValue _abstractGeneralParameterValue;
 
         [XmlElement(Type = typeof (AbstractGeneralParameterValue), ElementName = "AbstractGeneralParameterValue",
-            IsNullable = false, Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            IsNullable = false, Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public AbstractGeneralParameterValue AbstractGeneralParameterValue
         {
             get { return _abstractGeneralParameterValue; }

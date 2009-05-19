@@ -21,7 +21,7 @@ using System.Xml.Serialization;
 
 namespace SharpMap.Entities.Ogc.Gml
 {
-    [Serializable, XmlType(TypeName = "GeometricComplexType", Namespace = "http://www.opengis.net/gml/3.2")]
+    [Serializable, XmlType(TypeName = "GeometricComplexType", Namespace = Declarations.SchemaVersion)]
     public class GeometricComplexType : AbstractGeometryType
     {
         [XmlIgnore] private AggregationType _aggregationType;
@@ -46,7 +46,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(Type = typeof (GeometricPrimitivePropertyType), ElementName = "element", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public List<GeometricPrimitivePropertyType> Element
         {
             get

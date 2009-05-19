@@ -19,7 +19,7 @@ using System.Xml.Serialization;
 
 namespace SharpMap.Entities.Ogc.Gml
 {
-    [Serializable, XmlType(TypeName = "TimeClockType", Namespace = "http://www.opengis.net/gml/3.2")]
+    [Serializable, XmlType(TypeName = "TimeClockType", Namespace = Declarations.SchemaVersion)]
     public class TimeClockType : TimeReferenceSystemType
     {
         [XmlIgnore] private List<TimeCalendarPropertyType> _dateBasis;
@@ -36,7 +36,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(Type = typeof (TimeCalendarPropertyType), ElementName = "dateBasis", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public List<TimeCalendarPropertyType> DateBasis
         {
             get
@@ -51,7 +51,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(Type = typeof (StringOrRefType), ElementName = "referenceEvent", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public StringOrRefType ReferenceEvent
         {
             get { return _referenceEvent; }
@@ -59,7 +59,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(ElementName = "referenceTime", IsNullable = false, Form = XmlSchemaForm.Qualified, DataType = "time"
-            , Namespace = "http://www.opengis.net/gml/3.2")]
+            , Namespace = Declarations.SchemaVersion)]
         public DateTime ReferenceTime
         {
             get { return _referenceTime; }
@@ -82,7 +82,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(ElementName = "utcReference", IsNullable = false, Form = XmlSchemaForm.Qualified, DataType = "time",
-            Namespace = "http://www.opengis.net/gml/3.2")]
+            Namespace = Declarations.SchemaVersion)]
         public DateTime UtcReference
         {
             get { return _utcReference; }

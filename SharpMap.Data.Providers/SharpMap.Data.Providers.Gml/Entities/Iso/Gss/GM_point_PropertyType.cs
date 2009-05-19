@@ -73,7 +73,7 @@ namespace SharpMap.Entities.Iso.Gss
         }
 
         [XmlElement(Type = typeof (Point), ElementName = "Point", IsNullable = false, Form = XmlSchemaForm.Qualified,
-            Namespace = "http://www.opengis.net/gml/3.2")]
+            Namespace = Declarations.SchemaVersion)]
         public Point Point
         {
             get { return _point; }

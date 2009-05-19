@@ -18,7 +18,7 @@ using System.Xml.Serialization;
 namespace SharpMap.Entities.Ogc.Gml
 {
     [Serializable,
-     XmlRoot(ElementName = "curveArrayProperty", Namespace = "http://www.opengis.net/gml/3.2", IsNullable = false)]
+     XmlRoot(ElementName = "curveArrayProperty", Namespace = Declarations.SchemaVersion, IsNullable = false)]
     public class CurveArrayProperty : CurveArrayPropertyType
     {
         public override void MakeSchemaCompliant()

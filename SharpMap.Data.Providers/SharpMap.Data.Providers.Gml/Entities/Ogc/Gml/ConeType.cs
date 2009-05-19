@@ -17,7 +17,7 @@ using System.Xml.Serialization;
 
 namespace SharpMap.Entities.Ogc.Gml
 {
-    [Serializable, XmlType(TypeName = "ConeType", Namespace = "http://www.opengis.net/gml/3.2")]
+    [Serializable, XmlType(TypeName = "ConeType", Namespace = Declarations.SchemaVersion)]
     public class ConeType : AbstractGriddedSurfaceType
     {
         [XmlIgnore] private CurveInterpolationType _horizontalCurveType;

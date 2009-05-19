@@ -18,14 +18,14 @@ using System.Xml.Serialization;
 
 namespace SharpMap.Entities.Ogc.Gml
 {
-    [Serializable, XmlType(TypeName = "GeodeticDatumType", Namespace = "http://www.opengis.net/gml/3.2")]
+    [Serializable, XmlType(TypeName = "GeodeticDatumType", Namespace = Declarations.SchemaVersion)]
     public class GeodeticDatumType : AbstractDatumType
     {
         [XmlIgnore] private Ellipsoid_E _ellipsoid;
         [XmlIgnore] private PrimeMeridian_E _primeMeridian;
 
         [XmlElement(Type = typeof (Ellipsoid_E), ElementName = "ellipsoid", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public Ellipsoid_E Ellipsoid
         {
             get { return _ellipsoid; }
@@ -33,7 +33,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(Type = typeof (PrimeMeridian_E), ElementName = "primeMeridian", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public PrimeMeridian_E PrimeMeridian
         {
             get { return _primeMeridian; }

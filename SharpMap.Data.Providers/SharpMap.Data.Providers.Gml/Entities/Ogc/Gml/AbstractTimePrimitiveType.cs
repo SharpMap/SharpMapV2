@@ -21,7 +21,7 @@ using System.Xml.Serialization;
 
 namespace SharpMap.Entities.Ogc.Gml
 {
-    [Serializable, XmlType(TypeName = "AbstractTimePrimitiveType", Namespace = "http://www.opengis.net/gml/3.2")]
+    [Serializable, XmlType(TypeName = "AbstractTimePrimitiveType", Namespace = Declarations.SchemaVersion)]
     public abstract class AbstractTimePrimitiveType : AbstractTimeObjectType
     {
         [XmlIgnore] private List<RelatedTimeType> _relatedTime;
@@ -39,7 +39,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(Type = typeof (RelatedTimeType), ElementName = "relatedTime", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public List<RelatedTimeType> RelatedTime
         {
             get

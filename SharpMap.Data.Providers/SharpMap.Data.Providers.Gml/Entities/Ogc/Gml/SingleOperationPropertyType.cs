@@ -20,7 +20,7 @@ namespace SharpMap.Entities.Ogc.Gml
 {
     [Serializable, XmlInclude(typeof (AbstractGeneralConversionType)),
      XmlInclude(typeof (AbstractGeneralTransformationType)), XmlInclude(typeof (ConcatenatedOperationType)),
-     XmlType(TypeName = "SingleOperationPropertyType", Namespace = "http://www.opengis.net/gml/3.2"),
+     XmlType(TypeName = "SingleOperationPropertyType", Namespace = Declarations.SchemaVersion),
      XmlInclude(typeof (PassThroughOperationType))]
     public class SingleOperationPropertyType
     {
@@ -43,7 +43,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(Type = typeof (AbstractSingleOperation), ElementName = "AbstractSingleOperation", IsNullable = false
-            , Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            , Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public AbstractSingleOperation AbstractSingleOperation
         {
             get { return _abstractSingleOperation; }

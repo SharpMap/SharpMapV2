@@ -17,7 +17,7 @@ using System.Xml.Serialization;
 
 namespace SharpMap.Entities.Ogc.Gml
 {
-    [Serializable, XmlType(TypeName = "DirectPositionListType", Namespace = "http://www.opengis.net/gml/3.2")]
+    [Serializable, XmlType(TypeName = "DirectPositionListType", Namespace = Declarations.SchemaVersion)]
     public class DirectPositionListType
     {
         [XmlIgnore] private string _axisLabels;

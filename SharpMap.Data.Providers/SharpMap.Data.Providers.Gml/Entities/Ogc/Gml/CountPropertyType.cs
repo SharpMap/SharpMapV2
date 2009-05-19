@@ -18,7 +18,7 @@ using System.Xml.Serialization;
 
 namespace SharpMap.Entities.Ogc.Gml
 {
-    [Serializable, XmlType(TypeName = "CountPropertyType", Namespace = "http://www.opengis.net/gml/3.2")]
+    [Serializable, XmlType(TypeName = "CountPropertyType", Namespace = Declarations.SchemaVersion)]
     public class CountPropertyType
     {
         [XmlIgnore] private Actuate _actuate;
@@ -58,7 +58,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(Type = typeof (Count), ElementName = "Count", IsNullable = true, Form = XmlSchemaForm.Qualified,
-            Namespace = "http://www.opengis.net/gml/3.2")]
+            Namespace = Declarations.SchemaVersion)]
         public Count Count
         {
             get { return _count; }

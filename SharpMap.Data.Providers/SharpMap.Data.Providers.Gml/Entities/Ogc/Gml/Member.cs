@@ -17,7 +17,7 @@ using System.Xml.Serialization;
 
 namespace SharpMap.Entities.Ogc.Gml
 {
-    [Serializable, XmlRoot(ElementName = "member", Namespace = "http://www.opengis.net/gml/3.2", IsNullable = false)]
+    [Serializable, XmlRoot(ElementName = "member", Namespace = Declarations.SchemaVersion, IsNullable = false)]
     public class Member : AssociationRoleType
     {
         public override void MakeSchemaCompliant()

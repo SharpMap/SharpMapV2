@@ -21,7 +21,7 @@ using System.Xml.Serialization;
 
 namespace SharpMap.Entities.Ogc.Gml
 {
-    [Serializable, XmlType(TypeName = "SolidArrayPropertyType", Namespace = "http://www.opengis.net/gml/3.2")]
+    [Serializable, XmlType(TypeName = "SolidArrayPropertyType", Namespace = Declarations.SchemaVersion)]
     public class SolidArrayPropertyType
     {
         [XmlIgnore] private List<AbstractSolid> _abstractSolid;
@@ -34,7 +34,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(Type = typeof (AbstractSolid), ElementName = "AbstractSolid", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public List<AbstractSolid> AbstractSolid
         {
             get

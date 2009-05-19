@@ -17,7 +17,7 @@ using System.Xml.Serialization;
 
 namespace SharpMap.Entities.Ogc.Gml
 {
-    [Serializable, XmlType(TypeName = "TemporalCSType", Namespace = "http://www.opengis.net/gml/3.2")]
+    [Serializable, XmlType(TypeName = "TemporalCSType", Namespace = Declarations.SchemaVersion)]
     public class TemporalCSType : AbstractCoordinateSystemType
     {
         public override void MakeSchemaCompliant()

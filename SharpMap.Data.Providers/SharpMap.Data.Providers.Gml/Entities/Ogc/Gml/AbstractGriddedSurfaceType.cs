@@ -18,7 +18,7 @@ using System.Xml.Serialization;
 
 namespace SharpMap.Entities.Ogc.Gml
 {
-    [Serializable, XmlType(TypeName = "AbstractGriddedSurfaceType", Namespace = "http://www.opengis.net/gml/3.2")]
+    [Serializable, XmlType(TypeName = "AbstractGriddedSurfaceType", Namespace = Declarations.SchemaVersion)]
     public abstract class AbstractGriddedSurfaceType : AbstractParametricCurveSurfaceType
     {
         [XmlIgnore] private string _columns;
@@ -40,7 +40,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(Type = typeof (RowsCollection), ElementName = "rows", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public RowsCollection RowsCollection
         {
             get { return _rowsCollection; }

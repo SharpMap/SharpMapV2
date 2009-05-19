@@ -18,7 +18,7 @@ using System.Xml.Serialization;
 
 namespace SharpMap.Entities.Ogc.Gml
 {
-    [Serializable, XmlType(TypeName = "TemporalDatumType", Namespace = "http://www.opengis.net/gml/3.2")]
+    [Serializable, XmlType(TypeName = "TemporalDatumType", Namespace = Declarations.SchemaVersion)]
     public class TemporalDatumType : TemporalDatumBaseType
     {
         [XmlIgnore] private DateTime _origin;
@@ -30,7 +30,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(ElementName = "origin", IsNullable = false, Form = XmlSchemaForm.Qualified, DataType = "dateTime",
-            Namespace = "http://www.opengis.net/gml/3.2")]
+            Namespace = Declarations.SchemaVersion)]
         public DateTime Origin
         {
             get { return _origin; }

@@ -21,7 +21,7 @@ using System.Xml.Serialization;
 
 namespace SharpMap.Entities.Ogc.Gml
 {
-    [Serializable, XmlType(TypeName = "SurfaceArrayPropertyType", Namespace = "http://www.opengis.net/gml/3.2"),
+    [Serializable, XmlType(TypeName = "SurfaceArrayPropertyType", Namespace = Declarations.SchemaVersion),
      XmlInclude(typeof (CompositeSurfaceType)), XmlInclude(typeof (OrientableSurfaceType)),
      XmlInclude(typeof (PolygonType)), XmlInclude(typeof (SurfaceType))]
     public class SurfaceArrayPropertyType
@@ -36,7 +36,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(Type = typeof (AbstractSurface), ElementName = "AbstractSurface", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public List<AbstractSurface> AbstractSurface
         {
             get

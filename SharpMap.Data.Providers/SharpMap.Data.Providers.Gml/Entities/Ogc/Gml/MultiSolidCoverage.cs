@@ -18,7 +18,7 @@ using System.Xml.Serialization;
 namespace SharpMap.Entities.Ogc.Gml
 {
     [Serializable,
-     XmlRoot(ElementName = "MultiSolidCoverage", Namespace = "http://www.opengis.net/gml/3.2", IsNullable = false)]
+     XmlRoot(ElementName = "MultiSolidCoverage", Namespace = Declarations.SchemaVersion, IsNullable = false)]
     public class MultiSolidCoverage : DiscreteCoverageType
     {
         public override void MakeSchemaCompliant()

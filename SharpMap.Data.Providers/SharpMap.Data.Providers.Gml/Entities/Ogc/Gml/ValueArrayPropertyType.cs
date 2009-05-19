@@ -21,7 +21,7 @@ namespace SharpMap.Entities.Ogc.Gml
     [Serializable, XmlInclude(typeof (AbstractGeometricAggregateType)),
      XmlInclude(typeof (AbstractGeometricPrimitiveType)), XmlInclude(typeof (AbstractTimeComplexType)),
      XmlInclude(typeof (AbstractTimePrimitiveType)),
-     XmlType(TypeName = "ValueArrayPropertyType", Namespace = "http://www.opengis.net/gml/3.2"),
+     XmlType(TypeName = "ValueArrayPropertyType", Namespace = Declarations.SchemaVersion),
      XmlInclude(typeof (GeometricComplexType)), XmlInclude(typeof (GridType))]
     public class ValueArrayPropertyType
     {
@@ -39,7 +39,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(Type = typeof (AbstractGeometry), ElementName = "AbstractGeometry", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public AbstractGeometry AbstractGeometry
         {
             get { return _abstractGeometry; }
@@ -47,7 +47,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(Type = typeof (AbstractTimeObject), ElementName = "AbstractTimeObject", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public AbstractTimeObject AbstractTimeObject
         {
             get { return _abstractTimeObject; }
@@ -55,7 +55,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(ElementName = "AbstractValue", IsNullable = false, Form = XmlSchemaForm.Qualified,
-            Namespace = "http://www.opengis.net/gml/3.2")]
+            Namespace = Declarations.SchemaVersion)]
         public object AbstractValue
         {
             get { return _abstractValue; }
@@ -63,7 +63,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(ElementName = "Null", IsNullable = false, Form = XmlSchemaForm.Qualified, DataType = "anyURI",
-            Namespace = "http://www.opengis.net/gml/3.2")]
+            Namespace = Declarations.SchemaVersion)]
         public string Null
         {
             get { return _null; }

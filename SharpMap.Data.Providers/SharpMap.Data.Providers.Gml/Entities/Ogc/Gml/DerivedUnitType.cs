@@ -21,7 +21,7 @@ using System.Xml.Serialization;
 
 namespace SharpMap.Entities.Ogc.Gml
 {
-    [Serializable, XmlType(TypeName = "DerivedUnitType", Namespace = "http://www.opengis.net/gml/3.2")]
+    [Serializable, XmlType(TypeName = "DerivedUnitType", Namespace = Declarations.SchemaVersion)]
     public class DerivedUnitType : UnitDefinitionType
     {
         [XmlIgnore] private List<DerivationUnitTerm> _derivationUnitTerm;
@@ -33,7 +33,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(Type = typeof (DerivationUnitTerm), ElementName = "derivationUnitTerm", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public List<DerivationUnitTerm> DerivationUnitTerm
         {
             get

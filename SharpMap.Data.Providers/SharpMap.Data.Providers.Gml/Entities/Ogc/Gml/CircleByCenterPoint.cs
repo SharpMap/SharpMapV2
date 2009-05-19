@@ -18,7 +18,7 @@ using System.Xml.Serialization;
 namespace SharpMap.Entities.Ogc.Gml
 {
     [Serializable,
-     XmlRoot(ElementName = "CircleByCenterPoint", Namespace = "http://www.opengis.net/gml/3.2", IsNullable = false)]
+     XmlRoot(ElementName = "CircleByCenterPoint", Namespace = Declarations.SchemaVersion, IsNullable = false)]
     public class CircleByCenterPoint : CircleByCenterPointType
     {
         public override void MakeSchemaCompliant()

@@ -21,7 +21,7 @@ namespace SharpMap.Entities.Ogc.Gml
     [Serializable, XmlInclude(typeof (GeographicCRSType)), XmlInclude(typeof (EngineeringCRSType)),
      XmlInclude(typeof (TemporalCRSType)), XmlInclude(typeof (AbstractGeneralDerivedCRSType)),
      XmlInclude(typeof (VerticalCRSType)), XmlInclude(typeof (GeocentricCRSType)),
-     XmlType(TypeName = "CRSPropertyType", Namespace = "http://www.opengis.net/gml/3.2"),
+     XmlType(TypeName = "CRSPropertyType", Namespace = Declarations.SchemaVersion),
      XmlInclude(typeof (ImageCRSType)), XmlInclude(typeof (GeodeticCRSType)), XmlInclude(typeof (CompoundCRSType))]
     public class CRSPropertyType
     {
@@ -44,7 +44,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(Type = typeof (AbstractCRS), ElementName = "AbstractCRS", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public AbstractCRS AbstractCRS
         {
             get { return _abstractCRS; }

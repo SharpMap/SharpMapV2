@@ -18,7 +18,7 @@ using System.Xml.Serialization;
 
 namespace SharpMap.Entities.Ogc.Gml
 {
-    [Serializable, XmlType(TypeName = "PrimeMeridianPropertyType", Namespace = "http://www.opengis.net/gml/3.2")]
+    [Serializable, XmlType(TypeName = "PrimeMeridianPropertyType", Namespace = Declarations.SchemaVersion)]
     public class PrimeMeridianPropertyType
     {
         [XmlIgnore] private Actuate _actuate;
@@ -72,7 +72,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(Type = typeof (PrimeMeridian), ElementName = "PrimeMeridian", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public PrimeMeridian PrimeMeridian
         {
             get { return _primeMeridian; }

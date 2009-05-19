@@ -18,7 +18,7 @@ using System.Xml.Serialization;
 
 namespace SharpMap.Entities.Ogc.Gml
 {
-    [Serializable, XmlType(TypeName = "MultiGeometryPropertyType", Namespace = "http://www.opengis.net/gml/3.2"),
+    [Serializable, XmlType(TypeName = "MultiGeometryPropertyType", Namespace = Declarations.SchemaVersion),
      XmlInclude(typeof (MultiGeometryType)), XmlInclude(typeof (MultiCurveType)), XmlInclude(typeof (MultiSurfaceType)),
      XmlInclude(typeof (MultiSolidType)), XmlInclude(typeof (MultiPointType))]
     public class MultiGeometryPropertyType
@@ -45,7 +45,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(Type = typeof (AbstractGeometricAggregate), ElementName = "AbstractGeometricAggregate",
-            IsNullable = false, Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            IsNullable = false, Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public AbstractGeometricAggregate AbstractGeometricAggregate
         {
             get { return _abstractGeometricAggregate; }

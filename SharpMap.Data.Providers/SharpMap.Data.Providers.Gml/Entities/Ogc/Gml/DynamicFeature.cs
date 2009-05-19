@@ -18,7 +18,7 @@ using System.Xml.Serialization;
 namespace SharpMap.Entities.Ogc.Gml
 {
     [Serializable,
-     XmlRoot(ElementName = "DynamicFeature", Namespace = "http://www.opengis.net/gml/3.2", IsNullable = false)]
+     XmlRoot(ElementName = "DynamicFeature", Namespace = Declarations.SchemaVersion, IsNullable = false)]
     public class DynamicFeature : DynamicFeatureType
     {
         public override void MakeSchemaCompliant()

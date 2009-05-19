@@ -18,7 +18,7 @@ using System.Xml.Serialization;
 namespace SharpMap.Entities.Ogc.Gml
 {
     [Serializable,
-     XmlRoot(ElementName = "VerticalCRS", Namespace = "http://www.opengis.net/gml/3.2", IsNullable = false)]
+     XmlRoot(ElementName = "VerticalCRS", Namespace = Declarations.SchemaVersion, IsNullable = false)]
     public class VerticalCRS : VerticalCRSType
     {
         public override void MakeSchemaCompliant()

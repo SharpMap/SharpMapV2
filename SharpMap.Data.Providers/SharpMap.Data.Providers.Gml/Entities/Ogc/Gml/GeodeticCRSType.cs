@@ -18,7 +18,7 @@ using System.Xml.Serialization;
 
 namespace SharpMap.Entities.Ogc.Gml
 {
-    [Serializable, XmlType(TypeName = "GeodeticCRSType", Namespace = "http://www.opengis.net/gml/3.2")]
+    [Serializable, XmlType(TypeName = "GeodeticCRSType", Namespace = Declarations.SchemaVersion)]
     public class GeodeticCRSType : AbstractCRSType
     {
         [XmlIgnore] private CartesianCSProperty _cartesianCS;
@@ -27,7 +27,7 @@ namespace SharpMap.Entities.Ogc.Gml
         [XmlIgnore] private SphericalCSProperty _sphericalCS;
 
         [XmlElement(Type = typeof (CartesianCSProperty), ElementName = "cartesianCS", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public CartesianCSProperty CartesianCS
         {
             get { return _cartesianCS; }
@@ -35,7 +35,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(Type = typeof (EllipsoidalCSProperty), ElementName = "ellipsoidalCS", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public EllipsoidalCSProperty EllipsoidalCS
         {
             get { return _ellipsoidalCS; }
@@ -43,7 +43,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(Type = typeof (GeodeticDatumProperty), ElementName = "geodeticDatum", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public GeodeticDatumProperty GeodeticDatum
         {
             get { return _geodeticDatum; }
@@ -51,7 +51,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(Type = typeof (SphericalCSProperty), ElementName = "sphericalCS", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public SphericalCSProperty SphericalCS
         {
             get { return _sphericalCS; }

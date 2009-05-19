@@ -18,7 +18,7 @@ using System.Xml.Serialization;
 
 namespace SharpMap.Entities.Ogc.Gml
 {
-    [Serializable, XmlType(TypeName = "KnotType", Namespace = "http://www.opengis.net/gml/3.2")]
+    [Serializable, XmlType(TypeName = "KnotType", Namespace = Declarations.SchemaVersion)]
     public class KnotType
     {
         [XmlIgnore] private string _multiplicity;
@@ -33,7 +33,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(ElementName = "multiplicity", IsNullable = false, Form = XmlSchemaForm.Qualified,
-            DataType = "nonNegativeInteger", Namespace = "http://www.opengis.net/gml/3.2")]
+            DataType = "nonNegativeInteger", Namespace = Declarations.SchemaVersion)]
         public string Multiplicity
         {
             get { return _multiplicity; }
@@ -41,7 +41,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(Type = typeof (Value), ElementName = "value", IsNullable = false, Form = XmlSchemaForm.Qualified,
-            Namespace = "http://www.opengis.net/gml/3.2")]
+            Namespace = Declarations.SchemaVersion)]
         public Value Value
         {
             get { return _value; }
@@ -49,7 +49,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(ElementName = "weight", IsNullable = false, Form = XmlSchemaForm.Qualified, DataType = "double",
-            Namespace = "http://www.opengis.net/gml/3.2")]
+            Namespace = Declarations.SchemaVersion)]
         public double Weight
         {
             get { return _weight; }

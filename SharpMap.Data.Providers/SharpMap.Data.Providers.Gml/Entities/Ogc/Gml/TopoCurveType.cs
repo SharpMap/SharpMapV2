@@ -21,7 +21,7 @@ using System.Xml.Serialization;
 
 namespace SharpMap.Entities.Ogc.Gml
 {
-    [Serializable, XmlType(TypeName = "TopoCurveType", Namespace = "http://www.opengis.net/gml/3.2")]
+    [Serializable, XmlType(TypeName = "TopoCurveType", Namespace = Declarations.SchemaVersion)]
     public class TopoCurveType : AbstractTopologyType
     {
         [XmlIgnore] private AggregationType _aggregationType;
@@ -46,7 +46,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(Type = typeof (DirectedEdge), ElementName = "directedEdge", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public List<DirectedEdge> DirectedEdge
         {
             get

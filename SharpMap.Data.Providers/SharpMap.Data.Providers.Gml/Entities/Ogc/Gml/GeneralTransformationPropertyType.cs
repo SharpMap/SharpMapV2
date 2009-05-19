@@ -18,7 +18,7 @@ using System.Xml.Serialization;
 
 namespace SharpMap.Entities.Ogc.Gml
 {
-    [Serializable, XmlType(TypeName = "GeneralTransformationPropertyType", Namespace = "http://www.opengis.net/gml/3.2")
+    [Serializable, XmlType(TypeName = "GeneralTransformationPropertyType", Namespace = Declarations.SchemaVersion)
     , XmlInclude(typeof (TransformationType))]
     public class GeneralTransformationPropertyType
     {
@@ -41,7 +41,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(Type = typeof (AbstractGeneralTransformation), ElementName = "AbstractGeneralTransformation",
-            IsNullable = false, Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            IsNullable = false, Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public AbstractGeneralTransformation AbstractGeneralTransformation
         {
             get { return _abstractGeneralTransformation; }

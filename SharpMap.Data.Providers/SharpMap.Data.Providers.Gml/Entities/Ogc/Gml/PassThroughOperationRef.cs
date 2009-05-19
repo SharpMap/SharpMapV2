@@ -18,7 +18,7 @@ using System.Xml.Serialization;
 namespace SharpMap.Entities.Ogc.Gml
 {
     [Serializable,
-     XmlRoot(ElementName = "passThroughOperationRef", Namespace = "http://www.opengis.net/gml/3.2", IsNullable = false)]
+     XmlRoot(ElementName = "passThroughOperationRef", Namespace = Declarations.SchemaVersion, IsNullable = false)]
     public class PassThroughOperationRef : PassThroughOperationPropertyType
     {
         public override void MakeSchemaCompliant()

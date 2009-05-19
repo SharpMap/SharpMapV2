@@ -19,14 +19,14 @@ using System.Xml.Serialization;
 
 namespace SharpMap.Entities.Ogc.Gml
 {
-    [Serializable, XmlType(TypeName = "AbstractCRSType", Namespace = "http://www.opengis.net/gml/3.2")]
+    [Serializable, XmlType(TypeName = "AbstractCRSType", Namespace = Declarations.SchemaVersion)]
     public abstract class AbstractCRSType : IdentifiedObjectType
     {
         [XmlIgnore] private List<DomainOfValidity> _domainOfValidity;
         [XmlIgnore] private List<string> _scope;
 
         [XmlElement(Type = typeof (DomainOfValidity), ElementName = "domainOfValidity", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public List<DomainOfValidity> DomainOfValidity
         {
             get
@@ -41,7 +41,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(Type = typeof (string), ElementName = "scope", IsNullable = false, Form = XmlSchemaForm.Qualified,
-            DataType = "string", Namespace = "http://www.opengis.net/gml/3.2")]
+            DataType = "string", Namespace = Declarations.SchemaVersion)]
         public List<string> Scope
         {
             get

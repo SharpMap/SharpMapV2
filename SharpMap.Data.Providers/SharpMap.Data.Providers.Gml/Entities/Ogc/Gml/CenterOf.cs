@@ -17,7 +17,7 @@ using System.Xml.Serialization;
 
 namespace SharpMap.Entities.Ogc.Gml
 {
-    [Serializable, XmlRoot(ElementName = "centerOf", Namespace = "http://www.opengis.net/gml/3.2", IsNullable = false)]
+    [Serializable, XmlRoot(ElementName = "centerOf", Namespace = Declarations.SchemaVersion, IsNullable = false)]
     public class CenterOf : PointPropertyType
     {
         public override void MakeSchemaCompliant()

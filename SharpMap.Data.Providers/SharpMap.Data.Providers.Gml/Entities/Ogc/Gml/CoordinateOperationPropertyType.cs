@@ -20,7 +20,7 @@ namespace SharpMap.Entities.Ogc.Gml
 {
     [Serializable, XmlInclude(typeof (AbstractGeneralTransformationType)), XmlInclude(typeof (PassThroughOperationType))
     , XmlInclude(typeof (ConcatenatedOperationType)), XmlInclude(typeof (AbstractGeneralConversionType)),
-     XmlType(TypeName = "CoordinateOperationPropertyType", Namespace = "http://www.opengis.net/gml/3.2")]
+     XmlType(TypeName = "CoordinateOperationPropertyType", Namespace = Declarations.SchemaVersion)]
     public class CoordinateOperationPropertyType
     {
         [XmlIgnore] private AbstractCoordinateOperation _abstractCoordinateOperation;
@@ -42,7 +42,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(Type = typeof (AbstractCoordinateOperation), ElementName = "AbstractCoordinateOperation",
-            IsNullable = false, Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            IsNullable = false, Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public AbstractCoordinateOperation AbstractCoordinateOperation
         {
             get { return _abstractCoordinateOperation; }

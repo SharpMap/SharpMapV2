@@ -18,7 +18,7 @@ using System.Xml.Serialization;
 
 namespace SharpMap.Entities.Ogc.Gml
 {
-    [Serializable, XmlType(TypeName = "ConcatenatedOperationPropertyType", Namespace = "http://www.opengis.net/gml/3.2")
+    [Serializable, XmlType(TypeName = "ConcatenatedOperationPropertyType", Namespace = Declarations.SchemaVersion)
     ]
     public class ConcatenatedOperationPropertyType
     {
@@ -59,7 +59,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(Type = typeof (ConcatenatedOperation), ElementName = "ConcatenatedOperation", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public ConcatenatedOperation ConcatenatedOperation
         {
             get { return _concatenatedOperation; }

@@ -18,7 +18,7 @@ using System.Xml.Serialization;
 namespace SharpMap.Entities.Ogc.Gml
 {
     [Serializable,
-     XmlRoot(ElementName = "AbstractGeneralTransformation", Namespace = "http://www.opengis.net/gml/3.2",
+     XmlRoot(ElementName = "AbstractGeneralTransformation", Namespace = Declarations.SchemaVersion,
          IsNullable = false)]
     public abstract class AbstractGeneralTransformation : AbstractGeneralTransformationType
     {

@@ -17,7 +17,7 @@ using System.Xml.Serialization;
 
 namespace SharpMap.Entities.Ogc.Gml
 {
-    [Serializable, XmlType(TypeName = "SphereType", Namespace = "http://www.opengis.net/gml/3.2")]
+    [Serializable, XmlType(TypeName = "SphereType", Namespace = Declarations.SchemaVersion)]
     public class SphereType : AbstractGriddedSurfaceType
     {
         [XmlIgnore] private CurveInterpolationType _horizontalCurveType;

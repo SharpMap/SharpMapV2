@@ -18,7 +18,7 @@ using System.Xml.Serialization;
 namespace SharpMap.Entities.Ogc.Gml
 {
     [Serializable,
-     XmlRoot(ElementName = "primeMeridianRef", Namespace = "http://www.opengis.net/gml/3.2", IsNullable = false)]
+     XmlRoot(ElementName = "primeMeridianRef", Namespace = Declarations.SchemaVersion, IsNullable = false)]
     public class PrimeMeridianRef : PrimeMeridianPropertyType
     {
         public override void MakeSchemaCompliant()

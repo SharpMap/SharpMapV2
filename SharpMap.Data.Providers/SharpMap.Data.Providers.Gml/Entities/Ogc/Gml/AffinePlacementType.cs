@@ -19,7 +19,7 @@ using System.Xml.Serialization;
 
 namespace SharpMap.Entities.Ogc.Gml
 {
-    [Serializable, XmlType(TypeName = "AffinePlacementType", Namespace = "http://www.opengis.net/gml/3.2")]
+    [Serializable, XmlType(TypeName = "AffinePlacementType", Namespace = Declarations.SchemaVersion)]
     public class AffinePlacementType
     {
         [XmlIgnore] private string _inDimension;
@@ -34,7 +34,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(ElementName = "inDimension", IsNullable = false, Form = XmlSchemaForm.Qualified,
-            DataType = "positiveInteger", Namespace = "http://www.opengis.net/gml/3.2")]
+            DataType = "positiveInteger", Namespace = Declarations.SchemaVersion)]
         public string InDimension
         {
             get { return _inDimension; }
@@ -42,7 +42,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(Type = typeof (Location), ElementName = "location", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public Location Location
         {
             get { return _location; }
@@ -50,7 +50,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(ElementName = "outDimension", IsNullable = false, Form = XmlSchemaForm.Qualified,
-            DataType = "positiveInteger", Namespace = "http://www.opengis.net/gml/3.2")]
+            DataType = "positiveInteger", Namespace = Declarations.SchemaVersion)]
         public string OutDimension
         {
             get { return _outDimension; }
@@ -58,7 +58,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(Type = typeof (VectorType), ElementName = "refDirection", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public List<VectorType> RefDirection
         {
             get

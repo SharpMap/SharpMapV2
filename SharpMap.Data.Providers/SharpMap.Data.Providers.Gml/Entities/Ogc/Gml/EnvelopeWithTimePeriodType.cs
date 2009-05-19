@@ -18,7 +18,7 @@ using System.Xml.Serialization;
 
 namespace SharpMap.Entities.Ogc.Gml
 {
-    [Serializable, XmlType(TypeName = "EnvelopeWithTimePeriodType", Namespace = "http://www.opengis.net/gml/3.2")]
+    [Serializable, XmlType(TypeName = "EnvelopeWithTimePeriodType", Namespace = Declarations.SchemaVersion)]
     public class EnvelopeWithTimePeriodType : EnvelopeType
     {
         [XmlIgnore] private TimePositionType _beginPosition;
@@ -31,7 +31,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(Type = typeof (TimePositionType), ElementName = "beginPosition", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public TimePositionType BeginPosition
         {
             get { return _beginPosition; }
@@ -39,7 +39,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(Type = typeof (TimePositionType), ElementName = "endPosition", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public TimePositionType EndPosition
         {
             get { return _endPosition; }

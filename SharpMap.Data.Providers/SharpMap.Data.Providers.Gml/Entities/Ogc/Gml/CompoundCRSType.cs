@@ -21,7 +21,7 @@ using System.Xml.Serialization;
 
 namespace SharpMap.Entities.Ogc.Gml
 {
-    [Serializable, XmlType(TypeName = "CompoundCRSType", Namespace = "http://www.opengis.net/gml/3.2")]
+    [Serializable, XmlType(TypeName = "CompoundCRSType", Namespace = Declarations.SchemaVersion)]
     public class CompoundCRSType : AbstractCRSType
     {
         [XmlIgnore] private AggregationType _aggregationType;
@@ -40,7 +40,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(Type = typeof (ComponentReferenceSystemProperty), ElementName = "componentReferenceSystem",
-            IsNullable = false, Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            IsNullable = false, Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public List<ComponentReferenceSystemProperty> ComponentReferenceSystem
         {
             get

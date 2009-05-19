@@ -17,7 +17,7 @@ using System.Xml.Serialization;
 
 namespace SharpMap.Entities.Ogc.Gml
 {
-    [Serializable, XmlType(TypeName = "DegreesType", Namespace = "http://www.opengis.net/gml/3.2")]
+    [Serializable, XmlType(TypeName = "DegreesType", Namespace = Declarations.SchemaVersion)]
     public class DegreesType
     {
         [XmlIgnore] private Direction _direction;

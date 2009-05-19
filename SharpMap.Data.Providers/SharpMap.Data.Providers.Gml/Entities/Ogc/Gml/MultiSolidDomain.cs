@@ -18,7 +18,7 @@ using System.Xml.Serialization;
 namespace SharpMap.Entities.Ogc.Gml
 {
     [Serializable,
-     XmlRoot(ElementName = "multiSolidDomain", Namespace = "http://www.opengis.net/gml/3.2", IsNullable = false)]
+     XmlRoot(ElementName = "multiSolidDomain", Namespace = Declarations.SchemaVersion, IsNullable = false)]
     public class MultiSolidDomain : DomainSetType
     {
         public override void MakeSchemaCompliant()

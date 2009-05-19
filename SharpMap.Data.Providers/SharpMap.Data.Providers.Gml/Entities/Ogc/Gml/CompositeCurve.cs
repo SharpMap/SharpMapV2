@@ -18,7 +18,7 @@ using System.Xml.Serialization;
 namespace SharpMap.Entities.Ogc.Gml
 {
     [Serializable,
-     XmlRoot(ElementName = "CompositeCurve", Namespace = "http://www.opengis.net/gml/3.2", IsNullable = false)]
+     XmlRoot(ElementName = "CompositeCurve", Namespace = Declarations.SchemaVersion, IsNullable = false)]
     public class CompositeCurve : CompositeCurveType
     {
         public override void MakeSchemaCompliant()

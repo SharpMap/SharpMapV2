@@ -18,7 +18,7 @@ using System.Xml.Serialization;
 namespace SharpMap.Entities.Ogc.Gml
 {
     [Serializable,
-     XmlRoot(ElementName = "coordinateSystem", Namespace = "http://www.opengis.net/gml/3.2", IsNullable = false)]
+     XmlRoot(ElementName = "coordinateSystem", Namespace = Declarations.SchemaVersion, IsNullable = false)]
     public class CoordinateSystemProperty : CoordinateSystemPropertyType
     {
         public override void MakeSchemaCompliant()

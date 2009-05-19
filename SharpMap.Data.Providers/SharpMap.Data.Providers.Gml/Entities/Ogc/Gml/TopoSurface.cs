@@ -18,7 +18,7 @@ using System.Xml.Serialization;
 namespace SharpMap.Entities.Ogc.Gml
 {
     [Serializable,
-     XmlRoot(ElementName = "TopoSurface", Namespace = "http://www.opengis.net/gml/3.2", IsNullable = false)]
+     XmlRoot(ElementName = "TopoSurface", Namespace = Declarations.SchemaVersion, IsNullable = false)]
     public class TopoSurface : TopoSurfaceType
     {
         public override void MakeSchemaCompliant()

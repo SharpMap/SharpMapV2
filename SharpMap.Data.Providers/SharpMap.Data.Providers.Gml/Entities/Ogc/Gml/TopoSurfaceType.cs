@@ -21,7 +21,7 @@ using System.Xml.Serialization;
 
 namespace SharpMap.Entities.Ogc.Gml
 {
-    [Serializable, XmlType(TypeName = "TopoSurfaceType", Namespace = "http://www.opengis.net/gml/3.2")]
+    [Serializable, XmlType(TypeName = "TopoSurfaceType", Namespace = Declarations.SchemaVersion)]
     public class TopoSurfaceType : AbstractTopologyType
     {
         [XmlIgnore] private AggregationType _aggregationType;
@@ -46,7 +46,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(Type = typeof (DirectedFace), ElementName = "directedFace", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public List<DirectedFace> DirectedFace
         {
             get

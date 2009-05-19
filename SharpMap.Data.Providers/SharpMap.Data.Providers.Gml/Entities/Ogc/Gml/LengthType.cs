@@ -17,7 +17,7 @@ using System.Xml.Serialization;
 
 namespace SharpMap.Entities.Ogc.Gml
 {
-    [Serializable, XmlType(TypeName = "LengthType", Namespace = "http://www.opengis.net/gml/3.2")]
+    [Serializable, XmlType(TypeName = "LengthType", Namespace = Declarations.SchemaVersion)]
     public class LengthType : MeasureType
     {
         public override void MakeSchemaCompliant()

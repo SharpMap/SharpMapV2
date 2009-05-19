@@ -18,7 +18,7 @@ using System.Xml.Serialization;
 namespace SharpMap.Entities.Ogc.Gml
 {
     [Serializable,
-     XmlRoot(ElementName = "ConcatenatedOperation", Namespace = "http://www.opengis.net/gml/3.2", IsNullable = false)]
+     XmlRoot(ElementName = "ConcatenatedOperation", Namespace = Declarations.SchemaVersion, IsNullable = false)]
     public class ConcatenatedOperation : ConcatenatedOperationType
     {
         public override void MakeSchemaCompliant()

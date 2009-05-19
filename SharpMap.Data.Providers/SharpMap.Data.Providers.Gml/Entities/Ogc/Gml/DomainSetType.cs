@@ -21,7 +21,7 @@ namespace SharpMap.Entities.Ogc.Gml
     [Serializable, XmlInclude(typeof (GeometricComplexType)), XmlInclude(typeof (AbstractGeometricAggregateType)),
      XmlInclude(typeof (AbstractTimePrimitiveType)), XmlInclude(typeof (GridType)),
      XmlInclude(typeof (AbstractTimeComplexType)),
-     XmlType(TypeName = "DomainSetType", Namespace = "http://www.opengis.net/gml/3.2"),
+     XmlType(TypeName = "DomainSetType", Namespace = Declarations.SchemaVersion),
      XmlInclude(typeof (AbstractGeometricPrimitiveType))]
     public class DomainSetType
     {
@@ -48,7 +48,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(Type = typeof (AbstractGeometry), ElementName = "AbstractGeometry", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public AbstractGeometry AbstractGeometry
         {
             get { return _abstractGeometry; }
@@ -56,7 +56,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(Type = typeof (AbstractTimeObject), ElementName = "AbstractTimeObject", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public AbstractTimeObject AbstractTimeObject
         {
             get { return _abstractTimeObject; }

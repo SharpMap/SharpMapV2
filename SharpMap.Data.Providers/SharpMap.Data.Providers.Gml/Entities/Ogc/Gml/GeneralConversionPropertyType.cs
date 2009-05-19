@@ -19,7 +19,7 @@ using System.Xml.Serialization;
 namespace SharpMap.Entities.Ogc.Gml
 {
     [Serializable, XmlInclude(typeof (ConversionType)),
-     XmlType(TypeName = "GeneralConversionPropertyType", Namespace = "http://www.opengis.net/gml/3.2")]
+     XmlType(TypeName = "GeneralConversionPropertyType", Namespace = Declarations.SchemaVersion)]
     public class GeneralConversionPropertyType
     {
         [XmlIgnore] private AbstractGeneralConversion _abstractGeneralConversion;
@@ -41,7 +41,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(Type = typeof (AbstractGeneralConversion), ElementName = "AbstractGeneralConversion",
-            IsNullable = false, Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            IsNullable = false, Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public AbstractGeneralConversion AbstractGeneralConversion
         {
             get { return _abstractGeneralConversion; }

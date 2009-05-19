@@ -18,7 +18,7 @@ using System.Xml.Serialization;
 namespace SharpMap.Entities.Ogc.Gml
 {
     [Serializable,
-     XmlRoot(ElementName = "ArcStringByBulge", Namespace = "http://www.opengis.net/gml/3.2", IsNullable = false)]
+     XmlRoot(ElementName = "ArcStringByBulge", Namespace = Declarations.SchemaVersion, IsNullable = false)]
     public class ArcStringByBulge : ArcStringByBulgeType
     {
         public override void MakeSchemaCompliant()

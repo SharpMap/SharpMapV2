@@ -20,7 +20,7 @@ namespace SharpMap.Entities.Ogc.Gml
 {
     [Serializable, XmlInclude(typeof (DynamicFeatureType)), XmlInclude(typeof (AbstractFeatureCollectionType)),
      XmlInclude(typeof (BoundedFeatureType)), XmlInclude(typeof (AbstractCoverageType)),
-     XmlType(TypeName = "FeaturePropertyType", Namespace = "http://www.opengis.net/gml/3.2"),
+     XmlType(TypeName = "FeaturePropertyType", Namespace = Declarations.SchemaVersion),
      XmlInclude(typeof (ObservationType))]
     public class FeaturePropertyType
     {
@@ -46,7 +46,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(Type = typeof (AbstractFeature), ElementName = "AbstractFeature", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public AbstractFeature AbstractFeature
         {
             get { return _abstractFeature; }

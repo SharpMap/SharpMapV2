@@ -18,7 +18,7 @@ using System.Xml.Serialization;
 namespace SharpMap.Entities.Ogc.Gml
 {
     [Serializable,
-     XmlRoot(ElementName = "AbstractGriddedSurface", Namespace = "http://www.opengis.net/gml/3.2", IsNullable = false)]
+     XmlRoot(ElementName = "AbstractGriddedSurface", Namespace = Declarations.SchemaVersion, IsNullable = false)]
     public abstract class AbstractGriddedSurface : AbstractGriddedSurfaceType
     {
         public override void MakeSchemaCompliant()

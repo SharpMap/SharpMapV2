@@ -18,7 +18,7 @@ using System.Xml.Serialization;
 
 namespace SharpMap.Entities.Ogc.Gml
 {
-    [Serializable, XmlType(TypeName = "EngineeringCRSPropertyType", Namespace = "http://www.opengis.net/gml/3.2")]
+    [Serializable, XmlType(TypeName = "EngineeringCRSPropertyType", Namespace = Declarations.SchemaVersion)]
     public class EngineeringCRSPropertyType
     {
         [XmlIgnore] private Actuate _actuate;
@@ -58,7 +58,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(Type = typeof (EngineeringCRS), ElementName = "EngineeringCRS", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public EngineeringCRS EngineeringCRS
         {
             get { return _engineeringCRS; }

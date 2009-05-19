@@ -17,7 +17,7 @@ using System.Xml.Serialization;
 
 namespace SharpMap.Entities.Ogc.Gml
 {
-    [Serializable, XmlType(TypeName = "StringOrRefType", Namespace = "http://www.opengis.net/gml/3.2")]
+    [Serializable, XmlType(TypeName = "StringOrRefType", Namespace = Declarations.SchemaVersion)]
     public class StringOrRefType
     {
         [XmlIgnore] private Actuate _actuate;

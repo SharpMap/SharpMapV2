@@ -18,13 +18,13 @@ using System.Xml.Serialization;
 
 namespace SharpMap.Entities.Ogc.Gml
 {
-    [Serializable, XmlType(TypeName = "DirectedObservationType", Namespace = "http://www.opengis.net/gml/3.2")]
+    [Serializable, XmlType(TypeName = "DirectedObservationType", Namespace = Declarations.SchemaVersion)]
     public class DirectedObservationType : ObservationType
     {
         [XmlIgnore] private Direction _direction;
 
         [XmlElement(Type = typeof (Direction), ElementName = "direction", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public Direction Direction
         {
             get { return _direction; }

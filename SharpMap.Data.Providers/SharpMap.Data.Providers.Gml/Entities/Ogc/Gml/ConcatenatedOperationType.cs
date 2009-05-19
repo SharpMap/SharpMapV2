@@ -21,7 +21,7 @@ using System.Xml.Serialization;
 
 namespace SharpMap.Entities.Ogc.Gml
 {
-    [Serializable, XmlType(TypeName = "ConcatenatedOperationType", Namespace = "http://www.opengis.net/gml/3.2")]
+    [Serializable, XmlType(TypeName = "ConcatenatedOperationType", Namespace = Declarations.SchemaVersion)]
     public class ConcatenatedOperationType : AbstractCoordinateOperationType
     {
         [XmlIgnore] private AggregationType _aggregationType;
@@ -40,7 +40,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(Type = typeof (CoordOperationProperty), ElementName = "coordOperation", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public List<CoordOperationProperty> CoordOperation
         {
             get

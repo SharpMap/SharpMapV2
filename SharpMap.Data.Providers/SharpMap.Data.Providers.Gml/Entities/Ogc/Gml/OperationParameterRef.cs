@@ -18,7 +18,7 @@ using System.Xml.Serialization;
 namespace SharpMap.Entities.Ogc.Gml
 {
     [Serializable,
-     XmlRoot(ElementName = "operationParameterRef", Namespace = "http://www.opengis.net/gml/3.2", IsNullable = false)]
+     XmlRoot(ElementName = "operationParameterRef", Namespace = Declarations.SchemaVersion, IsNullable = false)]
     public class OperationParameterRef : OperationParameterPropertyType
     {
         public override void MakeSchemaCompliant()

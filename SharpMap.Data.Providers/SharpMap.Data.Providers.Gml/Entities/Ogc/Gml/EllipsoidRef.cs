@@ -18,7 +18,7 @@ using System.Xml.Serialization;
 namespace SharpMap.Entities.Ogc.Gml
 {
     [Serializable,
-     XmlRoot(ElementName = "ellipsoidRef", Namespace = "http://www.opengis.net/gml/3.2", IsNullable = false)]
+     XmlRoot(ElementName = "ellipsoidRef", Namespace = Declarations.SchemaVersion, IsNullable = false)]
     public class EllipsoidRef : EllipsoidPropertyType
     {
         public override void MakeSchemaCompliant()

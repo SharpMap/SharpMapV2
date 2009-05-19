@@ -17,7 +17,7 @@ using System.Xml.Serialization;
 
 namespace SharpMap.Entities.Ogc.Gml
 {
-    [Serializable, XmlType(TypeName = "VerticalCSType", Namespace = "http://www.opengis.net/gml/3.2")]
+    [Serializable, XmlType(TypeName = "VerticalCSType", Namespace = Declarations.SchemaVersion)]
     public class VerticalCSType : AbstractCoordinateSystemType
     {
         public override void MakeSchemaCompliant()

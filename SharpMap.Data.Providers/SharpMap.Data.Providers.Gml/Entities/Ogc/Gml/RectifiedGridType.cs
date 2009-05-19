@@ -19,7 +19,7 @@ using System.Xml.Serialization;
 
 namespace SharpMap.Entities.Ogc.Gml
 {
-    [Serializable, XmlType(TypeName = "RectifiedGridType", Namespace = "http://www.opengis.net/gml/3.2")]
+    [Serializable, XmlType(TypeName = "RectifiedGridType", Namespace = Declarations.SchemaVersion)]
     public class RectifiedGridType : GridType
     {
         [XmlIgnore] private List<VectorType> _offsetVector;
@@ -32,7 +32,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(Type = typeof (VectorType), ElementName = "offsetVector", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public List<VectorType> OffsetVector
         {
             get
@@ -47,7 +47,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(ElementName = "origin", IsNullable = false, Form = XmlSchemaForm.Qualified, DataType = "dateTime",
-            Namespace = "http://www.opengis.net/gml/3.2")]
+            Namespace = Declarations.SchemaVersion)]
         public DateTime Origin
         {
             get { return _origin; }

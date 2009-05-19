@@ -18,7 +18,7 @@ using System.Xml.Serialization;
 
 namespace SharpMap.Entities.Ogc.Gml
 {
-    [Serializable, XmlType(TypeName = "TimeCSPropertyType", Namespace = "http://www.opengis.net/gml/3.2")]
+    [Serializable, XmlType(TypeName = "TimeCSPropertyType", Namespace = Declarations.SchemaVersion)]
     public class TimeCSPropertyType
     {
         [XmlIgnore] private Actuate _actuate;
@@ -97,7 +97,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(Type = typeof (TimeCS), ElementName = "TimeCS", IsNullable = false, Form = XmlSchemaForm.Qualified,
-            Namespace = "http://www.opengis.net/gml/3.2")]
+            Namespace = Declarations.SchemaVersion)]
         public TimeCS TimeCS
         {
             get { return _timeCS; }

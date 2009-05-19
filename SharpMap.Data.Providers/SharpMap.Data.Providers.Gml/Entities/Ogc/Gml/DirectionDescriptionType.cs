@@ -18,7 +18,7 @@ using System.Xml.Serialization;
 
 namespace SharpMap.Entities.Ogc.Gml
 {
-    [Serializable, XmlType(TypeName = "DirectionDescriptionType", Namespace = "http://www.opengis.net/gml/3.2")]
+    [Serializable, XmlType(TypeName = "DirectionDescriptionType", Namespace = Declarations.SchemaVersion)]
     public class DirectionDescriptionType
     {
         [XmlIgnore] private CompassPointEnumeration _compassPoint;
@@ -28,7 +28,7 @@ namespace SharpMap.Entities.Ogc.Gml
         [XmlIgnore] public bool CompassPointSpecified = true;
 
         [XmlElement(ElementName = "compassPoint", IsNullable = false, Form = XmlSchemaForm.Qualified,
-            Namespace = "http://www.opengis.net/gml/3.2")]
+            Namespace = Declarations.SchemaVersion)]
         public CompassPointEnumeration CompassPoint
         {
             get { return _compassPoint; }
@@ -40,7 +40,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(Type = typeof (Description), ElementName = "description", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public Description Description
         {
             get { return _description; }
@@ -48,7 +48,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(Type = typeof (CodeType), ElementName = "keyword", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public CodeType Keyword
         {
             get { return _keyword; }
@@ -56,7 +56,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(Type = typeof (ReferenceType), ElementName = "reference", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public ReferenceType Reference
         {
             get { return _reference; }

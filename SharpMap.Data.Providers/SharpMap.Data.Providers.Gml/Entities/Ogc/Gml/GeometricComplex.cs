@@ -18,7 +18,7 @@ using System.Xml.Serialization;
 namespace SharpMap.Entities.Ogc.Gml
 {
     [Serializable,
-     XmlRoot(ElementName = "GeometricComplex", Namespace = "http://www.opengis.net/gml/3.2", IsNullable = false)]
+     XmlRoot(ElementName = "GeometricComplex", Namespace = Declarations.SchemaVersion, IsNullable = false)]
     public class GeometricComplex : GeometricComplexType
     {
         public override void MakeSchemaCompliant()

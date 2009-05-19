@@ -18,7 +18,7 @@ using System.Xml.Serialization;
 
 namespace SharpMap.Entities.Ogc.Gml
 {
-    [Serializable, XmlType(TypeName = "TimeInstantPropertyType", Namespace = "http://www.opengis.net/gml/3.2")]
+    [Serializable, XmlType(TypeName = "TimeInstantPropertyType", Namespace = Declarations.SchemaVersion)]
     public class TimeInstantPropertyType
     {
         [XmlIgnore] private Actuate _actuate;
@@ -111,7 +111,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(Type = typeof (TimeInstant), ElementName = "TimeInstant", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public TimeInstant TimeInstant
         {
             get { return _timeInstant; }

@@ -18,7 +18,7 @@ using System.Xml.Serialization;
 namespace SharpMap.Entities.Ogc.Gml
 {
     [Serializable,
-     XmlRoot(ElementName = "verticalDatum", Namespace = "http://www.opengis.net/gml/3.2", IsNullable = false)]
+     XmlRoot(ElementName = "verticalDatum", Namespace = Declarations.SchemaVersion, IsNullable = false)]
     public class VerticalDatumProperty : VerticalDatumPropertyType
     {
         public override void MakeSchemaCompliant()

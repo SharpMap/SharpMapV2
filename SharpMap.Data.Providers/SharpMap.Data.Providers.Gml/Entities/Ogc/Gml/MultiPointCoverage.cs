@@ -18,7 +18,7 @@ using System.Xml.Serialization;
 namespace SharpMap.Entities.Ogc.Gml
 {
     [Serializable,
-     XmlRoot(ElementName = "MultiPointCoverage", Namespace = "http://www.opengis.net/gml/3.2", IsNullable = false)]
+     XmlRoot(ElementName = "MultiPointCoverage", Namespace = Declarations.SchemaVersion, IsNullable = false)]
     public class MultiPointCoverage : DiscreteCoverageType
     {
         public override void MakeSchemaCompliant()

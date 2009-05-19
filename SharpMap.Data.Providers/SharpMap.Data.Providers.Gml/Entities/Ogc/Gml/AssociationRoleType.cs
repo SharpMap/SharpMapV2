@@ -18,7 +18,7 @@ using System.Xml.Serialization;
 
 namespace SharpMap.Entities.Ogc.Gml
 {
-    [Serializable, XmlType(TypeName = "AssociationRoleType", Namespace = "http://www.opengis.net/gml/3.2")]
+    [Serializable, XmlType(TypeName = "AssociationRoleType", Namespace = Declarations.SchemaVersion)]
     public class AssociationRoleType
     {
         [XmlIgnore] private Actuate _actuate;

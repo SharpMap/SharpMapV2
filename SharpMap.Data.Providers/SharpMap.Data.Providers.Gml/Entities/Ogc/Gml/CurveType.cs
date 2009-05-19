@@ -18,13 +18,13 @@ using System.Xml.Serialization;
 
 namespace SharpMap.Entities.Ogc.Gml
 {
-    [Serializable, XmlType(TypeName = "CurveType", Namespace = "http://www.opengis.net/gml/3.2")]
+    [Serializable, XmlType(TypeName = "CurveType", Namespace = Declarations.SchemaVersion)]
     public class CurveType : AbstractCurveType
     {
         [XmlIgnore] private Segments _segments;
 
         [XmlElement(Type = typeof (Segments), ElementName = "segments", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public Segments Segments
         {
             get { return _segments; }

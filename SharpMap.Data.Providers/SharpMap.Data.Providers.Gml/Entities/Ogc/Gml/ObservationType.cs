@@ -18,7 +18,7 @@ using System.Xml.Serialization;
 
 namespace SharpMap.Entities.Ogc.Gml
 {
-    [Serializable, XmlType(TypeName = "ObservationType", Namespace = "http://www.opengis.net/gml/3.2")]
+    [Serializable, XmlType(TypeName = "ObservationType", Namespace = Declarations.SchemaVersion)]
     public class ObservationType : AbstractFeatureType
     {
         [XmlIgnore] private ResultOf _resultOf;
@@ -27,7 +27,7 @@ namespace SharpMap.Entities.Ogc.Gml
         [XmlIgnore] private ValidTime _validTime;
 
         [XmlElement(Type = typeof (ResultOf), ElementName = "resultOf", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public ResultOf ResultOf
         {
             get { return _resultOf; }
@@ -35,7 +35,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(Type = typeof (Target), ElementName = "target", IsNullable = false, Form = XmlSchemaForm.Qualified,
-            Namespace = "http://www.opengis.net/gml/3.2")]
+            Namespace = Declarations.SchemaVersion)]
         public Target Target
         {
             get { return _target; }
@@ -43,7 +43,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(Type = typeof (Using), ElementName = "using", IsNullable = false, Form = XmlSchemaForm.Qualified,
-            Namespace = "http://www.opengis.net/gml/3.2")]
+            Namespace = Declarations.SchemaVersion)]
         public Using Using
         {
             get
@@ -58,7 +58,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(Type = typeof (ValidTime), ElementName = "validTime", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public ValidTime ValidTime
         {
             get { return _validTime; }

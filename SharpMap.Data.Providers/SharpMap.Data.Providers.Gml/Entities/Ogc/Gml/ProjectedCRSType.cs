@@ -18,7 +18,7 @@ using System.Xml.Serialization;
 
 namespace SharpMap.Entities.Ogc.Gml
 {
-    [Serializable, XmlType(TypeName = "ProjectedCRSType", Namespace = "http://www.opengis.net/gml/3.2")]
+    [Serializable, XmlType(TypeName = "ProjectedCRSType", Namespace = Declarations.SchemaVersion)]
     public class ProjectedCRSType : AbstractGeneralDerivedCRSType
     {
         [XmlIgnore] private BaseGeodeticCRSProperty _baseGeodeticCRS;
@@ -26,7 +26,7 @@ namespace SharpMap.Entities.Ogc.Gml
         [XmlIgnore] private CartesianCSProperty _cartesianCS;
 
         [XmlElement(Type = typeof (BaseGeodeticCRSProperty), ElementName = "baseGeodeticCRS", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public BaseGeodeticCRSProperty BaseGeodeticCRS
         {
             get { return _baseGeodeticCRS; }
@@ -34,7 +34,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(Type = typeof (BaseGeographicCRS), ElementName = "baseGeographicCRS", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public BaseGeographicCRS BaseGeographicCRS
         {
             get { return _baseGeographicCRS; }
@@ -42,7 +42,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(Type = typeof (CartesianCSProperty), ElementName = "cartesianCS", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public CartesianCSProperty CartesianCS
         {
             get { return _cartesianCS; }

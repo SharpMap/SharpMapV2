@@ -17,7 +17,7 @@ using System.Xml.Serialization;
 
 namespace SharpMap.Entities.Ogc.Gml
 {
-    [Serializable, XmlRoot(ElementName = "Tin", Namespace = "http://www.opengis.net/gml/3.2", IsNullable = false)]
+    [Serializable, XmlRoot(ElementName = "Tin", Namespace = Declarations.SchemaVersion, IsNullable = false)]
     public class Tin : TinType
     {
         public override void MakeSchemaCompliant()

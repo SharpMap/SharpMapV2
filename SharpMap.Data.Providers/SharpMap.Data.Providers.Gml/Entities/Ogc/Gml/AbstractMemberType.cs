@@ -17,7 +17,7 @@ using System.Xml.Serialization;
 
 namespace SharpMap.Entities.Ogc.Gml
 {
-    [Serializable, XmlType(TypeName = "AbstractMemberType", Namespace = "http://www.opengis.net/gml/3.2")]
+    [Serializable, XmlType(TypeName = "AbstractMemberType", Namespace = Declarations.SchemaVersion)]
     public abstract class AbstractMemberType
     {
         [XmlIgnore] private bool _owns;

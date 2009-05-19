@@ -18,7 +18,7 @@ using System.Xml.Serialization;
 
 namespace SharpMap.Entities.Ogc.Gml
 {
-    [Serializable, XmlType(TypeName = "TemporalCRSType", Namespace = "http://www.opengis.net/gml/3.2")]
+    [Serializable, XmlType(TypeName = "TemporalCRSType", Namespace = Declarations.SchemaVersion)]
     public class TemporalCRSType : AbstractCRSType
     {
         [XmlIgnore] private TemporalDatumProperty _temporalDatum;
@@ -26,7 +26,7 @@ namespace SharpMap.Entities.Ogc.Gml
         [XmlIgnore] private UsesTemporalCS _usesTemporalCS;
 
         [XmlElement(Type = typeof (TemporalDatumProperty), ElementName = "temporalDatum", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public TemporalDatumProperty TemporalDatum
         {
             get { return _temporalDatum; }
@@ -34,7 +34,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(Type = typeof (TimeCSProperty), ElementName = "timeCS", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public TimeCSProperty TimeCS
         {
             get { return _timeCS; }
@@ -42,7 +42,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(Type = typeof (UsesTemporalCS), ElementName = "usesTemporalCS", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public UsesTemporalCS UsesTemporalCS
         {
             get { return _usesTemporalCS; }

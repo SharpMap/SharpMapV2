@@ -18,7 +18,7 @@ using System.Xml.Serialization;
 namespace SharpMap.Entities.Ogc.Gml
 {
     [Serializable,
-     XmlRoot(ElementName = "methodFormula", Namespace = "http://www.opengis.net/gml/3.2", IsNullable = false)]
+     XmlRoot(ElementName = "methodFormula", Namespace = Declarations.SchemaVersion, IsNullable = false)]
     public class MethodFormula : CodeType
     {
         public override void MakeSchemaCompliant()

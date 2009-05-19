@@ -18,7 +18,7 @@ using System.Xml.Serialization;
 namespace SharpMap.Entities.Ogc.Gml
 {
     [Serializable,
-     XmlRoot(ElementName = "GeographicCRS", Namespace = "http://www.opengis.net/gml/3.2", IsNullable = false)]
+     XmlRoot(ElementName = "GeographicCRS", Namespace = Declarations.SchemaVersion, IsNullable = false)]
     public class GeographicCRS : GeographicCRSType
     {
         public override void MakeSchemaCompliant()

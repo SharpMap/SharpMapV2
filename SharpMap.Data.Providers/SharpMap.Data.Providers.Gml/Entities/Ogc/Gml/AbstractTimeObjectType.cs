@@ -17,7 +17,7 @@ using System.Xml.Serialization;
 
 namespace SharpMap.Entities.Ogc.Gml
 {
-    [Serializable, XmlType(TypeName = "AbstractTimeObjectType", Namespace = "http://www.opengis.net/gml/3.2")]
+    [Serializable, XmlType(TypeName = "AbstractTimeObjectType", Namespace = Declarations.SchemaVersion)]
     public abstract class AbstractTimeObjectType : AbstractGMLType
     {
         public override void MakeSchemaCompliant()

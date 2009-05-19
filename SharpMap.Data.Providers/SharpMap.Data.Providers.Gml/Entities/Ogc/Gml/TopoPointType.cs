@@ -18,13 +18,13 @@ using System.Xml.Serialization;
 
 namespace SharpMap.Entities.Ogc.Gml
 {
-    [Serializable, XmlType(TypeName = "TopoPointType", Namespace = "http://www.opengis.net/gml/3.2")]
+    [Serializable, XmlType(TypeName = "TopoPointType", Namespace = Declarations.SchemaVersion)]
     public class TopoPointType : AbstractTopologyType
     {
         [XmlIgnore] private DirectedNode _directedNode;
 
         [XmlElement(Type = typeof (DirectedNode), ElementName = "directedNode", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public DirectedNode DirectedNode
         {
             get { return _directedNode; }

@@ -17,7 +17,7 @@ using System.Xml.Serialization;
 
 namespace SharpMap.Entities.Ogc.Gml
 {
-    [Serializable, XmlType(TypeName = "PolarCSType", Namespace = "http://www.opengis.net/gml/3.2")]
+    [Serializable, XmlType(TypeName = "PolarCSType", Namespace = Declarations.SchemaVersion)]
     public class PolarCSType : AbstractCoordinateSystemType
     {
         public override void MakeSchemaCompliant()

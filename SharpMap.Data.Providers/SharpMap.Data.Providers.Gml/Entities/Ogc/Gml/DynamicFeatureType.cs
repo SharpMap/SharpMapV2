@@ -18,7 +18,7 @@ using System.Xml.Serialization;
 
 namespace SharpMap.Entities.Ogc.Gml
 {
-    [Serializable, XmlType(TypeName = "DynamicFeatureType", Namespace = "http://www.opengis.net/gml/3.2")]
+    [Serializable, XmlType(TypeName = "DynamicFeatureType", Namespace = Declarations.SchemaVersion)]
     public class DynamicFeatureType : AbstractFeatureType
     {
         [XmlIgnore] private DataSource _dataSource;
@@ -27,7 +27,7 @@ namespace SharpMap.Entities.Ogc.Gml
         [XmlIgnore] private ValidTime _validTime;
 
         [XmlElement(Type = typeof (DataSource), ElementName = "dataSource", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public DataSource DataSource
         {
             get { return _dataSource; }
@@ -35,7 +35,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(Type = typeof (DataSourceReference), ElementName = "dataSourceReference", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public DataSourceReference DataSourceReference
         {
             get { return _dataSourceReference; }
@@ -43,7 +43,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(Type = typeof (History), ElementName = "history", IsNullable = false, Form = XmlSchemaForm.Qualified
-            , Namespace = "http://www.opengis.net/gml/3.2")]
+            , Namespace = Declarations.SchemaVersion)]
         public History History
         {
             get { return _history; }
@@ -51,7 +51,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(Type = typeof (ValidTime), ElementName = "validTime", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public ValidTime ValidTime
         {
             get { return _validTime; }

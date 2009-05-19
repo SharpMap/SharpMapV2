@@ -18,7 +18,7 @@ using System.Xml.Serialization;
 
 namespace SharpMap.Entities.Ogc.Gml
 {
-    [Serializable, XmlType(TypeName = "DMSAngleType", Namespace = "http://www.opengis.net/gml/3.2")]
+    [Serializable, XmlType(TypeName = "DMSAngleType", Namespace = Declarations.SchemaVersion)]
     public class DMSAngleType
     {
         [XmlIgnore] private decimal _decimalMinutes;
@@ -34,7 +34,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(ElementName = "decimalMinutes", IsNullable = false, Form = XmlSchemaForm.Qualified,
-            DataType = "decimal", Namespace = "http://www.opengis.net/gml/3.2")]
+            DataType = "decimal", Namespace = Declarations.SchemaVersion)]
         public decimal DecimalMinutes
         {
             get { return _decimalMinutes; }
@@ -46,7 +46,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(Type = typeof (Degrees), ElementName = "degrees", IsNullable = false, Form = XmlSchemaForm.Qualified
-            , Namespace = "http://www.opengis.net/gml/3.2")]
+            , Namespace = Declarations.SchemaVersion)]
         public Degrees Degrees
         {
             get { return _degrees; }
@@ -54,7 +54,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(ElementName = "minutes", IsNullable = false, Form = XmlSchemaForm.Qualified,
-            DataType = "nonNegativeInteger", Namespace = "http://www.opengis.net/gml/3.2")]
+            DataType = "nonNegativeInteger", Namespace = Declarations.SchemaVersion)]
         public string Minutes
         {
             get { return _minutes; }
@@ -62,7 +62,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(ElementName = "seconds", IsNullable = false, Form = XmlSchemaForm.Qualified, DataType = "decimal",
-            Namespace = "http://www.opengis.net/gml/3.2")]
+            Namespace = Declarations.SchemaVersion)]
         public decimal Seconds
         {
             get { return _seconds; }

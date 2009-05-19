@@ -18,7 +18,7 @@ using System.Xml.Serialization;
 namespace SharpMap.Entities.Ogc.Gml
 {
     [Serializable,
-     XmlRoot(ElementName = "PolygonPatch", Namespace = "http://www.opengis.net/gml/3.2", IsNullable = false)]
+     XmlRoot(ElementName = "PolygonPatch", Namespace = Declarations.SchemaVersion, IsNullable = false)]
     public class PolygonPatch : PolygonPatchType
     {
         public override void MakeSchemaCompliant()

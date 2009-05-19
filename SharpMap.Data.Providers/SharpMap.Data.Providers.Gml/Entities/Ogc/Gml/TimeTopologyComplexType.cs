@@ -21,7 +21,7 @@ using System.Xml.Serialization;
 
 namespace SharpMap.Entities.Ogc.Gml
 {
-    [Serializable, XmlType(TypeName = "TimeTopologyComplexType", Namespace = "http://www.opengis.net/gml/3.2")]
+    [Serializable, XmlType(TypeName = "TimeTopologyComplexType", Namespace = Declarations.SchemaVersion)]
     public abstract class TimeTopologyComplexType : AbstractTimeComplexType
     {
         [XmlIgnore] private List<TimeTopologyPrimitivePropertyType> _primitive;
@@ -39,7 +39,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(Type = typeof (TimeTopologyPrimitivePropertyType), ElementName = "primitive", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public List<TimeTopologyPrimitivePropertyType> Primitive
         {
             get

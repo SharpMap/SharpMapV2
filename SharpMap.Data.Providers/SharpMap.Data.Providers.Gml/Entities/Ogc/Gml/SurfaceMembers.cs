@@ -18,7 +18,7 @@ using System.Xml.Serialization;
 namespace SharpMap.Entities.Ogc.Gml
 {
     [Serializable,
-     XmlRoot(ElementName = "surfaceMembers", Namespace = "http://www.opengis.net/gml/3.2", IsNullable = false)]
+     XmlRoot(ElementName = "surfaceMembers", Namespace = Declarations.SchemaVersion, IsNullable = false)]
     public class SurfaceMembers : SurfaceArrayPropertyType
     {
         public override void MakeSchemaCompliant()

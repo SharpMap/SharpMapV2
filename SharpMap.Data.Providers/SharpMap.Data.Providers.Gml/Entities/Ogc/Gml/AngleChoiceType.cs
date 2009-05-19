@@ -18,14 +18,14 @@ using System.Xml.Serialization;
 
 namespace SharpMap.Entities.Ogc.Gml
 {
-    [Serializable, XmlType(TypeName = "AngleChoiceType", Namespace = "http://www.opengis.net/gml/3.2")]
+    [Serializable, XmlType(TypeName = "AngleChoiceType", Namespace = Declarations.SchemaVersion)]
     public class AngleChoiceType
     {
         [XmlIgnore] private Angle _angle;
         [XmlIgnore] private DmsAngle _dmsAngle;
 
         [XmlElement(Type = typeof (Angle), ElementName = "angle", IsNullable = false, Form = XmlSchemaForm.Qualified,
-            Namespace = "http://www.opengis.net/gml/3.2")]
+            Namespace = Declarations.SchemaVersion)]
         public Angle Angle
         {
             get { return _angle; }
@@ -33,7 +33,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(Type = typeof (DmsAngle), ElementName = "dmsAngle", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public DmsAngle DmsAngle
         {
             get { return _dmsAngle; }

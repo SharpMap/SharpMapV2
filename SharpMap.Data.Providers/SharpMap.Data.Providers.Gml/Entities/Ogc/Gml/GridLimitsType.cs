@@ -18,13 +18,13 @@ using System.Xml.Serialization;
 
 namespace SharpMap.Entities.Ogc.Gml
 {
-    [Serializable, XmlType(TypeName = "GridLimitsType", Namespace = "http://www.opengis.net/gml/3.2")]
+    [Serializable, XmlType(TypeName = "GridLimitsType", Namespace = Declarations.SchemaVersion)]
     public class GridLimitsType
     {
         [XmlIgnore] private GridEnvelopeType _gridEnvelope;
 
         [XmlElement(Type = typeof (GridEnvelopeType), ElementName = "GridEnvelope", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public GridEnvelopeType GridEnvelope
         {
             get { return _gridEnvelope; }

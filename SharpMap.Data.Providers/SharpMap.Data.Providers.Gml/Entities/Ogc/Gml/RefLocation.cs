@@ -18,13 +18,13 @@ using System.Xml.Serialization;
 
 namespace SharpMap.Entities.Ogc.Gml
 {
-    [Serializable, XmlType(TypeName = "refLocation", Namespace = "http://www.opengis.net/gml/3.2")]
+    [Serializable, XmlType(TypeName = "refLocation", Namespace = Declarations.SchemaVersion)]
     public class RefLocation
     {
         [XmlIgnore] private AffinePlacement _affinePlacement;
 
         [XmlElement(Type = typeof (AffinePlacement), ElementName = "AffinePlacement", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public AffinePlacement AffinePlacement
         {
             get { return _affinePlacement; }

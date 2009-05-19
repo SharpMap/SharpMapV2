@@ -19,14 +19,14 @@ using System.Xml.Serialization;
 
 namespace SharpMap.Entities.Ogc.Gml
 {
-    [Serializable, XmlType(TypeName = "AbstractFeatureCollectionType", Namespace = "http://www.opengis.net/gml/3.2")]
+    [Serializable, XmlType(TypeName = "AbstractFeatureCollectionType", Namespace = Declarations.SchemaVersion)]
     public abstract class AbstractFeatureCollectionType : AbstractFeatureType
     {
         [XmlIgnore] private List<FeatureMember> _featureMember;
         [XmlIgnore] private FeatureMembers _featureMembers;
 
         [XmlElement(Type = typeof (FeatureMember), ElementName = "featureMember", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public List<FeatureMember> FeatureMember
         {
             get
@@ -41,7 +41,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(Type = typeof (FeatureMembers), ElementName = "featureMembers", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public FeatureMembers FeatureMembers
         {
             get { return _featureMembers; }

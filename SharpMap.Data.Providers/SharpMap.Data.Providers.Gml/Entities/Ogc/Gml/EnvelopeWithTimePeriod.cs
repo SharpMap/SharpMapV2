@@ -18,7 +18,7 @@ using System.Xml.Serialization;
 namespace SharpMap.Entities.Ogc.Gml
 {
     [Serializable,
-     XmlRoot(ElementName = "EnvelopeWithTimePeriod", Namespace = "http://www.opengis.net/gml/3.2", IsNullable = false)]
+     XmlRoot(ElementName = "EnvelopeWithTimePeriod", Namespace = Declarations.SchemaVersion, IsNullable = false)]
     public class EnvelopeWithTimePeriod : EnvelopeWithTimePeriodType
     {
         public override void MakeSchemaCompliant()

@@ -17,7 +17,7 @@ using System.Xml.Serialization;
 
 namespace SharpMap.Entities.Ogc.Gml
 {
-    [Serializable, XmlRoot(ElementName = "Point", Namespace = "http://www.opengis.net/gml/3.2", IsNullable = false)]
+    [Serializable, XmlRoot(ElementName = "Point", Namespace = Declarations.SchemaVersion, IsNullable = false)]
     public class Point : PointType
     {
         public override void MakeSchemaCompliant()

@@ -18,7 +18,7 @@ using System.Xml.Serialization;
 namespace SharpMap.Entities.Ogc.Gml
 {
     [Serializable,
-     XmlRoot(ElementName = "AbstractTopoPrimitive", Namespace = "http://www.opengis.net/gml/3.2", IsNullable = false)]
+     XmlRoot(ElementName = "AbstractTopoPrimitive", Namespace = Declarations.SchemaVersion, IsNullable = false)]
     public abstract class AbstractTopoPrimitive : AbstractTopoPrimitiveType
     {
         public override void MakeSchemaCompliant()

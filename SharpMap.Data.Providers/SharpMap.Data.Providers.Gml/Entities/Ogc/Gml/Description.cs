@@ -18,7 +18,7 @@ using System.Xml.Serialization;
 namespace SharpMap.Entities.Ogc.Gml
 {
     [Serializable,
-     XmlRoot(ElementName = "description", Namespace = "http://www.opengis.net/gml/3.2", IsNullable = false)]
+     XmlRoot(ElementName = "description", Namespace = Declarations.SchemaVersion, IsNullable = false)]
     public class Description : StringOrRefType
     {
         public override void MakeSchemaCompliant()

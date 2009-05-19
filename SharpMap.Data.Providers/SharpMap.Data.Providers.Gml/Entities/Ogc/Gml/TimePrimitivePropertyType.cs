@@ -19,7 +19,7 @@ using System.Xml.Serialization;
 namespace SharpMap.Entities.Ogc.Gml
 {
     [Serializable, XmlInclude(typeof (AbstractTimeGeometricPrimitiveType)),
-     XmlType(TypeName = "TimePrimitivePropertyType", Namespace = "http://www.opengis.net/gml/3.2"),
+     XmlType(TypeName = "TimePrimitivePropertyType", Namespace = Declarations.SchemaVersion),
      XmlInclude(typeof (AbstractTimeTopologyPrimitiveType))]
     public class TimePrimitivePropertyType
     {
@@ -45,7 +45,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(Type = typeof (AbstractTimePrimitive), ElementName = "AbstractTimePrimitive", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public AbstractTimePrimitive AbstractTimePrimitive
         {
             get { return _abstractTimePrimitive; }

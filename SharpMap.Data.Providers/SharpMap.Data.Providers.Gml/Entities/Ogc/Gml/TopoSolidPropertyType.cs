@@ -18,7 +18,7 @@ using System.Xml.Serialization;
 
 namespace SharpMap.Entities.Ogc.Gml
 {
-    [Serializable, XmlType(TypeName = "TopoSolidPropertyType", Namespace = "http://www.opengis.net/gml/3.2")]
+    [Serializable, XmlType(TypeName = "TopoSolidPropertyType", Namespace = Declarations.SchemaVersion)]
     public class TopoSolidPropertyType
     {
         [XmlIgnore] private Actuate _actuate;
@@ -118,7 +118,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(Type = typeof (TopoSolid), ElementName = "TopoSolid", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public TopoSolid TopoSolid
         {
             get { return _topoSolid; }

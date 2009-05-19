@@ -17,7 +17,7 @@ using System.Xml.Serialization;
 
 namespace SharpMap.Entities.Ogc.Gml
 {
-    [Serializable, XmlType(TypeName = "IdentifiedObjectType", Namespace = "http://www.opengis.net/gml/3.2")]
+    [Serializable, XmlType(TypeName = "IdentifiedObjectType", Namespace = Declarations.SchemaVersion)]
     public abstract class IdentifiedObjectType : DefinitionType
     {
         public override void MakeSchemaCompliant()

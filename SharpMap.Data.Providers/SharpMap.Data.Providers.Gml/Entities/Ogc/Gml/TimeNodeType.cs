@@ -19,7 +19,7 @@ using System.Xml.Serialization;
 
 namespace SharpMap.Entities.Ogc.Gml
 {
-    [Serializable, XmlType(TypeName = "TimeNodeType", Namespace = "http://www.opengis.net/gml/3.2")]
+    [Serializable, XmlType(TypeName = "TimeNodeType", Namespace = Declarations.SchemaVersion)]
     public class TimeNodeType : AbstractTimeTopologyPrimitiveType
     {
         [XmlIgnore] private List<TimeEdgePropertyType> _nextEdge;
@@ -27,7 +27,7 @@ namespace SharpMap.Entities.Ogc.Gml
         [XmlIgnore] private List<TimeEdgePropertyType> _previousEdge;
 
         [XmlElement(Type = typeof (TimeEdgePropertyType), ElementName = "nextEdge", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public List<TimeEdgePropertyType> NextEdge
         {
             get
@@ -42,7 +42,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(Type = typeof (Position), ElementName = "position", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public Position Position
         {
             get { return _position; }
@@ -50,7 +50,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(Type = typeof (TimeEdgePropertyType), ElementName = "previousEdge", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public List<TimeEdgePropertyType> PreviousEdge
         {
             get

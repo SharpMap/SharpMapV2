@@ -18,7 +18,7 @@ using System.Xml.Serialization;
 
 namespace SharpMap.Entities.Ogc.Gml
 {
-    [Serializable, XmlType(TypeName = "EngineeringCRSType", Namespace = "http://www.opengis.net/gml/3.2")]
+    [Serializable, XmlType(TypeName = "EngineeringCRSType", Namespace = Declarations.SchemaVersion)]
     public class EngineeringCRSType : AbstractCRSType
     {
         [XmlIgnore] private AffineCSProperty _affineCS;
@@ -32,7 +32,7 @@ namespace SharpMap.Entities.Ogc.Gml
         [XmlIgnore] private UserDefinedCSProperty _userDefinedCS;
 
         [XmlElement(Type = typeof (AffineCSProperty), ElementName = "affineCS", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public AffineCSProperty AffineCS
         {
             get { return _affineCS; }
@@ -40,7 +40,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(Type = typeof (CartesianCSProperty), ElementName = "cartesianCS", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public CartesianCSProperty CartesianCS
         {
             get { return _cartesianCS; }
@@ -48,7 +48,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(Type = typeof (CoordinateSystemProperty), ElementName = "coordinateSystem", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public CoordinateSystemProperty CoordinateSystem
         {
             get { return _coordinateSystem; }
@@ -56,7 +56,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(Type = typeof (CylindricalCSProperty), ElementName = "cylindricalCS", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public CylindricalCSProperty CylindricalCS
         {
             get { return _cylindricalCS; }
@@ -64,7 +64,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(Type = typeof (EngineeringDatumProperty), ElementName = "engineeringDatum", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public EngineeringDatumProperty EngineeringDatum
         {
             get { return _engineeringDatum; }
@@ -72,7 +72,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(Type = typeof (LinearCSProperty), ElementName = "linearCS", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public LinearCSProperty LinearCS
         {
             get { return _linearCS; }
@@ -80,7 +80,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(Type = typeof (PolarCSProperty), ElementName = "polarCS", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public PolarCSProperty PolarCS
         {
             get { return _polarCS; }
@@ -88,7 +88,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(Type = typeof (SphericalCSProperty), ElementName = "sphericalCS", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public SphericalCSProperty SphericalCS
         {
             get { return _sphericalCS; }
@@ -96,7 +96,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(Type = typeof (UserDefinedCSProperty), ElementName = "userDefinedCS", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public UserDefinedCSProperty UserDefinedCS
         {
             get { return _userDefinedCS; }

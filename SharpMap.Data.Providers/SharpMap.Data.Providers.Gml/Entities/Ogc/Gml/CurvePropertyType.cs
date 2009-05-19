@@ -20,7 +20,7 @@ namespace SharpMap.Entities.Ogc.Gml
 {
     [Serializable, XmlInclude(typeof (CurveType)), XmlInclude(typeof (OrientableCurveType)),
      XmlInclude(typeof (CompositeCurveType)), XmlInclude(typeof (LineStringType)),
-     XmlType(TypeName = "CurvePropertyType", Namespace = "http://www.opengis.net/gml/3.2")]
+     XmlType(TypeName = "CurvePropertyType", Namespace = Declarations.SchemaVersion)]
     public class CurvePropertyType
     {
         [XmlIgnore] private AbstractCurve _abstractCurve;
@@ -45,7 +45,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(Type = typeof (AbstractCurve), ElementName = "AbstractCurve", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public AbstractCurve AbstractCurve
         {
             get { return _abstractCurve; }

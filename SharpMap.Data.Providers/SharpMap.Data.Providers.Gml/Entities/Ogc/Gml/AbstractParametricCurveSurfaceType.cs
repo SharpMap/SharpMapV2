@@ -18,7 +18,7 @@ using System.Xml.Serialization;
 namespace SharpMap.Entities.Ogc.Gml
 {
     [Serializable,
-     XmlType(TypeName = "AbstractParametricCurveSurfaceType", Namespace = "http://www.opengis.net/gml/3.2")]
+     XmlType(TypeName = "AbstractParametricCurveSurfaceType", Namespace = Declarations.SchemaVersion)]
     public abstract class AbstractParametricCurveSurfaceType : AbstractSurfacePatchType
     {
         [XmlIgnore] private AggregationType _aggregationType;

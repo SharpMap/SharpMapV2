@@ -20,7 +20,7 @@ namespace SharpMap.Entities.Ogc.Gml
 {
     [Serializable, XmlInclude(typeof (GridType)), XmlInclude(typeof (AbstractCoverageType)),
      XmlInclude(typeof (AbstractFeatureCollectionType)), XmlInclude(typeof (ObservationType)),
-     XmlType(TypeName = "TargetPropertyType", Namespace = "http://www.opengis.net/gml/3.2"),
+     XmlType(TypeName = "TargetPropertyType", Namespace = Declarations.SchemaVersion),
      XmlInclude(typeof (DynamicFeatureType)), XmlInclude(typeof (GeometricComplexType)),
      XmlInclude(typeof (AbstractGeometricPrimitiveType)), XmlInclude(typeof (BoundedFeatureType)),
      XmlInclude(typeof (AbstractGeometricAggregateType))]
@@ -49,7 +49,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(Type = typeof (AbstractFeature), ElementName = "AbstractFeature", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public AbstractFeature AbstractFeature
         {
             get { return _abstractFeature; }
@@ -57,7 +57,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(Type = typeof (AbstractGeometry), ElementName = "AbstractGeometry", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public AbstractGeometry AbstractGeometry
         {
             get { return _abstractGeometry; }

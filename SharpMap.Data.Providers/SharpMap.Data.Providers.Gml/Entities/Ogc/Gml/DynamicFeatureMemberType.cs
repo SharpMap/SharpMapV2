@@ -21,7 +21,7 @@ using System.Xml.Serialization;
 
 namespace SharpMap.Entities.Ogc.Gml
 {
-    [Serializable, XmlType(TypeName = "DynamicFeatureMemberType", Namespace = "http://www.opengis.net/gml/3.2")]
+    [Serializable, XmlType(TypeName = "DynamicFeatureMemberType", Namespace = Declarations.SchemaVersion)]
     public class DynamicFeatureMemberType : AbstractFeatureMemberType
     {
         [XmlIgnore] private Actuate _actuate;
@@ -67,7 +67,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(Type = typeof (DynamicFeature), ElementName = "DynamicFeature", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public List<DynamicFeature> DynamicFeature
         {
             get

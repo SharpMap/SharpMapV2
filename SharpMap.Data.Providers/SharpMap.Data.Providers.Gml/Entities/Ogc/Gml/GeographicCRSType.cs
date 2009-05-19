@@ -18,14 +18,14 @@ using System.Xml.Serialization;
 
 namespace SharpMap.Entities.Ogc.Gml
 {
-    [Serializable, XmlType(TypeName = "GeographicCRSType", Namespace = "http://www.opengis.net/gml/3.2")]
+    [Serializable, XmlType(TypeName = "GeographicCRSType", Namespace = Declarations.SchemaVersion)]
     public class GeographicCRSType : AbstractCRSType
     {
         [XmlIgnore] private UsesEllipsoidalCS _usesEllipsoidalCS;
         [XmlIgnore] private UsesGeodeticDatum _usesGeodeticDatum;
 
         [XmlElement(Type = typeof (UsesEllipsoidalCS), ElementName = "usesEllipsoidalCS", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public UsesEllipsoidalCS UsesEllipsoidalCS
         {
             get { return _usesEllipsoidalCS; }
@@ -33,7 +33,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(Type = typeof (UsesGeodeticDatum), ElementName = "usesGeodeticDatum", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public UsesGeodeticDatum UsesGeodeticDatum
         {
             get { return _usesGeodeticDatum; }

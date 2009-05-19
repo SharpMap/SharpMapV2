@@ -22,7 +22,7 @@ namespace SharpMap.Entities.Ogc.Gml
      XmlInclude(typeof (UserDefinedCSType)), XmlInclude(typeof (EllipsoidalCSType)), XmlInclude(typeof (LinearCSType)),
      XmlInclude(typeof (TimeCSType)), XmlInclude(typeof (CartesianCSType)), XmlInclude(typeof (AffineCSType)),
      XmlInclude(typeof (ObliqueCartesianCSType)), XmlInclude(typeof (VerticalCSType)),
-     XmlType(TypeName = "CoordinateSystemPropertyType", Namespace = "http://www.opengis.net/gml/3.2"),
+     XmlType(TypeName = "CoordinateSystemPropertyType", Namespace = Declarations.SchemaVersion),
      XmlInclude(typeof (PolarCSType)), XmlInclude(typeof (CylindricalCSType))]
     public class CoordinateSystemPropertyType
     {
@@ -45,7 +45,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(Type = typeof (AbstractCoordinateSystem), ElementName = "AbstractCoordinateSystem",
-            IsNullable = false, Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            IsNullable = false, Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public AbstractCoordinateSystem AbstractCoordinateSystem
         {
             get { return _abstractCoordinateSystem; }

@@ -19,7 +19,7 @@ using System.Xml.Serialization;
 
 namespace SharpMap.Entities.Ogc.Gml
 {
-    [Serializable, XmlType(TypeName = "TimeOrdinalEraType", Namespace = "http://www.opengis.net/gml/3.2")]
+    [Serializable, XmlType(TypeName = "TimeOrdinalEraType", Namespace = Declarations.SchemaVersion)]
     public class TimeOrdinalEraType : DefinitionType
     {
         [XmlIgnore] private TimeNodePropertyType _end;
@@ -30,7 +30,7 @@ namespace SharpMap.Entities.Ogc.Gml
         [XmlIgnore] private TimeNodePropertyType _start;
 
         [XmlElement(Type = typeof (TimeNodePropertyType), ElementName = "end", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public TimeNodePropertyType End
         {
             get { return _end; }
@@ -38,7 +38,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(Type = typeof (TimePeriodPropertyType), ElementName = "extent", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public TimePeriodPropertyType Extent
         {
             get { return _extent; }
@@ -46,7 +46,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(Type = typeof (GroupProperty), ElementName = "group", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public GroupProperty Group
         {
             get { return _group; }
@@ -54,7 +54,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(Type = typeof (Member), ElementName = "member", IsNullable = false, Form = XmlSchemaForm.Qualified,
-            Namespace = "http://www.opengis.net/gml/3.2")]
+            Namespace = Declarations.SchemaVersion)]
         public List<Member> Member
         {
             get
@@ -69,7 +69,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(Type = typeof (RelatedTimeType), ElementName = "relatedTime", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public List<RelatedTimeType> RelatedTime
         {
             get
@@ -84,7 +84,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(Type = typeof (TimeNodePropertyType), ElementName = "start", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public TimeNodePropertyType Start
         {
             get { return _start; }

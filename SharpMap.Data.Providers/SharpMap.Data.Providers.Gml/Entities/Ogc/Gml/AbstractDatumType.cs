@@ -19,7 +19,7 @@ using System.Xml.Serialization;
 
 namespace SharpMap.Entities.Ogc.Gml
 {
-    [Serializable, XmlType(TypeName = "AbstractDatumType", Namespace = "http://www.opengis.net/gml/3.2")]
+    [Serializable, XmlType(TypeName = "AbstractDatumType", Namespace = Declarations.SchemaVersion)]
     public abstract class AbstractDatumType : IdentifiedObjectType
     {
         [XmlIgnore] private AnchorDefinition _anchorDefinition;
@@ -29,7 +29,7 @@ namespace SharpMap.Entities.Ogc.Gml
         [XmlIgnore] public bool RealizationEpochSpecified;
 
         [XmlElement(Type = typeof (AnchorDefinition), ElementName = "anchorDefinition", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public AnchorDefinition AnchorDefinition
         {
             get { return _anchorDefinition; }
@@ -37,7 +37,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(Type = typeof (DomainOfValidity), ElementName = "domainOfValidity", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public DomainOfValidity DomainOfValidity
         {
             get { return _domainOfValidity; }
@@ -45,7 +45,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(ElementName = "realizationEpoch", IsNullable = false, Form = XmlSchemaForm.Qualified,
-            DataType = "date", Namespace = "http://www.opengis.net/gml/3.2")]
+            DataType = "date", Namespace = Declarations.SchemaVersion)]
         public DateTime RealizationEpoch
         {
             get { return _realizationEpoch; }
@@ -68,7 +68,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(Type = typeof (string), ElementName = "scope", IsNullable = false, Form = XmlSchemaForm.Qualified,
-            DataType = "string", Namespace = "http://www.opengis.net/gml/3.2")]
+            DataType = "string", Namespace = Declarations.SchemaVersion)]
         public List<string> Scope
         {
             get

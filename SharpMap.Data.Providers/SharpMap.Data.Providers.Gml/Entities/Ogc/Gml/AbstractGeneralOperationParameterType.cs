@@ -19,13 +19,13 @@ using System.Xml.Serialization;
 namespace SharpMap.Entities.Ogc.Gml
 {
     [Serializable,
-     XmlType(TypeName = "AbstractGeneralOperationParameterType", Namespace = "http://www.opengis.net/gml/3.2")]
+     XmlType(TypeName = "AbstractGeneralOperationParameterType", Namespace = Declarations.SchemaVersion)]
     public abstract class AbstractGeneralOperationParameterType : IdentifiedObjectType
     {
         [XmlIgnore] private string _minimumOccurs;
 
         [XmlElement(ElementName = "minimumOccurs", IsNullable = false, Form = XmlSchemaForm.Qualified,
-            DataType = "nonNegativeInteger", Namespace = "http://www.opengis.net/gml/3.2")]
+            DataType = "nonNegativeInteger", Namespace = Declarations.SchemaVersion)]
         public string MinimumOccurs
         {
             get { return _minimumOccurs; }

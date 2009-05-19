@@ -21,7 +21,7 @@ namespace SharpMap.Entities.Ogc.Gml
 {
     [Serializable, XmlInclude(typeof (DQ_absoluteExternalPositionalAccuracy_Type)),
      XmlInclude(typeof (DQ_griddedDataPositionalAccuracy_Type)),
-     XmlRoot(ElementName = "coordinateOperationAccuracy", Namespace = "http://www.opengis.net/gml/3.2",
+     XmlRoot(ElementName = "coordinateOperationAccuracy", Namespace = Declarations.SchemaVersion,
          IsNullable = false), XmlInclude(typeof (DQ_relativeInternalPositionalAccuracy_Type))]
     public class CoordinateOperationAccuracy
     {

@@ -17,7 +17,7 @@ using System.Xml.Serialization;
 
 namespace SharpMap.Entities.Ogc.Gml
 {
-    [Serializable, XmlType(TypeName = "VerticalDatumType", Namespace = "http://www.opengis.net/gml/3.2")]
+    [Serializable, XmlType(TypeName = "VerticalDatumType", Namespace = Declarations.SchemaVersion)]
     public class VerticalDatumType : AbstractDatumType
     {
         public override void MakeSchemaCompliant()

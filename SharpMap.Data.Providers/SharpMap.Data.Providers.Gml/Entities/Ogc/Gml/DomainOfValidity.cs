@@ -20,7 +20,7 @@ using SharpMap.Entities.Iso.Gmd;
 namespace SharpMap.Entities.Ogc.Gml
 {
     [Serializable,
-     XmlRoot(ElementName = "domainOfValidity", Namespace = "http://www.opengis.net/gml/3.2", IsNullable = false)]
+     XmlRoot(ElementName = "domainOfValidity", Namespace = Declarations.SchemaVersion, IsNullable = false)]
     public class DomainOfValidity
     {
         [XmlIgnore] private Actuate _actuate;

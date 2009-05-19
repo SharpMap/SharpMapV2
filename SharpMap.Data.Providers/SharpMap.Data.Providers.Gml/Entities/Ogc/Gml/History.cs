@@ -17,7 +17,7 @@ using System.Xml.Serialization;
 
 namespace SharpMap.Entities.Ogc.Gml
 {
-    [Serializable, XmlRoot(ElementName = "history", Namespace = "http://www.opengis.net/gml/3.2", IsNullable = false)]
+    [Serializable, XmlRoot(ElementName = "history", Namespace = Declarations.SchemaVersion, IsNullable = false)]
     public class History : HistoryPropertyType
     {
         public override void MakeSchemaCompliant()

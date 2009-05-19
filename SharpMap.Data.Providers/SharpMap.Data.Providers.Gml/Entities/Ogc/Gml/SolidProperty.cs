@@ -18,7 +18,7 @@ using System.Xml.Serialization;
 namespace SharpMap.Entities.Ogc.Gml
 {
     [Serializable,
-     XmlRoot(ElementName = "solidProperty", Namespace = "http://www.opengis.net/gml/3.2", IsNullable = false)]
+     XmlRoot(ElementName = "solidProperty", Namespace = Declarations.SchemaVersion, IsNullable = false)]
     public class SolidProperty : SolidPropertyType
     {
         public override void MakeSchemaCompliant()

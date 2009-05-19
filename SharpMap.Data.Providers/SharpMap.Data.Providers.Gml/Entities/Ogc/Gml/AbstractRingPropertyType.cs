@@ -19,14 +19,14 @@ using System.Xml.Serialization;
 namespace SharpMap.Entities.Ogc.Gml
 {
     [Serializable, XmlInclude(typeof (RingType)),
-     XmlType(TypeName = "AbstractRingPropertyType", Namespace = "http://www.opengis.net/gml/3.2"),
+     XmlType(TypeName = "AbstractRingPropertyType", Namespace = Declarations.SchemaVersion),
      XmlInclude(typeof (LinearRingType))]
     public class AbstractRingPropertyType
     {
         [XmlIgnore] private AbstractRing _abstractRing;
 
         [XmlElement(Type = typeof (AbstractRing), ElementName = "AbstractRing", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public AbstractRing AbstractRing
         {
             get { return _abstractRing; }

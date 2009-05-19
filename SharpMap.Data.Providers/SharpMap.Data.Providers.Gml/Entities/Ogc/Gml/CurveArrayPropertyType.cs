@@ -22,7 +22,7 @@ using System.Xml.Serialization;
 namespace SharpMap.Entities.Ogc.Gml
 {
     [Serializable, XmlInclude(typeof (CompositeCurveType)), XmlInclude(typeof (CurveType)),
-     XmlType(TypeName = "CurveArrayPropertyType", Namespace = "http://www.opengis.net/gml/3.2"),
+     XmlType(TypeName = "CurveArrayPropertyType", Namespace = Declarations.SchemaVersion),
      XmlInclude(typeof (OrientableCurveType)), XmlInclude(typeof (LineStringType))]
     public class CurveArrayPropertyType
     {
@@ -36,7 +36,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(Type = typeof (AbstractCurve), ElementName = "AbstractCurve", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public List<AbstractCurve> AbstractCurve
         {
             get

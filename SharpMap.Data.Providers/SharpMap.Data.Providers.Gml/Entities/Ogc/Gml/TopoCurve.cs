@@ -17,7 +17,7 @@ using System.Xml.Serialization;
 
 namespace SharpMap.Entities.Ogc.Gml
 {
-    [Serializable, XmlRoot(ElementName = "TopoCurve", Namespace = "http://www.opengis.net/gml/3.2", IsNullable = false)]
+    [Serializable, XmlRoot(ElementName = "TopoCurve", Namespace = Declarations.SchemaVersion, IsNullable = false)]
     public class TopoCurve : TopoCurveType
     {
         public override void MakeSchemaCompliant()

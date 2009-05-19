@@ -18,7 +18,7 @@ using System.Xml.Serialization;
 
 namespace SharpMap.Entities.Ogc.Gml
 {
-    [Serializable, XmlType(TypeName = "GeocentricCRSType", Namespace = "http://www.opengis.net/gml/3.2")]
+    [Serializable, XmlType(TypeName = "GeocentricCRSType", Namespace = Declarations.SchemaVersion)]
     public class GeocentricCRSType : AbstractCRSType
     {
         [XmlIgnore] private UsesCartesianCS _usesCartesianCS;
@@ -26,7 +26,7 @@ namespace SharpMap.Entities.Ogc.Gml
         [XmlIgnore] private UsesSphericalCS _usesSphericalCS;
 
         [XmlElement(Type = typeof (UsesCartesianCS), ElementName = "usesCartesianCS", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public UsesCartesianCS UsesCartesianCS
         {
             get { return _usesCartesianCS; }
@@ -34,7 +34,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(Type = typeof (UsesGeodeticDatum), ElementName = "usesGeodeticDatum", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public UsesGeodeticDatum UsesGeodeticDatum
         {
             get { return _usesGeodeticDatum; }
@@ -42,7 +42,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(Type = typeof (UsesSphericalCS), ElementName = "usesSphericalCS", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public UsesSphericalCS UsesSphericalCS
         {
             get { return _usesSphericalCS; }

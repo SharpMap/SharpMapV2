@@ -17,7 +17,7 @@ using System.Xml.Serialization;
 
 namespace SharpMap.Entities.Ogc.Gml
 {
-    [Serializable, XmlType(TypeName = "TimeType", Namespace = "http://www.opengis.net/gml/3.2")]
+    [Serializable, XmlType(TypeName = "TimeType", Namespace = Declarations.SchemaVersion)]
     public class TimeType : MeasureType
     {
         public override void MakeSchemaCompliant()

@@ -18,7 +18,7 @@ using System.Xml.Serialization;
 
 namespace SharpMap.Entities.Ogc.Gml
 {
-    [Serializable, XmlType(TypeName = "OrientableSurfaceType", Namespace = "http://www.opengis.net/gml/3.2")]
+    [Serializable, XmlType(TypeName = "OrientableSurfaceType", Namespace = Declarations.SchemaVersion)]
     public class OrientableSurfaceType : AbstractSurfaceType
     {
         [XmlIgnore] private BaseSurface _baseSurface;
@@ -31,7 +31,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(Type = typeof (BaseSurface), ElementName = "baseSurface", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public BaseSurface BaseSurface
         {
             get { return _baseSurface; }

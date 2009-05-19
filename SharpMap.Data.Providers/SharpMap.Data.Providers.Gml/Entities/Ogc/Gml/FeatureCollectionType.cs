@@ -17,7 +17,7 @@ using System.Xml.Serialization;
 
 namespace SharpMap.Entities.Ogc.Gml
 {
-    [Serializable, XmlType(TypeName = "FeatureCollectionType", Namespace = "http://www.opengis.net/gml/3.2")]
+    [Serializable, XmlType(TypeName = "FeatureCollectionType", Namespace = Declarations.SchemaVersion)]
     public class FeatureCollectionType : AbstractFeatureCollectionType
     {
         public override void MakeSchemaCompliant()

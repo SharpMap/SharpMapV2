@@ -18,7 +18,7 @@ using System.Xml.Serialization;
 namespace SharpMap.Entities.Ogc.Gml
 {
     [Serializable,
-     XmlRoot(ElementName = "DefinitionProxy", Namespace = "http://www.opengis.net/gml/3.2", IsNullable = false)]
+     XmlRoot(ElementName = "DefinitionProxy", Namespace = Declarations.SchemaVersion, IsNullable = false)]
     public class DefinitionProxy : DefinitionProxyType
     {
         public override void MakeSchemaCompliant()

@@ -17,7 +17,7 @@ using System.Xml.Serialization;
 
 namespace SharpMap.Entities.Ogc.Gml
 {
-    [Serializable, XmlRoot(ElementName = "Count", Namespace = "http://www.opengis.net/gml/3.2", IsNullable = true)]
+    [Serializable, XmlRoot(ElementName = "Count", Namespace = Declarations.SchemaVersion, IsNullable = true)]
     public class Count
     {
         [XmlIgnore] private string _nilReason;

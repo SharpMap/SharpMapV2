@@ -17,7 +17,7 @@ using System.Xml.Serialization;
 
 namespace SharpMap.Entities.Ogc.Gml
 {
-    [Serializable, XmlType(TypeName = "TimeIntervalLengthType", Namespace = "http://www.opengis.net/gml/3.2")]
+    [Serializable, XmlType(TypeName = "TimeIntervalLengthType", Namespace = Declarations.SchemaVersion)]
     public class TimeIntervalLengthType
     {
         [XmlIgnore] private string _factor;

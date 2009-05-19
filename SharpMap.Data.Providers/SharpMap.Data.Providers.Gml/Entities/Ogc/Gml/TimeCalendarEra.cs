@@ -18,7 +18,7 @@ using System.Xml.Serialization;
 namespace SharpMap.Entities.Ogc.Gml
 {
     [Serializable,
-     XmlRoot(ElementName = "TimeCalendarEra", Namespace = "http://www.opengis.net/gml/3.2", IsNullable = false)]
+     XmlRoot(ElementName = "TimeCalendarEra", Namespace = Declarations.SchemaVersion, IsNullable = false)]
     public class TimeCalendarEra : TimeCalendarEraType
     {
         public override void MakeSchemaCompliant()

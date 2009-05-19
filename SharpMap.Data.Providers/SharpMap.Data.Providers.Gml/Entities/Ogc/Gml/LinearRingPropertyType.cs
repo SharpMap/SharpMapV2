@@ -18,13 +18,13 @@ using System.Xml.Serialization;
 
 namespace SharpMap.Entities.Ogc.Gml
 {
-    [Serializable, XmlType(TypeName = "LinearRingPropertyType", Namespace = "http://www.opengis.net/gml/3.2")]
+    [Serializable, XmlType(TypeName = "LinearRingPropertyType", Namespace = Declarations.SchemaVersion)]
     public class LinearRingPropertyType
     {
         [XmlIgnore] private LinearRing _linearRing;
 
         [XmlElement(Type = typeof (LinearRing), ElementName = "LinearRing", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public LinearRing LinearRing
         {
             get { return _linearRing; }

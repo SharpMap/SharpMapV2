@@ -18,7 +18,7 @@ using System.Xml.Serialization;
 
 namespace SharpMap.Entities.Ogc.Gml
 {
-    [Serializable, XmlType(TypeName = "DerivedCRSType", Namespace = "http://www.opengis.net/gml/3.2")]
+    [Serializable, XmlType(TypeName = "DerivedCRSType", Namespace = Declarations.SchemaVersion)]
     public class DerivedCRSType : AbstractGeneralDerivedCRSType
     {
         [XmlIgnore] private BaseCRSProperty _baseCRS;
@@ -26,7 +26,7 @@ namespace SharpMap.Entities.Ogc.Gml
         [XmlIgnore] private DerivedCRSType_E _derivedCRSType;
 
         [XmlElement(Type = typeof (BaseCRSProperty), ElementName = "baseCRS", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public BaseCRSProperty BaseCRS
         {
             get { return _baseCRS; }
@@ -34,7 +34,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(Type = typeof (CoordinateSystemProperty), ElementName = "coordinateSystem", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public CoordinateSystemProperty CoordinateSystem
         {
             get { return _coordinateSystem; }
@@ -42,7 +42,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(Type = typeof (DerivedCRSType_E), ElementName = "derivedCRSType", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public DerivedCRSType_E DerivedCRSType_child
         {
             get { return _derivedCRSType; }

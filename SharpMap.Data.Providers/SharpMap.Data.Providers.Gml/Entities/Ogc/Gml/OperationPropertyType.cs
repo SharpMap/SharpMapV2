@@ -19,7 +19,7 @@ using System.Xml.Serialization;
 namespace SharpMap.Entities.Ogc.Gml
 {
     [Serializable, XmlInclude(typeof (AbstractGeneralConversionType)),
-     XmlType(TypeName = "OperationPropertyType", Namespace = "http://www.opengis.net/gml/3.2"),
+     XmlType(TypeName = "OperationPropertyType", Namespace = Declarations.SchemaVersion),
      XmlInclude(typeof (AbstractGeneralTransformationType)), XmlInclude(typeof (ConcatenatedOperationType)),
      XmlInclude(typeof (PassThroughOperationType))]
     public class OperationPropertyType
@@ -43,7 +43,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(Type = typeof (AbstractOperation), ElementName = "AbstractOperation", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public AbstractOperation AbstractOperation
         {
             get { return _abstractOperation; }

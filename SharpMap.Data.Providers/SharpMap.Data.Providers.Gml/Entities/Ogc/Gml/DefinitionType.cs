@@ -18,13 +18,13 @@ using System.Xml.Serialization;
 
 namespace SharpMap.Entities.Ogc.Gml
 {
-    [Serializable, XmlType(TypeName = "DefinitionType", Namespace = "http://www.opengis.net/gml/3.2")]
+    [Serializable, XmlType(TypeName = "DefinitionType", Namespace = Declarations.SchemaVersion)]
     public class DefinitionType : DefinitionBaseType
     {
         [XmlIgnore] private string _remarks;
 
         [XmlElement(ElementName = "remarks", IsNullable = false, Form = XmlSchemaForm.Qualified, DataType = "string",
-            Namespace = "http://www.opengis.net/gml/3.2")]
+            Namespace = Declarations.SchemaVersion)]
         public string Remarks
         {
             get { return _remarks; }

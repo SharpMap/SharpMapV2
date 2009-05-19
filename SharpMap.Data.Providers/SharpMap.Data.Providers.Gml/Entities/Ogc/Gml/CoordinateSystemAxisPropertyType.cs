@@ -18,7 +18,7 @@ using System.Xml.Serialization;
 
 namespace SharpMap.Entities.Ogc.Gml
 {
-    [Serializable, XmlType(TypeName = "CoordinateSystemAxisPropertyType", Namespace = "http://www.opengis.net/gml/3.2")]
+    [Serializable, XmlType(TypeName = "CoordinateSystemAxisPropertyType", Namespace = Declarations.SchemaVersion)]
     public class CoordinateSystemAxisPropertyType
     {
         [XmlIgnore] private Actuate _actuate;
@@ -58,7 +58,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(Type = typeof (CoordinateSystemAxis), ElementName = "CoordinateSystemAxis", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public CoordinateSystemAxis CoordinateSystemAxis
         {
             get { return _coordinateSystemAxis; }

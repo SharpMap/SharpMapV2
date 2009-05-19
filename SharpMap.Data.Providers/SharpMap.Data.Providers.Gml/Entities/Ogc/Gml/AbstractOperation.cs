@@ -18,7 +18,7 @@ using System.Xml.Serialization;
 namespace SharpMap.Entities.Ogc.Gml
 {
     [Serializable,
-     XmlRoot(ElementName = "AbstractOperation", Namespace = "http://www.opengis.net/gml/3.2", IsNullable = false)]
+     XmlRoot(ElementName = "AbstractOperation", Namespace = Declarations.SchemaVersion, IsNullable = false)]
     public abstract class AbstractOperation : AbstractCoordinateOperationType
     {
         public override void MakeSchemaCompliant()

@@ -19,14 +19,14 @@ using System.Xml.Serialization;
 
 namespace SharpMap.Entities.Ogc.Gml
 {
-    [Serializable, XmlType(TypeName = "MultiCurveType", Namespace = "http://www.opengis.net/gml/3.2")]
+    [Serializable, XmlType(TypeName = "MultiCurveType", Namespace = Declarations.SchemaVersion)]
     public class MultiCurveType : AbstractGeometricAggregateType
     {
         [XmlIgnore] private List<CurveMember> _curveMember;
         [XmlIgnore] private CurveMembers _curveMembers;
 
         [XmlElement(Type = typeof (CurveMember), ElementName = "curveMember", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public List<CurveMember> CurveMember
         {
             get
@@ -41,7 +41,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(Type = typeof (CurveMembers), ElementName = "curveMembers", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public CurveMembers CurveMembers
         {
             get { return _curveMembers; }

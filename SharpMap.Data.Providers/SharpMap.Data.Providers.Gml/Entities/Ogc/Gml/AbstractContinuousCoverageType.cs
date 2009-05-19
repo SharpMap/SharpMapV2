@@ -18,13 +18,13 @@ using System.Xml.Serialization;
 
 namespace SharpMap.Entities.Ogc.Gml
 {
-    [Serializable, XmlType(TypeName = "AbstractContinuousCoverageType", Namespace = "http://www.opengis.net/gml/3.2")]
+    [Serializable, XmlType(TypeName = "AbstractContinuousCoverageType", Namespace = Declarations.SchemaVersion)]
     public abstract class AbstractContinuousCoverageType : AbstractCoverageType
     {
         [XmlIgnore] private CoverageFunction _coverageFunction;
 
         [XmlElement(Type = typeof (CoverageFunction), ElementName = "coverageFunction", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public CoverageFunction CoverageFunction
         {
             get { return _coverageFunction; }

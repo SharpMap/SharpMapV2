@@ -18,7 +18,7 @@ using System.Xml.Serialization;
 
 namespace SharpMap.Entities.Ogc.Gml
 {
-    [Serializable, XmlType(TypeName = "DatumPropertyType", Namespace = "http://www.opengis.net/gml/3.2"),
+    [Serializable, XmlType(TypeName = "DatumPropertyType", Namespace = Declarations.SchemaVersion),
      XmlInclude(typeof (EngineeringDatumType)), XmlInclude(typeof (VerticalDatumType)),
      XmlInclude(typeof (ImageDatumType)), XmlInclude(typeof (TemporalDatumBaseType)),
      XmlInclude(typeof (GeodeticDatumType))]
@@ -43,7 +43,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(Type = typeof (AbstractDatum), ElementName = "AbstractDatum", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public AbstractDatum AbstractDatum
         {
             get { return _abstractDatum; }

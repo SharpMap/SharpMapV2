@@ -18,7 +18,7 @@ using System.Xml.Serialization;
 
 namespace SharpMap.Entities.Ogc.Gml
 {
-    [Serializable, XmlType(TypeName = "ParameterValueType", Namespace = "http://www.opengis.net/gml/3.2")]
+    [Serializable, XmlType(TypeName = "ParameterValueType", Namespace = Declarations.SchemaVersion)]
     public class ParameterValueType : AbstractGeneralParameterValueType
     {
         [XmlIgnore] private Boolean _booleanValue;
@@ -41,7 +41,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(ElementName = "booleanValue", IsNullable = false, Form = XmlSchemaForm.Qualified,
-            DataType = "boolean", Namespace = "http://www.opengis.net/gml/3.2")]
+            DataType = "boolean", Namespace = Declarations.SchemaVersion)]
         public Boolean BooleanValue
         {
             get { return _booleanValue; }
@@ -53,7 +53,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(Type = typeof (DmsAngleValue), ElementName = "dmsAngleValue", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public DmsAngleValue DmsAngleValue
         {
             get { return _dmsAngleValue; }
@@ -61,7 +61,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(ElementName = "integerValue", IsNullable = false, Form = XmlSchemaForm.Qualified,
-            DataType = "positiveInteger", Namespace = "http://www.opengis.net/gml/3.2")]
+            DataType = "positiveInteger", Namespace = Declarations.SchemaVersion)]
         public string IntegerValue
         {
             get { return _integerValue; }
@@ -69,7 +69,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(ElementName = "integerValueList", IsNullable = false, Form = XmlSchemaForm.Qualified,
-            Namespace = "http://www.opengis.net/gml/3.2")]
+            Namespace = Declarations.SchemaVersion)]
         public string IntegerValueList
         {
             get { return _integerValueList; }
@@ -77,7 +77,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(Type = typeof (OperationParameterProperty), ElementName = "operationParameter", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public OperationParameterProperty OperationParameter
         {
             get { return _operationParameter; }
@@ -85,7 +85,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(ElementName = "stringValue", IsNullable = false, Form = XmlSchemaForm.Qualified, DataType = "string"
-            , Namespace = "http://www.opengis.net/gml/3.2")]
+            , Namespace = Declarations.SchemaVersion)]
         public string StringValue
         {
             get { return _stringValue; }
@@ -93,7 +93,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(Type = typeof (Value), ElementName = "value", IsNullable = false, Form = XmlSchemaForm.Qualified,
-            Namespace = "http://www.opengis.net/gml/3.2")]
+            Namespace = Declarations.SchemaVersion)]
         public Value Value
         {
             get { return _value; }
@@ -101,7 +101,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(ElementName = "valueFile", IsNullable = false, Form = XmlSchemaForm.Qualified, DataType = "anyURI",
-            Namespace = "http://www.opengis.net/gml/3.2")]
+            Namespace = Declarations.SchemaVersion)]
         public string ValueFile
         {
             get { return _valueFile; }
@@ -109,7 +109,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(Type = typeof (ValueList), ElementName = "valueList", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public ValueList ValueList
         {
             get { return _valueList; }

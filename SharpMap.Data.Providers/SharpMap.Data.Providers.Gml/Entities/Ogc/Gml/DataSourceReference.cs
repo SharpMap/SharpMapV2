@@ -18,7 +18,7 @@ using System.Xml.Serialization;
 namespace SharpMap.Entities.Ogc.Gml
 {
     [Serializable,
-     XmlRoot(ElementName = "dataSourceReference", Namespace = "http://www.opengis.net/gml/3.2", IsNullable = false)]
+     XmlRoot(ElementName = "dataSourceReference", Namespace = Declarations.SchemaVersion, IsNullable = false)]
     public class DataSourceReference : ReferenceType
     {
         public override void MakeSchemaCompliant()

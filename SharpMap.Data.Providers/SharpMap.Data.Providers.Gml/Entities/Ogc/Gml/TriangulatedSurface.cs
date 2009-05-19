@@ -18,7 +18,7 @@ using System.Xml.Serialization;
 namespace SharpMap.Entities.Ogc.Gml
 {
     [Serializable,
-     XmlRoot(ElementName = "TriangulatedSurface", Namespace = "http://www.opengis.net/gml/3.2", IsNullable = false)]
+     XmlRoot(ElementName = "TriangulatedSurface", Namespace = Declarations.SchemaVersion, IsNullable = false)]
     public class TriangulatedSurface : SurfaceType
     {
         public override void MakeSchemaCompliant()

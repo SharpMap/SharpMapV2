@@ -18,7 +18,7 @@ using System.Xml.Serialization;
 namespace SharpMap.Entities.Ogc.Gml
 {
     [Serializable,
-     XmlRoot(ElementName = "cartesianCS", Namespace = "http://www.opengis.net/gml/3.2", IsNullable = false)]
+     XmlRoot(ElementName = "cartesianCS", Namespace = Declarations.SchemaVersion, IsNullable = false)]
     public class CartesianCSProperty : CartesianCSPropertyType
     {
         public override void MakeSchemaCompliant()

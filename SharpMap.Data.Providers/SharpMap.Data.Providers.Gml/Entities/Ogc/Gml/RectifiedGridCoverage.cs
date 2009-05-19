@@ -18,7 +18,7 @@ using System.Xml.Serialization;
 namespace SharpMap.Entities.Ogc.Gml
 {
     [Serializable,
-     XmlRoot(ElementName = "RectifiedGridCoverage", Namespace = "http://www.opengis.net/gml/3.2", IsNullable = false)]
+     XmlRoot(ElementName = "RectifiedGridCoverage", Namespace = Declarations.SchemaVersion, IsNullable = false)]
     public class RectifiedGridCoverage : DiscreteCoverageType
     {
         public override void MakeSchemaCompliant()

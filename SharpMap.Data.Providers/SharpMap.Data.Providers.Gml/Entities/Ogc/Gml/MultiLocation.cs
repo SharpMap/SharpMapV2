@@ -18,7 +18,7 @@ using System.Xml.Serialization;
 namespace SharpMap.Entities.Ogc.Gml
 {
     [Serializable,
-     XmlRoot(ElementName = "multiLocation", Namespace = "http://www.opengis.net/gml/3.2", IsNullable = false)]
+     XmlRoot(ElementName = "multiLocation", Namespace = Declarations.SchemaVersion, IsNullable = false)]
     public class MultiLocation : MultiPointPropertyType
     {
         public override void MakeSchemaCompliant()

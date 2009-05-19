@@ -18,14 +18,14 @@ using System.Xml.Serialization;
 
 namespace SharpMap.Entities.Ogc.Gml
 {
-    [Serializable, XmlType(TypeName = "DirectedObservationAtDistanceType", Namespace = "http://www.opengis.net/gml/3.2")
+    [Serializable, XmlType(TypeName = "DirectedObservationAtDistanceType", Namespace = Declarations.SchemaVersion)
     ]
     public class DirectedObservationAtDistanceType : DirectedObservationType
     {
         [XmlIgnore] private MeasureType _distance;
 
         [XmlElement(Type = typeof (MeasureType), ElementName = "distance", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public MeasureType Distance
         {
             get { return _distance; }

@@ -18,14 +18,14 @@ using System.Xml.Serialization;
 
 namespace SharpMap.Entities.Ogc.Gml
 {
-    [Serializable, XmlType(TypeName = "AbstractTimeTopologyPrimitiveType", Namespace = "http://www.opengis.net/gml/3.2")
+    [Serializable, XmlType(TypeName = "AbstractTimeTopologyPrimitiveType", Namespace = Declarations.SchemaVersion)
     ]
     public abstract class AbstractTimeTopologyPrimitiveType : AbstractTimePrimitiveType
     {
         [XmlIgnore] private ReferenceType _complex;
 
         [XmlElement(Type = typeof (ReferenceType), ElementName = "complex", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public ReferenceType Complex
         {
             get { return _complex; }

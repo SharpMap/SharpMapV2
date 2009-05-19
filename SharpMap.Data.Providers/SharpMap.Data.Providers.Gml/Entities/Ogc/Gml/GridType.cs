@@ -19,7 +19,7 @@ using System.Xml.Serialization;
 
 namespace SharpMap.Entities.Ogc.Gml
 {
-    [Serializable, XmlType(TypeName = "GridType", Namespace = "http://www.opengis.net/gml/3.2")]
+    [Serializable, XmlType(TypeName = "GridType", Namespace = Declarations.SchemaVersion)]
     public class GridType : AbstractGeometryType
     {
         [XmlIgnore] private string _axisLabels;
@@ -33,7 +33,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(ElementName = "axisLabels", IsNullable = false, Form = XmlSchemaForm.Qualified,
-            Namespace = "http://www.opengis.net/gml/3.2")]
+            Namespace = Declarations.SchemaVersion)]
         public string AxisLabels
         {
             get { return _axisLabels; }
@@ -41,7 +41,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(Type = typeof (string), ElementName = "axisName", IsNullable = false, Form = XmlSchemaForm.Qualified
-            , DataType = "string", Namespace = "http://www.opengis.net/gml/3.2")]
+            , DataType = "string", Namespace = Declarations.SchemaVersion)]
         public List<string> AxisName
         {
             get
@@ -63,7 +63,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlElement(Type = typeof (GridLimitsType), ElementName = "limits", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public GridLimitsType Limits
         {
             get { return _limits; }

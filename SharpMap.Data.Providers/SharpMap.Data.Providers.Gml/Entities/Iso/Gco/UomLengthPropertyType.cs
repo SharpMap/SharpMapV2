@@ -105,7 +105,7 @@ namespace SharpMap.Entities.Iso.Gco
         }
 
         [XmlElement(Type = typeof (UnitDefinition), ElementName = "UnitDefinition", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public UnitDefinition UnitDefinition
         {
             get { return _unitDefinition; }

@@ -17,7 +17,7 @@ using System.Xml.Serialization;
 
 namespace SharpMap.Entities.Ogc.Gml
 {
-    [Serializable, XmlRoot(ElementName = "LinearCS", Namespace = "http://www.opengis.net/gml/3.2", IsNullable = false)]
+    [Serializable, XmlRoot(ElementName = "LinearCS", Namespace = Declarations.SchemaVersion, IsNullable = false)]
     public class LinearCS : LinearCSType
     {
         public override void MakeSchemaCompliant()

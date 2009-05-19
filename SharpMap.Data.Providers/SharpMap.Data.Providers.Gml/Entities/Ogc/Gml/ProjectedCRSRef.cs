@@ -18,7 +18,7 @@ using System.Xml.Serialization;
 namespace SharpMap.Entities.Ogc.Gml
 {
     [Serializable,
-     XmlRoot(ElementName = "projectedCRSRef", Namespace = "http://www.opengis.net/gml/3.2", IsNullable = false)]
+     XmlRoot(ElementName = "projectedCRSRef", Namespace = Declarations.SchemaVersion, IsNullable = false)]
     public class ProjectedCRSRef : ProjectedCRSPropertyType
     {
         public override void MakeSchemaCompliant()

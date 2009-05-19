@@ -18,7 +18,7 @@ using System.Xml.Serialization;
 namespace SharpMap.Entities.Ogc.Gml
 {
     [Serializable,
-     XmlRoot(ElementName = "usesGeodeticDatum", Namespace = "http://www.opengis.net/gml/3.2", IsNullable = false)]
+     XmlRoot(ElementName = "usesGeodeticDatum", Namespace = Declarations.SchemaVersion, IsNullable = false)]
     public class UsesGeodeticDatum : GeodeticDatumPropertyType
     {
         public override void MakeSchemaCompliant()

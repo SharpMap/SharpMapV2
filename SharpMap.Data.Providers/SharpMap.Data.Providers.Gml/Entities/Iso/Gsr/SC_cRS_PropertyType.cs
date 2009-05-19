@@ -45,7 +45,7 @@ namespace SharpMap.Entities.Iso.Gsr
         }
 
         [XmlElement(Type = typeof (AbstractCRS), ElementName = "AbstractCRS", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = "http://www.opengis.net/gml/3.2")]
+            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public AbstractCRS AbstractCRS
         {
             get { return _abstractCRS; }

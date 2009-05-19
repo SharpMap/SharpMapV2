@@ -18,7 +18,7 @@ using System.Xml.Serialization;
 namespace SharpMap.Entities.Ogc.Gml
 {
     [Serializable,
-     XmlRoot(ElementName = "generalConversionRef", Namespace = "http://www.opengis.net/gml/3.2", IsNullable = false)]
+     XmlRoot(ElementName = "generalConversionRef", Namespace = Declarations.SchemaVersion, IsNullable = false)]
     public class GeneralConversionRef : GeneralConversionPropertyType
     {
         public override void MakeSchemaCompliant()

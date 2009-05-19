@@ -18,7 +18,7 @@ using System.Xml.Serialization;
 namespace SharpMap.Entities.Ogc.Gml
 {
     [Serializable,
-     XmlRoot(ElementName = "sphericalCS", Namespace = "http://www.opengis.net/gml/3.2", IsNullable = false)]
+     XmlRoot(ElementName = "sphericalCS", Namespace = Declarations.SchemaVersion, IsNullable = false)]
     public class SphericalCSProperty : SphericalCSPropertyType
     {
         public override void MakeSchemaCompliant()

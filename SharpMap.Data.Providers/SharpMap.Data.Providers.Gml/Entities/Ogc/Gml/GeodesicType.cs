@@ -17,7 +17,7 @@ using System.Xml.Serialization;
 
 namespace SharpMap.Entities.Ogc.Gml
 {
-    [Serializable, XmlType(TypeName = "GeodesicType", Namespace = "http://www.opengis.net/gml/3.2")]
+    [Serializable, XmlType(TypeName = "GeodesicType", Namespace = Declarations.SchemaVersion)]
     public class GeodesicType : GeodesicStringType
     {
         public override void MakeSchemaCompliant()

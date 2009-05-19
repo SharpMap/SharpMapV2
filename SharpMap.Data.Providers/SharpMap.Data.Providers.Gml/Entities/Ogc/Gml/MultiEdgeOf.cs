@@ -18,7 +18,7 @@ using System.Xml.Serialization;
 namespace SharpMap.Entities.Ogc.Gml
 {
     [Serializable,
-     XmlRoot(ElementName = "multiEdgeOf", Namespace = "http://www.opengis.net/gml/3.2", IsNullable = false)]
+     XmlRoot(ElementName = "multiEdgeOf", Namespace = Declarations.SchemaVersion, IsNullable = false)]
     public class MultiEdgeOf : MultiCurvePropertyType
     {
         public override void MakeSchemaCompliant()

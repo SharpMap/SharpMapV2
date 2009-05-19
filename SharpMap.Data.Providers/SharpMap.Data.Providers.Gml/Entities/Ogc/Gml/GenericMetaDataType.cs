@@ -18,7 +18,7 @@ using System.Xml.Serialization;
 
 namespace SharpMap.Entities.Ogc.Gml
 {
-    [Serializable, XmlType(TypeName = "GenericMetaDataType", Namespace = "http://www.opengis.net/gml/3.2")]
+    [Serializable, XmlType(TypeName = "GenericMetaDataType", Namespace = Declarations.SchemaVersion)]
     public class GenericMetaDataType : AbstractMetaDataType
     {
         [XmlIgnore] private string _value;
