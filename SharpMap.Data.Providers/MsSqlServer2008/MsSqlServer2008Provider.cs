@@ -36,6 +36,7 @@ using Caster = GeoAPI.DataStructures.Caster;
 using Processor = GeoAPI.DataStructures.Processor;
 using Caster = GeoAPI.DataStructures.Caster;
 using Enumerable = GeoAPI.DataStructures.Enumerable;
+using System.ComponentModel;
 #endif
 
 namespace SharpMap.Data.Providers
@@ -770,46 +771,8 @@ END
 
         internal static bool DataColumnsCompatible(DataColumn a, DataColumn b)
         {
-            //if (a.DataType == typeof(Int16) && b.DataType == typeof(UInt16))
-            //    return true;
-            //if (b.DataType == typeof(Int16) && a.DataType == typeof(UInt16))
-            //    return true;
-            //if (a.DataType == typeof(Int32) && b.DataType == typeof(UInt32))
-            //    return true;
-            //if (b.DataType == typeof(Int32) && a.DataType == typeof(UInt32))
-            //    return true;
-            //if (a.DataType == typeof(Int64) && b.DataType == typeof(UInt64))
-            //    return true;
-            //if (b.DataType == typeof(Int64) && a.DataType == typeof(UInt64))
-            //    return true;
-
-
-            //if (a.DataType == typeof(Int16) && (b.DataType == typeof(Int32) || b.DataType == typeof(Int64)))
-            //    return true;
-            //if (b.DataType == typeof(Int16) && (a.DataType == typeof(Int32) || a.DataType == typeof(Int64)))
-            //    return true;
-
-            //if (a.DataType == typeof(Int32) && (b.DataType == typeof(Int64)))
-            //    return true;
-            //if (b.DataType == typeof(Int32) && (a.DataType == typeof(Int64)))
-            //    return true;
-
-
-            //if (b.DataType == typeof(Int16) && a.DataType == typeof(UInt16))
-            //    return true;
-            //if (a.DataType == typeof(Int32) && b.DataType == typeof(UInt32))
-            //    return true;
-            //if (b.DataType == typeof(Int32) && a.DataType == typeof(UInt32))
-            //    return true;
-            //if (a.DataType == typeof(Int64) && b.DataType == typeof(UInt64))
-            //    return true;
-            //if (b.DataType == typeof(Int64) && a.DataType == typeof(UInt64))
-            //    return true;
-
-            if (a.DataType != b.DataType)
-                return false;
-
-            return true;
+            TypeConverter tc = TypeDescriptor.GetConverter(b.DataType);
+            return tc.CanConvertTo(a.DataType);
         }
 
         internal static MsSqlServer2008Provider<TOid> Create<TOid>(string connectionString,

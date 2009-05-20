@@ -49,7 +49,7 @@ namespace SharpMap.Data.Providers.Db
 
         public IDbDataAdapter CreateAdapter(IDbCommand cmd)
         {
-            return new SqlDataAdapter((SqlCommand) cmd);
+            return new SqlDataAdapter((SqlCommand)cmd);
         }
 
         public IDataParameter CreateParameter(string parameterName, Type netType,
@@ -62,7 +62,7 @@ namespace SharpMap.Data.Providers.Db
                                               ParameterDirection parameterDirection)
         {
             SqlParameter p = new SqlParameter(parameterName.StartsWith("@") ? parameterName : "@" + parameterName,
-                                              dbType, GetDbSize(dbType)) {Direction = parameterDirection};
+                                              dbType, GetDbSize(dbType)) { Direction = parameterDirection };
             return p;
         }
 
@@ -125,49 +125,48 @@ namespace SharpMap.Data.Providers.Db
         {
             Type t = value.GetType();
             //pesky unsigned integers!
-            if (t == typeof (UInt32))
+            if (t == typeof(UInt32))
                 value = Convert.ToInt32(value);
 
-            if (t == typeof (UInt64))
+            if (t == typeof(UInt64))
                 value = Convert.ToInt64(value);
 
-            if (t == typeof (Int16))
+            if (t == typeof(Int16))
                 value = Convert.ToInt16(value);
 
-            return new SqlParameter(parameterName.StartsWith("@") ? parameterName : "@" + parameterName, value)
-                       {Direction = paramDirection};
+            return new SqlParameter(parameterName.StartsWith("@") ? parameterName : "@" + parameterName, value) { Direction = paramDirection };
         }
 
         #endregion
 
         public static SqlDbType GetDbType<TValue>()
         {
-            return GetDbType(typeof (TValue));
+            return GetDbType(typeof(TValue));
         }
 
         public static SqlDbType GetDbType(Type netType)
         {
-            if (netType == typeof (Int16) || netType == typeof (UInt16))
+            if (netType == typeof(Int16) || netType == typeof(UInt16))
                 return SqlDbType.SmallInt;
-            if (netType == typeof (Int32) || netType == typeof (UInt32))
+            if (netType == typeof(Int32) || netType == typeof(UInt32))
                 return SqlDbType.Int;
-            if (netType == typeof (Int64) || netType == typeof (UInt64))
+            if (netType == typeof(Int64) || netType == typeof(UInt64))
                 return SqlDbType.BigInt;
-            if (netType == typeof (string))
+            if (netType == typeof(string))
                 return SqlDbType.NVarChar;
-            if (netType == typeof (Guid))
+            if (netType == typeof(Guid))
                 return SqlDbType.UniqueIdentifier;
-            if (netType == typeof (Single))
+            if (netType == typeof(Single))
                 return SqlDbType.Real;
-            if (netType == typeof (Double))
+            if (netType == typeof(Double))
                 return SqlDbType.Float;
-            if (netType == typeof (Decimal))
+            if (netType == typeof(Decimal))
                 return SqlDbType.Decimal;
-            if (netType == typeof (byte[]))
+            if (netType == typeof(byte[]))
                 return SqlDbType.VarBinary;
-            if (netType == typeof (Boolean))
+            if (netType == typeof(Boolean))
                 return SqlDbType.Bit;
-            if (netType == typeof (DateTime))
+            if (netType == typeof(DateTime))
                 return SqlDbType.DateTime;
 
             throw new NotImplementedException();
@@ -204,11 +203,11 @@ namespace SharpMap.Data.Providers.Db
                 case SqlDbType.Money:
                     return 8;
                 case SqlDbType.NChar:
-                    return 8000;
+                    return 4000;
                 case SqlDbType.NText:
                     return 16;
                 case SqlDbType.NVarChar:
-                    return 8000;
+                    return -1; //nvarchar(max)
                 case SqlDbType.Real:
                     return 4;
                 case SqlDbType.SmallDateTime:
@@ -232,13 +231,13 @@ namespace SharpMap.Data.Providers.Db
                 case SqlDbType.UniqueIdentifier:
                     return 16;
                 case SqlDbType.VarBinary:
-                    return 8000;
+                    return -1;//VarBinary(max)
                 case SqlDbType.VarChar:
-                    return 8000;
+                    return -1;//VarChar(max)
                 case SqlDbType.Variant:
                     return 8000;
                 case SqlDbType.Xml:
-                    return 8000;
+                    return -1;
                 default:
                     throw new ArgumentException(dbType + " is unknown");
             }
@@ -355,7 +354,7 @@ namespace SharpMap.Data.Providers.Db
                 case SqlDbType.NText:
                     return "ntext";
                 case SqlDbType.NVarChar:
-                    return string.Format("nvarchar({0})", size == 0 || size > 4000 ? "max" : size.ToString());
+                    return string.Format("nvarchar({0})", size <= 0 || size >= 4000 ? "max" : size.ToString());
                 case SqlDbType.Real:
                     return "real";
                 case SqlDbType.SmallDateTime:
@@ -379,9 +378,9 @@ namespace SharpMap.Data.Providers.Db
                 case SqlDbType.UniqueIdentifier:
                     return "uniqueidentifier";
                 case SqlDbType.VarBinary:
-                    return string.Format("varbinary({0})", size == 0 || size > 8000 ? "max" : size.ToString());
+                    return string.Format("varbinary({0})", size <= 0 || size >= 8000 ? "max" : size.ToString());
                 case SqlDbType.VarChar:
-                    return string.Format("varchar({0})", size == 0 || size > 8000 ? "max" : size.ToString());
+                    return string.Format("varchar({0})", size <= 0 || size >= 8000 ? "max" : size.ToString());
                 case SqlDbType.Variant:
                     return "variant";
                 case SqlDbType.Xml:
