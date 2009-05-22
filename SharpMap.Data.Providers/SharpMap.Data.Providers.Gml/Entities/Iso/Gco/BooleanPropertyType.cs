@@ -15,20 +15,19 @@
 using System;
 using System.Xml.Schema;
 using System.Xml.Serialization;
-using Boolean=SharpMap.Entities.Ogc.Gml.Boolean;
 
 namespace SharpMap.Entities.Iso.Gco
 {
     [Serializable, XmlType(TypeName = "Boolean_propertyType", Namespace = "http://www.isotc211.org/2005/gco")]
     public class BooleanPropertyType
     {
-        [XmlIgnore] private Boolean _boolean;
+        [XmlIgnore] private bool _boolean;
         [XmlIgnore] private string _nilReason;
         [XmlIgnore] public bool BooleanSpecified = true;
 
         [XmlElement(ElementName = "Boolean", IsNullable = false, Form = XmlSchemaForm.Qualified, DataType = "boolean",
             Namespace = "http://www.isotc211.org/2005/gco")]
-        public Boolean Boolean
+        public bool Boolean
         {
             get { return _boolean; }
             set

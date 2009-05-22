@@ -27,7 +27,7 @@ namespace SharpMap.Entities.Ogc.Gml
         [XmlIgnore] private CurveInterpolationType _interpolation;
         [XmlIgnore] private bool _isPolynomial;
         [XmlIgnore] private List<KnotPropertyType> _knot;
-        [XmlIgnore] private string _knotType;
+        [XmlIgnore] private KnotTypesType _knotType;
         [XmlIgnore] private List<PointProperty> _pointProperty;
         [XmlIgnore] private List<PointRep> _pointRep;
         [XmlIgnore] private List<Pos> _pos;
@@ -95,8 +95,8 @@ namespace SharpMap.Entities.Ogc.Gml
             set { _knot = value; }
         }
 
-        [XmlAttribute(AttributeName = "knotType", DataType = "KnotTypesType")]
-        public string KnotType
+        [XmlAttribute(AttributeName = "knotType")]//, DataType = "KnotTypesType"
+        public KnotTypesType KnotType
         {
             get { return _knotType; }
             set { _knotType = value; }

@@ -22,10 +22,14 @@ namespace SharpMap.Entities.Ogc.Gml
     [Serializable, XmlType(TypeName = "GridType", Namespace = Declarations.SchemaVersion)]
     public class GridType : AbstractGeometryType
     {
-        [XmlIgnore] private string _axisLabels;
-        [XmlIgnore] private List<string> _axisName;
-        [XmlIgnore] private string _dimension;
-        [XmlIgnore] private GridLimitsType _limits;
+        [XmlIgnore]
+        private string _axisLabels;
+        [XmlIgnore]
+        private List<string> _axisName;
+        [XmlIgnore]
+        private string _dimension;
+        [XmlIgnore]
+        private GridLimitsType _limits;
 
         public GridType()
         {
@@ -34,13 +38,13 @@ namespace SharpMap.Entities.Ogc.Gml
 
         [XmlElement(ElementName = "axisLabels", IsNullable = false, Form = XmlSchemaForm.Qualified,
             Namespace = Declarations.SchemaVersion)]
-        public string AxisLabels
+        public new string AxisLabels
         {
             get { return _axisLabels; }
             set { _axisLabels = value; }
         }
 
-        [XmlElement(Type = typeof (string), ElementName = "axisName", IsNullable = false, Form = XmlSchemaForm.Qualified
+        [XmlElement(Type = typeof(string), ElementName = "axisName", IsNullable = false, Form = XmlSchemaForm.Qualified
             , DataType = "string", Namespace = Declarations.SchemaVersion)]
         public List<string> AxisName
         {
@@ -62,7 +66,7 @@ namespace SharpMap.Entities.Ogc.Gml
             set { _dimension = value; }
         }
 
-        [XmlElement(Type = typeof (GridLimitsType), ElementName = "limits", IsNullable = false,
+        [XmlElement(Type = typeof(GridLimitsType), ElementName = "limits", IsNullable = false,
             Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
         public GridLimitsType Limits
         {

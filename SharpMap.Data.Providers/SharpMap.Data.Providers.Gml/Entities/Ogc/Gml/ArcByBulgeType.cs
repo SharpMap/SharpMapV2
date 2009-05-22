@@ -20,17 +20,26 @@ using System.Xml.Serialization;
 namespace SharpMap.Entities.Ogc.Gml
 {
     [Serializable, XmlType(TypeName = "ArcByBulgeType", Namespace = Declarations.SchemaVersion)]
-    public class ArcByBulgeType : ArcStringByBulgeType
+    public class ArcByBulgeType : ArcStringByBulgeTypeBase
     {
-        [XmlIgnore] private double _bulge;
-        [XmlIgnore] private Coordinates _coordinates;
-        [XmlIgnore] private VectorType _normal;
-        [XmlIgnore] private string _numArc;
-        [XmlIgnore] private List<PointProperty> _pointProperty;
-        [XmlIgnore] private List<PointRep> _pointRep;
-        [XmlIgnore] private List<Pos> _pos;
-        [XmlIgnore] private PosList _posList;
-        [XmlIgnore] public bool BulgeSpecified;
+        [XmlIgnore]
+        private double _bulge;
+        [XmlIgnore]
+        private Coordinates _coordinates;
+        [XmlIgnore]
+        private VectorType _normal;
+        [XmlIgnore]
+        private string _numArc;
+        [XmlIgnore]
+        private List<PointProperty> _pointProperty;
+        [XmlIgnore]
+        private List<PointRep> _pointRep;
+        [XmlIgnore]
+        private List<Pos> _pos;
+        [XmlIgnore]
+        private PosList _posList;
+        [XmlIgnore]
+        public bool BulgeSpecified;
 
         public ArcByBulgeType()
         {
@@ -50,81 +59,81 @@ namespace SharpMap.Entities.Ogc.Gml
             }
         }
 
-        [XmlElement(Type = typeof (Coordinates), ElementName = "coordinates", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
-        public Coordinates Coordinates
-        {
-            get { return _coordinates; }
-            set { _coordinates = value; }
-        }
+        //[XmlElement(Type = typeof(Coordinates), ElementName = "coordinates", IsNullable = false,
+        //    Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
+        //public new Coordinates Coordinates
+        //{
+        //    get { return _coordinates; }
+        //    set { _coordinates = value; }
+        //}
 
-        [XmlElement(Type = typeof (VectorType), ElementName = "normal", IsNullable = false,
+        [XmlElement(Type = typeof(VectorType), ElementName = "normal", IsNullable = false,
             Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
-        public VectorType Normal
+        public new VectorType Normal
         {
             get { return _normal; }
             set { _normal = value; }
         }
 
-        [XmlAttribute(AttributeName = "numArc", DataType = "integer")]
-        public string NumArc
-        {
-            get { return _numArc; }
-            set { _numArc = value; }
-        }
+        //[XmlAttribute(AttributeName = "numArc", DataType = "integer")]
+        //public new string NumArc
+        //{
+        //    get { return _numArc; }
+        //    set { _numArc = value; }
+        //}
 
-        [XmlElement(Type = typeof (PointProperty), ElementName = "pointProperty", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
-        public List<PointProperty> PointProperty
-        {
-            get
-            {
-                if (_pointProperty == null)
-                {
-                    _pointProperty = new List<PointProperty>();
-                }
-                return _pointProperty;
-            }
-            set { _pointProperty = value; }
-        }
+        //[XmlElement(Type = typeof(PointProperty), ElementName = "pointProperty", IsNullable = false,
+        //    Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
+        //public new List<PointProperty> PointProperty
+        //{
+        //    get
+        //    {
+        //        if (_pointProperty == null)
+        //        {
+        //            _pointProperty = new List<PointProperty>();
+        //        }
+        //        return _pointProperty;
+        //    }
+        //    set { _pointProperty = value; }
+        //}
 
-        [XmlElement(Type = typeof (PointRep), ElementName = "pointRep", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
-        public List<PointRep> PointRep
-        {
-            get
-            {
-                if (_pointRep == null)
-                {
-                    _pointRep = new List<PointRep>();
-                }
-                return _pointRep;
-            }
-            set { _pointRep = value; }
-        }
+        //[XmlElement(Type = typeof(PointRep), ElementName = "pointRep", IsNullable = false,
+        //    Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
+        //public new List<PointRep> PointRep
+        //{
+        //    get
+        //    {
+        //        if (_pointRep == null)
+        //        {
+        //            _pointRep = new List<PointRep>();
+        //        }
+        //        return _pointRep;
+        //    }
+        //    set { _pointRep = value; }
+        //}
 
-        [XmlElement(Type = typeof (Pos), ElementName = "pos", IsNullable = false, Form = XmlSchemaForm.Qualified,
-            Namespace = Declarations.SchemaVersion)]
-        public List<Pos> Pos
-        {
-            get
-            {
-                if (_pos == null)
-                {
-                    _pos = new List<Pos>();
-                }
-                return _pos;
-            }
-            set { _pos = value; }
-        }
+        //[XmlElement(Type = typeof(Pos), ElementName = "pos", IsNullable = false, Form = XmlSchemaForm.Qualified,
+        //    Namespace = Declarations.SchemaVersion)]
+        //public new List<Pos> Pos
+        //{
+        //    get
+        //    {
+        //        if (_pos == null)
+        //        {
+        //            _pos = new List<Pos>();
+        //        }
+        //        return _pos;
+        //    }
+        //    set { _pos = value; }
+        //}
 
-        [XmlElement(Type = typeof (PosList), ElementName = "posList", IsNullable = false, Form = XmlSchemaForm.Qualified
-            , Namespace = Declarations.SchemaVersion)]
-        public PosList PosList
-        {
-            get { return _posList; }
-            set { _posList = value; }
-        }
+        //[XmlElement(Type = typeof(PosList), ElementName = "posList", IsNullable = false, Form = XmlSchemaForm.Qualified
+        //    , Namespace = Declarations.SchemaVersion)]
+        //public new PosList PosList
+        //{
+        //    get { return _posList; }
+        //    set { _posList = value; }
+        //}
 
         public override void MakeSchemaCompliant()
         {

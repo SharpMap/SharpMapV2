@@ -22,123 +22,123 @@ namespace SharpMap.Entities.Ogc.Gml
     [Serializable, XmlType(TypeName = "AbstractGeneralConversionType", Namespace = Declarations.SchemaVersion)]
     public abstract class AbstractGeneralConversionType : AbstractCoordinateOperationType
     {
-        [XmlIgnore] private List<CoordinateOperationAccuracy> _coordinateOperationAccuracy;
-        [XmlIgnore] private Description _description;
-        [XmlIgnore] private DescriptionReference _descriptionReference;
-        [XmlIgnore] private DomainOfValidity _domainOfValidity;
-        [XmlIgnore] private string _id;
-        [XmlIgnore] private Identifier _identifier;
-        [XmlIgnore] private List<MetaDataProperty> _metaDataProperty;
-        [XmlIgnore] private List<Name> _name;
-        [XmlIgnore] private string _remarks;
-        [XmlIgnore] private List<string> _scope;
+        //[XmlIgnore] private List<CoordinateOperationAccuracy> _coordinateOperationAccuracy;
+        //[XmlIgnore] private Description _description;
+        //[XmlIgnore] private DescriptionReference _descriptionReference;
+        //[XmlIgnore] private DomainOfValidity _domainOfValidity;
+        //[XmlIgnore] private string _id;
+        //[XmlIgnore] private Identifier _identifier;
+        //[XmlIgnore] private List<MetaDataProperty> _metaDataProperty;
+        //[XmlIgnore] private List<Name> _name;
+        //[XmlIgnore] private string _remarks;
+        //[XmlIgnore] private List<string> _scope;
 
-        [XmlElement(Type = typeof (CoordinateOperationAccuracy), ElementName = "coordinateOperationAccuracy",
-            IsNullable = false, Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
-        public List<CoordinateOperationAccuracy> CoordinateOperationAccuracy
-        {
-            get
-            {
-                if (_coordinateOperationAccuracy == null)
-                {
-                    _coordinateOperationAccuracy = new List<CoordinateOperationAccuracy>();
-                }
-                return _coordinateOperationAccuracy;
-            }
-            set { _coordinateOperationAccuracy = value; }
-        }
+        //[XmlElement(Type = typeof (CoordinateOperationAccuracy), ElementName = "coordinateOperationAccuracy",
+        //    IsNullable = false, Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
+        //public List<CoordinateOperationAccuracy> CoordinateOperationAccuracy
+        //{
+        //    get
+        //    {
+        //        if (_coordinateOperationAccuracy == null)
+        //        {
+        //            _coordinateOperationAccuracy = new List<CoordinateOperationAccuracy>();
+        //        }
+        //        return _coordinateOperationAccuracy;
+        //    }
+        //    set { _coordinateOperationAccuracy = value; }
+        //}
 
-        [XmlElement(Type = typeof (Description), ElementName = "description", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
-        public Description Description
-        {
-            get { return _description; }
-            set { _description = value; }
-        }
+        //[XmlElement(Type = typeof (Description), ElementName = "description", IsNullable = false,
+        //    Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
+        //public Description Description
+        //{
+        //    get { return _description; }
+        //    set { _description = value; }
+        //}
 
-        [XmlElement(Type = typeof (DescriptionReference), ElementName = "descriptionReference", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
-        public DescriptionReference DescriptionReference
-        {
-            get { return _descriptionReference; }
-            set { _descriptionReference = value; }
-        }
+        //[XmlElement(Type = typeof (DescriptionReference), ElementName = "descriptionReference", IsNullable = false,
+        //    Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
+        //public DescriptionReference DescriptionReference
+        //{
+        //    get { return _descriptionReference; }
+        //    set { _descriptionReference = value; }
+        //}
 
-        [XmlElement(Type = typeof (DomainOfValidity), ElementName = "domainOfValidity", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
-        public DomainOfValidity DomainOfValidity
-        {
-            get { return _domainOfValidity; }
-            set { _domainOfValidity = value; }
-        }
+        //[XmlElement(Type = typeof (DomainOfValidity), ElementName = "domainOfValidity", IsNullable = false,
+        //    Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
+        //public DomainOfValidity DomainOfValidity
+        //{
+        //    get { return _domainOfValidity; }
+        //    set { _domainOfValidity = value; }
+        //}
 
-        [XmlAttribute(AttributeName = "id", DataType = "ID")]
-        public string Id
-        {
-            get { return _id; }
-            set { _id = value; }
-        }
+        //[XmlAttribute(AttributeName = "id", DataType = "ID")]
+        //public string Id
+        //{
+        //    get { return _id; }
+        //    set { _id = value; }
+        //}
 
-        [XmlElement(Type = typeof (Identifier), ElementName = "identifier", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
-        public Identifier Identifier
-        {
-            get { return _identifier; }
-            set { _identifier = value; }
-        }
+        //[XmlElement(Type = typeof (Identifier), ElementName = "identifier", IsNullable = false,
+        //    Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
+        //public Identifier Identifier
+        //{
+        //    get { return _identifier; }
+        //    set { _identifier = value; }
+        //}
 
-        [XmlElement(Type = typeof (MetaDataProperty), ElementName = "metaDataProperty", IsNullable = false,
-            Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
-        public List<MetaDataProperty> MetaDataProperty
-        {
-            get
-            {
-                if (_metaDataProperty == null)
-                {
-                    _metaDataProperty = new List<MetaDataProperty>();
-                }
-                return _metaDataProperty;
-            }
-            set { _metaDataProperty = value; }
-        }
+        //[XmlElement(Type = typeof (MetaDataProperty), ElementName = "metaDataProperty", IsNullable = false,
+        //    Form = XmlSchemaForm.Qualified, Namespace = Declarations.SchemaVersion)]
+        //public List<MetaDataProperty> MetaDataProperty
+        //{
+        //    get
+        //    {
+        //        if (_metaDataProperty == null)
+        //        {
+        //            _metaDataProperty = new List<MetaDataProperty>();
+        //        }
+        //        return _metaDataProperty;
+        //    }
+        //    set { _metaDataProperty = value; }
+        //}
 
-        [XmlElement(Type = typeof (Name), ElementName = "name", IsNullable = false, Form = XmlSchemaForm.Qualified,
-            Namespace = Declarations.SchemaVersion)]
-        public List<Name> Name
-        {
-            get
-            {
-                if (_name == null)
-                {
-                    _name = new List<Name>();
-                }
-                return _name;
-            }
-            set { _name = value; }
-        }
+        //[XmlElement(Type = typeof (Name), ElementName = "name", IsNullable = false, Form = XmlSchemaForm.Qualified,
+        //    Namespace = Declarations.SchemaVersion)]
+        //public List<Name> Name
+        //{
+        //    get
+        //    {
+        //        if (_name == null)
+        //        {
+        //            _name = new List<Name>();
+        //        }
+        //        return _name;
+        //    }
+        //    set { _name = value; }
+        //}
 
-        [XmlElement(ElementName = "remarks", IsNullable = false, Form = XmlSchemaForm.Qualified, DataType = "string",
-            Namespace = Declarations.SchemaVersion)]
-        public string Remarks
-        {
-            get { return _remarks; }
-            set { _remarks = value; }
-        }
+        //[XmlElement(ElementName = "remarks", IsNullable = false, Form = XmlSchemaForm.Qualified, DataType = "string",
+        //    Namespace = Declarations.SchemaVersion)]
+        //public string Remarks
+        //{
+        //    get { return _remarks; }
+        //    set { _remarks = value; }
+        //}
 
-        [XmlElement(Type = typeof (string), ElementName = "scope", IsNullable = false, Form = XmlSchemaForm.Qualified,
-            DataType = "string", Namespace = Declarations.SchemaVersion)]
-        public List<string> Scope
-        {
-            get
-            {
-                if (_scope == null)
-                {
-                    _scope = new List<string>();
-                }
-                return _scope;
-            }
-            set { _scope = value; }
-        }
+        //[XmlElement(Type = typeof (string), ElementName = "scope", IsNullable = false, Form = XmlSchemaForm.Qualified,
+        //    DataType = "string", Namespace = Declarations.SchemaVersion)]
+        //public List<string> Scope
+        //{
+        //    get
+        //    {
+        //        if (_scope == null)
+        //        {
+        //            _scope = new List<string>();
+        //        }
+        //        return _scope;
+        //    }
+        //    set { _scope = value; }
+        //}
 
         public override void MakeSchemaCompliant()
         {

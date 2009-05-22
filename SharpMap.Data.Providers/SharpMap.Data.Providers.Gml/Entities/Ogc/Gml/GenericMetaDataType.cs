@@ -24,12 +24,12 @@ namespace SharpMap.Entities.Ogc.Gml
         [XmlIgnore] private string _value;
         [XmlAnyElement] public XmlElement[] Any;
 
-        [XmlText(DataType = "string")]
-        public string Value
-        {
-            get { return _value; }
-            set { _value = value; }
-        }
+        //[XmlText(DataType = "string")]
+        //public override string Value
+        //{
+        //    get { return _value; }
+        //    set { _value = value; }
+        //}
 
         public override void MakeSchemaCompliant()
         {

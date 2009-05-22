@@ -21,7 +21,7 @@ namespace SharpMap.Entities.Ogc.Gml
     public class Boolean
     {
         [XmlIgnore] private string _nilReason;
-        [XmlIgnore] private Boolean _value;
+        [XmlIgnore] private bool _value;
         [XmlIgnore] public bool ValueSpecified;
 
         [XmlAttribute(AttributeName = "nilReason", DataType = "anyURI")]
@@ -32,7 +32,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlText(typeof (bool))]
-        public Boolean Value
+        public bool Value
         {
             get { return _value; }
             set

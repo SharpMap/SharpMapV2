@@ -12,9 +12,13 @@
 //  *  Author: John Diss 2009
 //  * 
 //  */
+using System.Xml.Serialization;
+
 namespace SharpMap.Entities.Ogc.Gml
 {
-    public enum CategoryExtentTypeEnum
-    {
-    }
+    //public enum CategoryExtentTypeEnum
+    //{
+    //    [XmlEnum("ToDo")]
+    //    ToDo
+    //}
 }

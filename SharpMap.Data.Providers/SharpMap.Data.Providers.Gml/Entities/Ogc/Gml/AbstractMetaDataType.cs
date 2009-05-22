@@ -13,6 +13,7 @@
 //  * 
 //  */
 using System;
+using System.Collections.Generic;
 using System.Xml.Serialization;
 
 namespace SharpMap.Entities.Ogc.Gml
@@ -21,7 +22,7 @@ namespace SharpMap.Entities.Ogc.Gml
     public abstract class AbstractMetaDataType
     {
         [XmlIgnore] private string _id;
-        [XmlIgnore] private string _value;
+        [XmlIgnore] private List<String> _value = new List<string>();
 
         [XmlAttribute(AttributeName = "id", DataType = "ID")]
         public string Id
@@ -31,7 +32,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlText(DataType = "string")]
-        public string Value
+        public List<string> Value
         {
             get { return _value; }
             set { _value = value; }

@@ -14,7 +14,7 @@
 //  */
 namespace SharpMap.Entities.Ogc.Gml
 {
-    public enum QuantityExtentTypeEnum
-    {
-    }
+    //public enum QuantityExtentTypeEnum
+    //{
+    //}
 }

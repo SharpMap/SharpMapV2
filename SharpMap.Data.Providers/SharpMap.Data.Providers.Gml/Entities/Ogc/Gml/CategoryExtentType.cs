@@ -20,11 +20,13 @@ namespace SharpMap.Entities.Ogc.Gml
     [Serializable, XmlType(TypeName = "CategoryExtentType", Namespace = Declarations.SchemaVersion)]
     public class CategoryExtentType
     {
-        [XmlIgnore] private CategoryExtentTypeEnum _value;
-        [XmlIgnore] public bool ValueSpecified;
+        [XmlIgnore]
+        private string _value;
+        [XmlIgnore]
+        public bool ValueSpecified;
 
-        [XmlText(typeof (CategoryExtentTypeEnum))]
-        public CategoryExtentTypeEnum Value
+        [XmlText(typeof(string))]
+        public string Value
         {
             get { return _value; }
             set

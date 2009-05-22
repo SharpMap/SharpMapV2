@@ -20,13 +20,13 @@ namespace SharpMap.Entities.Ogc.Gml
     [Serializable, XmlType(TypeName = "DegreesType", Namespace = Declarations.SchemaVersion)]
     public class DegreesType
     {
-        [XmlIgnore] private Direction _direction;
+        [XmlIgnore] private Directions _direction;
         [XmlIgnore] private decimal _value;
         [XmlIgnore] public bool DirectionSpecified;
         [XmlIgnore] public bool ValueSpecified;
 
         [XmlAttribute(AttributeName = "direction")]
-        public Direction Direction
+        public Directions Direction
         {
             get { return _direction; }
             set

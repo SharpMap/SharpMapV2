@@ -20,17 +20,21 @@ namespace SharpMap.Entities.Ogc.Gml
     [Serializable, XmlType(TypeName = "AbstractGeometryType", Namespace = Declarations.SchemaVersion)]
     public abstract class AbstractGeometryType : AbstractGMLType
     {
-        [XmlIgnore] private string _axisLabels;
-        [XmlIgnore] private string _srsDimension;
-        [XmlIgnore] private string _srsName;
-        [XmlIgnore] private string _uomLabels;
+        [XmlIgnore]
+        private string _axisLabels;
+        [XmlIgnore]
+        private string _srsDimension;
+        [XmlIgnore]
+        private string _srsName;
+        [XmlIgnore]
+        private string _uomLabels;
 
-        [XmlAttribute(AttributeName = "axisLabels")]
-        public string AxisLabels
-        {
-            get { return _axisLabels; }
-            set { _axisLabels = value; }
-        }
+        //[XmlAttribute(AttributeName = "axisLabels")]
+        //public string AxisLabels
+        //{
+        //    get { return _axisLabels; }
+        //    set { _axisLabels = value; }
+        //}
 
         [XmlAttribute(AttributeName = "srsDimension", DataType = "positiveInteger")]
         public string SrsDimension

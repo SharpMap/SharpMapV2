@@ -21,7 +21,7 @@ namespace SharpMap.Entities.Ogc.Gml
     [Serializable, XmlType(TypeName = "ParameterValueType", Namespace = Declarations.SchemaVersion)]
     public class ParameterValueType : AbstractGeneralParameterValueType
     {
-        [XmlIgnore] private Boolean _booleanValue;
+        [XmlIgnore] private bool _booleanValue;
         [XmlIgnore] private DmsAngleValue _dmsAngleValue;
         [XmlIgnore] private string _integerValue;
         [XmlIgnore] private string _integerValueList;
@@ -42,7 +42,7 @@ namespace SharpMap.Entities.Ogc.Gml
 
         [XmlElement(ElementName = "booleanValue", IsNullable = false, Form = XmlSchemaForm.Qualified,
             DataType = "boolean", Namespace = Declarations.SchemaVersion)]
-        public Boolean BooleanValue
+        public bool BooleanValue
         {
             get { return _booleanValue; }
             set

@@ -20,11 +20,11 @@ namespace SharpMap.Entities.Ogc.Gml
     [Serializable, XmlType(TypeName = "QuantityExtentType", Namespace = Declarations.SchemaVersion)]
     public class QuantityExtentType
     {
-        [XmlIgnore] private QuantityExtentTypeEnum _value;
+        [XmlIgnore] private string _value;
         [XmlIgnore] public bool ValueSpecified;
 
-        [XmlText(typeof (QuantityExtentTypeEnum))]
-        public QuantityExtentTypeEnum Value
+        [XmlText(typeof(string))]
+        public string Value
         {
             get { return _value; }
             set

@@ -25,7 +25,7 @@ namespace SharpMap.Entities.Ogc.Gml
         [XmlIgnore] private Coordinates _coordinates;
         [XmlIgnore] private string _degree;
         [XmlIgnore] private CurveInterpolationType _interpolation;
-        [XmlIgnore] private Boolean _isPolynomial;
+        [XmlIgnore] private bool _isPolynomial;
         [XmlIgnore] private List<KnotPropertyType> _knot;
         [XmlIgnore] private KnotTypesType _knotType;
         [XmlIgnore] private List<PointProperty> _pointProperty;
@@ -70,7 +70,7 @@ namespace SharpMap.Entities.Ogc.Gml
         }
 
         [XmlAttribute(AttributeName = "isPolynomial", DataType = "boolean")]
-        public Boolean IsPolynomial
+        public bool IsPolynomial
         {
             get { return _isPolynomial; }
             set
