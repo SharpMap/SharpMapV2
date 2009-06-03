@@ -35,8 +35,8 @@ namespace SharpMap.Data.Providers.ShapeFile
 
             #region Object Construction/Destruction
             public DbaseWriter(DbaseFile file)
-			{
-            	_dbaseFile = file;
+            {
+                _dbaseFile = file;
                 _binaryWriter = new BinaryWriter(file.DataStream, file.Encoding);
                 _binaryReader = new BinaryReader(file.DataStream, file.Encoding);
             }
@@ -164,12 +164,12 @@ namespace SharpMap.Data.Providers.ShapeFile
 
                 foreach (DbaseField column in header.Columns)
                 {
-					if(!row.Table.Columns.Contains(column.ColumnName) 
-						|| String.Compare(column.ColumnName, DbaseSchema.OidColumnName,
-							StringComparison.CurrentCultureIgnoreCase) == 0)
-					{
-						continue;
-					}
+                    if (!row.Table.Columns.Contains(column.ColumnName)
+                        || String.Compare(column.ColumnName, DbaseSchema.OidColumnName,
+                            StringComparison.CurrentCultureIgnoreCase) == 0)
+                    {
+                        continue;
+                    }
 
                     // TODO: reconsider type checking
                     //if ((header.Columns[rowColumnIndex].DataType != row.Table.Columns[rowColumnIndex].DataType) || (header.Columns[rowColumnIndex].Length != row.Table.Columns[rowColumnIndex].MaxLength))
@@ -178,57 +178,61 @@ namespace SharpMap.Data.Providers.ShapeFile
                     switch (Type.GetTypeCode(column.DataType))
                     {
                         case TypeCode.Boolean:
-							if (row[column.ColumnName] == null || row[column.ColumnName] == DBNull.Value)
+                            if (row[column.ColumnName] == null || row[column.ColumnName] == DBNull.Value)
                             {
                                 _binaryWriter.Write(DbaseConstants.BooleanNullChar);
                             }
                             else
                             {
-								writeBoolean((Boolean)row[column.ColumnName]);
+                                writeBoolean((Boolean)row[column.ColumnName]);
                             }
                             break;
                         case TypeCode.DateTime:
-							if (row[column.ColumnName] == null || row[column.ColumnName] == DBNull.Value)
+                            if (row[column.ColumnName] == null || row[column.ColumnName] == DBNull.Value)
                             {
                                 writeNullDateTime();
                             }
                             else
                             {
-								writeDateTime((DateTime)row[column.ColumnName]);
+                                writeDateTime((DateTime)row[column.ColumnName]);
                             }
                             break;
                         case TypeCode.Single:
                         case TypeCode.Double:
-							if (row[column.ColumnName] == null || row[column.ColumnName] == DBNull.Value)
+                            if (row[column.ColumnName] == null || row[column.ColumnName] == DBNull.Value)
                             {
                                 writeNullNumber(column.Length);
                             }
                             else
                             {
-								writeNumber(Convert.ToDouble(row[column.ColumnName]), 
-									column.Length, column.Decimals);
+                                writeNumber(Convert.ToDouble(row[column.ColumnName]),
+                                    column.Length, column.Decimals);
                             }
                             break;
                         case TypeCode.Int16:
                         case TypeCode.Int32:
                         case TypeCode.Int64:
-							if (row[column.ColumnName] == null || row[column.ColumnName] == DBNull.Value)
+                            if (row[column.ColumnName] == null || row[column.ColumnName] == DBNull.Value)
                             {
                                 writeNullNumber(column.Length);
                             }
                             else
                             {
-								writeNumber(Convert.ToInt64(row[column.ColumnName]), column.Length);
+                                writeNumber(Convert.ToInt64(row[column.ColumnName]), column.Length);
                             }
                             break;
                         case TypeCode.String:
-							if (row[column.ColumnName] == null || row[column.ColumnName] == DBNull.Value)
+                            if (row[column.ColumnName] == null || row[column.ColumnName] == DBNull.Value)
                             {
                                 writeNullString(column.Length);
                             }
                             else
                             {
-								writeString((String)row[column.ColumnName], column.Length);
+                                
+                                    object value = row[column.ColumnName]; //jd: can be a Guid 
+
+                                    writeString(value is string ? (string)value : value.ToString(), column.Length);
+                               
                             }
                             break;
                         case TypeCode.Char:
@@ -243,7 +247,7 @@ namespace SharpMap.Data.Providers.ShapeFile
                         case TypeCode.Object:
                         default:
                             throw new NotSupportedException(String.Format(
-								"Type not supported: {0}", column.DataType));
+                                "Type not supported: {0}", column.DataType));
                     }
                 }
             }

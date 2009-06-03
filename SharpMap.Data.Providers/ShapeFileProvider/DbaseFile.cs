@@ -216,9 +216,10 @@ namespace SharpMap.Data.Providers.ShapeFile
  
             file._header.Columns = new List<DbaseField>(DbaseSchema.GetFields(schema, file._header));
             file._headerIsParsed = true;
-
             file.Open();
             file.Save();
+            file.Close();
+
             return file;
         }
 
@@ -375,6 +376,7 @@ namespace SharpMap.Data.Providers.ShapeFile
             get
             {
                 checkState();
+                DbaseHeader h = Header;//hack to ensure _baseTable exists
                 return _baseTable.Clone();
             }
         }

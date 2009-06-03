@@ -111,6 +111,12 @@ namespace SharpMap.Data.Providers.ShapeFile
                 case TypeCode.Char:
                 case TypeCode.String:
                     return 'C';
+                case TypeCode.Object: //jd: added to handle Guid
+                    {
+                        if (type == typeof(Guid))
+                            return 'C';
+                        throw new NotSupportedException("Type is not supported");
+                    }
                 default:
                     throw new NotSupportedException("Type is not supported");
             }
@@ -145,7 +151,13 @@ namespace SharpMap.Data.Providers.ShapeFile
                     return 20;
                 case TypeCode.Char:
                 case TypeCode.String:
-                    return 254;
+                    return 254; 
+                case TypeCode.Object: //added by JD to handle Guid
+                    {
+                        if (column.DataType == typeof(Guid))
+                            return 16;
+                            throw new NotSupportedException("Type is not supported");
+                    }
                 default:
                     throw new NotSupportedException("Type is not supported");
             }
