@@ -55,9 +55,9 @@ namespace SharpMap.Demo.FormatConverter.SqlServer2008
             string dtschema = Console.ReadLine();
             Console.WriteLine("Please enter the table name.");
             string tableName = Console.ReadLine();
-            Console.WriteLine("Please enter the id column name.");
+            Console.WriteLine("Please enter the id column name. (CaSe sensitive)");
             _oidColumn = Console.ReadLine();
-            Console.WriteLine("Please enter the geometry column name.");
+            Console.WriteLine("Please enter the geometry column name. (CaSe sensitive)");
             string geometryColumn = Console.ReadLine();
             Console.WriteLine("Please enter the SRID (e.g EPSG:4326)");
             string srid = Console.ReadLine();

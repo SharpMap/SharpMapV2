@@ -16,24 +16,26 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System;
+using System.Data;
 using System.IO;
 using System.Text;
-using System.Data;
 
 namespace SharpMap.Data.Providers.ShapeFile
 {
     internal partial class DbaseFile
     {
+        #region Nested type: DbaseWriter
+
         private class DbaseWriter : IDisposable
         {
-            private readonly DbaseFile _dbaseFile;
             private const String NumberFormatTemplate = "{0,:F}";
-            private readonly StringBuilder _format = new StringBuilder(NumberFormatTemplate, 32);
             private readonly BinaryReader _binaryReader;
             private readonly BinaryWriter _binaryWriter;
-            private Boolean _disposed = false;
+            private readonly DbaseFile _dbaseFile;
+            private readonly StringBuilder _format = new StringBuilder(NumberFormatTemplate, 32);
 
             #region Object Construction/Destruction
+
             public DbaseWriter(DbaseFile file)
             {
                 _dbaseFile = file;
@@ -47,7 +49,8 @@ namespace SharpMap.Data.Providers.ShapeFile
             }
 
             #region Dispose Pattern
-            #region IDisposable Members
+
+            internal Boolean IsDisposed { get; private set; }
 
             public void Dispose()
             {
@@ -60,8 +63,6 @@ namespace SharpMap.Data.Providers.ShapeFile
                 IsDisposed = true;
                 GC.SuppressFinalize(this);
             }
-
-            #endregion
 
             private void dispose(Boolean disposing)
             {
@@ -79,12 +80,8 @@ namespace SharpMap.Data.Providers.ShapeFile
                 }
             }
 
-            internal Boolean IsDisposed
-            {
-                get { return _disposed; }
-                private set { _disposed = value; }
-            }
             #endregion
+
             #endregion
 
             internal void BeginWrite()
@@ -101,10 +98,12 @@ namespace SharpMap.Data.Providers.ShapeFile
             internal void UpdateHeader(DbaseHeader header)
             {
                 _binaryWriter.Seek(1, SeekOrigin.Begin);
-                Byte[] dateBytes = new Byte[3] { 
-                    (Byte)(header.LastUpdate.Year - DbaseConstants.DbaseEpoch),
-                    (Byte)header.LastUpdate.Month, 
-                    (Byte)header.LastUpdate.Day };
+                Byte[] dateBytes = new Byte[3]
+                                       {
+                                           (Byte) (header.LastUpdate.Year - DbaseConstants.DbaseEpoch),
+                                           (Byte) header.LastUpdate.Month,
+                                           (Byte) header.LastUpdate.Day
+                                       };
                 _binaryWriter.Write(dateBytes);
                 _binaryWriter.Write(header.RecordCount);
             }
@@ -116,7 +115,7 @@ namespace SharpMap.Data.Providers.ShapeFile
                 UpdateHeader(header);
                 _binaryWriter.Write(header.HeaderLength);
                 _binaryWriter.Write(header.RecordLength);
-                _binaryWriter.Write(new Byte[DbaseConstants.EncodingOffset - (Int32)_binaryWriter.BaseStream.Position]);
+                _binaryWriter.Write(new Byte[DbaseConstants.EncodingOffset - (Int32) _binaryWriter.BaseStream.Position]);
                 _binaryWriter.Write(header.LanguageDriver);
                 _binaryWriter.Write(new Byte[2]);
 
@@ -131,13 +130,13 @@ namespace SharpMap.Data.Providers.ShapeFile
 
                     if (fieldTypeCode == 'N' || fieldTypeCode == 'F')
                     {
-                        _binaryWriter.Write((Byte)field.Length);
+                        _binaryWriter.Write((Byte) field.Length);
                         _binaryWriter.Write(field.Decimals);
                     }
                     else
                     {
-                        _binaryWriter.Write((Byte)field.Length);
-                        _binaryWriter.Write((Byte)(field.Length >> 8));
+                        _binaryWriter.Write((Byte) field.Length);
+                        _binaryWriter.Write((Byte) (field.Length >> 8));
                     }
 
                     _binaryWriter.Write(new Byte[14]);
@@ -166,7 +165,7 @@ namespace SharpMap.Data.Providers.ShapeFile
                 {
                     if (!row.Table.Columns.Contains(column.ColumnName)
                         || String.Compare(column.ColumnName, DbaseSchema.OidColumnName,
-                            StringComparison.CurrentCultureIgnoreCase) == 0)
+                                          StringComparison.CurrentCultureIgnoreCase) == 0)
                     {
                         continue;
                     }
@@ -184,7 +183,7 @@ namespace SharpMap.Data.Providers.ShapeFile
                             }
                             else
                             {
-                                writeBoolean((Boolean)row[column.ColumnName]);
+                                writeBoolean((Boolean) row[column.ColumnName]);
                             }
                             break;
                         case TypeCode.DateTime:
@@ -194,7 +193,7 @@ namespace SharpMap.Data.Providers.ShapeFile
                             }
                             else
                             {
-                                writeDateTime((DateTime)row[column.ColumnName]);
+                                writeDateTime((DateTime) row[column.ColumnName]);
                             }
                             break;
                         case TypeCode.Single:
@@ -206,7 +205,7 @@ namespace SharpMap.Data.Providers.ShapeFile
                             else
                             {
                                 writeNumber(Convert.ToDouble(row[column.ColumnName]),
-                                    column.Length, column.Decimals);
+                                            column.Length, column.Decimals);
                             }
                             break;
                         case TypeCode.Int16:
@@ -228,11 +227,9 @@ namespace SharpMap.Data.Providers.ShapeFile
                             }
                             else
                             {
-                                
-                                    object value = row[column.ColumnName]; //jd: can be a Guid 
+                                object value = row[column.ColumnName]; //jd: can be a Guid 
 
-                                    writeString(value is string ? (string)value : value.ToString(), column.Length);
-                               
+                                writeString(value is string ? (string) value : value.ToString(), column.Length);
                             }
                             break;
                         case TypeCode.Char:
@@ -247,12 +244,13 @@ namespace SharpMap.Data.Providers.ShapeFile
                         case TypeCode.Object:
                         default:
                             throw new NotSupportedException(String.Format(
-                                "Type not supported: {0}", column.DataType));
+                                                                "Type not supported: {0}", column.DataType));
                     }
                 }
             }
 
             #region Private helper methods
+
             private void writeNullDateTime()
             {
                 _binaryWriter.Write(DbaseConstants.NullDateValue);
@@ -294,7 +292,7 @@ namespace SharpMap.Data.Providers.ShapeFile
 
             private void writeString(String value, Int32 length)
             {
-                value = (value ?? String.Empty) + new String((Char)0x0, length);
+                value = (value ?? String.Empty) + new String((Char) 0x0, length);
                 Byte[] chars = _dbaseFile.Encoding.GetBytes(value.Substring(0, length));
                 _binaryWriter.Write(chars);
             }
@@ -304,7 +302,10 @@ namespace SharpMap.Data.Providers.ShapeFile
                 Byte[] bytes = value ? Encoding.ASCII.GetBytes("T") : Encoding.ASCII.GetBytes("F");
                 _binaryWriter.Write(bytes);
             }
+
             #endregion
         }
+
+        #endregion
     }
 }

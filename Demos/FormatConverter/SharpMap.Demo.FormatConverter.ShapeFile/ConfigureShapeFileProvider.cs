@@ -76,7 +76,7 @@ namespace SharpMap.Demo.FormatConverter.ShapeFile
         /// </remarks>
         public IWritableFeatureProvider ConstructTargetProvider(Type oidType, IGeometryFactory geometryFactory, ICoordinateSystemFactory csFactory, FeatureDataTable schemaTable)
         {
-            
+            EnsureColumnNamesValid(schemaTable);
 
             string directoryPath = GetDirectoryPath();
 
@@ -98,6 +98,13 @@ namespace SharpMap.Demo.FormatConverter.ShapeFile
 
             _targetProvider.Open(true);
             return _targetProvider;
+        }
+
+        private void EnsureColumnNamesValid(FeatureDataTable schemaTable)
+        {
+            foreach (DataColumn c in schemaTable.Columns)
+                if (c.ColumnName.Length > MaxDbaseColumnNameLength)
+                    throw new InvalidOperationException(string.Format("Column Name '{0}' is longer than the Dbase maximum length of {1}", c.ColumnName, MaxDbaseColumnNameLength));
         }
 
         private static ShapeType GetShapeType()
@@ -132,6 +139,7 @@ namespace SharpMap.Demo.FormatConverter.ShapeFile
         }
 
         private static readonly string[] mergeactions = new[] { "A", "a" };
+        private const int MaxDbaseColumnNameLength = 11;
 
         private string GetLayerName(string directory, out CreateAction exaction)
         {

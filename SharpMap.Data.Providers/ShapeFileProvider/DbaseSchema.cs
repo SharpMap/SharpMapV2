@@ -155,7 +155,7 @@ namespace SharpMap.Data.Providers.ShapeFile
                 case TypeCode.Object: //added by JD to handle Guid
                     {
                         if (column.DataType == typeof(Guid))
-                            return 16;
+                            return 40;
                             throw new NotSupportedException("Type is not supported");
                     }
                 default:
