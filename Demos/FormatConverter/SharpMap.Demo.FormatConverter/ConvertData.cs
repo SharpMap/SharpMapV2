@@ -45,7 +45,7 @@ namespace SharpMap.Demo.FormatConverter
 
         public FeatureDataRow<TTarget> ConvertRow(IFeatureDataRecord source)
         {
-            if (typeof(TSource) == typeof(TTarget))
+            if (typeof(TSource) == typeof(TTarget) && source is FeatureDataRow)
                 return source as FeatureDataRow<TTarget>;
 
             FeatureDataRow<TTarget> row = _target.NewRow((TTarget)Convert.ChangeType(source.GetOid(), typeof(TTarget)));
