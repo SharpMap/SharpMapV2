@@ -43,10 +43,9 @@ using Enumerable = System.Linq.Enumerable;
 using Caster = GeoAPI.DataStructures.Caster;
 #else
 using Processor = GeoAPI.DataStructures.Processor;
-using Caster = GeoAPI.DataStructures.Caster;
 using Enumerable = GeoAPI.DataStructures.Enumerable;
+using Caster = GeoAPI.DataStructures.Caster;
 #endif
-
 
 namespace SharpMap.Data.Providers.ShapeFile
 {
@@ -80,7 +79,8 @@ namespace SharpMap.Data.Providers.ShapeFile
         private const String SharpMapShapeFileIndexFileExtension = ".#index-shp";
 
         #region IdBounds
-        struct IdBounds : IBoundable<IExtents>
+
+        private struct IdBounds : IBoundable<IExtents>
         {
             private readonly UInt32 _id;
             private readonly Object _record;
@@ -123,31 +123,32 @@ namespace SharpMap.Data.Providers.ShapeFile
 
             #endregion
         }
+
         #endregion
 
         #region Instance fields
-        private Predicate<IFeatureDataRecord> _filterDelegate;
-        private Int32? _srid;
+
+        private readonly ICoordinateFactory _coordFactory;
+        private readonly ICoordinateSystemFactory _coordSysFactory;
         private readonly String _filename;
-        private DbaseFile _dbaseFile;
-        private FileStream _shapeFileStream;
-        private BinaryReader _shapeFileReader;
-        private BinaryWriter _shapeFileWriter;
+        private readonly Boolean _hasDbf;
         private readonly Boolean _hasFileBasedSpatialIndex;
         //private Boolean _isOpen;
-        private Boolean _isIndexed = true;
-        private Boolean _coordsysReadFromFile;
-        private ISpatialIndex<IExtents, IdBounds> _spatialIndex;
         private readonly ShapeFileHeader _header;
-        private readonly ShapeFileIndex _shapeFileIndex;
         //private ShapeFileDataReader _currentReader;
         private readonly Object _readerSync = new Object();
-        private readonly Boolean _hasDbf;
-        //private readonly IGeometryFactory _geoFactory;
-        private readonly ICoordinateSystemFactory _coordSysFactory;
+        private readonly ShapeFileIndex _shapeFileIndex;
+        private Boolean _coordsysReadFromFile;
         //private List<DbaseField> _oidFieldList = new List<DbaseField>();
         private IMathTransform _coordTransform;
-        private readonly ICoordinateFactory _coordFactory;
+        private DbaseFile _dbaseFile;
+        private Predicate<IFeatureDataRecord> _filterDelegate;
+        private Boolean _isIndexed = true;
+        private BinaryReader _shapeFileReader;
+        private FileStream _shapeFileStream;
+        private BinaryWriter _shapeFileWriter;
+        private ISpatialIndex<IExtents, IdBounds> _spatialIndex;
+        private Int32? _srid;
 
         #endregion
 
@@ -163,7 +164,9 @@ namespace SharpMap.Data.Providers.ShapeFile
         /// with an in-memory spatial index.
         /// </remarks>
         public ShapeFileProvider(String filename, IGeometryFactory geoFactory)
-            : this(filename, geoFactory, null, false) { }
+            : this(filename, geoFactory, null, false)
+        {
+        }
 
         /// <summary>
         /// Initializes a shapefile data provider.
@@ -180,7 +183,9 @@ namespace SharpMap.Data.Providers.ShapeFile
         public ShapeFileProvider(String filename,
                                  IGeometryFactory geoFactory,
                                  ICoordinateSystemFactory coordSysFactory)
-            : this(filename, geoFactory, coordSysFactory, false) { }
+            : this(filename, geoFactory, coordSysFactory, false)
+        {
+        }
 
         /// <summary>
         /// Initializes a ShapeFile data provider.
@@ -239,7 +244,6 @@ namespace SharpMap.Data.Providers.ShapeFile
         {
             if (disposing)
             {
-
                 if (_dbaseFile != null)
                 {
                     _dbaseFile.Close();
@@ -269,8 +273,6 @@ namespace SharpMap.Data.Providers.ShapeFile
                     _spatialIndex.Dispose();
                     _spatialIndex = null;
                 }
-
-
             }
 
             base.Close();
@@ -337,7 +339,8 @@ namespace SharpMap.Data.Providers.ShapeFile
         /// </exception>
         public static ShapeFileProvider Create(String directory, String layerName,
                                                ShapeType type, FeatureDataTable schema,
-                                               IGeometryFactory geoFactory, ICoordinateSystemFactory coordinateSystemFactory)
+                                               IGeometryFactory geoFactory,
+                                               ICoordinateSystemFactory coordinateSystemFactory)
         {
             if (type == ShapeType.Null)
             {
@@ -356,8 +359,8 @@ namespace SharpMap.Data.Providers.ShapeFile
         }
 
         public static ShapeFileProvider Create(String directory, String layerName,
-                                       ShapeType type, FeatureDataTable schema,
-                                       IGeometryFactory geoFactory)
+                                               ShapeType type, FeatureDataTable schema,
+                                               IGeometryFactory geoFactory)
         {
             return Create(directory, layerName, type, schema, geoFactory, null);
         }
@@ -381,7 +384,8 @@ namespace SharpMap.Data.Providers.ShapeFile
         /// </exception>
         public static ShapeFileProvider Create(DirectoryInfo directory, String layerName,
                                                ShapeType type, FeatureDataTable model,
-                                               IGeometryFactory geoFactory, ICoordinateSystemFactory coordinateSystemFactory)
+                                               IGeometryFactory geoFactory,
+                                               ICoordinateSystemFactory coordinateSystemFactory)
         {
             CultureInfo culture = Thread.CurrentThread.CurrentCulture;
             Encoding encoding = Encoding.GetEncoding(culture.TextInfo.OEMCodePage);
@@ -390,8 +394,8 @@ namespace SharpMap.Data.Providers.ShapeFile
 
 
         public static ShapeFileProvider Create(DirectoryInfo directory, String layerName,
-                                              ShapeType type, FeatureDataTable model,
-                                              IGeometryFactory geoFactory)
+                                               ShapeType type, FeatureDataTable model,
+                                               IGeometryFactory geoFactory)
         {
             return Create(directory, layerName, type, model, geoFactory, null);
         }
@@ -421,7 +425,8 @@ namespace SharpMap.Data.Providers.ShapeFile
         public static ShapeFileProvider Create(DirectoryInfo directory, String layerName,
                                                ShapeType type, FeatureDataTable model,
                                                CultureInfo culture, Encoding encoding,
-                                               IGeometryFactory geoFactory, ICoordinateSystemFactory coordinateSystemFactory)
+                                               IGeometryFactory geoFactory,
+                                               ICoordinateSystemFactory coordinateSystemFactory)
         {
             if (String.IsNullOrEmpty(layerName))
             {
@@ -645,11 +650,9 @@ namespace SharpMap.Data.Providers.ShapeFile
 
         public Int32 FeatureCount
         {
-            get
-            {
-                return GetFeatureCount();
-            }
+            get { return GetFeatureCount(); }
         }
+
         #endregion
 
         #region ShapeFile specific methods
@@ -739,9 +742,8 @@ namespace SharpMap.Data.Providers.ShapeFile
             FeatureQueryExpression query = FeatureQueryExpression.Intersects(GetExtents());
             return ExecuteFeatureQuery(query, FeatureQueryExecutionOptions.FullFeature);
         }
-        #endregion
 
-        #region IProvider Members
+        #endregion
 
         /// <summary>
         /// Gets the connection ID of the data source.
@@ -770,59 +772,6 @@ namespace SharpMap.Data.Providers.ShapeFile
                        ? CoordinateTransformation.Transform(extents, GeometryFactory)
                        : extents;
         }
-
-        private void initSpatialReference(ICoordinateSystem coordinateSystem)
-        {
-            //checkOpen();
-            if (_coordsysReadFromFile)
-            {
-                throw new ShapeFileInvalidOperationException("Coordinate system is specified in " +
-                                                             "projection file and is read only");
-            }
-
-            OriginalSpatialReference = coordinateSystem;
-            OriginalSrid = coordinateSystem.AuthorityCode;
-            GeometryFactory.SpatialReference = SpatialReference;
-            GeometryFactory.Srid = Srid;
-        }
-
-        #region Methods
-
-        /// <summary>
-        /// Closes the data source
-        /// </summary>
-        public override void Close()
-        {
-            (this as IDisposable).Dispose();
-        }
-
-        public override Object ExecuteQuery(Expression query)
-        {
-            FeatureQueryExpression featureQuery = query as FeatureQueryExpression;
-
-            if (featureQuery == null)
-            {
-                throw new ArgumentException("The query must be a non-null FeatureQueryExpression.");
-            }
-
-            return ExecuteFeatureQuery(featureQuery);
-        }
-
-
-
-        /// <summary>
-        /// Opens the data source
-        /// </summary>
-        public override void Open()
-        {
-            Open(false);
-        }
-
-        #endregion
-
-        #endregion
-
-        #region IFeatureLayerProvider Members
 
         public override FeatureDataTable CreateNewTable()
         {
@@ -905,37 +854,6 @@ namespace SharpMap.Data.Providers.ShapeFile
             _dbaseFile.SetTableSchema(target, SchemaMergeAction.AddWithKey);
         }
 
-        protected override IFeatureDataReader InternalExecuteFeatureQuery(FeatureQueryExpression query, FeatureQueryExecutionOptions options)
-        {
-            if (query == null) throw new ArgumentNullException("query");
-
-            checkOpen();
-
-            lock (_readerSync)
-            {
-                //if (_currentReader != null)
-                //{
-                //    throw new ShapeFileInvalidOperationException("Can't open another ShapeFileDataReader " +
-                //                                                 "on this ShapeFile, since another reader " +
-                //                                                 "is already active.");
-                //}
-
-                ShapeFileDataReader reader = new ShapeFileDataReader(this, query, options);
-                //reader.Disposed += readerDisposed;
-                reader.CoordinateTransformation = CoordinateTransformation;
-                return reader;
-            }
-        }
-
-        protected override IFeatureDataReader InternalExecuteFeatureQuery(FeatureQueryExpression query)
-        {
-            return InternalExecuteFeatureQuery(query, FeatureQueryExecutionOptions.FullFeature);
-        }
-
-        #endregion
-
-        #region IFeatureLayerProvider<UInt32> Members
-
         public IExtents GetExtentsByOid(UInt32 oid)
         {
             checkOpen();
@@ -947,8 +865,8 @@ namespace SharpMap.Data.Providers.ShapeFile
                 IFeatureDataRecord fdr = GetFeatureByOid(oid);
 
                 result = fdr != null
-                               ? fdr.Extents
-                               : null;
+                             ? fdr.Extents
+                             : null;
             }
             else
             {
@@ -956,21 +874,6 @@ namespace SharpMap.Data.Providers.ShapeFile
             }
 
             return result;
-        }
-
-        /// <summary>
-        /// Return all Features within the shapefile
-        /// </summary>
-        /// <returns> collection of features </returns>
-        public IEnumerable<IFeatureDataRecord> GetAllFeatues()
-        {
-            IFeatureDataRecord result = null;
-            for (UInt32 i = 1; i <= this.FeatureCount; i++)
-            {
-                result =  getFeature(i, null);
-                if (result != null)
-                    yield return result;
-            }
         }
 
         /// <exception cref="ShapeFileInvalidOperationException">
@@ -982,20 +885,6 @@ namespace SharpMap.Data.Providers.ShapeFile
             return getFeature(oid, null);
         }
 
-
-        public IEnumerable<IFeatureDataRecord> GetFeatures(IEnumerable<UInt32> oids)
-        {
-            //FeatureDataTable<UInt32> table = CreateNewTable() as FeatureDataTable<UInt32>;
-            //Assert.IsNotNull(table);
-            //table.IsSpatiallyIndexed = false;
-
-            foreach (UInt32 oid in oids)
-            {
-                yield return getFeature(oid, null);
-            }
-
-            //return table;
-        }
 
         /// <summary>
         /// Returns the geometry corresponding to the Object ID
@@ -1017,8 +906,8 @@ namespace SharpMap.Data.Providers.ShapeFile
                 IFeatureDataRecord fdr = GetFeatureByOid(oid);
 
                 result = fdr != null
-                               ? fdr.Geometry
-                               : null;
+                             ? fdr.Geometry
+                             : null;
             }
             else
             {
@@ -1050,8 +939,6 @@ namespace SharpMap.Data.Providers.ShapeFile
                     yield return u;
             else
             {
-
-
                 SpatialOperation queryOp = query.Op;
 
                 if (queryOp == SpatialOperation.None)
@@ -1132,10 +1019,6 @@ namespace SharpMap.Data.Providers.ShapeFile
             checkOpen();
             _dbaseFile.SetTableSchema(target, mergeAction);
         }
-
-        #endregion
-
-        #region IWritableFeatureLayerProvider<UInt32> Members
 
         /// <summary>
         /// Adds a feature to the end of a shapefile.
@@ -1219,8 +1102,8 @@ namespace SharpMap.Data.Providers.ShapeFile
             foreach (FeatureDataRow<UInt32> feature in features)
             {
                 IExtents featureExtents = feature.Geometry == null
-                                                  ? null
-                                                  : feature.Geometry.Extents;
+                                              ? null
+                                              : feature.Geometry.Extents;
 
                 if (allFeaturesExtents == null)
                 {
@@ -1415,6 +1298,111 @@ namespace SharpMap.Data.Providers.ShapeFile
             }
         }
 
+        private void initSpatialReference(ICoordinateSystem coordinateSystem)
+        {
+            //checkOpen();
+            if (_coordsysReadFromFile)
+            {
+                throw new ShapeFileInvalidOperationException("Coordinate system is specified in " +
+                                                             "projection file and is read only");
+            }
+
+            OriginalSpatialReference = coordinateSystem;
+            OriginalSrid = coordinateSystem.AuthorityCode;
+            GeometryFactory.SpatialReference = SpatialReference;
+            GeometryFactory.Srid = Srid;
+        }
+
+        protected override IFeatureDataReader InternalExecuteFeatureQuery(FeatureQueryExpression query,
+                                                                          FeatureQueryExecutionOptions options)
+        {
+            if (query == null) throw new ArgumentNullException("query");
+
+            checkOpen();
+
+            lock (_readerSync)
+            {
+                //if (_currentReader != null)
+                //{
+                //    throw new ShapeFileInvalidOperationException("Can't open another ShapeFileDataReader " +
+                //                                                 "on this ShapeFile, since another reader " +
+                //                                                 "is already active.");
+                //}
+
+                ShapeFileDataReader reader = new ShapeFileDataReader(this, query, options);
+                //reader.Disposed += readerDisposed;
+                reader.CoordinateTransformation = CoordinateTransformation;
+                return reader;
+            }
+        }
+
+        protected override IFeatureDataReader InternalExecuteFeatureQuery(FeatureQueryExpression query)
+        {
+            return InternalExecuteFeatureQuery(query, FeatureQueryExecutionOptions.FullFeature);
+        }
+
+        /// <summary>
+        /// Return all Features within the shapefile
+        /// </summary>
+        /// <returns> collection of features </returns>
+        public IEnumerable<IFeatureDataRecord> GetAllFeatues()
+        {
+            IFeatureDataRecord result = null;
+            for (UInt32 i = 1; i <= FeatureCount; i++)
+            {
+                result = getFeature(i, null);
+                if (result != null)
+                    yield return result;
+            }
+        }
+
+        public IEnumerable<IFeatureDataRecord> GetFeatures(IEnumerable<UInt32> oids)
+        {
+            //FeatureDataTable<UInt32> table = CreateNewTable() as FeatureDataTable<UInt32>;
+            //Assert.IsNotNull(table);
+            //table.IsSpatiallyIndexed = false;
+
+            foreach (UInt32 oid in oids)
+            {
+                yield return getFeature(oid, null);
+            }
+
+            //return table;
+        }
+
+        #region Methods
+
+        /// <summary>
+        /// Closes the data source
+        /// </summary>
+        public override void Close()
+        {
+            (this as IDisposable).Dispose();
+        }
+
+        public override Object ExecuteQuery(Expression query)
+        {
+            FeatureQueryExpression featureQuery = query as FeatureQueryExpression;
+
+            if (featureQuery == null)
+            {
+                throw new ArgumentException("The query must be a non-null FeatureQueryExpression.");
+            }
+
+            return ExecuteFeatureQuery(featureQuery);
+        }
+
+
+        /// <summary>
+        /// Opens the data source
+        /// </summary>
+        public override void Open()
+        {
+            Open(false);
+        }
+
+        #endregion
+
         ///// <summary>
         ///// Saves features to the shapefile.
         ///// </summary>
@@ -1452,8 +1440,6 @@ namespace SharpMap.Data.Providers.ShapeFile
         //    writeIndex();
         //    writeHeader(_shapeFileWriter);
         //}
-
-        #endregion
 
         #endregion
 
@@ -1501,7 +1487,8 @@ namespace SharpMap.Data.Providers.ShapeFile
                             + 4 * (geometry as IMultiLineString).Count /* Parts array of integer indexes */
                             + 16 * pointCount;
             }
-            else if (geometry is IPolygon) /*jd: Contains Modifications from Lee Keel www.trimble.com to cope with unclosed polygons  */
+            else if (geometry is IPolygon)
+            /*jd: Contains Modifications from Lee Keel www.trimble.com to cope with unclosed polygons  */
             {
                 Int32 pointCount = (geometry as IPolygon).ExteriorRing.Coordinates.Count;
                 ILineString exring = (geometry as IPolygon).ExteriorRing;
@@ -1527,7 +1514,8 @@ namespace SharpMap.Data.Providers.ShapeFile
                     /* Parts array of rings: count of interior + 1 for exterior ring */)
                             + 16 * pointCount;
             }
-            else if (geometry is IMultiPolygon)/*jd: Contains Modifications from Lee Keel www.trimble.com to cope with unclosed polygons  */
+            else if (geometry is IMultiPolygon)
+            /*jd: Contains Modifications from Lee Keel www.trimble.com to cope with unclosed polygons  */
             {
                 Int32 pointCount = 0;
                 Int32 ringCount = 0;
@@ -1544,7 +1532,6 @@ namespace SharpMap.Data.Providers.ShapeFile
                     }
 
                     ringCount += p.InteriorRingsCount + 1;
-
                 }
 
                 byteCount = 4
@@ -1660,8 +1647,8 @@ namespace SharpMap.Data.Providers.ShapeFile
         private FeatureDataTable<UInt32> getNewTable()
         {
             return HasDbf
-                ? _dbaseFile.NewTable
-                : FeatureDataTable<UInt32>.CreateEmpty(ShapeFileConstants.IdColumnName, GeometryFactory);
+                       ? _dbaseFile.NewTable
+                       : FeatureDataTable<UInt32>.CreateEmpty(ShapeFileConstants.IdColumnName, GeometryFactory);
         }
 
         /// <summary>
@@ -1686,8 +1673,9 @@ namespace SharpMap.Data.Providers.ShapeFile
             {
                 FeatureDataRow<UInt32> featureRecord = HasDbf
                     // [rp] - should table get passed as the 2nd param here?
-                    ? _dbaseFile.GetAttributes(oid, table) as FeatureDataRow<UInt32>
-                    : table.NewRow(oid);
+                                                           ? _dbaseFile.GetAttributes(oid, table) as
+                                                             FeatureDataRow<UInt32>
+                                                           : table.NewRow(oid);
 
                 featureRecord.Geometry = readGeometry(oid);
                 dr = featureRecord;
@@ -1695,8 +1683,9 @@ namespace SharpMap.Data.Providers.ShapeFile
             else
             {
                 ShapeFileFeatureDataRecord featureRecord = HasDbf
-                           ? _dbaseFile.GetAttributes(oid, null) as ShapeFileFeatureDataRecord
-                           : ShapeFileFeatureDataRecord.IdOnlyRecord;
+                                                               ? _dbaseFile.GetAttributes(oid, null) as
+                                                                 ShapeFileFeatureDataRecord
+                                                               : ShapeFileFeatureDataRecord.IdOnlyRecord;
 
                 featureRecord.Geometry = readGeometry(oid);
                 dr = featureRecord;
@@ -1767,8 +1756,8 @@ namespace SharpMap.Data.Providers.ShapeFile
             Assert.IsTrue(extentsExpression != null || geometry != null);
 
             IExtents extents = extentsExpression != null
-                                       ? extentsExpression.Extents
-                                       : geometry.Extents;
+                                   ? extentsExpression.Extents
+                                   : geometry.Extents;
 
             return extents;
         }
@@ -1820,21 +1809,24 @@ namespace SharpMap.Data.Providers.ShapeFile
         private ISpatialIndex<IExtents, IdBounds> createSpatialIndex()
         {
             // TODO: implement Post-optimization restructure strategy
-            IIndexRestructureStrategy<IExtents, IdBounds> restructureStrategy = new NullRestructuringStrategy<IExtents, IdBounds>();
+            IIndexRestructureStrategy<IExtents, IdBounds> restructureStrategy =
+                new NullRestructuringStrategy<IExtents, IdBounds>();
             RestructuringHuristic restructureHeuristic = new RestructuringHuristic(RestructureOpportunity.None, 4.0);
-            IItemInsertStrategy<IExtents, IdBounds> insertStrategy = new GuttmanQuadraticInsert<IdBounds>(GeometryFactory);
-            INodeSplitStrategy<IExtents, IdBounds> nodeSplitStrategy = new GuttmanQuadraticSplit<IdBounds>(GeometryFactory);
+            IItemInsertStrategy<IExtents, IdBounds> insertStrategy =
+                new GuttmanQuadraticInsert<IdBounds>(GeometryFactory);
+            INodeSplitStrategy<IExtents, IdBounds> nodeSplitStrategy =
+                new GuttmanQuadraticSplit<IdBounds>(GeometryFactory);
             DynamicRTreeBalanceHeuristic indexHeuristic = new DynamicRTreeBalanceHeuristic(4, 10, UInt16.MaxValue);
             IdleMonitor idleMonitor = null;
 
             DynamicRTree<IdBounds> index = new SelfOptimizingDynamicSpatialIndex<IdBounds>(
-                                                                                GeometryFactory,
-                                                                                restructureStrategy,
-                                                                                restructureHeuristic,
-                                                                                insertStrategy,
-                                                                                nodeSplitStrategy,
-                                                                                indexHeuristic,
-                                                                                idleMonitor);
+                GeometryFactory,
+                restructureStrategy,
+                restructureHeuristic,
+                insertStrategy,
+                nodeSplitStrategy,
+                indexHeuristic,
+                idleMonitor);
 
             UInt32 featureCount = (UInt32)GetFeatureCount();
 
@@ -1884,6 +1876,7 @@ namespace SharpMap.Data.Providers.ShapeFile
         #endregion
 
         #region ProviderBase overrides
+
         protected override void OnPropertyChanged(PropertyDescriptor property)
         {
             base.OnPropertyChanged(property);
@@ -1895,9 +1888,39 @@ namespace SharpMap.Data.Providers.ShapeFile
                 _header.Extents = CoordinateTransformation.Transform(_header.Extents, GeometryFactory);
             }
         }
+
         #endregion
 
         #region Geometry reading helper functions
+
+        private static readonly ShapeType[] MultiPointTypes = new[]
+                                                                  {
+                                                                      ShapeType.MultiPoint, 
+                                                                      ShapeType.MultiPointM,
+                                                                      ShapeType.MultiPointZ
+                                                                  };
+
+        private static readonly ShapeType[] PointTypes = new[] 
+                                                              {
+                                                                  ShapeType.Point, 
+                                                                  ShapeType.PointM, 
+                                                                  ShapeType.PointZ 
+                                                              };
+
+        private static readonly ShapeType[] PolygonTypes = new[]
+                                                               {
+                                                                   ShapeType.Polygon, 
+                                                                   ShapeType.PolygonM,
+                                                                   ShapeType.PolygonZ
+                                                               };
+
+        private static readonly ShapeType[] PolyLineTypes = new[]
+                                                                {
+                                                                    ShapeType.PolyLine,
+                                                                    ShapeType.PolyLineM,
+                                                                    ShapeType.PolyLineZ
+                                                                };
+
         private ShapeType moveToRecord(UInt32 oid)
         {
             Int32 offset = _shapeFileIndex[oid].AbsoluteByteOffset;
@@ -1920,17 +1943,119 @@ namespace SharpMap.Data.Providers.ShapeFile
             return recordType;
         }
 
-        private ICoordinate readCoordinate()
+        //private ICoordinate readCoordinate()
+        //{
+        //    Double x = ByteEncoder.GetLittleEndian(_shapeFileReader.ReadDouble());
+        //    Double y = ByteEncoder.GetLittleEndian(_shapeFileReader.ReadDouble());
+
+        //    ICoordinate coord = _coordFactory.Create(x, y);
+
+        //    return CoordinateTransformation == null
+        //               ? coord
+        //               : CoordinateTransformation.MathTransform.Transform(coord);
+        //}
+
+        private ICoordinate readCoordinate(ShapeType shpType, int numShapeParts, int numShapePoints, int pointIndex)
         {
+
+            long streamPosition = _shapeFileReader.BaseStream.Position;
+            ICoordinate coordinate = null;
+
+            Int64 mOffset = Int64.MinValue;
+            Int64 zOffset = Int64.MinValue;
+
+
+
+
+            switch (shpType)
+            {
+                case ShapeType.PointM:
+                    {
+                        long recordStart = streamPosition - 4;
+                        mOffset = recordStart + 20;
+                        break;
+                    }
+                case ShapeType.MultiPointM:
+                    {
+                        long recordStart = streamPosition - (pointIndex * 16) - 40;
+                        mOffset = recordStart + 40 + (numShapePoints * 16) + 16 + (pointIndex * 8);
+                        break;
+                    }
+                case ShapeType.PolyLineM:
+                case ShapeType.PolygonM:
+                    {
+                        long recordStart = streamPosition - (pointIndex * 16) - (4 * numShapeParts) - 44;
+                        mOffset = recordStart + 44 /* ShapeType, Box, NumParts, NumPoints  */
+                                  + (4 * numShapeParts) /* part startIndexes  */
+                                  + (numShapePoints * 16) /* x,y for each point */
+                                  + 16 /* M min max range  */
+                                  + (pointIndex * 8) /* skip previous m values */;
+                        break;
+                    }
+                case ShapeType.PointZ:
+                    {
+                        long recordStart = streamPosition - 4;
+                        zOffset = recordStart + 20;
+                        mOffset = recordStart + 28;
+                        break;
+                    }
+                case ShapeType.MultiPointZ:
+                    {
+                        long recordStart = streamPosition - 40 - (pointIndex  * 16);
+                        zOffset = recordStart + 40 + (16 * numShapePoints) + 16 + (pointIndex * 8);
+                        mOffset = recordStart + 40 + (16 * numShapePoints) + 16 + (numShapePoints * 8) + (pointIndex * 8);
+                        break;
+                    }
+                case ShapeType.PolyLineZ:
+                case ShapeType.PolygonZ:
+                    {
+                        long recordStart = streamPosition - 44 - (4 * numShapeParts) + (pointIndex + 1 * 16);
+                        zOffset = recordStart + 44 + (numShapeParts * 4) + (numShapePoints * 16) + 16 + (pointIndex * 8);
+                        mOffset = recordStart + 44 + (numShapeParts * 4) + (numShapePoints * 16) + 16 + (numShapePoints * 8) + 16 +
+                                  (pointIndex * 8);
+
+                        break;
+                    }
+                default:
+                    {
+                        break;
+                        // do nothing we dont need to seek anywhere
+                    }
+            }
+
             Double x = ByteEncoder.GetLittleEndian(_shapeFileReader.ReadDouble());
             Double y = ByteEncoder.GetLittleEndian(_shapeFileReader.ReadDouble());
 
-            ICoordinate coord = _coordFactory.Create(x, y);
+
+            if (zOffset == long.MinValue && mOffset == long.MinValue)
+                coordinate = _coordFactory.Create(x, y);
+            else if (zOffset == long.MinValue)
+            {
+                _shapeFileReader.BaseStream.Seek(mOffset, SeekOrigin.Begin);
+                double m = _shapeFileReader.ReadDouble();
+                coordinate = _coordFactory.Create(x, y, m);
+            }
+            else
+            {
+                _shapeFileReader.BaseStream.Seek(zOffset, SeekOrigin.Begin);
+                double z = _shapeFileReader.ReadDouble();
+                _shapeFileReader.BaseStream.Seek(mOffset, SeekOrigin.Begin);
+                double m = _shapeFileReader.ReadDouble();
+
+                /* warning m values are disabled due to issues with slot positions in the ManagedBufferedCoordinateFactory */
+#warning "M values are currently ignored in reading PointZ, MultiPointZ, PolyLineZ and PolygonZ shapefiles"
+                coordinate = _coordFactory.Create3D(x, y, z);
+            }
+
+
+            _shapeFileReader.BaseStream.Seek(streamPosition + 16, SeekOrigin.Begin);
+            //return to the end of the x, y so any subsequent call to readCoordinate is positioned correctly
 
             return CoordinateTransformation == null
-                       ? coord
-                       : CoordinateTransformation.MathTransform.Transform(coord);
+                       ? coordinate
+                       : CoordinateTransformation.MathTransform.Transform(coordinate);
         }
+
 
         private IExtents readExtents(UInt32 oid)
         {
@@ -1946,77 +2071,16 @@ namespace SharpMap.Data.Providers.ShapeFile
                 recordType == ShapeType.PointM ||
                 recordType == ShapeType.PointZ)
             {
-                IPoint point = readPoint() as IPoint;
+                IPoint point = readPoint(ShapeType.Point) as IPoint;
                 return point == null ? GeometryFactory.CreateExtents() : point.Extents;
             }
 
-            //Double xMin = ByteEncoder.GetLittleEndian(_shapeFileReader.ReadDouble());
-            //Double yMin = ByteEncoder.GetLittleEndian(_shapeFileReader.ReadDouble());
-            //Double xMax = ByteEncoder.GetLittleEndian(_shapeFileReader.ReadDouble());
-            //Double yMax = ByteEncoder.GetLittleEndian(_shapeFileReader.ReadDouble());
-
-            ICoordinate min = readCoordinate();
-            ICoordinate max = readCoordinate();
+            ICoordinate min = readCoordinate(ShapeType.Point, 1, 1, 0);
+            ICoordinate max = readCoordinate(ShapeType.Point, 1, 1, 0);
 
             return GeometryFactory.CreateExtents(min, max);
         }
 
-        //private ICoordinate readOriginalCoordinate()
-        //{
-        //    Double x = ByteEncoder.GetLittleEndian(_shapeFileReader.ReadDouble());
-        //    Double y = ByteEncoder.GetLittleEndian(_shapeFileReader.ReadDouble());
-
-        //    ICoordinate coord = _coordFactory.Create(x, y);
-
-        //    return coord;
-        //}
-
-        //private IExtents readExtents(UInt32 oid)
-        //{
-        //    return _coordTransform == null
-        //                    ? readExtents(oid, true)
-        //                    : readExtents(oid, false);
-        //}
-
-        //private IExtents readExtents(UInt32 oid, Boolean original)
-        //{
-        //    ShapeType recordType = moveToRecord(oid);
-
-        //    // Null geometries encode deleted lines, so OIDs remain consistent
-        //    if (recordType == ShapeType.Null)
-        //    {
-        //        return null;
-        //    }
-
-        //    if (recordType == ShapeType.Point ||
-        //        recordType == ShapeType.PointM ||
-        //        recordType == ShapeType.PointZ)
-        //    {
-        //        IPoint point = readPoint() as IPoint;
-        //        return point == null ? GeometryFactory.CreateExtents() : point.Extents;
-        //    }
-
-        //    //Double xMin = ByteEncoder.GetLittleEndian(_shapeFileReader.ReadDouble());
-        //    //Double yMin = ByteEncoder.GetLittleEndian(_shapeFileReader.ReadDouble());
-        //    //Double xMax = ByteEncoder.GetLittleEndian(_shapeFileReader.ReadDouble());
-        //    //Double yMax = ByteEncoder.GetLittleEndian(_shapeFileReader.ReadDouble());
-
-        //    ICoordinate min;
-        //    ICoordinate max;
-
-        //    if (original)
-        //    {
-        //        min = readOriginalCoordinate();
-        //        max = readOriginalCoordinate();
-        //    }
-        //    else
-        //    {
-        //        min = readCoordinate();
-        //        max = readCoordinate();
-        //    }
-
-        //    return GeometryFactory.CreateExtents(min, max);
-        //}
 
         /// <summary>
         /// Reads and parses the geometry with ID 'oid' from the ShapeFile.
@@ -2044,40 +2108,24 @@ namespace SharpMap.Data.Providers.ShapeFile
             switch (ShapeType)
             {
                 case ShapeType.Point:
-                    g = readPoint();
-                    break;
-                case ShapeType.PolyLine:
-                    g = readPolyLine();
-                    break;
-                case ShapeType.Polygon:
-                    g = readPolygon();
+                case ShapeType.PointM:
+                case ShapeType.PointZ:
+                    g = readPoint(ShapeType);
                     break;
                 case ShapeType.MultiPoint:
-                    g = readMultiPoint();
-                    break;
-                case ShapeType.PointZ:
-                    g = readPointZ();
-                    break;
-                case ShapeType.PolyLineZ:
-                    g = readPolyLineZ();
-                    break;
-                case ShapeType.PolygonZ:
-                    g = readPolygonZ();
-                    break;
-                case ShapeType.MultiPointZ:
-                    g = readMultiPointZ();
-                    break;
-                case ShapeType.PointM:
-                    g = readPointM();
-                    break;
-                case ShapeType.PolyLineM:
-                    g = readPolyLineM();
-                    break;
-                case ShapeType.PolygonM:
-                    g = readPolygonM();
-                    break;
                 case ShapeType.MultiPointM:
-                    g = readMultiPointM();
+                case ShapeType.MultiPointZ:
+                    g = readMultiPoint(ShapeType);
+                    break;
+                case ShapeType.PolyLine:
+                case ShapeType.PolyLineM:
+                case ShapeType.PolyLineZ:
+                    g = readPolyLine(ShapeType);
+                    break;
+                case ShapeType.Polygon:
+                case ShapeType.PolygonM:
+                case ShapeType.PolygonZ:
+                    g = readPolygon(ShapeType);
                     break;
                 default:
                     throw new ShapeFileUnsupportedGeometryException("ShapeFile type " +
@@ -2088,55 +2136,22 @@ namespace SharpMap.Data.Providers.ShapeFile
             return g;
         }
 
-        private IGeometry readMultiPointM()
-        {
-            throw new NotSupportedException("MultiPointM features are not currently supported");
-        }
 
-        private IGeometry readPolygonM()
+        private IGeometry readPoint(ShapeType shpType)
         {
-            throw new NotSupportedException("PolygonM features are not currently supported");
-        }
+            if (Array.IndexOf(PointTypes, shpType) == -1)
+                throw new ArgumentException("shpType must be a point type");
 
-        private IGeometry readMultiPointZ()
-        {
-            throw new NotSupportedException("MultiPointZ features are not currently supported");
-        }
-
-        private IGeometry readPolyLineZ()
-        {
-            throw new NotSupportedException("PolyLineZ features are not currently supported");
-        }
-
-        private IGeometry readPolyLineM()
-        {
-            throw new NotSupportedException("PolyLineM features are not currently supported");
-        }
-
-        private IGeometry readPointM()
-        {
-            throw new NotSupportedException("PointM features are not currently supported");
-        }
-
-        private IGeometry readPolygonZ()
-        {
-            throw new NotSupportedException("PolygonZ features are not currently supported");
-        }
-
-        private IGeometry readPointZ()
-        {
-            throw new NotSupportedException("PointZ features are not currently supported");
-        }
-
-        private IGeometry readPoint()
-        {
-            ICoordinate coord = readCoordinate();
+            ICoordinate coord = readCoordinate(shpType, 1, 1, 0);
             IPoint point = GeometryFactory.CreatePoint(coord);
             return point;
         }
 
-        private IGeometry readMultiPoint()
+        private IGeometry readMultiPoint(ShapeType shpType)
         {
+            if (Array.IndexOf(MultiPointTypes, shpType) == -1)
+                throw new ArgumentException("shpType must be a multipoint type");
+
             // Skip min/max box
             _shapeFileReader.BaseStream.Seek(ShapeFileConstants.BoundingBoxFieldByteLength, SeekOrigin.Current);
 
@@ -2152,13 +2167,14 @@ namespace SharpMap.Data.Providers.ShapeFile
 
             for (Int32 i = 0; i < pointCount; i++)
             {
-                ICoordinate coord = readCoordinate();
+                ICoordinate coord = readCoordinate(shpType, pointCount, pointCount, i);
                 IPoint point = GeometryFactory.CreatePoint(coord);
                 geometry.Add(point);
             }
 
             return geometry;
         }
+
 
         private void readPolyStructure(out Int32 parts, out Int32 points, out Int32[] segments)
         {
@@ -2183,21 +2199,21 @@ namespace SharpMap.Data.Providers.ShapeFile
             segments[parts] = points;
         }
 
-        private void readSegments(int lineId, int[] segments, ICoordinateSequence coordinates)
+        private void readSegments(ShapeType shpType, int numParts, int numPoints, int lineId, int[] segments,
+                                  ICoordinateSequence coordinates)
         {
             for (Int32 i = segments[lineId]; i < segments[lineId + 1]; i++)
             {
-                //Double x = ByteEncoder.GetLittleEndian(_shapeFileReader.ReadDouble());
-                //Double y = ByteEncoder.GetLittleEndian(_shapeFileReader.ReadDouble());
-                //coordinates.Add(_geoFactory.CoordinateFactory.Create(x, y));
-
-                ICoordinate coord = readCoordinate();
+                ICoordinate coord = readCoordinate(shpType, numParts, numPoints, i);
                 coordinates.Add(coord);
             }
         }
 
-        private IGeometry readPolyLine()
+        private IGeometry readPolyLine(ShapeType shpType)
         {
+            if (Array.IndexOf(PolyLineTypes, shpType) == -1)
+                throw new ArgumentException("shpType must be a PolyLine Type");
+
             Int32 parts;
             Int32 points;
             Int32[] segments;
@@ -2212,9 +2228,12 @@ namespace SharpMap.Data.Providers.ShapeFile
 
             for (Int32 lineId = 0; lineId < parts; lineId++)
             {
-                ICoordinateSequence coordinates = GeometryFactory.CoordinateSequenceFactory.Create(CoordinateDimensions.Two);
+                ICoordinateSequence coordinates =
+                    GeometryFactory.CoordinateSequenceFactory.Create(shpType == ShapeType.PolyLineZ
+                                                                         ? CoordinateDimensions.Three
+                                                                         : CoordinateDimensions.Two);
 
-                readSegments(lineId, segments, coordinates);
+                readSegments(shpType, parts, points, lineId, segments, coordinates);
 
                 ILineString line = GeometryFactory.CreateLineString(coordinates);
 
@@ -2229,8 +2248,12 @@ namespace SharpMap.Data.Providers.ShapeFile
             return mline;
         }
 
-        private IGeometry readPolygon()
+
+        private IGeometry readPolygon(ShapeType shpType)
         {
+            if (Array.IndexOf(PolygonTypes, shpType) == -1)
+                throw new ArgumentException("shpType must be a polygon type");
+
             Int32 parts;
             Int32 points;
             Int32[] segments;
@@ -2246,9 +2269,12 @@ namespace SharpMap.Data.Providers.ShapeFile
 
             for (Int32 ringId = 0; ringId < parts; ringId++)
             {
-                ICoordinateSequence coordinates = GeometryFactory.CoordinateSequenceFactory.Create(CoordinateDimensions.Two);
+                ICoordinateSequence coordinates =
+                    GeometryFactory.CoordinateSequenceFactory.Create(shpType == ShapeType.PolygonZ
+                                                                         ? CoordinateDimensions.Three
+                                                                         : CoordinateDimensions.Two);
 
-                readSegments(ringId, segments, coordinates);
+                readSegments(shpType, parts, points, ringId, segments, coordinates);
 
                 ILinearRing ring = GeometryFactory.CreateLinearRing(coordinates);
                 rings[ringId] = ring;
@@ -2291,7 +2317,8 @@ namespace SharpMap.Data.Providers.ShapeFile
                     {
                         List<ILinearRing> localHoles = new List<ILinearRing>();
 
-                        IPolygon bounds = GeometryFactory.CreatePolygon(ring); //unfortunately we need to build a temp shell to test contains will add processing overhead
+                        IPolygon bounds = GeometryFactory.CreatePolygon(ring);
+                        //unfortunately we need to build a temp shell to test contains will add processing overhead
 
                         for (int i = holes.Count - 1; i > -1; i--)
                         {
@@ -2311,9 +2338,7 @@ namespace SharpMap.Data.Providers.ShapeFile
             }
 
             return GeometryFactory.CreateMultiPolygon(polygons);
-
         }
-
 
         #endregion
 
@@ -2370,7 +2395,8 @@ namespace SharpMap.Data.Providers.ShapeFile
         //}
 
 
-        private void writeGeometry(IGeometry g, UInt32 recordNumber, Int32 recordOffsetInWords, Int32 recordLengthInWords)
+        private void writeGeometry(IGeometry g, UInt32 recordNumber, Int32 recordOffsetInWords,
+                                   Int32 recordLengthInWords)
         {
             Debug.Assert(recordNumber > 0);
 
@@ -2523,9 +2549,11 @@ namespace SharpMap.Data.Providers.ShapeFile
             parts[currentPartsIndex++] = 0;
 
             /* need to account for cases where the polygon shell is not closed. */
-            if (!polygon.ExteriorRing.Coordinates[0].Equals(polygon.ExteriorRing.Coordinates[polygon.ExteriorRing.Coordinates.Count - 1]))
+            if (
+                !polygon.ExteriorRing.Coordinates[0].Equals(
+                     polygon.ExteriorRing.Coordinates[polygon.ExteriorRing.Coordinates.Count - 1]))
                 polygon.ExteriorRing.Coordinates.Add(polygon.ExteriorRing.Coordinates[0]);
-            
+
             pointCnt = polygon.ExteriorRing.Coordinates.Count;
 
             foreach (ILinearRing ring in polygon.InteriorRings)
@@ -2541,7 +2569,7 @@ namespace SharpMap.Data.Providers.ShapeFile
 
             //Write the extents, part count, part index information, and point count
             writePolygonInformation(polygon.Extents, parts, pointCnt);
-            
+
             //Now write the actual point data
             writePolygonCoordinates(polygon);
         }
@@ -2552,7 +2580,6 @@ namespace SharpMap.Data.Providers.ShapeFile
         /// <param name="mpoly">multipolygon to be written</param>
         private void writeMultiPolygon(IMultiPolygon mpoly)
         {
-            
             List<Int32> parts = new List<int>();
             Int32 pointIndex = 0;
 
@@ -2560,14 +2587,16 @@ namespace SharpMap.Data.Providers.ShapeFile
             foreach (IPolygon poly in (mpoly as IEnumerable<IPolygon>))
             {
                 /* need to account for cases where the polygon shell is not closed. */
-                if (!poly.ExteriorRing.Coordinates[0].Equals(poly.ExteriorRing.Coordinates[poly.ExteriorRing.Coordinates.Count - 1]))
+                if (
+                    !poly.ExteriorRing.Coordinates[0].Equals(
+                         poly.ExteriorRing.Coordinates[poly.ExteriorRing.Coordinates.Count - 1]))
                     poly.ExteriorRing.Coordinates.Add(poly.ExteriorRing.Coordinates[0]);
 
                 parts.Add(pointIndex);
                 pointIndex += poly.ExteriorRing.Coordinates.Count;
 
                 foreach (ILinearRing ring in poly.InteriorRings)
-                {                    
+                {
                     /* need to account for cases where the polygon is not closed. */
                     if (!ring.Coordinates[0].Equals(ring.Coordinates[ring.Coordinates.Count - 1]))
                         ring.Coordinates.Add(ring.Coordinates[0]);
@@ -2602,7 +2631,7 @@ namespace SharpMap.Data.Providers.ShapeFile
                         writeCoordinate(point[Ordinates.X], point[Ordinates.Y]);
                 }
                 else
-                {                    
+                {
                     ICoordinate pt = null;
                     for (Int32 i = hole.Coordinates.Count - 1; i >= 0; i--)
                     {
@@ -2630,9 +2659,10 @@ namespace SharpMap.Data.Providers.ShapeFile
                 _shapeFileWriter.Write(ByteEncoder.GetLittleEndian(partIndex));
             }
         }
+
         #endregion
 
-        #region IWritableFeatureProvider Members
+        #region IWritableFeatureProvider<uint> Members
 
         public void Insert(FeatureDataRow feature)
         {
@@ -2665,7 +2695,5 @@ namespace SharpMap.Data.Providers.ShapeFile
         }
 
         #endregion
-
-
     }
 }
