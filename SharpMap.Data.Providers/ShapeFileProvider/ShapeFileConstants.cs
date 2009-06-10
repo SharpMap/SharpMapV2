@@ -68,5 +68,11 @@ namespace SharpMap.Data.Providers.ShapeFile
 		/// The name given to the row identifier in a ShapeFileProvider.
 		/// </summary>
 		public static readonly String IdColumnName = "OID";
+
+        /// <summary>
+        /// The value assigned to null in shape records
+        /// </summary>
+	    public const double NullDoubleValue = -10E38;
+	    
 	}
 }

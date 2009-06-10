@@ -26,6 +26,8 @@ namespace MapViewer.DataSource
         public Shapefile()
         {
             InitializeComponent();
+            cbForceCoordinate.DataSource = Enum.GetValues(typeof(ForceCoordinateOptions));
+            cbStrictness.DataSource = Enum.GetValues(typeof(ShapeFileReadStrictness));
         }
 
         #region ICreateDataProvider Members
@@ -33,8 +35,14 @@ namespace MapViewer.DataSource
         public IFeatureProvider GetProvider()
         {
             IGeometryServices svc = new GeometryServices();
-            if (File.Exists(tbPath.Text)){
-                return new ShapeFileProvider(tbPath.Text, svc.DefaultGeometryFactory, svc.CoordinateSystemFactory, false) { IsSpatiallyIndexed = false };
+            if (File.Exists(tbPath.Text))
+            {
+                return new ShapeFileProvider(tbPath.Text, svc.DefaultGeometryFactory, svc.CoordinateSystemFactory, false)
+                           {
+                               IsSpatiallyIndexed = false,
+                               ForceCoordinateOptions = (ForceCoordinateOptions)cbForceCoordinate.SelectedItem,
+                               ReadStrictness = (ShapeFileReadStrictness)cbStrictness.SelectedItem
+                           };
             }
             return null;
         }

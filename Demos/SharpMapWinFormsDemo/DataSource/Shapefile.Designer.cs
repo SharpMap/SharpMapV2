@@ -32,6 +32,10 @@
             this.tbPath = new System.Windows.Forms.TextBox();
             this.bBrowse = new System.Windows.Forms.Button();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
+            this.label2 = new System.Windows.Forms.Label();
+            this.cbForceCoordinate = new System.Windows.Forms.ComboBox();
+            this.label3 = new System.Windows.Forms.Label();
+            this.cbStrictness = new System.Windows.Forms.ComboBox();
             this.SuspendLayout();
             // 
             // label1
@@ -68,10 +72,54 @@
             this.openFileDialog1.FileName = "openFileDialog1";
             this.openFileDialog1.Filter = "shapefiles|*.shp";
             // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(15, 56);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(90, 13);
+            this.label2.TabIndex = 3;
+            this.label2.Text = "Force coordinate:";
+            // 
+            // cbForceCoordinate
+            // 
+            this.cbForceCoordinate.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.cbForceCoordinate.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cbForceCoordinate.FormattingEnabled = true;
+            this.cbForceCoordinate.Location = new System.Drawing.Point(18, 73);
+            this.cbForceCoordinate.Name = "cbForceCoordinate";
+            this.cbForceCoordinate.Size = new System.Drawing.Size(291, 21);
+            this.cbForceCoordinate.TabIndex = 4;
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(15, 97);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(53, 13);
+            this.label3.TabIndex = 5;
+            this.label3.Text = "Strictness";
+            // 
+            // cbStrictness
+            // 
+            this.cbStrictness.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.cbStrictness.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cbStrictness.FormattingEnabled = true;
+            this.cbStrictness.Location = new System.Drawing.Point(18, 114);
+            this.cbStrictness.Name = "cbStrictness";
+            this.cbStrictness.Size = new System.Drawing.Size(291, 21);
+            this.cbStrictness.TabIndex = 6;
+            // 
             // Shapefile
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.cbStrictness);
+            this.Controls.Add(this.label3);
+            this.Controls.Add(this.cbForceCoordinate);
+            this.Controls.Add(this.label2);
             this.Controls.Add(this.bBrowse);
             this.Controls.Add(this.tbPath);
             this.Controls.Add(this.label1);
@@ -88,5 +136,9 @@
         private System.Windows.Forms.TextBox tbPath;
         private System.Windows.Forms.Button bBrowse;
         private System.Windows.Forms.OpenFileDialog openFileDialog1;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.ComboBox cbForceCoordinate;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.ComboBox cbStrictness;
     }
 }
