@@ -72,7 +72,7 @@ namespace SharpMap.Data.Providers.ShapeFile
         /// <summary>
         /// The value assigned to null in shape records
         /// </summary>
-	    public const double NullDoubleValue = -10E38;
+	    public const double NullDoubleValue = -10E40;
 	    
 	}
 }
