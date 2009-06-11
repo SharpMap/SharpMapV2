@@ -1534,6 +1534,11 @@ namespace SharpMap.Data.Providers.ShapeFile
             (this as IDisposable).Dispose();
         }
 
+        ~ShapeFileProvider()
+        {
+            Close();
+        }
+
         public override Object ExecuteQuery(Expression query)
         {
             FeatureQueryExpression featureQuery = query as FeatureQueryExpression;
@@ -2144,7 +2149,7 @@ namespace SharpMap.Data.Providers.ShapeFile
                 if (offsets.Bor < 0 || offsets.Eor > stream.Length)
                     return false;
 
-                if (seekPosition > _indexEntry.AbsoluteByteOffset + _indexEntry.ByteLength)
+                if (seekPosition > _indexEntry.AbsoluteByteOffset + ShapeFileConstants.ShapeRecordHeaderByteLength + _indexEntry.ByteLength)
                     return false;
 
                 if (seekPosition < offsets.Bor || seekPosition > offsets.Eor)
@@ -2221,7 +2226,7 @@ namespace SharpMap.Data.Providers.ShapeFile
             {
                 long? bboxOffset = null, xOffset = null, yOffset = null, zOffset = null, mOffset = null, endOfRecord = null;
 
-                long recordStart = _indexEntry.AbsoluteByteOffset;
+                long recordStart = _indexEntry.AbsoluteByteOffset + ShapeFileConstants.ShapeRecordHeaderByteLength;
 
                 switch (shapeType)
                 {
@@ -2340,7 +2345,7 @@ namespace SharpMap.Data.Providers.ShapeFile
                 if (seekPosition < _indexEntry.AbsoluteByteOffset)
                     return false;
 
-                if (seekPosition > _indexEntry.AbsoluteByteOffset + _indexEntry.ByteLength)
+                if (seekPosition > _indexEntry.AbsoluteByteOffset + ShapeFileConstants.ShapeRecordHeaderByteLength + _indexEntry.ByteLength)
                     return false;
 
                 if (stream.Position == seekPosition)
@@ -2516,7 +2521,7 @@ namespace SharpMap.Data.Providers.ShapeFile
                 return point == null ? GeometryFactory.CreateExtents() : point.Extents;
             }
 
-            offsetUtility.Seek(_shapeFileReader.BaseStream, offsetUtility.IndexEntry.AbsoluteByteOffset + 4);
+            offsetUtility.Seek(_shapeFileReader.BaseStream, offsetUtility.IndexEntry.AbsoluteByteOffset + ShapeFileConstants.ShapeRecordHeaderByteLength + 4);
 
             ICoordinate min = readCoordinate();
             ICoordinate max = readCoordinate();
