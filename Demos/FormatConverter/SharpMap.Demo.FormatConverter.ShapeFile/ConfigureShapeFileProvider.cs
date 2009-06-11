@@ -13,6 +13,7 @@
  * 
  */
 using System;
+using System.Collections.Generic;
 using System.Data;
 using System.IO;
 using GeoAPI.CoordinateSystems;
@@ -51,6 +52,47 @@ namespace SharpMap.Demo.FormatConverter.ShapeFile
                                               geometryServices.CoordinateSystemFactory) { IsSpatiallyIndexed = false };
             _sourceProvider.Open(false);
             Console.WriteLine("\nINFO The shape type is: " + _sourceProvider.ShapeType + "\n");
+
+            if (Array.IndexOf(new ShapeType[] { ShapeType.PointM, ShapeType.PointZ, ShapeType.MultiPointM, ShapeType.MultiPointZ, ShapeType.PolygonM, ShapeType.PolygonZ }, _sourceProvider.ShapeType) > -1)
+                Console.WriteLine("Warning: The source shapefile contains Z or M values. This is work in progress and can cause issues.");
+
+            ForceCoordinateOptions[] coordinateOptions = (ForceCoordinateOptions[])Enum.GetValues(typeof(ForceCoordinateOptions));
+            Dictionary<int, ForceCoordinateOptions> fco = new Dictionary<int, ForceCoordinateOptions>();
+            for (int i = 0; i < coordinateOptions.Length; i++)
+                fco.Add(i, coordinateOptions[i]);
+
+            ShapeFileReadStrictness[] strictnesses = (ShapeFileReadStrictness[])Enum.GetValues(typeof(ShapeFileReadStrictness));
+            Dictionary<int, ShapeFileReadStrictness> strictness = new Dictionary<int, ShapeFileReadStrictness>();
+
+            for (int i = 0; i < strictnesses.Length; i++)
+                strictness.Add(i, strictnesses[i]);
+
+            Console.WriteLine("Force Coordinate Options? Enter the id of one of the options below or leave blank.");
+            foreach (KeyValuePair<int, ForceCoordinateOptions> option in fco)
+            {
+                Console.WriteLine(string.Format("{0} {1}", option.Key, option.Value));
+            }
+            int opt;
+            if (int.TryParse(Console.ReadLine(), out opt))
+            {
+                if (fco.ContainsKey(opt))
+                    _sourceProvider.ForceCoordinateOptions = fco[opt];
+
+                Console.WriteLine(string.Format("The effective shape type is now {0}", _sourceProvider.EffectiveShapeType));
+            }
+
+            Console.WriteLine("Please select a Leniency option:");
+            foreach (KeyValuePair<int, ShapeFileReadStrictness> pair in strictness)
+            {
+                Console.WriteLine(String.Format("{0} {1}", pair.Key, pair.Value));
+            }
+
+            if (int.TryParse(Console.ReadLine(), out opt))
+            {
+                if (strictness.ContainsKey(opt))
+                    _sourceProvider.ReadStrictness = strictness[opt];
+            }
+
 
             return _sourceProvider;
         }
