@@ -143,7 +143,7 @@ namespace SharpMap.Data.Providers.ShapeFile
             ICoordinate min = _geoFactory.CoordinateFactory.Create(xMin, yMin);
             ICoordinate max = _geoFactory.CoordinateFactory.Create(xMax, yMax);
 
-            Extents = min.Equals(max) && min.Equals(_geoFactory.CoordinateFactory.Create(0, 0)) //jd: if the shapefile has just been opened the box wil be 0,0,0,0 in this case create an empty extents
+            Extents = min.Equals(max) && min.Equals(_geoFactory.CoordinateFactory.Create(0, 0)) //jd: if the shapefile has just been created the box wil be 0,0,0,0 in this case create an empty extents
                 ? _geoFactory.CreateExtents()
                 : _geoFactory.CreateExtents(min, max);
 

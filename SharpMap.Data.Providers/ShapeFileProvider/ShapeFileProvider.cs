@@ -2527,9 +2527,7 @@ namespace SharpMap.Data.Providers.ShapeFile
             ICoordinate min = readCoordinate();
             ICoordinate max = readCoordinate();
 
-            return min.Equals(max) && min.Equals(GeometryFactory.CoordinateFactory.Create(0, 0)) //jd: if the shapefile has just been opened the box wil be 0,0,0,0 in this case create an empty extents
-                ? GeometryFactory.CreateExtents()
-                : GeometryFactory.CreateExtents(min, max);
+            return GeometryFactory.CreateExtents(min, max);
         }
 
 
