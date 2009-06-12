@@ -1,5 +1,6 @@
 // Portions copyright 2005 - 2006: Morten Nielsen (www.iter.dk)
 // Portions copyright 2006 - 2008: Rory Plaire (codekaizen@gmail.com)
+// Portions copyright 2008 - 2009: John Diss (www.newgrove.com)
 //
 // This file is part of SharpMap.
 // SharpMap is free software; you can redistribute it and/or modify
@@ -2526,7 +2527,9 @@ namespace SharpMap.Data.Providers.ShapeFile
             ICoordinate min = readCoordinate();
             ICoordinate max = readCoordinate();
 
-            return GeometryFactory.CreateExtents(min, max);
+            return min.Equals(max) && min.Equals(GeometryFactory.CoordinateFactory.Create(0, 0)) //jd: if the shapefile has just been opened the box wil be 0,0,0,0 in this case create an empty extents
+                ? GeometryFactory.CreateExtents()
+                : GeometryFactory.CreateExtents(min, max);
         }
 
 
@@ -2900,7 +2903,7 @@ namespace SharpMap.Data.Providers.ShapeFile
             {
                 case ShapeType.Point:
                 case ShapeType.PointM:
-                case ShapeType.PointZ :
+                case ShapeType.PointZ:
                     writePoint(g as IPoint, ShapeType);
                     break;
                 case ShapeType.PolyLine:
@@ -2932,7 +2935,7 @@ namespace SharpMap.Data.Providers.ShapeFile
                 case ShapeType.MultiPointZ:
                     writeMultiPoint(g as IMultiPoint, ShapeType);
                     break;
-              
+
                 case ShapeType.MultiPatch:
                 case ShapeType.Null:
                 default:
@@ -2954,6 +2957,9 @@ namespace SharpMap.Data.Providers.ShapeFile
 
         private void writePoint(IPoint point, ShapeType shpType)
         {
+            if (Array.IndexOf(PointTypes, shpType) == -1)
+                throw new InvalidOperationException("shpType must be a Point type");
+
             _shapeFileWriter.Write(ByteEncoder.GetLittleEndian((Int32)shpType));
             writeCoordinate(point[Ordinates.X], point[Ordinates.Y]);
         }
@@ -2997,6 +3003,9 @@ namespace SharpMap.Data.Providers.ShapeFile
 
         private void writeLineString(ILineString lineString, ShapeType shpType)
         {
+            if (Array.IndexOf(PolyLineTypes, shpType) == -1)
+                throw new InvalidOperationException("shpType must be a Polyline type");
+
             _shapeFileWriter.Write(ByteEncoder.GetLittleEndian((Int32)shpType));
 
             writePolySegments(lineString.Extents,
@@ -3007,6 +3016,9 @@ namespace SharpMap.Data.Providers.ShapeFile
 
         private void writeMultiLineString(IMultiLineString multiLineString, ShapeType shpType)
         {
+            if (Array.IndexOf(PolyLineTypes, shpType) == -1)
+                throw new InvalidOperationException("shpType must be a Polyline type");
+
             Int32[] parts = new Int32[multiLineString.Count];
             ArrayList allPoints = new ArrayList();
 
@@ -3028,6 +3040,9 @@ namespace SharpMap.Data.Providers.ShapeFile
         /// <param name="polygon">polygon to be written</param>
         private void writePolygon(IPolygon polygon, ShapeType shpType)
         {
+            if (Array.IndexOf(PolygonTypes, shpType) == -1)
+                throw new InvalidOperationException("shpType must be a Polygon type");
+
             Int32[] parts = new Int32[polygon.InteriorRingsCount + 1];
             Int32 currentPartsIndex = 0, pointCnt = 0;
             parts[currentPartsIndex++] = 0;
@@ -3064,6 +3079,9 @@ namespace SharpMap.Data.Providers.ShapeFile
         /// <param name="mpoly">multipolygon to be written</param>
         private void writeMultiPolygon(IMultiPolygon mpoly, ShapeType shpType)
         {
+            if (Array.IndexOf(PolygonTypes, shpType) == -1)
+                throw new InvalidOperationException("shpType must be a Polygon type");
+
             List<Int32> parts = new List<int>();
             Int32 pointIndex = 0;
 
@@ -3134,7 +3152,7 @@ namespace SharpMap.Data.Providers.ShapeFile
         /// <param name="pointCnt">total point count</param>
         private void writePolygonInformation(IExtents extents, int[] parts, int pointCnt)
         {
-            
+
             writeBoundingBox(extents);
             _shapeFileWriter.Write(ByteEncoder.GetLittleEndian(parts.Length));
             _shapeFileWriter.Write(ByteEncoder.GetLittleEndian(pointCnt));
