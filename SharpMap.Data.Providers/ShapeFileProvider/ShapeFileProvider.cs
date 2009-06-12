@@ -2899,16 +2899,20 @@ namespace SharpMap.Data.Providers.ShapeFile
             switch (ShapeType)
             {
                 case ShapeType.Point:
-                    writePoint(g as IPoint);
+                case ShapeType.PointM:
+                case ShapeType.PointZ :
+                    writePoint(g as IPoint, ShapeType);
                     break;
                 case ShapeType.PolyLine:
+                case ShapeType.PolyLineM:
+                case ShapeType.PolyLineZ:
                     if (g is ILineString)
                     {
-                        writeLineString(g as ILineString);
+                        writeLineString(g as ILineString, ShapeType);
                     }
                     else if (g is IMultiLineString)
                     {
-                        writeMultiLineString(g as IMultiLineString);
+                        writeMultiLineString(g as IMultiLineString, ShapeType);
                     }
                     break;
                 //case ShapeType.Polygon:
@@ -2916,22 +2920,19 @@ namespace SharpMap.Data.Providers.ShapeFile
                 //    break;
 
                 case ShapeType.Polygon:
+                case ShapeType.PolygonM:
+                case ShapeType.PolygonZ:
                     if (g is IPolygon)
-                        writePolygon(g as IPolygon);
+                        writePolygon(g as IPolygon, ShapeType);
                     else if (g is IMultiPolygon)
-                        writeMultiPolygon(g as IMultiPolygon);
+                        writeMultiPolygon(g as IMultiPolygon, ShapeType);
                     break;
                 case ShapeType.MultiPoint:
-                    writeMultiPoint(g as IMultiPoint);
-                    break;
-                case ShapeType.PointZ:
-                case ShapeType.PolyLineZ:
-                case ShapeType.PolygonZ:
-                case ShapeType.MultiPointZ:
-                case ShapeType.PointM:
-                case ShapeType.PolyLineM:
-                case ShapeType.PolygonM:
                 case ShapeType.MultiPointM:
+                case ShapeType.MultiPointZ:
+                    writeMultiPoint(g as IMultiPoint, ShapeType);
+                    break;
+              
                 case ShapeType.MultiPatch:
                 case ShapeType.Null:
                 default:
@@ -2951,9 +2952,9 @@ namespace SharpMap.Data.Providers.ShapeFile
             _shapeFileWriter.Write(ByteEncoder.GetLittleEndian(y));
         }
 
-        private void writePoint(IPoint point)
+        private void writePoint(IPoint point, ShapeType shpType)
         {
-            _shapeFileWriter.Write(ByteEncoder.GetLittleEndian((Int32)ShapeType.Point));
+            _shapeFileWriter.Write(ByteEncoder.GetLittleEndian((Int32)shpType));
             writeCoordinate(point[Ordinates.X], point[Ordinates.Y]);
         }
 
@@ -2965,9 +2966,9 @@ namespace SharpMap.Data.Providers.ShapeFile
             _shapeFileWriter.Write(ByteEncoder.GetLittleEndian(box.GetMax(Ordinates.Y)));
         }
 
-        private void writeMultiPoint(IMultiPoint multiPoint)
+        private void writeMultiPoint(IMultiPoint multiPoint, ShapeType shpType)
         {
-            _shapeFileWriter.Write(ByteEncoder.GetLittleEndian((Int32)ShapeType.MultiPoint));
+            _shapeFileWriter.Write(ByteEncoder.GetLittleEndian((Int32)shpType));
             writeBoundingBox(multiPoint.Extents);
             _shapeFileWriter.Write(ByteEncoder.GetLittleEndian(multiPoint.Count));
 
@@ -2994,9 +2995,9 @@ namespace SharpMap.Data.Providers.ShapeFile
             }
         }
 
-        private void writeLineString(ILineString lineString)
+        private void writeLineString(ILineString lineString, ShapeType shpType)
         {
-            _shapeFileWriter.Write(ByteEncoder.GetLittleEndian((Int32)ShapeType.PolyLine));
+            _shapeFileWriter.Write(ByteEncoder.GetLittleEndian((Int32)shpType));
 
             writePolySegments(lineString.Extents,
                               new[] { 0 },
@@ -3004,7 +3005,7 @@ namespace SharpMap.Data.Providers.ShapeFile
                               lineString.Coordinates.Count);
         }
 
-        private void writeMultiLineString(IMultiLineString multiLineString)
+        private void writeMultiLineString(IMultiLineString multiLineString, ShapeType shpType)
         {
             Int32[] parts = new Int32[multiLineString.Count];
             ArrayList allPoints = new ArrayList();
@@ -3017,7 +3018,7 @@ namespace SharpMap.Data.Providers.ShapeFile
                 allPoints.AddRange(line.Coordinates);
             }
 
-            _shapeFileWriter.Write(ByteEncoder.GetLittleEndian((Int32)ShapeType.PolyLine));
+            _shapeFileWriter.Write(ByteEncoder.GetLittleEndian((Int32)shpType));
             writePolySegments(multiLineString.Extents, parts, allPoints, allPoints.Count);
         }
 
@@ -3025,7 +3026,7 @@ namespace SharpMap.Data.Providers.ShapeFile
         /// write the polygon to the shapefilewriter
         /// </summary>
         /// <param name="polygon">polygon to be written</param>
-        private void writePolygon(IPolygon polygon)
+        private void writePolygon(IPolygon polygon, ShapeType shpType)
         {
             Int32[] parts = new Int32[polygon.InteriorRingsCount + 1];
             Int32 currentPartsIndex = 0, pointCnt = 0;
@@ -3049,7 +3050,7 @@ namespace SharpMap.Data.Providers.ShapeFile
 
                 pointCnt += ring.Coordinates.Count;
             }
-
+            _shapeFileWriter.Write(ByteEncoder.GetLittleEndian((Int32)shpType));
             //Write the extents, part count, part index information, and point count
             writePolygonInformation(polygon.Extents, parts, pointCnt);
 
@@ -3061,7 +3062,7 @@ namespace SharpMap.Data.Providers.ShapeFile
         /// write the multipolygon to the shapefilewriter
         /// </summary>
         /// <param name="mpoly">multipolygon to be written</param>
-        private void writeMultiPolygon(IMultiPolygon mpoly)
+        private void writeMultiPolygon(IMultiPolygon mpoly, ShapeType shpType)
         {
             List<Int32> parts = new List<int>();
             Int32 pointIndex = 0;
@@ -3088,7 +3089,7 @@ namespace SharpMap.Data.Providers.ShapeFile
                     pointIndex += ring.Coordinates.Count;
                 }
             }
-
+            _shapeFileWriter.Write(ByteEncoder.GetLittleEndian((Int32)shpType));
             //Write the extents, part count, part index information, and point count
             writePolygonInformation(mpoly.Extents, parts.ToArray(), pointIndex);
 
@@ -3133,6 +3134,7 @@ namespace SharpMap.Data.Providers.ShapeFile
         /// <param name="pointCnt">total point count</param>
         private void writePolygonInformation(IExtents extents, int[] parts, int pointCnt)
         {
+            
             writeBoundingBox(extents);
             _shapeFileWriter.Write(ByteEncoder.GetLittleEndian(parts.Length));
             _shapeFileWriter.Write(ByteEncoder.GetLittleEndian(pointCnt));

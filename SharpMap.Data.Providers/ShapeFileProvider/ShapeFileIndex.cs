@@ -146,6 +146,31 @@ namespace SharpMap.Data.Providers.ShapeFile
             }
         }
 
+#if DEBUG
+        /// <summary>
+        /// jd: primarily a debugging utility method to aid manually reading through broken shapefiles by offset :(
+        /// </summary>
+        /// <returns></returns>
+        public string SaveToString()
+        {
+            StringBuilder sb = new StringBuilder();
+            using (StringWriter writer = new StringWriter(sb))
+            {
+                SaveToWriter(writer);
+                return sb.ToString();
+            }
+        }
+
+        public void SaveToWriter(TextWriter writer)
+        {
+            writer.WriteLine("Shapefile Index:");
+            writer.WriteLine("Offset\tLength\tAbsoluteOffset\tByteLength");
+            foreach (IndexEntry entry in _shapeIndex.Values)
+                writer.WriteLine("{0}\t{1}\t{2}\t{3}", entry.Offset, entry.Length, entry.AbsoluteByteOffset, entry.ByteLength);
+
+        }
+#endif
+
         #region IDictionary<UInt32,IndexEntry> Members
 
         void IDictionary<UInt32, IndexEntry>.Add(UInt32 key, IndexEntry value)
