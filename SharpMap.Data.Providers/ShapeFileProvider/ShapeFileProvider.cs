@@ -30,6 +30,7 @@ using System.Threading;
 using GeoAPI.Coordinates;
 using GeoAPI.CoordinateSystems;
 using GeoAPI.CoordinateSystems.Transformations;
+using GeoAPI.DataStructures;
 using GeoAPI.Diagnostics;
 using GeoAPI.Geometries;
 using GeoAPI.Indexing;
@@ -894,6 +895,9 @@ namespace SharpMap.Data.Providers.ShapeFile
             set { _forceCoordinateOptions = value; }
         }
 
+        ///<summary>
+        /// Enables the shapefile provider to try handling invalid polygon data. 
+        ///</summary>
         public ShapeFileReadStrictness ReadStrictness
         {
             get { return _readStrictness; }
@@ -1201,6 +1205,10 @@ namespace SharpMap.Data.Providers.ShapeFile
                 throw new InvalidOperationException("Cannot insert a feature with a null geometry");
             }
 
+            if (ShapeType != EffectiveShapeType)
+                throw new InvalidOperationException(
+                    "It is invalid to write to a shapefile whos' ForceCoordinateOptions property has been modified");
+
             checkOpen();
             //enableWriting();
 
@@ -1249,6 +1257,11 @@ namespace SharpMap.Data.Providers.ShapeFile
                 throw new ArgumentNullException("features");
             }
 
+            if (ShapeType != EffectiveShapeType)
+                throw new InvalidOperationException(
+                    "It is invalid to write to a shapefile whos' ForceCoordinateOptions property has been modified");
+
+
             checkOpen();
             //enableWriting();
 
@@ -1281,10 +1294,10 @@ namespace SharpMap.Data.Providers.ShapeFile
 
                 //feature[ShapeFileConstants.IdColumnName] = id;
 
-                Int32 offset = _shapeFileIndex[id].Offset;
-                Int32 length = _shapeFileIndex[id].Length;
 
-                writeGeometry(feature.Geometry, id, offset, length);
+                ShapeFileIndex.IndexEntry entry = _shapeFileIndex[id];
+
+                writeGeometry(feature.Geometry, id, entry.Offset, entry.Length);
 
                 if (HasDbf)
                 {
@@ -1411,9 +1424,9 @@ namespace SharpMap.Data.Providers.ShapeFile
             feature.Geometry = null;
 
             UInt32 id = feature.Id;
-            Int32 length = _shapeFileIndex[id].Length;
-            Int32 offset = _shapeFileIndex[id].Offset;
-            writeGeometry(null, feature.Id, offset, length);
+
+            ShapeFileIndex.IndexEntry entry = _shapeFileIndex[id];
+            writeGeometry(null, id, entry.Offset, entry.Length);
         }
 
         /// <summary>
@@ -1447,9 +1460,10 @@ namespace SharpMap.Data.Providers.ShapeFile
                 feature.Geometry = null;
 
                 UInt32 id = feature.Id;
-                Int32 length = _shapeFileIndex[id].Length;
-                Int32 offset = _shapeFileIndex[id].Offset;
-                writeGeometry(null, feature.Id, offset, length);
+                ShapeFileIndex.IndexEntry entry = _shapeFileIndex[id];
+
+                writeGeometry(null, id, entry.Offset, entry.Length);
+
             }
         }
 
@@ -1605,7 +1619,7 @@ namespace SharpMap.Data.Providers.ShapeFile
 
         #region General helper functions
 
-        internal static Int32 ComputeGeometryLengthInWords(IGeometry geometry)
+        internal static Int32 ComputeGeometryLengthInWords(IGeometry geometry, ShapeType shapeType)
         {
             if (geometry == null)
             {
@@ -1616,21 +1630,89 @@ namespace SharpMap.Data.Providers.ShapeFile
 
             if (geometry is IPoint)
             {
-                byteCount = 20; // ShapeType integer + 2 doubles at 8 bytes each
+                switch (shapeType)
+                {
+                    case ShapeType.Point:
+                        {
+                            byteCount = 20; // ShapeType integer + 2 doubles at 8 bytes each
+                            break;
+                        }
+                    case ShapeType.PointM:
+                        {
+                            byteCount = 28;
+                            break;
+                        }
+                    case ShapeType.PointZ:
+                        {
+                            byteCount = 36;
+                            break;
+                        }
+                    default:
+                        throw new ArgumentException("Incompatible shapeType.");
+
+                }
             }
             else if (geometry is IMultiPoint)
             {
                 byteCount = 4 /* ShapeType Integer */
-                            + ShapeFileConstants.BoundingBoxFieldByteLength + 4 /* NumPoints integer */
-                            + 16 * (geometry as IMultiPoint).Count;
+                                         + ShapeFileConstants.BoundingBoxFieldByteLength + 4 /* NumPoints integer */
+                                         + 16 * (geometry as IMultiPoint).Count;
+
+                switch (shapeType)
+                {
+                    case ShapeType.MultiPoint:
+                        {
+                            break;
+                        }
+                    case ShapeType.MultiPointM:
+                        {
+                            byteCount += 16 /* Min Max M range */
+                                         + 8 * (geometry as IMultiPoint).Count; /*M values array */
+                            break;
+                        }
+                    case ShapeType.MultiPointZ:
+                        {
+                            byteCount += 16 /* Min Max Z range */
+                                         + 8 * (geometry as IMultiPoint).Count /*Z values array */
+                                         + 16 /* Min Max M range */
+                                         + 8 * (geometry as IMultiPoint).Count; /*M values array */
+                            break;
+                        }
+                    default:
+                        throw new ArgumentException("Incompatible shapeType.");
+                }
+
             }
             else if (geometry is ILineString)
             {
                 byteCount = 4 /* ShapeType Integer */
-                            + ShapeFileConstants.BoundingBoxFieldByteLength + 4 + 4
-                    /* NumPoints and NumParts integers */
+                            + ShapeFileConstants.BoundingBoxFieldByteLength + 4 + 4 /* NumPoints and NumParts integers */
                             + 4 /* Parts Array 1 integer Int64 */
                             + 16 * (geometry as ILineString).Coordinates.Count;
+                switch (shapeType)
+                {
+                    case ShapeType.PolyLine:
+                        {
+                            break;
+                        }
+                    case ShapeType.PolyLineM:
+                        {
+                            byteCount += 16 /* Min Max M Range */
+                                         + 8 * (geometry as ILineString).Coordinates.Count; /* M values array*/
+                            break;
+                        }
+                    case ShapeType.PolyLineZ:
+                        {
+                            byteCount += 16 /* Min Max Z Range */
+                                         + 8 * (geometry as ILineString).Coordinates.Count /* Z values array*/
+                                         + 16 /* Min Max M Range */
+                                         + 8 * (geometry as ILineString).Coordinates.Count; /* M values array */
+
+                            break;
+                        }
+                    default:
+                        throw new ArgumentException("Incompatible shapeType.");
+                }
             }
             else if (geometry is IMultiLineString)
             {
@@ -1642,10 +1724,36 @@ namespace SharpMap.Data.Providers.ShapeFile
                 }
 
                 byteCount = 4 /* ShapeType Integer */
-                            + ShapeFileConstants.BoundingBoxFieldByteLength + 4 + 4
-                    /* NumPoints and NumParts integers */
+                            + ShapeFileConstants.BoundingBoxFieldByteLength
+                            + 4
+                            + 4 /* NumPoints and NumParts integers */
                             + 4 * (geometry as IMultiLineString).Count /* Parts array of integer indexes */
                             + 16 * pointCount;
+
+                switch (shapeType)
+                {
+                    case ShapeType.PolyLine:
+                        {
+                            break;
+                        }
+                    case ShapeType.PolyLineM:
+                        {
+                            byteCount += 16 /* Min Max M Range */
+                                         + 8 * (geometry as IMultiLineString).Coordinates.Count; /* M values array*/
+                            break;
+                        }
+                    case ShapeType.PolyLineZ:
+                        {
+                            byteCount += 16 /* Min Max Z Range */
+                                         + 8 * (geometry as IMultiLineString).Coordinates.Count /* Z values array*/
+                                         + 16 /* Min Max M Range */
+                                         + 8 * (geometry as IMultiLineString).Coordinates.Count; /* M values array */
+
+                            break;
+                        }
+                    default:
+                        throw new ArgumentException("Incompatible shapeType.");
+                }
             }
             else if (geometry is IPolygon)
             /*jd: Contains Modifications from Lee Keel www.trimble.com to cope with unclosed polygons  */
@@ -1666,13 +1774,35 @@ namespace SharpMap.Data.Providers.ShapeFile
                 }
 
                 byteCount = 4 /* ShapeType Integer */
-                            + ShapeFileConstants.BoundingBoxFieldByteLength + 4 + 4
-                    /* NumPoints and NumParts integers */
-                            +
-                            4 *
-                            ((geometry as IPolygon).InteriorRingsCount + 1
-                    /* Parts array of rings: count of interior + 1 for exterior ring */)
+                            + ShapeFileConstants.BoundingBoxFieldByteLength
+                            + 4
+                            + 4 /* NumPoints and NumParts integers */
+                            + 4 * ((geometry as IPolygon).InteriorRingsCount + 1 /* Parts array of rings: count of interior + 1 for exterior ring */)
                             + 16 * pointCount;
+
+                switch (shapeType)
+                {
+                    case ShapeType.Polygon:
+                        {
+                            break;
+                        }
+                    case ShapeType.PolygonM:
+                        {
+                            byteCount += 16 /* Min Max M values*/
+                                         + pointCount * 8 /*M value array  */;
+                            break;
+                        }
+                    case ShapeType.PolygonZ:
+                        {
+                            byteCount += 16 /* Min Max Z values*/
+                                         + pointCount * 8 /*Z value array  */
+                                         + 16 /* Min Max M values*/
+                                         + pointCount * 8 /*M value array  */;
+                            break;
+                        }
+                    default:
+                        throw new ArgumentException("Incompatible shapeType.");
+                }
             }
             else if (geometry is IMultiPolygon)
             /*jd: Contains Modifications from Lee Keel www.trimble.com to cope with unclosed polygons  */
@@ -1698,6 +1828,30 @@ namespace SharpMap.Data.Providers.ShapeFile
                             + ShapeFileConstants.BoundingBoxFieldByteLength + 4 + 4
                             + 4 * ringCount
                             + 16 * pointCount;
+
+                switch (shapeType)
+                {
+                    case ShapeType.Polygon:
+                        {
+                            break;
+                        }
+                    case ShapeType.PolygonM:
+                        {
+                            byteCount += 16 /* Min Max M values*/
+                                         + pointCount * 8 /*M value array  */;
+                            break;
+                        }
+                    case ShapeType.PolygonZ:
+                        {
+                            byteCount += 16 /* Min Max Z values*/
+                                         + pointCount * 8 /*Z value array  */
+                                         + 16 /* Min Max M values*/
+                                         + pointCount * 8 /*M value array  */;
+                            break;
+                        }
+                    default:
+                        throw new ArgumentException("Incompatible shapeType.");
+                }
             }
             else
             {
@@ -2956,10 +3110,27 @@ namespace SharpMap.Data.Providers.ShapeFile
         private void writePoint(IPoint point, ShapeType shpType)
         {
             if (Array.IndexOf(PointTypes, shpType) == -1)
-                throw new InvalidOperationException("shpType must be a Point type");
+                throw new ArgumentException("shpType must be a Point type");
 
             _shapeFileWriter.Write(ByteEncoder.GetLittleEndian((Int32)shpType));
             writeCoordinate(point[Ordinates.X], point[Ordinates.Y]);
+
+            if (shpType == ShapeType.PointZ)
+            {
+                _shapeFileWriter.Write(ByteEncoder.GetLittleEndian(
+                    point.Coordinate.ContainsOrdinate(Ordinates.Z)
+                    ? point[Ordinates.Z]
+                    : 0.0));
+            }
+            if (shpType == ShapeType.PointZ || shpType == ShapeType.PointM)
+            {
+                _shapeFileWriter.Write(ByteEncoder.GetLittleEndian(
+                    point.Coordinate.ContainsOrdinate(Ordinates.M) && !IsShapefileNullValue(point[Ordinates.M])
+                    ? point[Ordinates.M]
+                    : NullDoubleValue));
+            }
+
+
         }
 
         private void writeBoundingBox(IExtents box)
@@ -2968,6 +3139,47 @@ namespace SharpMap.Data.Providers.ShapeFile
             _shapeFileWriter.Write(ByteEncoder.GetLittleEndian(box.GetMin(Ordinates.Y)));
             _shapeFileWriter.Write(ByteEncoder.GetLittleEndian(box.GetMax(Ordinates.X)));
             _shapeFileWriter.Write(ByteEncoder.GetLittleEndian(box.GetMax(Ordinates.Y)));
+        }
+
+        private static Pair<double> GetOrdinateRange(IGeometry geometry, Ordinates ordinate)
+        {
+            double min = double.MaxValue;
+            double max = double.MinValue;
+
+
+            if (geometry is IGeometryCollection)
+            {
+                Pair<double> rv = GetOrdinateRange(geometry as IEnumerable<IGeometry>, ordinate);
+                min = Math.Min(min, rv.First);
+                max = Math.Max(max, rv.Second);
+            }
+            else
+            {
+                foreach (ICoordinate c in geometry.Coordinates)
+                {
+                    if (c.ContainsOrdinate(ordinate))
+                    {
+                        min = Math.Min(min, c[ordinate]);
+                        max = Math.Max(max, c[ordinate]);
+                    }
+                }
+            }
+
+            return new Pair<double>(min, max);
+        }
+
+        private static Pair<double> GetOrdinateRange(IEnumerable<IGeometry> geometries, Ordinates ordinate)
+        {
+            double min = double.MaxValue;
+            double max = double.MinValue;
+            foreach (IGeometry g in geometries)
+            {
+                Pair<Double> rv = GetOrdinateRange(g, ordinate);
+                min = Math.Min(min, rv.First);
+                max = Math.Max(max, rv.Second);
+            }
+
+            return new Pair<double>(min, max);
         }
 
         private void writeMultiPoint(IMultiPoint multiPoint, ShapeType shpType)
@@ -2980,6 +3192,55 @@ namespace SharpMap.Data.Providers.ShapeFile
             {
                 writeCoordinate(point[Ordinates.X], point[Ordinates.Y]);
             }
+
+            if (shpType == ShapeType.MultiPointZ)
+            {
+                Pair<double> zrng = GetOrdinateRange((IEnumerable<IGeometry>)multiPoint, Ordinates.Z);
+
+                double lowerBound = zrng.First == Double.MaxValue || IsShapefileNullValue(zrng.First)
+                                        ? 0.0
+                                        : zrng.First;
+
+                double upperBound = zrng.Second == Double.MinValue || IsShapefileNullValue(zrng.Second)
+                                        ? 0.0
+                                        : zrng.Second;
+                _shapeFileWriter.Write(ByteEncoder.GetLittleEndian(lowerBound));
+                _shapeFileWriter.Write(ByteEncoder.GetLittleEndian(upperBound));
+
+                foreach (ICoordinate c in multiPoint.Coordinates)
+                {
+                    _shapeFileWriter.Write(ByteEncoder.GetLittleEndian(
+                        c.ContainsOrdinate(Ordinates.Z) && !IsShapefileNullValue(c[Ordinates.Z])
+                        ? c[Ordinates.Z]
+                        : 0.0
+                        ));
+                }
+            }
+
+            if (shpType == ShapeType.MultiPointZ || shpType == ShapeType.MultiPointM)
+            {
+                Pair<double> mrng = GetOrdinateRange((IEnumerable<IGeometry>)multiPoint, Ordinates.M);
+
+                double lowerBound = mrng.First == Double.MaxValue || IsShapefileNullValue(mrng.First)
+                                        ? NullDoubleValue
+                                        : mrng.First;
+
+                double upperBound = mrng.Second == Double.MinValue || IsShapefileNullValue(mrng.Second)
+                                        ? NullDoubleValue
+                                        : mrng.Second;
+                _shapeFileWriter.Write(ByteEncoder.GetLittleEndian(lowerBound));
+                _shapeFileWriter.Write(ByteEncoder.GetLittleEndian(upperBound));
+
+                foreach (ICoordinate c in multiPoint.Coordinates)
+                {
+                    _shapeFileWriter.Write(ByteEncoder.GetLittleEndian(
+                        c.ContainsOrdinate(Ordinates.M) && !IsShapefileNullValue(c[Ordinates.M])
+                        ? c[Ordinates.M]
+                        : NullDoubleValue
+                        ));
+                }
+            }
+
         }
 
         private void writePolySegments(IExtents extents, Int32[] parts, IEnumerable points, Int32 pointCount)
@@ -3002,7 +3263,7 @@ namespace SharpMap.Data.Providers.ShapeFile
         private void writeLineString(ILineString lineString, ShapeType shpType)
         {
             if (Array.IndexOf(PolyLineTypes, shpType) == -1)
-                throw new InvalidOperationException("shpType must be a Polyline type");
+                throw new ArgumentException("shpType must be a Polyline type");
 
             _shapeFileWriter.Write(ByteEncoder.GetLittleEndian((Int32)shpType));
 
@@ -3010,12 +3271,60 @@ namespace SharpMap.Data.Providers.ShapeFile
                               new[] { 0 },
                               lineString.Coordinates,
                               lineString.Coordinates.Count);
+
+            if (shpType == ShapeType.PolyLineZ)
+            {
+                Pair<double> zrng = GetOrdinateRange(lineString, Ordinates.Z);
+
+                double lowerBound = zrng.First == Double.MaxValue || IsShapefileNullValue(zrng.First)
+                                        ? 0.0
+                                        : zrng.First;
+
+                double upperBound = zrng.Second == Double.MinValue || IsShapefileNullValue(zrng.Second)
+                                        ? 0.0
+                                        : zrng.Second;
+                _shapeFileWriter.Write(ByteEncoder.GetLittleEndian(lowerBound));
+                _shapeFileWriter.Write(ByteEncoder.GetLittleEndian(upperBound));
+
+                foreach (ICoordinate c in lineString.Coordinates)
+                {
+                    _shapeFileWriter.Write(ByteEncoder.GetLittleEndian(
+                        c.ContainsOrdinate(Ordinates.Z) && !IsShapefileNullValue(c[Ordinates.Z])
+                        ? c[Ordinates.Z]
+                        : 0.0
+                        ));
+                }
+            }
+
+            if (shpType == ShapeType.PolyLineZ || shpType == ShapeType.PolyLineM)
+            {
+                Pair<double> zrng = GetOrdinateRange(lineString, Ordinates.M);
+
+                double lowerBound = zrng.First == Double.MaxValue || IsShapefileNullValue(zrng.First)
+                                        ? NullDoubleValue
+                                        : zrng.First;
+
+                double upperBound = zrng.Second == Double.MinValue || IsShapefileNullValue(zrng.Second)
+                                        ? NullDoubleValue
+                                        : zrng.Second;
+                _shapeFileWriter.Write(ByteEncoder.GetLittleEndian(lowerBound));
+                _shapeFileWriter.Write(ByteEncoder.GetLittleEndian(upperBound));
+
+                foreach (ICoordinate c in lineString.Coordinates)
+                {
+                    _shapeFileWriter.Write(ByteEncoder.GetLittleEndian(
+                        c.ContainsOrdinate(Ordinates.M) && !IsShapefileNullValue(c[Ordinates.M])
+                        ? c[Ordinates.M]
+                        : NullDoubleValue
+                        ));
+                }
+            }
         }
 
         private void writeMultiLineString(IMultiLineString multiLineString, ShapeType shpType)
         {
             if (Array.IndexOf(PolyLineTypes, shpType) == -1)
-                throw new InvalidOperationException("shpType must be a Polyline type");
+                throw new ArgumentException("shpType must be a Polyline type");
 
             Int32[] parts = new Int32[multiLineString.Count];
             ArrayList allPoints = new ArrayList();
@@ -3030,6 +3339,55 @@ namespace SharpMap.Data.Providers.ShapeFile
 
             _shapeFileWriter.Write(ByteEncoder.GetLittleEndian((Int32)shpType));
             writePolySegments(multiLineString.Extents, parts, allPoints, allPoints.Count);
+
+            if (shpType == ShapeType.PolyLineZ)
+            {
+                Pair<double> zrng = GetOrdinateRange((IEnumerable<IGeometry>)multiLineString, Ordinates.Z);
+
+                double lowerBound = zrng.First == Double.MaxValue || IsShapefileNullValue(zrng.First)
+                                        ? 0.0
+                                        : zrng.First;
+
+                double upperBound = zrng.Second == Double.MinValue || IsShapefileNullValue(zrng.Second)
+                                        ? 0.0
+                                        : zrng.Second;
+                _shapeFileWriter.Write(ByteEncoder.GetLittleEndian(lowerBound));
+                _shapeFileWriter.Write(ByteEncoder.GetLittleEndian(upperBound));
+
+                foreach (ICoordinate c in multiLineString.Coordinates)
+                {
+                    _shapeFileWriter.Write(ByteEncoder.GetLittleEndian(
+                        c.ContainsOrdinate(Ordinates.Z) && !IsShapefileNullValue(c[Ordinates.Z])
+                        ? c[Ordinates.Z]
+                        : 0.0
+                        ));
+                }
+            }
+
+            if (shpType == ShapeType.PolyLineZ || shpType == ShapeType.PolyLineM)
+            {
+                Pair<double> zrng = GetOrdinateRange((IEnumerable<IGeometry>)multiLineString, Ordinates.M);
+
+                double lowerBound = zrng.First == Double.MaxValue || IsShapefileNullValue(zrng.First)
+                                        ? NullDoubleValue
+                                        : zrng.First;
+
+                double upperBound = zrng.Second == Double.MinValue || IsShapefileNullValue(zrng.Second)
+                                        ? NullDoubleValue
+                                        : zrng.Second;
+                _shapeFileWriter.Write(ByteEncoder.GetLittleEndian(lowerBound));
+                _shapeFileWriter.Write(ByteEncoder.GetLittleEndian(upperBound));
+
+                foreach (ICoordinate c in multiLineString.Coordinates)
+                {
+                    _shapeFileWriter.Write(ByteEncoder.GetLittleEndian(
+                        c.ContainsOrdinate(Ordinates.M) && !IsShapefileNullValue(c[Ordinates.M])
+                        ? c[Ordinates.M]
+                        : NullDoubleValue
+                        ));
+                }
+            }
+
         }
 
         /// <summary>
@@ -3039,7 +3397,7 @@ namespace SharpMap.Data.Providers.ShapeFile
         private void writePolygon(IPolygon polygon, ShapeType shpType)
         {
             if (Array.IndexOf(PolygonTypes, shpType) == -1)
-                throw new InvalidOperationException("shpType must be a Polygon type");
+                throw new ArgumentException("shpType must be a Polygon type");
 
             Int32[] parts = new Int32[polygon.InteriorRingsCount + 1];
             Int32 currentPartsIndex = 0, pointCnt = 0;
@@ -3069,6 +3427,56 @@ namespace SharpMap.Data.Providers.ShapeFile
 
             //Now write the actual point data
             writePolygonCoordinates(polygon);
+
+
+            if (shpType == ShapeType.PolygonZ)
+            {
+                Pair<double> zrng = GetOrdinateRange(polygon, Ordinates.Z);
+
+                double lowerBound = zrng.First == Double.MaxValue || IsShapefileNullValue(zrng.First)
+                                        ? 0.0
+                                        : zrng.First;
+
+                double upperBound = zrng.Second == Double.MinValue || IsShapefileNullValue(zrng.Second)
+                                        ? 0.0
+                                        : zrng.Second;
+                _shapeFileWriter.Write(ByteEncoder.GetLittleEndian(lowerBound));
+                _shapeFileWriter.Write(ByteEncoder.GetLittleEndian(upperBound));
+
+                foreach (ICoordinate c in getOrderedPolygonCoordinates(polygon))
+                {
+                    _shapeFileWriter.Write(ByteEncoder.GetLittleEndian(
+                        c.ContainsOrdinate(Ordinates.Z) && !IsShapefileNullValue(c[Ordinates.Z])
+                        ? c[Ordinates.Z]
+                        : 0.0
+                        ));
+                }
+            }
+
+            if (shpType == ShapeType.PolygonZ || shpType == ShapeType.PolygonM)
+            {
+                Pair<double> zrng = GetOrdinateRange(polygon, Ordinates.M);
+
+                double lowerBound = zrng.First == Double.MaxValue || IsShapefileNullValue(zrng.First)
+                                        ? NullDoubleValue
+                                        : zrng.First;
+
+                double upperBound = zrng.Second == Double.MinValue || IsShapefileNullValue(zrng.Second)
+                                        ? NullDoubleValue
+                                        : zrng.Second;
+                _shapeFileWriter.Write(ByteEncoder.GetLittleEndian(lowerBound));
+                _shapeFileWriter.Write(ByteEncoder.GetLittleEndian(upperBound));
+
+                foreach (ICoordinate c in getOrderedPolygonCoordinates(polygon))
+                {
+                    _shapeFileWriter.Write(ByteEncoder.GetLittleEndian(
+                        c.ContainsOrdinate(Ordinates.M) && !IsShapefileNullValue(c[Ordinates.M])
+                        ? c[Ordinates.M]
+                        : NullDoubleValue
+                        ));
+                }
+            }
+
         }
 
         /// <summary>
@@ -3078,7 +3486,7 @@ namespace SharpMap.Data.Providers.ShapeFile
         private void writeMultiPolygon(IMultiPolygon mpoly, ShapeType shpType)
         {
             if (Array.IndexOf(PolygonTypes, shpType) == -1)
-                throw new InvalidOperationException("shpType must be a Polygon type");
+                throw new ArgumentException("shpType must be a Polygon type");
 
             List<Int32> parts = new List<int>();
             Int32 pointIndex = 0;
@@ -3112,6 +3520,55 @@ namespace SharpMap.Data.Providers.ShapeFile
             //Now write the actual point data
             foreach (IPolygon poly in (mpoly as IEnumerable<IPolygon>))
                 writePolygonCoordinates(poly);
+
+
+            if (shpType == ShapeType.PolygonZ)
+            {
+                Pair<double> zrng = GetOrdinateRange((IEnumerable<IGeometry>)mpoly, Ordinates.Z);
+
+                double lowerBound = zrng.First == Double.MaxValue || IsShapefileNullValue(zrng.First)
+                                        ? 0.0
+                                        : zrng.First;
+
+                double upperBound = zrng.Second == Double.MinValue || IsShapefileNullValue(zrng.Second)
+                                        ? 0.0
+                                        : zrng.Second;
+                _shapeFileWriter.Write(ByteEncoder.GetLittleEndian(lowerBound));
+                _shapeFileWriter.Write(ByteEncoder.GetLittleEndian(upperBound));
+
+                foreach (ICoordinate c in getOrderedMultiPolygonCoordinates(mpoly))
+                {
+                    _shapeFileWriter.Write(ByteEncoder.GetLittleEndian(
+                        c.ContainsOrdinate(Ordinates.Z) && !IsShapefileNullValue(c[Ordinates.Z])
+                        ? c[Ordinates.Z]
+                        : 0.0
+                        ));
+                }
+            }
+
+            if (shpType == ShapeType.PolygonZ || shpType == ShapeType.PolygonM)
+            {
+                Pair<double> zrng = GetOrdinateRange((IEnumerable<IGeometry>)mpoly, Ordinates.M);
+
+                double lowerBound = zrng.First == Double.MaxValue || IsShapefileNullValue(zrng.First)
+                                        ? NullDoubleValue
+                                        : zrng.First;
+
+                double upperBound = zrng.Second == Double.MinValue || IsShapefileNullValue(zrng.Second)
+                                        ? NullDoubleValue
+                                        : zrng.Second;
+                _shapeFileWriter.Write(ByteEncoder.GetLittleEndian(lowerBound));
+                _shapeFileWriter.Write(ByteEncoder.GetLittleEndian(upperBound));
+
+                foreach (ICoordinate c in getOrderedMultiPolygonCoordinates(mpoly))
+                {
+                    _shapeFileWriter.Write(ByteEncoder.GetLittleEndian(
+                        c.ContainsOrdinate(Ordinates.M) && !IsShapefileNullValue(c[Ordinates.M])
+                        ? c[Ordinates.M]
+                        : NullDoubleValue
+                        ));
+                }
+            }
         }
 
         /// <summary>
@@ -3120,26 +3577,25 @@ namespace SharpMap.Data.Providers.ShapeFile
         /// <param name="polygon">polygon who's coordinates are to be written out</param>
         private void writePolygonCoordinates(IPolygon polygon)
         {
-            foreach (ICoordinate point in polygon.ExteriorRing.Coordinates)
-                writeCoordinate(point[Ordinates.X], point[Ordinates.Y]);
+            foreach (ICoordinate c in getOrderedPolygonCoordinates(polygon))
+                writeCoordinate(c[Ordinates.X], c[Ordinates.Y]);
+        }
 
-            foreach (ILinearRing hole in polygon.InteriorRings)
-            {
-                if (hole.IsCcw)
-                {
-                    foreach (ICoordinate point in hole.Coordinates)
-                        writeCoordinate(point[Ordinates.X], point[Ordinates.Y]);
-                }
-                else
-                {
-                    ICoordinate pt = null;
-                    for (Int32 i = hole.Coordinates.Count - 1; i >= 0; i--)
-                    {
-                        pt = hole.Coordinates[i];
-                        writeCoordinate(pt[Ordinates.X], pt[Ordinates.Y]);
-                    }
-                }
-            }
+        private IEnumerable<ICoordinate> getOrderedPolygonCoordinates(IPolygon poly)
+        {
+            foreach (ICoordinate coordinate in poly.ExteriorRing.Coordinates)
+                yield return coordinate;
+
+            foreach (ILinearRing hole in poly.InteriorRings)
+                foreach (ICoordinate coordinate in (hole.IsCcw ? hole.Coordinates : hole.Coordinates.Reversed))
+                    yield return coordinate;
+        }
+
+        private IEnumerable<ICoordinate> getOrderedMultiPolygonCoordinates(IMultiPolygon polygons)
+        {
+            foreach (IPolygon p in (IEnumerable<IPolygon>)polygons)
+                foreach (ICoordinate c in getOrderedPolygonCoordinates(p))
+                    yield return c;
         }
 
         /// <summary>

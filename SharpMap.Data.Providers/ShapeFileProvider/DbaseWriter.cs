@@ -115,7 +115,7 @@ namespace SharpMap.Data.Providers.ShapeFile
                 UpdateHeader(header);
                 _binaryWriter.Write(header.HeaderLength);
                 _binaryWriter.Write(header.RecordLength);
-                _binaryWriter.Write(new Byte[DbaseConstants.EncodingOffset - (Int32) _binaryWriter.BaseStream.Position]);
+                _binaryWriter.Write(new Byte[DbaseConstants.EncodingOffset - (Int32)_binaryWriter.BaseStream.Position]);
                 _binaryWriter.Write(header.LanguageDriver);
                 _binaryWriter.Write(new Byte[2]);
 
@@ -130,13 +130,13 @@ namespace SharpMap.Data.Providers.ShapeFile
 
                     if (fieldTypeCode == 'N' || fieldTypeCode == 'F')
                     {
-                        _binaryWriter.Write((Byte) field.Length);
+                        _binaryWriter.Write((Byte)field.Length);
                         _binaryWriter.Write(field.Decimals);
                     }
                     else
                     {
-                        _binaryWriter.Write((Byte) field.Length);
-                        _binaryWriter.Write((Byte) (field.Length >> 8));
+                        _binaryWriter.Write((Byte)field.Length);
+                        _binaryWriter.Write((Byte)(field.Length >> 8));
                     }
 
                     _binaryWriter.Write(new Byte[14]);
@@ -183,7 +183,7 @@ namespace SharpMap.Data.Providers.ShapeFile
                             }
                             else
                             {
-                                writeBoolean((Boolean) row[column.ColumnName]);
+                                writeBoolean((Boolean)row[column.ColumnName]);
                             }
                             break;
                         case TypeCode.DateTime:
@@ -193,7 +193,7 @@ namespace SharpMap.Data.Providers.ShapeFile
                             }
                             else
                             {
-                                writeDateTime((DateTime) row[column.ColumnName]);
+                                writeDateTime((DateTime)row[column.ColumnName]);
                             }
                             break;
                         case TypeCode.Single:
@@ -228,8 +228,10 @@ namespace SharpMap.Data.Providers.ShapeFile
                             else
                             {
                                 object value = row[column.ColumnName]; //jd: can be a Guid 
-
-                                writeString(value is string ? (string) value : value.ToString(), column.Length);
+                                if (value is string && String.IsNullOrEmpty((string)value))
+                                    writeNullString(column.Length);
+                                else
+                                    writeString(value is string ? (string)value : value.ToString(), column.Length);
                             }
                             break;
                         case TypeCode.Char:
@@ -292,7 +294,7 @@ namespace SharpMap.Data.Providers.ShapeFile
 
             private void writeString(String value, Int32 length)
             {
-                value = (value ?? String.Empty) + new String((Char) 0x0, length);
+                value = (value ?? String.Empty) + new String((Char)0x0, length);
                 Byte[] chars = _dbaseFile.Encoding.GetBytes(value.Substring(0, length));
                 _binaryWriter.Write(chars);
             }

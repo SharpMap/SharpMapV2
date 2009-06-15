@@ -102,7 +102,7 @@ namespace SharpMap.Data.Providers.ShapeFile
             _header.Extents = _shapeFile.GeometryFactory.CreateExtents(
                 _header.Extents, feature.Geometry.Extents);
 
-            Int32 length = ShapeFileProvider.ComputeGeometryLengthInWords(feature.Geometry);
+            Int32 length = ShapeFileProvider.ComputeGeometryLengthInWords(feature.Geometry, ShapeFile.ShapeType);
             Int32 offset = ComputeShapeFileSizeInWords();
 
             IndexEntry entry = new IndexEntry(length, offset);
