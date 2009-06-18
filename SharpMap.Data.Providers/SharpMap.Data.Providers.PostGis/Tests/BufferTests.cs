@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using GeoAPI.DataStructures;
 using GeoAPI.Geometries;
 using GisSharpBlog.NetTopologySuite.Index.Strtree;
 using GisSharpBlog.NetTopologySuite.Operation.Buffer;
@@ -75,19 +76,20 @@ namespace SharpMap.Data.Providers.PostGis.Tests
             Assert.IsNotNull(res);
         }
 
+        readonly Random _rnd = new Random(DateTime.Now.Millisecond);
 
 
         public IEnumerable<IGeometry<BufferedCoordinate>> CreateTestGeometries(int count, double minx, double miny, double maxx, double maxy)
         {
-            Random rnd = new Random(DateTime.Now.Millisecond);
             double xrange = Math.Abs(maxx - minx);
             double yrange = Math.Abs(maxy - miny);
+            
             for (int i = 0; i < count; i++)
             {
-                double x1 = rnd.NextDouble() * xrange + minx;
-                double x2 = rnd.NextDouble() * xrange + minx;
-                double y1 = rnd.NextDouble() * yrange + miny;
-                double y2 = rnd.NextDouble() * yrange + miny;
+                double x1 = _rnd.NextDouble() * xrange + minx;
+                double x2 = _rnd.NextDouble() * xrange + minx;
+                double y1 = _rnd.NextDouble() * yrange + miny;
+                double y2 = _rnd.NextDouble() * yrange + miny;
 
                 yield return (IGeometry<BufferedCoordinate>)_geometryFactory.CreateExtents2D(Math.Min(x1, x2), Math.Min(y1, y2), Math.Max(x1, x2),
                                                         Math.Max(y1, y2)).ToGeometry();
@@ -97,13 +99,25 @@ namespace SharpMap.Data.Providers.PostGis.Tests
         [TestMethod]
         public void TestStrIndex()
         {
-            StrTree<BufferedCoordinate, IGeometry<BufferedCoordinate>> 
+            StrTree<BufferedCoordinate, IGeometry<BufferedCoordinate>>
                 index = new StrTree<BufferedCoordinate, IGeometry<BufferedCoordinate>>(_geometryFactory);
-            
-            index.BulkLoad(CreateTestGeometries(50, 0.0, 0.0, 300.0, 300.0));
+
+            index.BulkLoad(
+                CreateTestGeometries(1000, 0.0, 0.0, 3000.0, 3000.0));
             index.Build();
 
-            index.Query((IExtents<BufferedCoordinate>)_geometryFactory.CreateExtents2D(100.0, 100.0, 150.0, 150.0));
+            IExtents<BufferedCoordinate> queryExtents =
+                (IExtents<BufferedCoordinate>)_geometryFactory.CreateExtents2D(100.0, 100.0, 120.0, 120.0);
+
+            IList<IGeometry<BufferedCoordinate>> matches = new List<IGeometry<BufferedCoordinate>>(
+                index.Query(queryExtents));
+
+
+            foreach (IGeometry<BufferedCoordinate> list in matches)
+            {
+                Assert.IsTrue(list.Bounds.Intersects(queryExtents),"a result from the index does not intersect the query bounds");
+            }
+
         }
 
     }

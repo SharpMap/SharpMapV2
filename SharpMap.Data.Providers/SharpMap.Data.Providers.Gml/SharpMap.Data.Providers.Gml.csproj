@@ -45,433 +45,1287 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Entities\Iso\Gco\AbstractGenericName.cs" />
-    <Compile Include="Entities\Iso\Gco\AbstractObject.cs" />
-    <Compile Include="Entities\Iso\Gco\AbstractObjectType.cs" />
-    <Compile Include="Entities\Iso\Gco\Angle.cs" />
-    <Compile Include="Entities\Iso\Gco\AnglePropertyType.cs" />
-    <Compile Include="Entities\Iso\Gco\Binary.cs" />
-    <Compile Include="Entities\Iso\Gco\BinaryPropertyType.cs" />
-    <Compile Include="Entities\Iso\Gco\BinaryType.cs" />
-    <Compile Include="Entities\Iso\Gco\BooleanPropertyType.cs" />
-    <Compile Include="Entities\Iso\Gco\CharacterStringPropertyType.cs" />
-    <Compile Include="Entities\Iso\Gco\CodeListValueType.cs" />
-    <Compile Include="Entities\Iso\Gco\DatePropertyType.cs" />
-    <Compile Include="Entities\Iso\Gco\DateTimePropertyType.cs" />
-    <Compile Include="Entities\Iso\Gco\DecimalPropertyType.cs" />
-    <Compile Include="Entities\Iso\Gco\Distance.cs" />
-    <Compile Include="Entities\Iso\Gco\DistancePropertyType.cs" />
-    <Compile Include="Entities\Iso\Gco\GenericNamePropertyType.cs" />
-    <Compile Include="Entities\Iso\Gco\IntegerPropertyType.cs" />
-    <Compile Include="Entities\Iso\Gco\Length.cs" />
-    <Compile Include="Entities\Iso\Gco\LengthPropertyType.cs" />
-    <Compile Include="Entities\Iso\Gco\LocalName.cs" />
-    <Compile Include="Entities\Iso\Gco\LocalNamePropertyType.cs" />
-    <Compile Include="Entities\Iso\Gco\Measure.cs" />
-    <Compile Include="Entities\Iso\Gco\MeasurePropertyType.cs" />
-    <Compile Include="Entities\Iso\Gco\MemberName.cs" />
-    <Compile Include="Entities\Iso\Gco\MemberNamePropertyType.cs" />
-    <Compile Include="Entities\Iso\Gco\MemberNameType.cs" />
-    <Compile Include="Entities\Iso\Gco\Multiplicity.cs" />
-    <Compile Include="Entities\Iso\Gco\MultiplicityPropertyType.cs" />
-    <Compile Include="Entities\Iso\Gco\MultiplicityRange.cs" />
-    <Compile Include="Entities\Iso\Gco\MultiplicityRangePropertyType.cs" />
-    <Compile Include="Entities\Iso\Gco\MultiplicityRangeType.cs" />
-    <Compile Include="Entities\Iso\Gco\MultiplicityType.cs" />
-    <Compile Include="Entities\Iso\Gco\NumberPropertyType.cs" />
-    <Compile Include="Entities\Iso\Gco\ObjectReferencePropertyType.cs" />
-    <Compile Include="Entities\Iso\Gco\RealPropertyType.cs" />
-    <Compile Include="Entities\Iso\Gco\RecordPropertyType.cs" />
-    <Compile Include="Entities\Iso\Gco\RecordType.cs" />
-    <Compile Include="Entities\Iso\Gco\RecordTypePropertyType.cs" />
-    <Compile Include="Entities\Iso\Gco\RecordTypeType.cs" />
-    <Compile Include="Entities\Iso\Gco\Scale.cs" />
-    <Compile Include="Entities\Iso\Gco\ScalePropertyType.cs" />
-    <Compile Include="Entities\Iso\Gco\ScopedName.cs" />
-    <Compile Include="Entities\Iso\Gco\ScopedNamePropertyType.cs" />
-    <Compile Include="Entities\Iso\Gco\TypeName.cs" />
-    <Compile Include="Entities\Iso\Gco\TypeNamePropertyType.cs" />
-    <Compile Include="Entities\Iso\Gco\TypeNameType.cs" />
-    <Compile Include="Entities\Iso\Gco\UnitOfMeasurePropertyType.cs" />
-    <Compile Include="Entities\Iso\Gco\UnlimitedInteger.cs" />
-    <Compile Include="Entities\Iso\Gco\UnlimitedIntegerPropertyType.cs" />
-    <Compile Include="Entities\Iso\Gco\UnlimitedIntegerType.cs" />
-    <Compile Include="Entities\Iso\Gco\UomAnglePropertyType.cs" />
-    <Compile Include="Entities\Iso\Gco\UomAreaPropertyType.cs" />
-    <Compile Include="Entities\Iso\Gco\UomLengthPropertyType.cs" />
-    <Compile Include="Entities\Iso\Gco\UomScalePropertyType.cs" />
-    <Compile Include="Entities\Iso\Gco\UomTimePropertyType.cs" />
-    <Compile Include="Entities\Iso\Gco\UomVelocityPropertyType.cs" />
-    <Compile Include="Entities\Iso\Gco\UomVolumePropertyType.cs" />
-    <Compile Include="Entities\Iso\Gmd\AbstractDQ_completeness.cs" />
-    <Compile Include="Entities\Iso\Gmd\AbstractDQ_completeness_Type.cs" />
-    <Compile Include="Entities\Iso\Gmd\AbstractDQ_element.cs" />
-    <Compile Include="Entities\Iso\Gmd\AbstractDQ_element_Type.cs" />
-    <Compile Include="Entities\Iso\Gmd\AbstractDQ_logicalConsistency.cs" />
-    <Compile Include="Entities\Iso\Gmd\AbstractDQ_logicalConsistency_Type.cs" />
-    <Compile Include="Entities\Iso\Gmd\AbstractDQ_positionalAccuracy.cs" />
-    <Compile Include="Entities\Iso\Gmd\AbstractDQ_positionalAccuracy_Type.cs" />
-    <Compile Include="Entities\Iso\Gmd\AbstractDQ_result.cs" />
-    <Compile Include="Entities\Iso\Gmd\AbstractDQ_result_Type.cs" />
-    <Compile Include="Entities\Iso\Gmd\AbstractDQ_temporalAccuracy.cs" />
-    <Compile Include="Entities\Iso\Gmd\AbstractDQ_temporalAccuracy_Type.cs" />
-    <Compile Include="Entities\Iso\Gmd\AbstractDQ_thematicAccuracy.cs" />
-    <Compile Include="Entities\Iso\Gmd\AbstractDQ_thematicAccuracy_Type.cs" />
-    <Compile Include="Entities\Iso\Gmd\AbstractDS_aggregate.cs" />
-    <Compile Include="Entities\Iso\Gmd\AbstractDS_aggregate_Type.cs" />
-    <Compile Include="Entities\Iso\Gmd\AbstractEX_geographicExtent.cs" />
-    <Compile Include="Entities\Iso\Gmd\AbstractEX_geographicExtent_Type.cs" />
-    <Compile Include="Entities\Iso\Gmd\AbstractMD_contentInformation.cs" />
-    <Compile Include="Entities\Iso\Gmd\AbstractMD_contentInformation_Type.cs" />
-    <Compile Include="Entities\Iso\Gmd\AbstractMD_identification.cs" />
-    <Compile Include="Entities\Iso\Gmd\AbstractMD_identification_Type.cs" />
-    <Compile Include="Entities\Iso\Gmd\AbstractMD_spatialRepresentation.cs" />
-    <Compile Include="Entities\Iso\Gmd\AbstractMD_spatialRepresentation_Type.cs" />
-    <Compile Include="Entities\Iso\Gmd\AbstractRS_referenceSystem.cs" />
-    <Compile Include="Entities\Iso\Gmd\AbstractRS_referenceSystem_Type.cs" />
-    <Compile Include="Entities\Iso\Gmd\CI_address.cs" />
-    <Compile Include="Entities\Iso\Gmd\CI_address_PropertyType.cs" />
-    <Compile Include="Entities\Iso\Gmd\CI_address_Type.cs" />
-    <Compile Include="Entities\Iso\Gmd\CI_citation.cs" />
-    <Compile Include="Entities\Iso\Gmd\CI_citation_PropertyType.cs" />
-    <Compile Include="Entities\Iso\Gmd\CI_citation_Type.cs" />
-    <Compile Include="Entities\Iso\Gmd\CI_contact.cs" />
-    <Compile Include="Entities\Iso\Gmd\CI_contact_PropertyType.cs" />
-    <Compile Include="Entities\Iso\Gmd\CI_contact_Type.cs" />
-    <Compile Include="Entities\Iso\Gmd\CI_date.cs" />
-    <Compile Include="Entities\Iso\Gmd\CI_dateTypeCode.cs" />
-    <Compile Include="Entities\Iso\Gmd\CI_dateTypeCode_PropertyType.cs" />
-    <Compile Include="Entities\Iso\Gmd\CI_date_PropertyType.cs" />
-    <Compile Include="Entities\Iso\Gmd\CI_date_Type.cs" />
-    <Compile Include="Entities\Iso\Gmd\CI_onLineFunctionCode.cs" />
-    <Compile Include="Entities\Iso\Gmd\CI_onLineFunctionCode_PropertyType.cs" />
-    <Compile Include="Entities\Iso\Gmd\CI_onlineResource.cs" />
-    <Compile Include="Entities\Iso\Gmd\CI_onlineResource_PropertyType.cs" />
-    <Compile Include="Entities\Iso\Gmd\CI_onlineResource_Type.cs" />
-    <Compile Include="Entities\Iso\Gmd\CI_presentationFormCode.cs" />
-    <Compile Include="Entities\Iso\Gmd\CI_presentationFormCode_PropertyType.cs" />
-    <Compile Include="Entities\Iso\Gmd\CI_responsibleParty.cs" />
-    <Compile Include="Entities\Iso\Gmd\CI_responsibleParty_PropertyType.cs" />
-    <Compile Include="Entities\Iso\Gmd\CI_responsibleParty_Type.cs" />
-    <Compile Include="Entities\Iso\Gmd\CI_roleCode.cs" />
-    <Compile Include="Entities\Iso\Gmd\CI_roleCode_PropertyType.cs" />
-    <Compile Include="Entities\Iso\Gmd\CI_series.cs" />
-    <Compile Include="Entities\Iso\Gmd\CI_series_PropertyType.cs" />
-    <Compile Include="Entities\Iso\Gmd\CI_series_Type.cs" />
-    <Compile Include="Entities\Iso\Gmd\CI_telephone.cs" />
-    <Compile Include="Entities\Iso\Gmd\CI_telephone_PropertyType.cs" />
-    <Compile Include="Entities\Iso\Gmd\CI_telephone_Type.cs" />
-    <Compile Include="Entities\Iso\Gmd\Country.cs" />
-    <Compile Include="Entities\Iso\Gmd\CountryPropertyType.cs" />
-    <Compile Include="Entities\Iso\Gmd\DQ_absoluteExternalPositionalAccuracy.cs" />
-    <Compile Include="Entities\Iso\Gmd\DQ_absoluteExternalPositionalAccuracy_PropertyType.cs" />
-    <Compile Include="Entities\Iso\Gmd\DQ_absoluteExternalPositionalAccuracy_Type.cs" />
-    <Compile Include="Entities\Iso\Gmd\DQ_accuracyOfATimeMeasurement.cs" />
-    <Compile Include="Entities\Iso\Gmd\DQ_accuracyOfATimeMeasurement_PropertyType.cs" />
-    <Compile Include="Entities\Iso\Gmd\DQ_accuracyOfATimeMeasurement_Type.cs" />
-    <Compile Include="Entities\Iso\Gmd\DQ_completenessCommission.cs" />
-    <Compile Include="Entities\Iso\Gmd\DQ_completenessCommission_PropertyType.cs" />
-    <Compile Include="Entities\Iso\Gmd\DQ_completenessCommission_Type.cs" />
-    <Compile Include="Entities\Iso\Gmd\DQ_completenessOmission.cs" />
-    <Compile Include="Entities\Iso\Gmd\DQ_completenessOmission_PropertyType.cs" />
-    <Compile Include="Entities\Iso\Gmd\DQ_completenessOmission_Type.cs" />
-    <Compile Include="Entities\Iso\Gmd\DQ_completeness_PropertyType.cs" />
-    <Compile Include="Entities\Iso\Gmd\DQ_conceptualConsistency.cs" />
-    <Compile Include="Entities\Iso\Gmd\DQ_conceptualConsistency_PropertyType.cs" />
-    <Compile Include="Entities\Iso\Gmd\DQ_conceptualConsistency_Type.cs" />
-    <Compile Include="Entities\Iso\Gmd\DQ_conformanceResult.cs" />
-    <Compile Include="Entities\Iso\Gmd\DQ_conformanceResult_PropertyType.cs" />
-    <Compile Include="Entities\Iso\Gmd\DQ_conformanceResult_Type.cs" />
-    <Compile Include="Entities\Iso\Gmd\DQ_dataQuality.cs" />
-    <Compile Include="Entities\Iso\Gmd\DQ_dataQuality_PropertyType.cs" />
-    <Compile Include="Entities\Iso\Gmd\DQ_dataQuality_Type.cs" />
-    <Compile Include="Entities\Iso\Gmd\DQ_domainConsistency.cs" />
-    <Compile Include="Entities\Iso\Gmd\DQ_domainConsistency_PropertyType.cs" />
-    <Compile Include="Entities\Iso\Gmd\DQ_domainConsistency_Type.cs" />
-    <Compile Include="Entities\Iso\Gmd\DQ_element_PropertyType.cs" />
-    <Compile Include="Entities\Iso\Gmd\DQ_evaluationMethodTypeCode.cs" />
-    <Compile Include="Entities\Iso\Gmd\DQ_evaluationMethodTypeCode_PropertyType.cs" />
-    <Compile Include="Entities\Iso\Gmd\DQ_formatConsistency.cs" />
-    <Compile Include="Entities\Iso\Gmd\DQ_formatConsistency_PropertyType.cs" />
-    <Compile Include="Entities\Iso\Gmd\DQ_formatConsistency_Type.cs" />
-    <Compile Include="Entities\Iso\Gmd\DQ_griddedDataPositionalAccuracy.cs" />
-    <Compile Include="Entities\Iso\Gmd\DQ_griddedDataPositionalAccuracy_PropertyType.cs" />
-    <Compile Include="Entities\Iso\Gmd\DQ_griddedDataPositionalAccuracy_Type.cs" />
-    <Compile Include="Entities\Iso\Gmd\DQ_logicalConsistency_PropertyType.cs" />
-    <Compile Include="Entities\Iso\Gmd\DQ_nonQuantitativeAttributeAccuracy.cs" />
-    <Compile Include="Entities\Iso\Gmd\DQ_nonQuantitativeAttributeAccuracy_PropertyType.cs" />
-    <Compile Include="Entities\Iso\Gmd\DQ_nonQuantitativeAttributeAccuracy_Type.cs" />
-    <Compile Include="Entities\Iso\Gmd\DQ_positionalAccuracy_PropertyType.cs" />
-    <Compile Include="Entities\Iso\Gmd\DQ_quantitativeAttributeAccuracy.cs" />
-    <Compile Include="Entities\Iso\Gmd\DQ_quantitativeAttributeAccuracy_PropertyType.cs" />
-    <Compile Include="Entities\Iso\Gmd\DQ_quantitativeAttributeAccuracy_Type.cs" />
-    <Compile Include="Entities\Iso\Gmd\DQ_quantitativeResult.cs" />
-    <Compile Include="Entities\Iso\Gmd\DQ_quantitativeResult_PropertyType.cs" />
-    <Compile Include="Entities\Iso\Gmd\DQ_quantitativeResult_Type.cs" />
-    <Compile Include="Entities\Iso\Gmd\DQ_relativeInternalPositionalAccuracy.cs" />
-    <Compile Include="Entities\Iso\Gmd\DQ_relativeInternalPositionalAccuracy_PropertyType.cs" />
-    <Compile Include="Entities\Iso\Gmd\DQ_relativeInternalPositionalAccuracy_Type.cs" />
-    <Compile Include="Entities\Iso\Gmd\DQ_result_PropertyType.cs" />
-    <Compile Include="Entities\Iso\Gmd\DQ_scope.cs" />
-    <Compile Include="Entities\Iso\Gmd\DQ_scope_PropertyType.cs" />
-    <Compile Include="Entities\Iso\Gmd\DQ_scope_Type.cs" />
-    <Compile Include="Entities\Iso\Gmd\DQ_temporalAccuracy_PropertyType.cs" />
-    <Compile Include="Entities\Iso\Gmd\DQ_temporalConsistency.cs" />
-    <Compile Include="Entities\Iso\Gmd\DQ_temporalConsistency_PropertyType.cs" />
-    <Compile Include="Entities\Iso\Gmd\DQ_temporalConsistency_Type.cs" />
-    <Compile Include="Entities\Iso\Gmd\DQ_temporalValidity.cs" />
-    <Compile Include="Entities\Iso\Gmd\DQ_temporalValidity_PropertyType.cs" />
-    <Compile Include="Entities\Iso\Gmd\DQ_temporalValidity_Type.cs" />
-    <Compile Include="Entities\Iso\Gmd\DQ_thematicAccuracy_PropertyType.cs" />
-    <Compile Include="Entities\Iso\Gmd\DQ_thematicClassificationCorrectness.cs" />
-    <Compile Include="Entities\Iso\Gmd\DQ_thematicClassificationCorrectness_PropertyType.cs" />
-    <Compile Include="Entities\Iso\Gmd\DQ_thematicClassificationCorrectness_Type.cs" />
-    <Compile Include="Entities\Iso\Gmd\DQ_topologicalConsistency.cs" />
-    <Compile Include="Entities\Iso\Gmd\DQ_topologicalConsistency_PropertyType.cs" />
-    <Compile Include="Entities\Iso\Gmd\DQ_topologicalConsistency_Type.cs" />
-    <Compile Include="Entities\Iso\Gmd\DS_aggregate_PropertyType.cs" />
-    <Compile Include="Entities\Iso\Gmd\DS_association.cs" />
-    <Compile Include="Entities\Iso\Gmd\DS_associationTypeCode.cs" />
-    <Compile Include="Entities\Iso\Gmd\DS_associationTypeCode_PropertyType.cs" />
-    <Compile Include="Entities\Iso\Gmd\DS_association_PropertyType.cs" />
-    <Compile Include="Entities\Iso\Gmd\DS_association_Type.cs" />
-    <Compile Include="Entities\Iso\Gmd\DS_dataSet.cs" />
-    <Compile Include="Entities\Iso\Gmd\DS_dataSet_PropertyType.cs" />
-    <Compile Include="Entities\Iso\Gmd\DS_dataSet_Type.cs" />
-    <Compile Include="Entities\Iso\Gmd\DS_initiative.cs" />
-    <Compile Include="Entities\Iso\Gmd\DS_initiativeTypeCode.cs" />
-    <Compile Include="Entities\Iso\Gmd\DS_initiativeTypeCode_PropertyType.cs" />
-    <Compile Include="Entities\Iso\Gmd\DS_initiative_PropertyType.cs" />
-    <Compile Include="Entities\Iso\Gmd\DS_initiative_Type.cs" />
-    <Compile Include="Entities\Iso\Gmd\DS_otherAggregate.cs" />
-    <Compile Include="Entities\Iso\Gmd\DS_otherAggregate_PropertyType.cs" />
-    <Compile Include="Entities\Iso\Gmd\DS_otherAggregate_Type.cs" />
-    <Compile Include="Entities\Iso\Gmd\DS_platform.cs" />
-    <Compile Include="Entities\Iso\Gmd\DS_platform_PropertyType.cs" />
-    <Compile Include="Entities\Iso\Gmd\DS_platform_Type.cs" />
-    <Compile Include="Entities\Iso\Gmd\DS_productionSeries.cs" />
-    <Compile Include="Entities\Iso\Gmd\DS_productionSeries_PropertyType.cs" />
-    <Compile Include="Entities\Iso\Gmd\DS_productionSeries_Type.cs" />
-    <Compile Include="Entities\Iso\Gmd\DS_sensor.cs" />
-    <Compile Include="Entities\Iso\Gmd\DS_sensor_PropertyType.cs" />
-    <Compile Include="Entities\Iso\Gmd\DS_sensor_Type.cs" />
-    <Compile Include="Entities\Iso\Gmd\DS_series.cs" />
-    <Compile Include="Entities\Iso\Gmd\DS_series_PropertyType.cs" />
-    <Compile Include="Entities\Iso\Gmd\DS_series_Type.cs" />
-    <Compile Include="Entities\Iso\Gmd\DS_stereoMate.cs" />
-    <Compile Include="Entities\Iso\Gmd\DS_stereoMate_PropertyType.cs" />
-    <Compile Include="Entities\Iso\Gmd\DS_stereoMate_Type.cs" />
-    <Compile Include="Entities\Iso\Gmd\EX_boundingPolygon.cs" />
-    <Compile Include="Entities\Iso\Gmd\EX_boundingPolygon_PropertyType.cs" />
-    <Compile Include="Entities\Iso\Gmd\EX_boundingPolygon_Type.cs" />
-    <Compile Include="Entities\Iso\Gmd\EX_extent.cs" />
-    <Compile Include="Entities\Iso\Gmd\EX_extent_PropertyType.cs" />
-    <Compile Include="Entities\Iso\Gmd\EX_extent_Type.cs" />
-    <Compile Include="Entities\Iso\Gmd\EX_geographicBoundingBox.cs" />
-    <Compile Include="Entities\Iso\Gmd\EX_geographicBoundingBox_PropertyType.cs" />
-    <Compile Include="Entities\Iso\Gmd\EX_geographicBoundingBox_Type.cs" />
-    <Compile Include="Entities\Iso\Gmd\EX_geographicDescription.cs" />
-    <Compile Include="Entities\Iso\Gmd\EX_geographicDescription_PropertyType.cs" />
-    <Compile Include="Entities\Iso\Gmd\EX_geographicDescription_Type.cs" />
-    <Compile Include="Entities\Iso\Gmd\EX_geographicExtent_PropertyType.cs" />
-    <Compile Include="Entities\Iso\Gmd\EX_spatialTemporalExtent.cs" />
-    <Compile Include="Entities\Iso\Gmd\EX_spatialTemporalExtent_PropertyType.cs" />
-    <Compile Include="Entities\Iso\Gmd\EX_spatialTemporalExtent_Type.cs" />
-    <Compile Include="Entities\Iso\Gmd\EX_temporalExtent.cs" />
-    <Compile Include="Entities\Iso\Gmd\EX_temporalExtent_PropertyType.cs" />
-    <Compile Include="Entities\Iso\Gmd\EX_temporalExtent_Type.cs" />
-    <Compile Include="Entities\Iso\Gmd\EX_verticalExtent.cs" />
-    <Compile Include="Entities\Iso\Gmd\EX_verticalExtent_PropertyType.cs" />
-    <Compile Include="Entities\Iso\Gmd\EX_verticalExtent_Type.cs" />
-    <Compile Include="Entities\Iso\Gmd\LanguageCode.cs" />
-    <Compile Include="Entities\Iso\Gmd\LanguageCodePropertyType.cs" />
-    <Compile Include="Entities\Iso\Gmd\LI_lineage.cs" />
-    <Compile Include="Entities\Iso\Gmd\LI_lineage_PropertyType.cs" />
-    <Compile Include="Entities\Iso\Gmd\LI_lineage_Type.cs" />
-    <Compile Include="Entities\Iso\Gmd\LI_processStep.cs" />
-    <Compile Include="Entities\Iso\Gmd\LI_processStep_PropertyType.cs" />
-    <Compile Include="Entities\Iso\Gmd\LI_processStep_Type.cs" />
-    <Compile Include="Entities\Iso\Gmd\LI_source.cs" />
-    <Compile Include="Entities\Iso\Gmd\LI_source_PropertyType.cs" />
-    <Compile Include="Entities\Iso\Gmd\LI_source_Type.cs" />
-    <Compile Include="Entities\Iso\Gmd\LocalisedCharacterString.cs" />
-    <Compile Include="Entities\Iso\Gmd\LocalisedCharacterStringPropertyType.cs" />
-    <Compile Include="Entities\Iso\Gmd\LocalisedCharacterStringType.cs" />
-    <Compile Include="Entities\Iso\Gmd\MD_aggregateInformation.cs" />
-    <Compile Include="Entities\Iso\Gmd\MD_aggregateInformation_PropertyType.cs" />
-    <Compile Include="Entities\Iso\Gmd\MD_aggregateInformation_Type.cs" />
-    <Compile Include="Entities\Iso\Gmd\MD_applicationSchemaInformation.cs" />
-    <Compile Include="Entities\Iso\Gmd\MD_applicationSchemaInformation_PropertyType.cs" />
-    <Compile Include="Entities\Iso\Gmd\MD_applicationSchemaInformation_Type.cs" />
-    <Compile Include="Entities\Iso\Gmd\MD_band.cs" />
-    <Compile Include="Entities\Iso\Gmd\MD_band_PropertyType.cs" />
-    <Compile Include="Entities\Iso\Gmd\MD_band_Type.cs" />
-    <Compile Include="Entities\Iso\Gmd\MD_browseGraphic.cs" />
-    <Compile Include="Entities\Iso\Gmd\MD_browseGraphic_PropertyType.cs" />
-    <Compile Include="Entities\Iso\Gmd\MD_browseGraphic_Type.cs" />
-    <Compile Include="Entities\Iso\Gmd\MD_cellGeometryCode.cs" />
-    <Compile Include="Entities\Iso\Gmd\MD_cellGeometryCode_PropertyType.cs" />
-    <Compile Include="Entities\Iso\Gmd\MD_characterSetCode.cs" />
-    <Compile Include="Entities\Iso\Gmd\MD_characterSetCode_PropertyType.cs" />
-    <Compile Include="Entities\Iso\Gmd\MD_classificationCode.cs" />
-    <Compile Include="Entities\Iso\Gmd\MD_classificationCode_PropertyType.cs" />
-    <Compile Include="Entities\Iso\Gmd\MD_constraints.cs" />
-    <Compile Include="Entities\Iso\Gmd\MD_constraints_PropertyType.cs" />
-    <Compile Include="Entities\Iso\Gmd\MD_constraints_Type.cs" />
-    <Compile Include="Entities\Iso\Gmd\MD_contentInformation_PropertyType.cs" />
-    <Compile Include="Entities\Iso\Gmd\MD_coverageContentTypeCode.cs" />
-    <Compile Include="Entities\Iso\Gmd\MD_coverageContentTypeCode_PropertyType.cs" />
-    <Compile Include="Entities\Iso\Gmd\MD_coverageDescription.cs" />
-    <Compile Include="Entities\Iso\Gmd\MD_coverageDescription_PropertyType.cs" />
-    <Compile Include="Entities\Iso\Gmd\MD_coverageDescription_Type.cs" />
-    <Compile Include="Entities\Iso\Gmd\MD_dataIdentification.cs" />
-    <Compile Include="Entities\Iso\Gmd\MD_dataIdentification_PropertyType.cs" />
-    <Compile Include="Entities\Iso\Gmd\MD_dataIdentification_Type.cs" />
-    <Compile Include="Entities\Iso\Gmd\MD_datatypeCode.cs" />
-    <Compile Include="Entities\Iso\Gmd\MD_datatypeCode_PropertyType.cs" />
-    <Compile Include="Entities\Iso\Gmd\MD_digitalTransferOptions.cs" />
-    <Compile Include="Entities\Iso\Gmd\MD_digitalTransferOptions_PropertyType.cs" />
-    <Compile Include="Entities\Iso\Gmd\MD_digitalTransferOptions_Type.cs" />
-    <Compile Include="Entities\Iso\Gmd\MD_dimension.cs" />
-    <Compile Include="Entities\Iso\Gmd\MD_dimensionNameTypeCode.cs" />
-    <Compile Include="Entities\Iso\Gmd\MD_dimensionNameTypeCode_PropertyType.cs" />
-    <Compile Include="Entities\Iso\Gmd\MD_dimension_PropertyType.cs" />
-    <Compile Include="Entities\Iso\Gmd\MD_dimension_Type.cs" />
-    <Compile Include="Entities\Iso\Gmd\MD_distribution.cs" />
-    <Compile Include="Entities\Iso\Gmd\MD_distributionUnits.cs" />
-    <Compile Include="Entities\Iso\Gmd\MD_distributionUnits_PropertyType.cs" />
-    <Compile Include="Entities\Iso\Gmd\MD_distribution_PropertyType.cs" />
-    <Compile Include="Entities\Iso\Gmd\MD_distribution_Type.cs" />
-    <Compile Include="Entities\Iso\Gmd\MD_distributor.cs" />
-    <Compile Include="Entities\Iso\Gmd\MD_distributor_PropertyType.cs" />
-    <Compile Include="Entities\Iso\Gmd\MD_distributor_Type.cs" />
-    <Compile Include="Entities\Iso\Gmd\MD_extendedElementInformation.cs" />
-    <Compile Include="Entities\Iso\Gmd\MD_extendedElementInformation_PropertyType.cs" />
-    <Compile Include="Entities\Iso\Gmd\MD_extendedElementInformation_Type.cs" />
-    <Compile Include="Entities\Iso\Gmd\MD_featureCatalogueDescription.cs" />
-    <Compile Include="Entities\Iso\Gmd\MD_featureCatalogueDescription_PropertyType.cs" />
-    <Compile Include="Entities\Iso\Gmd\MD_featureCatalogueDescription_Type.cs" />
-    <Compile Include="Entities\Iso\Gmd\MD_format.cs" />
-    <Compile Include="Entities\Iso\Gmd\MD_format_PropertyType.cs" />
-    <Compile Include="Entities\Iso\Gmd\MD_format_Type.cs" />
-    <Compile Include="Entities\Iso\Gmd\MD_geometricObjects.cs" />
-    <Compile Include="Entities\Iso\Gmd\MD_geometricObjects_PropertyType.cs" />
-    <Compile Include="Entities\Iso\Gmd\MD_geometricObjects_Type.cs" />
-    <Compile Include="Entities\Iso\Gmd\MD_geometricObjectTypeCode.cs" />
-    <Compile Include="Entities\Iso\Gmd\MD_geometricObjectTypeCode_PropertyType.cs" />
-    <Compile Include="Entities\Iso\Gmd\MD_georectified.cs" />
-    <Compile Include="Entities\Iso\Gmd\MD_georectified_PropertyType.cs" />
-    <Compile Include="Entities\Iso\Gmd\MD_georectified_Type.cs" />
-    <Compile Include="Entities\Iso\Gmd\MD_georeferenceable.cs" />
-    <Compile Include="Entities\Iso\Gmd\MD_georeferenceable_PropertyType.cs" />
-    <Compile Include="Entities\Iso\Gmd\MD_georeferenceable_Type.cs" />
-    <Compile Include="Entities\Iso\Gmd\MD_gridSpatialRepresentation.cs" />
-    <Compile Include="Entities\Iso\Gmd\MD_gridSpatialRepresentation_PropertyType.cs" />
-    <Compile Include="Entities\Iso\Gmd\MD_gridSpatialRepresentation_Type.cs" />
-    <Compile Include="Entities\Iso\Gmd\MD_identification_PropertyType.cs" />
-    <Compile Include="Entities\Iso\Gmd\MD_identifier.cs" />
-    <Compile Include="Entities\Iso\Gmd\MD_identifier_PropertyType.cs" />
-    <Compile Include="Entities\Iso\Gmd\MD_identifier_Type.cs" />
-    <Compile Include="Entities\Iso\Gmd\MD_imageDescription.cs" />
-    <Compile Include="Entities\Iso\Gmd\MD_imageDescription_PropertyType.cs" />
-    <Compile Include="Entities\Iso\Gmd\MD_imageDescription_Type.cs" />
-    <Compile Include="Entities\Iso\Gmd\MD_imagingConditionCode.cs" />
-    <Compile Include="Entities\Iso\Gmd\MD_imagingConditionCode_PropertyType.cs" />
-    <Compile Include="Entities\Iso\Gmd\MD_keywords.cs" />
-    <Compile Include="Entities\Iso\Gmd\MD_keywords_PropertyType.cs" />
-    <Compile Include="Entities\Iso\Gmd\MD_keywords_Type.cs" />
-    <Compile Include="Entities\Iso\Gmd\MD_keywordTypeCode.cs" />
-    <Compile Include="Entities\Iso\Gmd\MD_keywordTypeCode_PropertyType.cs" />
-    <Compile Include="Entities\Iso\Gmd\MD_legalConstraints.cs" />
-    <Compile Include="Entities\Iso\Gmd\MD_legalConstraints_PropertyType.cs" />
-    <Compile Include="Entities\Iso\Gmd\MD_legalConstraints_Type.cs" />
-    <Compile Include="Entities\Iso\Gmd\MD_maintenanceFrequencyCode.cs" />
-    <Compile Include="Entities\Iso\Gmd\MD_maintenanceFrequencyCode_PropertyType.cs" />
-    <Compile Include="Entities\Iso\Gmd\MD_maintenanceInformation.cs" />
-    <Compile Include="Entities\Iso\Gmd\MD_maintenanceInformation_PropertyType.cs" />
-    <Compile Include="Entities\Iso\Gmd\MD_maintenanceInformation_Type.cs" />
-    <Compile Include="Entities\Iso\Gmd\MD_medium.cs" />
-    <Compile Include="Entities\Iso\Gmd\MD_mediumFormatCode.cs" />
-    <Compile Include="Entities\Iso\Gmd\MD_mediumFormatCode_PropertyType.cs" />
-    <Compile Include="Entities\Iso\Gmd\MD_mediumNameCode.cs" />
-    <Compile Include="Entities\Iso\Gmd\MD_mediumNameCode_PropertyType.cs" />
-    <Compile Include="Entities\Iso\Gmd\MD_medium_PropertyType.cs" />
-    <Compile Include="Entities\Iso\Gmd\MD_medium_Type.cs" />
-    <Compile Include="Entities\Iso\Gmd\MD_metadata.cs" />
-    <Compile Include="Entities\Iso\Gmd\MD_metadataExtensionInformation.cs" />
-    <Compile Include="Entities\Iso\Gmd\MD_metadataExtensionInformation_PropertyType.cs" />
-    <Compile Include="Entities\Iso\Gmd\MD_metadataExtensionInformation_Type.cs" />
-    <Compile Include="Entities\Iso\Gmd\MD_metadata_PropertyType.cs" />
-    <Compile Include="Entities\Iso\Gmd\MD_metadata_Type.cs" />
-    <Compile Include="Entities\Iso\Gmd\MD_obligationCode_PropertyType.cs" />
-    <Compile Include="Entities\Iso\Gmd\MD_obligationCode_Type.cs" />
-    <Compile Include="Entities\Iso\Gmd\MD_pixelOrientationCode_PropertyType.cs" />
-    <Compile Include="Entities\Iso\Gmd\MD_pixelOrientationCode_Type.cs" />
-    <Compile Include="Entities\Iso\Gmd\MD_portrayalCatalogueReference.cs" />
-    <Compile Include="Entities\Iso\Gmd\MD_portrayalCatalogueReference_PropertyType.cs" />
-    <Compile Include="Entities\Iso\Gmd\MD_portrayalCatalogueReference_Type.cs" />
-    <Compile Include="Entities\Iso\Gmd\MD_progressCode.cs" />
-    <Compile Include="Entities\Iso\Gmd\MD_progressCode_PropertyType.cs" />
-    <Compile Include="Entities\Iso\Gmd\MD_rangeDimension.cs" />
-    <Compile Include="Entities\Iso\Gmd\MD_rangeDimension_PropertyType.cs" />
-    <Compile Include="Entities\Iso\Gmd\MD_rangeDimension_Type.cs" />
-    <Compile Include="Entities\Iso\Gmd\MD_referenceSystem.cs" />
-    <Compile Include="Entities\Iso\Gmd\MD_referenceSystem_PropertyType.cs" />
-    <Compile Include="Entities\Iso\Gmd\MD_referenceSystem_Type.cs" />
-    <Compile Include="Entities\Iso\Gmd\MD_representativeFraction.cs" />
-    <Compile Include="Entities\Iso\Gmd\MD_representativeFraction_PropertyType.cs" />
-    <Compile Include="Entities\Iso\Gmd\MD_representativeFraction_Type.cs" />
-    <Compile Include="Entities\Iso\Gmd\MD_resolution.cs" />
-    <Compile Include="Entities\Iso\Gmd\MD_resolution_PropertyType.cs" />
-    <Compile Include="Entities\Iso\Gmd\MD_resolution_Type.cs" />
-    <Compile Include="Entities\Iso\Gmd\MD_restrictionCode.cs" />
-    <Compile Include="Entities\Iso\Gmd\MD_restrictionCode_PropertyType.cs" />
-    <Compile Include="Entities\Iso\Gmd\MD_scopeCode.cs" />
-    <Compile Include="Entities\Iso\Gmd\MD_scopeCode_PropertyType.cs" />
-    <Compile Include="Entities\Iso\Gmd\MD_scopeDescription.cs" />
-    <Compile Include="Entities\Iso\Gmd\MD_scopeDescription_PropertyType.cs" />
-    <Compile Include="Entities\Iso\Gmd\MD_scopeDescription_Type.cs" />
-    <Compile Include="Entities\Iso\Gmd\MD_securityConstraints.cs" />
-    <Compile Include="Entities\Iso\Gmd\MD_securityConstraints_PropertyType.cs" />
-    <Compile Include="Entities\Iso\Gmd\MD_securityConstraints_Type.cs" />
-    <Compile Include="Entities\Iso\Gmd\MD_serviceIdentification.cs" />
-    <Compile Include="Entities\Iso\Gmd\MD_serviceIdentification_PropertyType.cs" />
-    <Compile Include="Entities\Iso\Gmd\MD_serviceIdentification_Type.cs" />
-    <Compile Include="Entities\Iso\Gmd\MD_spatialRepresentationTypeCode.cs" />
-    <Compile Include="Entities\Iso\Gmd\MD_spatialRepresentationTypeCode_PropertyType.cs" />
-    <Compile Include="Entities\Iso\Gmd\MD_spatialRepresentation_PropertyType.cs" />
-    <Compile Include="Entities\Iso\Gmd\MD_standardOrderProcess.cs" />
-    <Compile Include="Entities\Iso\Gmd\MD_standardOrderProcess_PropertyType.cs" />
-    <Compile Include="Entities\Iso\Gmd\MD_standardOrderProcess_Type.cs" />
-    <Compile Include="Entities\Iso\Gmd\MD_topicCategoryCode_PropertyType.cs" />
-    <Compile Include="Entities\Iso\Gmd\MD_topicCategoryCode_Type.cs" />
-    <Compile Include="Entities\Iso\Gmd\MD_topologyLevelCode.cs" />
-    <Compile Include="Entities\Iso\Gmd\MD_topologyLevelCode_PropertyType.cs" />
-    <Compile Include="Entities\Iso\Gmd\MD_usage.cs" />
-    <Compile Include="Entities\Iso\Gmd\MD_usage_PropertyType.cs" />
-    <Compile Include="Entities\Iso\Gmd\MD_usage_Type.cs" />
-    <Compile Include="Entities\Iso\Gmd\MD_vectorSpatialRepresentation.cs" />
-    <Compile Include="Entities\Iso\Gmd\MD_vectorSpatialRepresentation_PropertyType.cs" />
-    <Compile Include="Entities\Iso\Gmd\MD_vectorSpatialRepresentation_Type.cs" />
-    <Compile Include="Entities\Iso\Gmd\PT_freeText.cs" />
-    <Compile Include="Entities\Iso\Gmd\PT_freeText_PropertyType.cs" />
-    <Compile Include="Entities\Iso\Gmd\PT_freeText_Type.cs" />
-    <Compile Include="Entities\Iso\Gmd\PT_locale.cs" />
-    <Compile Include="Entities\Iso\Gmd\PT_localeContainer.cs" />
-    <Compile Include="Entities\Iso\Gmd\PT_localeContainer_PropertyType.cs" />
-    <Compile Include="Entities\Iso\Gmd\PT_localeContainer_Type.cs" />
-    <Compile Include="Entities\Iso\Gmd\PT_locale_PropertyType.cs" />
-    <Compile Include="Entities\Iso\Gmd\PT_locale_Type.cs" />
-    <Compile Include="Entities\Iso\Gmd\RS_identifier.cs" />
-    <Compile Include="Entities\Iso\Gmd\URLPropertyType.cs" />
-    <Compile Include="Entities\Iso\Gsr\RS_identifier_PropertyType.cs" />
-    <Compile Include="Entities\Iso\Gsr\RS_identifier_Type.cs" />
-    <Compile Include="Entities\Iso\Gsr\RS_referenceSystem_PropertyType.cs" />
-    <Compile Include="Entities\Iso\Gsr\SC_cRS_PropertyType.cs" />
-    <Compile Include="Entities\Iso\Gss\GM_object_PropertyType.cs" />
-    <Compile Include="Entities\Iso\Gss\GM_point_PropertyType.cs" />
-    <Compile Include="Entities\Iso\Gts\TM_periodDuration_PropertyType.cs" />
-    <Compile Include="Entities\Iso\Gts\TM_primitive_PropertyType.cs" />
+    <Compile Include="Entities\Iso\Gco\AbstractGenericName.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gco\AbstractObject.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gco\AbstractObjectType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gco\Angle.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gco\AnglePropertyType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gco\Binary.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gco\BinaryPropertyType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gco\BinaryType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gco\BooleanPropertyType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gco\CharacterStringPropertyType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gco\CodeListValueType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gco\DatePropertyType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gco\DateTimePropertyType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gco\DecimalPropertyType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gco\Distance.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gco\DistancePropertyType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gco\GenericNamePropertyType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gco\IntegerPropertyType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gco\Length.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gco\LengthPropertyType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gco\LocalName.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gco\LocalNamePropertyType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gco\Measure.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gco\MeasurePropertyType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gco\MemberName.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gco\MemberNamePropertyType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gco\MemberNameType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gco\Multiplicity.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gco\MultiplicityPropertyType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gco\MultiplicityRange.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gco\MultiplicityRangePropertyType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gco\MultiplicityRangeType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gco\MultiplicityType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gco\NumberPropertyType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gco\ObjectReferencePropertyType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gco\RealPropertyType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gco\RecordPropertyType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gco\RecordType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gco\RecordTypePropertyType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gco\RecordTypeType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gco\Scale.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gco\ScalePropertyType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gco\ScopedName.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gco\ScopedNamePropertyType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gco\TypeName.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gco\TypeNamePropertyType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gco\TypeNameType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gco\UnitOfMeasurePropertyType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gco\UnlimitedInteger.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gco\UnlimitedIntegerPropertyType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gco\UnlimitedIntegerType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gco\UomAnglePropertyType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gco\UomAreaPropertyType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gco\UomLengthPropertyType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gco\UomScalePropertyType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gco\UomTimePropertyType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gco\UomVelocityPropertyType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gco\UomVolumePropertyType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\AbstractDQ_completeness.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\AbstractDQ_completeness_Type.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\AbstractDQ_element.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\AbstractDQ_element_Type.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\AbstractDQ_logicalConsistency.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\AbstractDQ_logicalConsistency_Type.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\AbstractDQ_positionalAccuracy.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\AbstractDQ_positionalAccuracy_Type.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\AbstractDQ_result.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\AbstractDQ_result_Type.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\AbstractDQ_temporalAccuracy.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\AbstractDQ_temporalAccuracy_Type.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\AbstractDQ_thematicAccuracy.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\AbstractDQ_thematicAccuracy_Type.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\AbstractDS_aggregate.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\AbstractDS_aggregate_Type.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\AbstractEX_geographicExtent.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\AbstractEX_geographicExtent_Type.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\AbstractMD_contentInformation.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\AbstractMD_contentInformation_Type.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\AbstractMD_identification.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\AbstractMD_identification_Type.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\AbstractMD_spatialRepresentation.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\AbstractMD_spatialRepresentation_Type.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\AbstractRS_referenceSystem.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\AbstractRS_referenceSystem_Type.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\CI_address.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\CI_address_PropertyType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\CI_address_Type.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\CI_citation.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\CI_citation_PropertyType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\CI_citation_Type.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\CI_contact.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\CI_contact_PropertyType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\CI_contact_Type.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\CI_date.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\CI_dateTypeCode.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\CI_dateTypeCode_PropertyType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\CI_date_PropertyType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\CI_date_Type.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\CI_onLineFunctionCode.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\CI_onLineFunctionCode_PropertyType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\CI_onlineResource.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\CI_onlineResource_PropertyType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\CI_onlineResource_Type.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\CI_presentationFormCode.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\CI_presentationFormCode_PropertyType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\CI_responsibleParty.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\CI_responsibleParty_PropertyType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\CI_responsibleParty_Type.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\CI_roleCode.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\CI_roleCode_PropertyType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\CI_series.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\CI_series_PropertyType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\CI_series_Type.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\CI_telephone.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\CI_telephone_PropertyType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\CI_telephone_Type.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\Country.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\CountryPropertyType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\DQ_absoluteExternalPositionalAccuracy.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\DQ_absoluteExternalPositionalAccuracy_PropertyType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\DQ_absoluteExternalPositionalAccuracy_Type.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\DQ_accuracyOfATimeMeasurement.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\DQ_accuracyOfATimeMeasurement_PropertyType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\DQ_accuracyOfATimeMeasurement_Type.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\DQ_completenessCommission.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\DQ_completenessCommission_PropertyType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\DQ_completenessCommission_Type.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\DQ_completenessOmission.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\DQ_completenessOmission_PropertyType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\DQ_completenessOmission_Type.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\DQ_completeness_PropertyType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\DQ_conceptualConsistency.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\DQ_conceptualConsistency_PropertyType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\DQ_conceptualConsistency_Type.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\DQ_conformanceResult.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\DQ_conformanceResult_PropertyType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\DQ_conformanceResult_Type.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\DQ_dataQuality.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\DQ_dataQuality_PropertyType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\DQ_dataQuality_Type.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\DQ_domainConsistency.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\DQ_domainConsistency_PropertyType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\DQ_domainConsistency_Type.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\DQ_element_PropertyType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\DQ_evaluationMethodTypeCode.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\DQ_evaluationMethodTypeCode_PropertyType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\DQ_formatConsistency.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\DQ_formatConsistency_PropertyType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\DQ_formatConsistency_Type.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\DQ_griddedDataPositionalAccuracy.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\DQ_griddedDataPositionalAccuracy_PropertyType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\DQ_griddedDataPositionalAccuracy_Type.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\DQ_logicalConsistency_PropertyType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\DQ_nonQuantitativeAttributeAccuracy.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\DQ_nonQuantitativeAttributeAccuracy_PropertyType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\DQ_nonQuantitativeAttributeAccuracy_Type.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\DQ_positionalAccuracy_PropertyType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\DQ_quantitativeAttributeAccuracy.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\DQ_quantitativeAttributeAccuracy_PropertyType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\DQ_quantitativeAttributeAccuracy_Type.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\DQ_quantitativeResult.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\DQ_quantitativeResult_PropertyType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\DQ_quantitativeResult_Type.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\DQ_relativeInternalPositionalAccuracy.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\DQ_relativeInternalPositionalAccuracy_PropertyType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\DQ_relativeInternalPositionalAccuracy_Type.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\DQ_result_PropertyType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\DQ_scope.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\DQ_scope_PropertyType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\DQ_scope_Type.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\DQ_temporalAccuracy_PropertyType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\DQ_temporalConsistency.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\DQ_temporalConsistency_PropertyType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\DQ_temporalConsistency_Type.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\DQ_temporalValidity.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\DQ_temporalValidity_PropertyType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\DQ_temporalValidity_Type.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\DQ_thematicAccuracy_PropertyType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\DQ_thematicClassificationCorrectness.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\DQ_thematicClassificationCorrectness_PropertyType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\DQ_thematicClassificationCorrectness_Type.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\DQ_topologicalConsistency.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\DQ_topologicalConsistency_PropertyType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\DQ_topologicalConsistency_Type.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\DS_aggregate_PropertyType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\DS_association.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\DS_associationTypeCode.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\DS_associationTypeCode_PropertyType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\DS_association_PropertyType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\DS_association_Type.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\DS_dataSet.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\DS_dataSet_PropertyType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\DS_dataSet_Type.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\DS_initiative.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\DS_initiativeTypeCode.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\DS_initiativeTypeCode_PropertyType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\DS_initiative_PropertyType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\DS_initiative_Type.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\DS_otherAggregate.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\DS_otherAggregate_PropertyType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\DS_otherAggregate_Type.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\DS_platform.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\DS_platform_PropertyType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\DS_platform_Type.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\DS_productionSeries.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\DS_productionSeries_PropertyType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\DS_productionSeries_Type.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\DS_sensor.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\DS_sensor_PropertyType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\DS_sensor_Type.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\DS_series.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\DS_series_PropertyType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\DS_series_Type.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\DS_stereoMate.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\DS_stereoMate_PropertyType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\DS_stereoMate_Type.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\EX_boundingPolygon.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\EX_boundingPolygon_PropertyType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\EX_boundingPolygon_Type.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\EX_extent.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\EX_extent_PropertyType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\EX_extent_Type.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\EX_geographicBoundingBox.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\EX_geographicBoundingBox_PropertyType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\EX_geographicBoundingBox_Type.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\EX_geographicDescription.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\EX_geographicDescription_PropertyType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\EX_geographicDescription_Type.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\EX_geographicExtent_PropertyType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\EX_spatialTemporalExtent.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\EX_spatialTemporalExtent_PropertyType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\EX_spatialTemporalExtent_Type.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\EX_temporalExtent.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\EX_temporalExtent_PropertyType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\EX_temporalExtent_Type.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\EX_verticalExtent.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\EX_verticalExtent_PropertyType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\EX_verticalExtent_Type.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\LanguageCode.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\LanguageCodePropertyType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\LI_lineage.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\LI_lineage_PropertyType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\LI_lineage_Type.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\LI_processStep.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\LI_processStep_PropertyType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\LI_processStep_Type.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\LI_source.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\LI_source_PropertyType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\LI_source_Type.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\LocalisedCharacterString.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\LocalisedCharacterStringPropertyType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\LocalisedCharacterStringType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\MD_aggregateInformation.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\MD_aggregateInformation_PropertyType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\MD_aggregateInformation_Type.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\MD_applicationSchemaInformation.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\MD_applicationSchemaInformation_PropertyType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\MD_applicationSchemaInformation_Type.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\MD_band.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\MD_band_PropertyType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\MD_band_Type.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\MD_browseGraphic.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\MD_browseGraphic_PropertyType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\MD_browseGraphic_Type.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\MD_cellGeometryCode.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\MD_cellGeometryCode_PropertyType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\MD_characterSetCode.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\MD_characterSetCode_PropertyType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\MD_classificationCode.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\MD_classificationCode_PropertyType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\MD_constraints.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\MD_constraints_PropertyType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\MD_constraints_Type.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\MD_contentInformation_PropertyType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\MD_coverageContentTypeCode.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\MD_coverageContentTypeCode_PropertyType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\MD_coverageDescription.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\MD_coverageDescription_PropertyType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\MD_coverageDescription_Type.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\MD_dataIdentification.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\MD_dataIdentification_PropertyType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\MD_dataIdentification_Type.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\MD_datatypeCode.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\MD_datatypeCode_PropertyType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\MD_digitalTransferOptions.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\MD_digitalTransferOptions_PropertyType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\MD_digitalTransferOptions_Type.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\MD_dimension.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\MD_dimensionNameTypeCode.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\MD_dimensionNameTypeCode_PropertyType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\MD_dimension_PropertyType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\MD_dimension_Type.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\MD_distribution.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\MD_distributionUnits.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\MD_distributionUnits_PropertyType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\MD_distribution_PropertyType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\MD_distribution_Type.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\MD_distributor.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\MD_distributor_PropertyType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\MD_distributor_Type.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\MD_extendedElementInformation.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\MD_extendedElementInformation_PropertyType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\MD_extendedElementInformation_Type.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\MD_featureCatalogueDescription.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\MD_featureCatalogueDescription_PropertyType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\MD_featureCatalogueDescription_Type.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\MD_format.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\MD_format_PropertyType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\MD_format_Type.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\MD_geometricObjects.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\MD_geometricObjects_PropertyType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\MD_geometricObjects_Type.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\MD_geometricObjectTypeCode.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\MD_geometricObjectTypeCode_PropertyType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\MD_georectified.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\MD_georectified_PropertyType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\MD_georectified_Type.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\MD_georeferenceable.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\MD_georeferenceable_PropertyType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\MD_georeferenceable_Type.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\MD_gridSpatialRepresentation.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\MD_gridSpatialRepresentation_PropertyType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\MD_gridSpatialRepresentation_Type.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\MD_identification_PropertyType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\MD_identifier.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\MD_identifier_PropertyType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\MD_identifier_Type.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\MD_imageDescription.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\MD_imageDescription_PropertyType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\MD_imageDescription_Type.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\MD_imagingConditionCode.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\MD_imagingConditionCode_PropertyType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\MD_keywords.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\MD_keywords_PropertyType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\MD_keywords_Type.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\MD_keywordTypeCode.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\MD_keywordTypeCode_PropertyType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\MD_legalConstraints.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\MD_legalConstraints_PropertyType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\MD_legalConstraints_Type.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\MD_maintenanceFrequencyCode.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\MD_maintenanceFrequencyCode_PropertyType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\MD_maintenanceInformation.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\MD_maintenanceInformation_PropertyType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\MD_maintenanceInformation_Type.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\MD_medium.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\MD_mediumFormatCode.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\MD_mediumFormatCode_PropertyType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\MD_mediumNameCode.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\MD_mediumNameCode_PropertyType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\MD_medium_PropertyType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\MD_medium_Type.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\MD_metadata.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\MD_metadataExtensionInformation.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\MD_metadataExtensionInformation_PropertyType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\MD_metadataExtensionInformation_Type.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\MD_metadata_PropertyType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\MD_metadata_Type.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\MD_obligationCode_PropertyType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\MD_obligationCode_Type.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\MD_pixelOrientationCode_PropertyType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\MD_pixelOrientationCode_Type.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\MD_portrayalCatalogueReference.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\MD_portrayalCatalogueReference_PropertyType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\MD_portrayalCatalogueReference_Type.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\MD_progressCode.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\MD_progressCode_PropertyType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\MD_rangeDimension.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\MD_rangeDimension_PropertyType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\MD_rangeDimension_Type.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\MD_referenceSystem.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\MD_referenceSystem_PropertyType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\MD_referenceSystem_Type.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\MD_representativeFraction.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\MD_representativeFraction_PropertyType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\MD_representativeFraction_Type.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\MD_resolution.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\MD_resolution_PropertyType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\MD_resolution_Type.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\MD_restrictionCode.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\MD_restrictionCode_PropertyType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\MD_scopeCode.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\MD_scopeCode_PropertyType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\MD_scopeDescription.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\MD_scopeDescription_PropertyType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\MD_scopeDescription_Type.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\MD_securityConstraints.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\MD_securityConstraints_PropertyType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\MD_securityConstraints_Type.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\MD_serviceIdentification.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\MD_serviceIdentification_PropertyType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\MD_serviceIdentification_Type.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\MD_spatialRepresentationTypeCode.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\MD_spatialRepresentationTypeCode_PropertyType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\MD_spatialRepresentation_PropertyType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\MD_standardOrderProcess.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\MD_standardOrderProcess_PropertyType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\MD_standardOrderProcess_Type.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\MD_topicCategoryCode_PropertyType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\MD_topicCategoryCode_Type.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\MD_topologyLevelCode.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\MD_topologyLevelCode_PropertyType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\MD_usage.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\MD_usage_PropertyType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\MD_usage_Type.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\MD_vectorSpatialRepresentation.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\MD_vectorSpatialRepresentation_PropertyType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\MD_vectorSpatialRepresentation_Type.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\PT_freeText.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\PT_freeText_PropertyType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\PT_freeText_Type.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\PT_locale.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\PT_localeContainer.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\PT_localeContainer_PropertyType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\PT_localeContainer_Type.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\PT_locale_PropertyType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\PT_locale_Type.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\RS_identifier.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gmd\URLPropertyType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gsr\RS_identifier_PropertyType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gsr\RS_identifier_Type.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gsr\RS_referenceSystem_PropertyType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gsr\SC_cRS_PropertyType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gss\GM_object_PropertyType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gss\GM_point_PropertyType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gts\TM_periodDuration_PropertyType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Iso\Gts\TM_primitive_PropertyType.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Entities\Ogc\Gml\AbstractAssociationRole.cs" />
     <Compile Include="Entities\Ogc\Gml\AbstractContinuousCoverage.cs" />
     <Compile Include="Entities\Ogc\Gml\AbstractContinuousCoverageType.cs" />
