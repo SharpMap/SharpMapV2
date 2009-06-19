@@ -162,7 +162,7 @@ namespace ProjNet.CoordinateSystems
                     }
                 }
 
-                if (!String.IsNullOrEmpty(Authority) && String.IsNullOrEmpty(AuthorityCode))
+                if (!String.IsNullOrEmpty(Authority) && !String.IsNullOrEmpty(AuthorityCode))
                 {
                     sb.AppendFormat(", AUTHORITY[\"{0}\", \"{1}\"]", Authority, AuthorityCode);
                 }

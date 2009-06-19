@@ -35,7 +35,7 @@ namespace ProjNet.CoordinateSystems.Transformations
         /// <summary>
         /// Initializes a new instance of the <see cref="InverseDatumTransform{TCoordinate}"/> class.
         /// </summary>
-        protected internal InverseDatumTransform(Wgs84ConversionInfo towgs84, 
+        protected internal InverseDatumTransform(Wgs84ConversionInfo towgs84,
                                                  ICoordinateFactory<TCoordinate> coordinateFactory,
                                                  IMatrixFactory<DoubleComponent> matrixFactory,
                                                  DatumTransform<TCoordinate> transform)
@@ -63,7 +63,7 @@ namespace ProjNet.CoordinateSystems.Transformations
         /// <summary>
         /// Initializes a new instance of the <see cref="DatumTransform{TCoordinate}"/> class.
         /// </summary>
-        protected internal DatumTransform(Wgs84ConversionInfo towgs84, 
+        protected internal DatumTransform(Wgs84ConversionInfo towgs84,
                                           ICoordinateFactory<TCoordinate> coordinateFactory,
                                           IMatrixFactory<DoubleComponent> matrixFactory)
             : base(null, coordinateFactory)
@@ -86,17 +86,18 @@ namespace ProjNet.CoordinateSystems.Transformations
 
         public override ICoordinate Transform(ICoordinate coordinate)
         {
-            throw new System.NotImplementedException();
+            return Transform((TCoordinate)coordinate);
         }
 
         public override IEnumerable<ICoordinate> Transform(IEnumerable<ICoordinate> points)
         {
-            throw new System.NotImplementedException();
+            foreach (TCoordinate c in Transform(Caster.Downcast<TCoordinate, ICoordinate>(points)))
+                yield return c;
         }
 
         public override ICoordinateSequence Transform(ICoordinateSequence points)
         {
-            throw new System.NotImplementedException();
+            return Transform((ICoordinateSequence<TCoordinate>)points);
         }
 
         public override Boolean IsInverse
@@ -124,15 +125,15 @@ namespace ProjNet.CoordinateSystems.Transformations
 
         protected override IMathTransform ComputeInverse(IMathTransform setAsInverse)
         {
-            return new InverseDatumTransform<TCoordinate>(_toWgs84, 
-                                                          CoordinateFactory, 
-                                                          _matrixFactory, 
+            return new InverseDatumTransform<TCoordinate>(_toWgs84,
+                                                          CoordinateFactory,
+                                                          _matrixFactory,
                                                           this);
         }
 
         private TCoordinate applyTransformToPoint(TCoordinate p)
         {
-            return (TCoordinate) _transform.TransformVector(p);
+            return (TCoordinate)_transform.TransformVector(p);
             //return _coordinateFactory(
             //        _transform[0]*p[0] - _transform[3]*p[1] + _transform[2]*p[2] + _transform[4],
             //        _transform[3]*p[0] + _transform[0]*p[1] - _transform[1]*p[2] + _transform[5],
@@ -142,7 +143,7 @@ namespace ProjNet.CoordinateSystems.Transformations
 
         private TCoordinate applyInvertedTransformToPoint(TCoordinate p)
         {
-            return (TCoordinate) _inverseTransform.TransformVector(p);
+            return (TCoordinate)_inverseTransform.TransformVector(p);
             //return _coordinateFactory(
             //        _transform[0]*p[0] + _transform[3]*p[1] - _transform[2]*p[2] - _transform[4],
             //        -_transform[3]*p[0] + _transform[0]*p[1] + _transform[1]*p[2] - _transform[5],
