@@ -50,13 +50,6 @@ namespace SharpMap.Indexing.QuadTree
             get { return _heuristic; }
         }
 
-        #region IUpdatableSpatialIndex<IExtents,TItem> Members
 
-        public Boolean Remove(TItem item)
-        {
-            throw new NotImplementedException();
-        }
-
-        #endregion
     }
 }

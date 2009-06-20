@@ -20,11 +20,11 @@ namespace SharpMap.Indexing.RTree
         public override String ToString()
         {
             return String.Format("[{0}] IsLeaf: {1}; Bounds: {2}; " +
-                                 "Children Count: {3}; Item Count: {4}",
+                                 "SubNodes Count: {3}; Item Count: {4}",
                                  GetType(),
                                  IsLeaf,
                                  Bounds,
-                                 ChildCount,
+                                 SubNodeCount,
                                  ItemCount);
         }
 
@@ -36,7 +36,7 @@ namespace SharpMap.Indexing.RTree
             }
         }
 
-        public override void AddChild(ISpatialIndexNode<IExtents, TItem> child)
+        protected override void addSubNode(ISpatialIndexNode<IExtents, TItem> child)
         {
             if (child == null) throw new ArgumentNullException("child");
 
@@ -61,7 +61,7 @@ namespace SharpMap.Indexing.RTree
             }
         }
 
-        public override void AddChildren(IEnumerable<ISpatialIndexNode<IExtents, TItem>> children)
+        protected override void addSubNodes(IEnumerable<ISpatialIndexNode<IExtents, TItem>> children)
         {
             IEnumerable<RTreeNode<TItem>> nodes =
                 Caster.Downcast<RTreeNode<TItem>, ISpatialIndexNode<IExtents, TItem>>(children);
@@ -83,7 +83,7 @@ namespace SharpMap.Indexing.RTree
             }
         }
 
-        public override IEnumerable<ISpatialIndexNode<IExtents, TItem>> Children
+        public override IEnumerable<ISpatialIndexNode<IExtents, TItem>> SubNodes
         {
             get
             {
@@ -99,7 +99,7 @@ namespace SharpMap.Indexing.RTree
             }
         }
 
-        public override Boolean RemoveChild(ISpatialIndexNode<IExtents, TItem> child)
+        protected override Boolean removeSubNode(ISpatialIndexNode<IExtents, TItem> child)
         {
             if (child == null) throw new ArgumentNullException("child");
 
@@ -115,7 +115,7 @@ namespace SharpMap.Indexing.RTree
             return _children.Remove(node);
         }
 
-        public override Int32 ChildCount
+        public override Int32 SubNodeCount
         {
             get { return _children == null ? 0 : _children.Count; }
         }

@@ -100,11 +100,11 @@ namespace SharpMap.Indexing
             }
         }
 
-        public abstract IEnumerable<ISpatialIndexNode<IExtents, TItem>> Children { get; }
+        public abstract IEnumerable<ISpatialIndexNode<IExtents, TItem>> SubNodes { get; }
 
-        public abstract void AddChildren(IEnumerable<ISpatialIndexNode<IExtents, TItem>> children);
+        protected abstract void addSubNodes(IEnumerable<ISpatialIndexNode<IExtents, TItem>> children);
 
-        public abstract void AddChild(ISpatialIndexNode<IExtents, TItem> child);
+        protected abstract void addSubNode(ISpatialIndexNode<IExtents, TItem> child);
 
         /// <summary>
         /// Adds item to <see cref="Items"/> list and expands node's
@@ -112,7 +112,7 @@ namespace SharpMap.Indexing
         /// to contain the <paramref name="item"/>'s bounds.
         /// </summary>
         /// <param name="item">Item to add</param>
-        public void AddItem(TItem item)
+        protected void addItem(TItem item)
         {
             Boolean cancel;
             OnItemAdding(item, out cancel);
@@ -149,7 +149,7 @@ namespace SharpMap.Indexing
         /// <exception cref="ArgumentNullException">
         /// Thrown if <paramref name="items"/> is null.
         /// </exception>
-        public void AddItems(IEnumerable<TItem> items)
+        protected void addItems(IEnumerable<TItem> items)
         {
             if (items == null)
             {
@@ -176,7 +176,7 @@ namespace SharpMap.Indexing
                 }
                 else
                 {
-                    Bounds.ExpandToInclude(item.Bounds);   
+                    Bounds.ExpandToInclude(item.Bounds);
                 }
 
                 OnItemAdded(item);
@@ -193,7 +193,7 @@ namespace SharpMap.Indexing
         /// <see langword="true"/> if the item was found and removed, 
         /// <see langword="false"/> if not found or not removed.
         /// </returns>
-        public virtual Boolean RemoveItem(TItem item)
+        protected virtual Boolean removeItem(TItem item)
         {
             Boolean cancel;
 
@@ -238,7 +238,7 @@ namespace SharpMap.Indexing
             return removed;
         }
 
-        public abstract Boolean RemoveChild(ISpatialIndexNode<IExtents, TItem> child);
+        protected abstract Boolean removeSubNode(ISpatialIndexNode<IExtents, TItem> child);
 
         /// <summary>
         /// Removes all contained items and sets the 
@@ -249,7 +249,7 @@ namespace SharpMap.Indexing
         {
             Boolean cancel;
             OnClearing(out cancel);
-            
+
             if (cancel)
             {
                 return;
@@ -290,7 +290,7 @@ namespace SharpMap.Indexing
 
         #region ISpatialIndexNode<IExtents,TItem> Members
 
-        public abstract Int32 ChildCount { get; }
+        public abstract Int32 SubNodeCount { get; }
 
         public Int32 ItemCount
         {
@@ -306,9 +306,9 @@ namespace SharpMap.Indexing
                     return false;
                 }
 
-                if (HasChildren)
+                if (HasSubNodes)
                 {
-                    foreach (ISpatialIndexNode<IExtents, TItem> child in Children)
+                    foreach (ISpatialIndexNode<IExtents, TItem> child in SubNodes)
                     {
                         if (!child.IsEmpty)
                         {
@@ -323,7 +323,7 @@ namespace SharpMap.Indexing
 
         public Boolean IsPrunable
         {
-            get { return !HasChildren && !HasItems; }
+            get { return !HasSubNodes && !HasItems; }
         }
 
         public Boolean HasItems
@@ -331,9 +331,9 @@ namespace SharpMap.Indexing
             get { return ItemCount > 0; }
         }
 
-        public Boolean HasChildren
+        public Boolean HasSubNodes
         {
-            get { return ChildCount > 0; }
+            get { return SubNodeCount > 0; }
         }
 
         public IEnumerable<TItem> Query(IExtents query)
@@ -349,9 +349,9 @@ namespace SharpMap.Indexing
                 }
             }
 
-            if (HasChildren)
+            if (HasSubNodes)
             {
-                foreach (ISpatialIndexNode<IExtents, TItem> child in Children)
+                foreach (ISpatialIndexNode<IExtents, TItem> child in SubNodes)
                 {
                     foreach (TItem item in child.Query(query))
                     {
@@ -386,9 +386,9 @@ namespace SharpMap.Indexing
             {
                 Int32 total = ItemCount;
 
-                if (HasChildren)
+                if (HasSubNodes)
                 {
-                    foreach (ISpatialIndexNode<IExtents, TItem> child in Children)
+                    foreach (ISpatialIndexNode<IExtents, TItem> child in SubNodes)
                     {
                         total += child.TotalItemCount;
                     }
@@ -402,11 +402,11 @@ namespace SharpMap.Indexing
         {
             get
             {
-                Int32 total = ChildCount;
+                Int32 total = SubNodeCount;
 
-                if (HasChildren)
+                if (HasSubNodes)
                 {
-                    foreach (ISpatialIndexNode<IExtents, TItem> child in Children)
+                    foreach (ISpatialIndexNode<IExtents, TItem> child in SubNodes)
                     {
                         total += child.TotalNodeCount;
                     }
@@ -437,9 +437,73 @@ namespace SharpMap.Indexing
         {
             if (_items == null)
             {
-                _items = CreateItemList();   
+                _items = CreateItemList();
             }
         }
 
+
+        #region ISpatialIndexNode<IExtents,TItem> Members
+
+        public void Add(IBoundable<IExtents> child)
+        {
+            if (child is ISpatialIndexNode<IExtents, TItem>)
+                addSubNode((ISpatialIndexNode<IExtents, TItem>)child);
+            else if (child is TItem)
+                addItem((TItem)child);
+            else
+                throw new ArgumentException();
+        }
+
+        public void AddRange(IEnumerable<IBoundable<IExtents>> children)
+        {
+            foreach (IBoundable<IExtents> child in children)
+            {
+                Add(child);
+            }
+        }
+
+        public IEnumerable<IBoundable<IExtents>> ChildBoundables
+        {
+            get
+            {
+                foreach (TItem item in Items)
+                {
+                    yield return item;
+                }
+                foreach (ISpatialIndexNode<IExtents, TItem> node in SubNodes)
+                {
+                    yield return node;
+                }
+            }
+        }
+
+        public bool Remove(IBoundable<IExtents> child)
+        {
+            if (child is ISpatialIndexNode<IExtents, TItem>)
+                return removeSubNode(child as ISpatialIndexNode<IExtents, TItem>);
+            if (child is TItem)
+                return removeItem((TItem)child);
+            throw new ArgumentException();
+        }
+
+        public bool RemoveRange(IEnumerable<IBoundable<IExtents>> children)
+        {
+            foreach (IBoundable<IExtents> child in children)
+            {
+                Remove(child);
+            }
+            return true;//hack
+        }
+
+        #endregion
+
+
+        public void InsertRange(IEnumerable<TItem> items)
+        {
+            foreach (TItem item in items)
+            {
+                    addItem(item);
+            }
+        }
     }
 }

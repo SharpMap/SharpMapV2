@@ -30,29 +30,33 @@ namespace SharpMap.Indexing.QuadTree
             get { return ItemCount == 0; }
         }
 
-        public override IEnumerable<ISpatialIndexNode<IExtents, TItem>> Children
+        public override IEnumerable<ISpatialIndexNode<IExtents, TItem>> SubNodes
         {
             get { throw new NotImplementedException(); }
         }
 
-        public override void AddChildren(IEnumerable<ISpatialIndexNode<IExtents, TItem>> children)
-        {
-            throw new NotImplementedException();
-        }
+      
 
-        public override void AddChild(ISpatialIndexNode<IExtents, TItem> child)
-        {
-            throw new NotImplementedException();
-        }
-
-        public override Boolean RemoveChild(ISpatialIndexNode<IExtents, TItem> child)
-        {
-            throw new NotImplementedException();
-        }
-
-        public override Int32 ChildCount
+        public override Int32 SubNodeCount
         {
             get { throw new NotImplementedException(); }
         }
+
+        protected override void addSubNodes(IEnumerable<ISpatialIndexNode<IExtents, TItem>> children)
+        {
+            throw new NotImplementedException();
+        }
+
+        protected override void addSubNode(ISpatialIndexNode<IExtents, TItem> child)
+        {
+            throw new NotImplementedException();
+        }
+
+        protected override bool removeSubNode(ISpatialIndexNode<IExtents, TItem> child)
+        {
+            throw new NotImplementedException();
+        }
+
+      
     }
 }

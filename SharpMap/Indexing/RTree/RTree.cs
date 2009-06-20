@@ -260,7 +260,7 @@ namespace SharpMap.Indexing.RTree
             {
                 if (bounds.Intersects(node.Bounds))
                 {
-                    foreach (RTreeNode<TItem> child in node.Children)
+                    foreach (RTreeNode<TItem> child in node.SubNodes)
                     {
                         foreach (TItem item in IntersectTreeRecursive(bounds, child))
                         {
@@ -296,5 +296,14 @@ namespace SharpMap.Indexing.RTree
         public abstract bool Remove(TItem item);
 
         #endregion
+
+
+        public void InsertRange(IEnumerable<TItem> items)
+        {
+            foreach (TItem item in items)
+            {
+                Insert(item);
+            }
+        }
     }
 }

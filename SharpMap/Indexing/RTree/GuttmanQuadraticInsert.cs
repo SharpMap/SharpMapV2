@@ -58,7 +58,7 @@ namespace SharpMap.Indexing.RTree
             // Terminating case
             if (node.IsLeaf)
             {
-                node.AddItem(entry);
+                node.Add(entry);
 
                 // Handle node overflow
                 if (node.ItemCount > heuristic.NodeItemMaximumCount)
@@ -84,7 +84,7 @@ namespace SharpMap.Indexing.RTree
                 ComputationExtents currentBounds = new ComputationExtents(bounds);
 
                 ISpatialIndexNode<IExtents, TItem> leastExpandedChild;
-                leastExpandedChild = findLeastExpandedChild(node.Children,
+                leastExpandedChild = findLeastExpandedChild(node.SubNodes,
                                                             currentBounds,
                                                             leastExpandedArea,
                                                             leastExpandedChildArea);
@@ -104,7 +104,7 @@ namespace SharpMap.Indexing.RTree
                 if (newSiblingFromSplit != null)
                 {
                     // Add new sibling node to the current node
-                    node.AddChild(newSiblingFromSplit);
+                    node.Add(newSiblingFromSplit);
                     newSiblingFromSplit = null;
 
                     // Split the current node, since the child count is too high, 

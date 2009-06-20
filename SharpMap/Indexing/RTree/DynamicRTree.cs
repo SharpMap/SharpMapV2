@@ -159,17 +159,17 @@ namespace SharpMap.Indexing.RTree
                 {
                     RTreeNode<TItem> oldRoot = Root as RTreeNode<TItem>;
                     Root = CreateNode();
-                    Root.AddChild(oldRoot);
+                    Root.Add(oldRoot);
                 }
 
-                Root.AddChild(newSiblingFromSplit);
+                Root.Add(newSiblingFromSplit);
             }
             else // Came from a root split
             {
                 ISpatialIndexNode<IExtents, TItem> oldRoot = Root;
                 Root = CreateNode();
-                Root.AddChild(oldRoot);
-                Root.AddChild(newSiblingFromSplit);
+                Root.Add(oldRoot);
+                Root.Add(newSiblingFromSplit);
             }
         }
 
@@ -181,7 +181,7 @@ namespace SharpMap.Indexing.RTree
         {
             ISpatialIndexNode<IExtents, TItem> itemNode = findNodeForItem(item, Root);
 
-            return itemNode != null && itemNode.RemoveItem(item);
+            return itemNode != null && itemNode.Remove(item);
         }
 
         private static ISpatialIndexNode<IExtents, TItem> findNodeForItem(TItem item, 
@@ -198,7 +198,7 @@ namespace SharpMap.Indexing.RTree
             IExtents itemBounds = item.Bounds;
 
             // TODO: I think a breadth-first search would be more efficient here
-            foreach (ISpatialIndexNode<IExtents, TItem> child in node.Children)
+            foreach (ISpatialIndexNode<IExtents, TItem> child in node.SubNodes)
             {
                 if (child.Intersects(itemBounds))
                 {

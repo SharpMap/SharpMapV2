@@ -49,7 +49,7 @@ namespace SharpMap.Indexing.QuadTree
                     throw new QuadTreeIndexInsertOverflowException();
                 }
 
-                quadTreeNode.AddChild(newSiblingFromSplit);
+                quadTreeNode.Add(newSiblingFromSplit);
             }
         }
 

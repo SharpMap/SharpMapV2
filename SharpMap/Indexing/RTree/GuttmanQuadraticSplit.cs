@@ -79,9 +79,9 @@ namespace SharpMap.Indexing.RTree
             IEnumerable<IBoundable<IExtents>> boundables =
                isLeaf
                ? Caster.Upcast<IBoundable<IExtents>, TItem>(node.Items)
-               : Caster.Upcast<IBoundable<IExtents>, ISpatialIndexNode<IExtents, TItem>>(node.Children);
+               : Caster.Upcast<IBoundable<IExtents>, ISpatialIndexNode<IExtents, TItem>>(node.SubNodes);
            
-            Int32 boundablesCount = isLeaf ? node.ItemCount : node.ChildCount;
+            Int32 boundablesCount = isLeaf ? node.ItemCount : node.SubNodeCount;
 
             List<IBoundable<IExtents>> entries = new List<IBoundable<IExtents>>(boundablesCount);
             entries.AddRange(boundables);
@@ -117,20 +117,20 @@ namespace SharpMap.Indexing.RTree
             if (isLeaf)
             {
                 IEnumerable<TItem> g1Cast = Caster.Downcast<TItem, IBoundable<IExtents>>(g1Sized);
-                node.AddItems(g1Cast);
+                node.InsertRange(g1Cast);
 
-                IEnumerable<TItem> g2Cast = Caster.Downcast<TItem, IBoundable<IExtents>>(g2Sized);
-                sibling.AddItems(g2Cast);
+                //IEnumerable<TItem> g2Cast = Caster.Downcast<TItem, IBoundable<IExtents>>(g2Sized);
+                sibling.AddRange(g2Sized);
             }
             else
             {
-                IEnumerable<ISpatialIndexNode<IExtents, TItem>> g1Cast
-                    = Caster.Downcast<ISpatialIndexNode<IExtents, TItem>, IBoundable<IExtents>>(g1Sized);
-                node.AddChildren(g1Cast);
+                //IEnumerable<ISpatialIndexNode<IExtents, TItem>> g1Cast
+                //    = Caster.Downcast<ISpatialIndexNode<IExtents, TItem>, IBoundable<IExtents>>(g1Sized);
+                node.AddRange(g1Sized);
 
-                IEnumerable<ISpatialIndexNode<IExtents, TItem>> g2Cast
-                    = Caster.Downcast<ISpatialIndexNode<IExtents, TItem>, IBoundable<IExtents>>(g2Sized);
-                sibling.AddChildren(g2Cast);
+                //IEnumerable<ISpatialIndexNode<IExtents, TItem>> g2Cast
+                //    = Caster.Downcast<ISpatialIndexNode<IExtents, TItem>, IBoundable<IExtents>>(g2Sized);
+                sibling.AddRange(g2Sized);
             }
 
             return sibling;
@@ -367,7 +367,7 @@ namespace SharpMap.Indexing.RTree
 
         //private RTreeNode<TItem> splitBranchNode(RTreeNode<TItem> branchNode, IndexBalanceHeuristic heuristic)
         //{
-        //    List<ISpatialIndexNode<IExtents, TItem>> children = new List<ISpatialIndexNode<IExtents, TItem>>(branchNode.Children);
+        //    List<ISpatialIndexNode<IExtents, TItem>> children = new List<ISpatialIndexNode<IExtents, TItem>>(branchNode.SubNodes);
         //    List<ISpatialIndexNode<IExtents, TItem>> group1 = new List<ISpatialIndexNode<IExtents, TItem>>();
         //    List<ISpatialIndexNode<IExtents, TItem>> group2 = new List<ISpatialIndexNode<IExtents, TItem>>();
 
@@ -387,9 +387,9 @@ namespace SharpMap.Indexing.RTree
         //    }
 
         //    branchNode.Clear();
-        //    branchNode.AddChildren(group1);
+        //    branchNode.addSubNodes(group1);
         //    RTreeNode<TItem> sibling = (branchNode.Index as RTree<TItem>).CreateNode();
-        //    sibling.AddChildren(group2);
+        //    sibling.addSubNodes(group2);
         //    return sibling;
         //}
 
