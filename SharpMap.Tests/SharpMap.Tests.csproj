@@ -164,6 +164,7 @@
     <Compile Include="Data\FeatureDataViewTests.cs" />
     <Compile Include="FixtureFactories.cs" />
     <Compile Include="Indexing\BinaryTreeTests.cs" />
+    <Compile Include="Indexing\DynamicStrTreeTests.cs" />
     <Compile Include="Indexing\QuadTreeTests.cs" />
     <Compile Include="Indexing\DynamicRTreeTests.cs" />
     <Compile Include="Indexing\SelfOptimizingSpatialIndexTests.cs" />

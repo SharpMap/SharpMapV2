@@ -115,7 +115,7 @@ namespace SharpMap.Data.Providers.PostGis.Tests
 
             foreach (IGeometry<BufferedCoordinate> list in matches)
             {
-                Assert.IsTrue(list.Bounds.Intersects(queryExtents),"a result from the index does not intersect the query bounds");
+                Assert.IsTrue(list.Bounds.Intersects(queryExtents), "a result from the index does not intersect the query bounds");
             }
 
         }

@@ -602,5 +602,37 @@ namespace SharpMap.Indexing.RTree
 
         //    return bounds;
         //}
+
+        #region INodeSplitStrategy<IExtents,TItem> Members
+
+        public ISpatialIndex<IExtents, TItem> Index
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+            set
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        #endregion
+
+        #region INodeSplitStrategy<IExtents,TItem> Members
+
+        public ISpatialIndexNodeFactory<IExtents, TItem> NodeFactory
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+            set
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        #endregion
     }
 }

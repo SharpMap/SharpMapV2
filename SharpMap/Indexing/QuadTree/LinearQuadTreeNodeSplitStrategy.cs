@@ -40,5 +40,21 @@ namespace SharpMap.Indexing.QuadTree
         }
 
         #endregion
+
+        #region INodeSplitStrategy<IExtents,TItem> Members
+
+        public ISpatialIndexNodeFactory<IExtents, TItem> NodeFactory
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+            set
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        #endregion
     }
 }

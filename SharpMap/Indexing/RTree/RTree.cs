@@ -305,5 +305,13 @@ namespace SharpMap.Indexing.RTree
                 Insert(item);
             }
         }
+        #region ISpatialIndexNodeFactory<IExtents,TItem> Members
+
+        ISpatialIndexNode<IExtents, TItem> ISpatialIndexNodeFactory<IExtents, TItem>.CreateNode(int level)
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
     }
 }

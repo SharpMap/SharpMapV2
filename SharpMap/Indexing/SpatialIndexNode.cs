@@ -502,7 +502,15 @@ namespace SharpMap.Indexing
         {
             foreach (TItem item in items)
             {
-                    addItem(item);
+                addItem(item);
+            }
+        }
+
+        public Int32 Level
+        {
+            get
+            {
+                throw new NotImplementedException();
             }
         }
     }
