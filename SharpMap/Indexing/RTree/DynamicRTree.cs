@@ -39,8 +39,8 @@ namespace SharpMap.Indexing.RTree
     /// the instance could be one of a number of various R-Tree 
     /// variants, such as R*Tree or R+Tree.
     /// </remarks>
-    public class DynamicRTree<TItem> : RTree<TItem>, 
-                                       IUpdatableSpatialIndex<IExtents, TItem>, 
+    public class DynamicRTree<TItem> : RTree<TItem>,
+                                       IUpdatableSpatialIndex<IExtents, TItem>,
                                        ISerializable
             where TItem : IBoundable<IExtents>
     {
@@ -73,7 +73,7 @@ namespace SharpMap.Indexing.RTree
         public DynamicRTree(
             IGeometryFactory geoFactory,
             IItemInsertStrategy<IExtents, TItem> insertStrategy,
-            INodeSplitStrategy<IExtents, TItem> nodeSplitStrategy, 
+            INodeSplitStrategy<IExtents, TItem> nodeSplitStrategy,
             DynamicRTreeBalanceHeuristic heuristic)
             : base(geoFactory)
         {
@@ -101,12 +101,12 @@ namespace SharpMap.Indexing.RTree
         /// This constructor is used internally 
         /// for loading a tree from a stream.
         /// </summary>
-        protected DynamicRTree():base(null) { }
+        protected DynamicRTree() : base(null) { }
 
         protected DynamicRTree(SerializationInfo info, StreamingContext context)
-            : base(null) 
+            : base(null)
         {
-            Byte[] data = (Byte[]) info.GetValue("data", typeof (Byte[]));
+            Byte[] data = (Byte[])info.GetValue("data", typeof(Byte[]));
             MemoryStream buffer = new MemoryStream(data);
             throw new NotImplementedException();
             //DynamicRTree<TItem> tree = FromStream(buffer);
@@ -141,8 +141,8 @@ namespace SharpMap.Indexing.RTree
 
             //printItemCount();
 
-            ItemInsertStrategy.Insert(item.Bounds, item, Root, 
-                                      _nodeSplitStrategy, Heuristic, 
+            ItemInsertStrategy.Insert(item.Bounds, item, Root,
+                                      _nodeSplitStrategy, Heuristic,
                                       out newSiblingFromSplit);
 
             if (newSiblingFromSplit == null)
@@ -181,10 +181,47 @@ namespace SharpMap.Indexing.RTree
         {
             ISpatialIndexNode<IExtents, TItem> itemNode = findNodeForItem(item, Root);
 
-            return itemNode != null && itemNode.Remove(item);
+            bool removed = itemNode != null && itemNode.Remove(item);
+            if (itemNode.IsPrunable)
+            {
+                ISpatialIndexNode<IExtents, TItem> parent = findParentNode(itemNode, Root);
+                parent.Remove(itemNode);
+            }
+
+            return removed;
         }
 
-        private static ISpatialIndexNode<IExtents, TItem> findNodeForItem(TItem item, 
+        private static ISpatialIndexNode<IExtents, TItem> findParentNode(ISpatialIndexNode<IExtents, TItem> lookFor,
+                                                                         ISpatialIndexNode<IExtents, TItem> searchNode)
+        {
+            foreach (ISpatialIndexNode<IExtents, TItem> node in searchNode.SubNodes)
+            {
+                if (node.Equals(lookFor))
+                {
+                    return searchNode;
+                }
+            }
+
+            IExtents itemBounds = lookFor.Bounds;
+
+            // TODO: I think a breadth-first search would be more efficient here
+            foreach (ISpatialIndexNode<IExtents, TItem> child in searchNode.SubNodes)
+            {
+                if (child.Intersects(itemBounds))
+                {
+                    ISpatialIndexNode<IExtents, TItem> found = findParentNode(lookFor, child);
+
+                    if (found != null)
+                    {
+                        return found;
+                    }
+                }
+            }
+
+            return null;
+        }
+
+        private static ISpatialIndexNode<IExtents, TItem> findNodeForItem(TItem item,
                                                                           ISpatialIndexNode<IExtents, TItem> node)
         {
             foreach (TItem nodeItem in node.Items)
@@ -246,9 +283,9 @@ namespace SharpMap.Indexing.RTree
                                                                "Invalid index file version. Please rebuild the spatial index by deleting the index.");
                 }
 
-                UInt32 keyLength = (UInt32) Marshal.SizeOf(typeof (TItem));
+                UInt32 keyLength = (UInt32)Marshal.SizeOf(typeof(TItem));
 
-                using (MemoryStream keyBuffer = new MemoryStream((Int32) keyLength))
+                using (MemoryStream keyBuffer = new MemoryStream((Int32)keyLength))
                 {
                     // tree.Root = readNode(tree, br, keyBuffer, keyLength);
                 }
@@ -273,9 +310,9 @@ namespace SharpMap.Indexing.RTree
             writer.Write(IndexFileVersion.Build);
             writer.Write(IndexFileVersion.Revision);
 
-            UInt32 keyLength = (UInt32) Marshal.SizeOf(typeof (TItem));
+            UInt32 keyLength = (UInt32)Marshal.SizeOf(typeof(TItem));
 
-            using (MemoryStream keyBuffer = new MemoryStream((Int32) keyLength))
+            using (MemoryStream keyBuffer = new MemoryStream((Int32)keyLength))
             {
                 // saveNode(Root, writer, keyBuffer, keyLength);
             }
