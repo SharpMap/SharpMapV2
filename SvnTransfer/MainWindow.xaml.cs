@@ -141,8 +141,7 @@ namespace SvnTransfer
 
         private void handleLostFocus(object sender, RoutedEventArgs e)
         {
-            if (String.IsNullOrEmpty(FromRepositoryEntry.Text) ||
-                String.Equals(_from, FromRepositoryEntry.Text))
+            if (String.IsNullOrEmpty(FromRepositoryEntry.Text))
             {
                 return;
             }
@@ -150,6 +149,11 @@ namespace SvnTransfer
             if (FromRepositoryEntry.Text.Last() != '/')
             {
                 FromRepositoryEntry.Text += "/";
+            }
+
+            if (String.Equals(_from, FromRepositoryEntry.Text))
+            {
+                return;
             }
 
             _from = FromRepositoryEntry.Text;
@@ -180,6 +184,11 @@ namespace SvnTransfer
                                           where elem.Name == "entry" && elem.Attribute("revision") != null
                                           select elem.Attribute("revision").Value).FirstOrDefault();
                             _toRev = Int32.Parse(rev);
+                            String path = (from elem in doc.Descendants()
+                                           where elem.Name == "entry" && elem.Attribute("path") != null
+                                           select elem.Attribute("path").Value).FirstOrDefault();
+                            _rootDir = Path.Combine(_rootDir, path);
+                            Directory.CreateDirectory(_rootDir);
                             FromRepositoryToRevEntry.Dispatcher.BeginInvoke(
                                 (Action)(() => FromRepositoryToRevEntry.Text = rev));
                             break;
@@ -226,7 +235,15 @@ namespace SvnTransfer
                             foreach (var file in binaryFiles)
                             {
                                 String sourceFile = _from + file;
+                                downloadPath = Path.Combine(downloadPath, Path.GetFileName(file));
                                 download(downloadPath, sourceFile, rev);
+
+                                Diff diff = changeSet.Diffs.Where(d => d.Path == sourceFile).FirstOrDefault();
+
+                                if (diff != null)
+                                {
+                                    diff.BinaryFilePath = downloadPath;
+                                }
                             }
 
                             break;
@@ -239,8 +256,6 @@ namespace SvnTransfer
 
         private void download(string toPath, string file, Int32 rev)
         {
-            String fileName = Path.GetFileName(file);
-            toPath = Path.Combine(toPath, fileName);
             ProcessStartInfo startInfo = createExportStartInfo(toPath, file, rev);
             startProcess(startInfo);
         }
