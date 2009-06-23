@@ -17,8 +17,8 @@
         </Grid.RowDefinitions>
         <Label Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2" Margin="2 2 2 2">From Repository</Label>
         <Label Grid.Column="4" Grid.Row="0" Margin="2 2 2 2">To Repository</Label>
-        <TextBox Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2" Margin="2 2 2 2" Name="FromRepositoryEntry" LostFocus="handleLostFocus" />
-        <TextBox Grid.Column="4" Grid.Row="1" Margin="2 2 2 2" Name="ToRepositoryEntry" />
+        <TextBox Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2" Margin="2 2 2 2" Name="FromRepositoryEntry" LostFocus="handleLostFocus" Text="svn://localhost/ExportTreeDiffsTest" />
+        <TextBox Grid.Column="4" Grid.Row="1" Margin="2 2 2 2" Name="ToRepositoryEntry" LostFocus="handleLostFocus" Text="svn://localhost/TestToRepos"/>
         <Label Grid.Column="0" Grid.Row="2" Margin="2 2 2 2">From Rev</Label>
         <Label Grid.Column="1" Grid.Row="2" Margin="2 2 2 2">To Rev</Label>
         <TextBox Grid.Column="0" Grid.Row="3" Margin="2 2 2 2" Name="FromRepositoryFromRevEntry">0</TextBox>
