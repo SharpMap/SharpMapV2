@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using GeoAPI.DataStructures;
 using GeoAPI.Geometries;
+using GeoAPI.Operations.Buffer;
 using GisSharpBlog.NetTopologySuite.Index.Strtree;
 using GisSharpBlog.NetTopologySuite.Operation.Buffer;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -74,6 +75,21 @@ namespace SharpMap.Data.Providers.PostGis.Tests
                 new BufferBuilder<BufferedCoordinate>(_geometryFactory);
             IGeometry<BufferedCoordinate> res = bb.Buffer((IGeometry<BufferedCoordinate>)ls, 10);
             Assert.IsNotNull(res);
+        }
+
+        [TestMethod]
+        public void Test_T666Buffer()
+        {
+            IPoint test = _geometryFactory.WktReader.Read("POINT(0 0)") as IPoint;
+            Assert.IsNotNull(test);
+
+            BufferBuilder<BufferedCoordinate> bb =
+                new BufferBuilder<BufferedCoordinate>(_geometryFactory);
+            bb.EndCapStyle = BufferStyle.Square;
+            bb.QuadrantSegments = 2;
+            IGeometry actual = bb.Buffer((IGeometry<BufferedCoordinate>)test, 10);
+            IGeometry expected = _geometryFactory.WktReader.Read("POLYGON((10 10, -10 10, -10 -10, 10 -10, 10 10))");
+            Assert.AreEqual(actual, expected);
         }
 
         readonly Random _rnd = new Random(DateTime.Now.Millisecond);
