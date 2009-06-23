@@ -71,6 +71,7 @@ namespace SharpMap.Tests.Indexing
         [Fact]
         public void TestDynamicStrIndex()
         {
+            //jd note: this tests an experimental class and is not necessary for any real process
             DynamicSTRtree<BufferedCoordinate, IGeometry<BufferedCoordinate>>
                 index = new DynamicSTRtree<BufferedCoordinate, IGeometry<BufferedCoordinate>>(_geometryFactory, 10,
                     new GQInsertStrategy<IExtents<BufferedCoordinate>, IGeometry<BufferedCoordinate>>(_geometryFactory),
