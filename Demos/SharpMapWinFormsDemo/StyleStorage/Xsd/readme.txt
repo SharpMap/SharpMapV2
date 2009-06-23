@@ -1,4 +1,0 @@
-GeometryStyle
-IFeatureLayerStyle
-IStyle
-LinearGradientStyleBrush
