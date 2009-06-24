@@ -63,10 +63,58 @@ namespace SvnTransfer
 
             if (Directory.Exists(_rootDir))
             {
-                Directory.Delete(_rootDir, true);
+                foreach (var dir in Directory.GetDirectories(_rootDir, "*", SearchOption.AllDirectories))
+                {
+                    new DirectoryInfo(dir).Attributes = FileAttributes.Normal;
+                }
+
+                foreach (var file in Directory.GetFiles(_rootDir, "*", SearchOption.AllDirectories))
+                {
+                    new FileInfo(file).Attributes = FileAttributes.Normal;
+                }
+
+                // HACK: not sure why the first attempt is only mostly successful...
+                try
+                {
+                    Directory.Delete(_rootDir, true);
+                }
+                catch (Exception)
+                {
+                    Directory.Delete(_rootDir, true);
+                }
             }
 
             Directory.CreateDirectory(_rootDir);
+        }
+
+        private static ProcessStartInfo createDeleteStartInfo(String delPath)
+        {
+            ProcessStartInfo startInfo = new ProcessStartInfo("svn.exe")
+            {
+                CreateNoWindow = true,
+                RedirectStandardOutput = true,
+                RedirectStandardError = true,
+                RedirectStandardInput = true,
+                UseShellExecute = false,
+                Arguments = String.Format("delete {0}", delPath)
+            };
+
+            return startInfo;
+        }
+
+        private static ProcessStartInfo createAddStartInfo(String addPath)
+        {
+            ProcessStartInfo startInfo = new ProcessStartInfo("svn.exe")
+            {
+                CreateNoWindow = true,
+                RedirectStandardOutput = true,
+                RedirectStandardError = true,
+                RedirectStandardInput = true,
+                UseShellExecute = false,
+                Arguments = String.Format("add {0}", addPath)
+            };
+
+            return startInfo;
         }
 
         private static ProcessStartInfo createInfoStartInfo(String repository)
@@ -119,7 +167,22 @@ namespace SvnTransfer
             return startInfo;
         }
 
-        private static ProcessStartInfo createExportStartInfo(string toPath, string file, Int32 rev)
+        private static ProcessStartInfo createCommitStartInfo(String wc, String logMessage)
+        {
+            ProcessStartInfo startInfo = new ProcessStartInfo("svn.exe")
+            {
+                CreateNoWindow = true,
+                RedirectStandardOutput = true,
+                RedirectStandardError = true,
+                RedirectStandardInput = true,
+                UseShellExecute = false,
+                Arguments = String.Format("commit {0} --message \"{1}\"", wc, logMessage)
+            };
+
+            return startInfo;
+        }
+
+        private static ProcessStartInfo createExportStartInfo(String toPath, String file, Int32 rev)
         {
             ProcessStartInfo startInfo = new ProcessStartInfo("svn.exe")
             {
@@ -135,19 +198,16 @@ namespace SvnTransfer
             return startInfo;
         }
 
-        private static ProcessStartInfo createPatchStartInfo(string workingCopy, string patchFile)
+        private static ProcessStartInfo createPatchStartInfo(String workingCopy, String patchFile)
         {
-            var progFiles = Environment.ExpandEnvironmentVariables("%ProgramFiles%");
-            var workingDir = Path.Combine(progFiles, Path.Combine("TortoiseSVN", "bin"));
-
-            ProcessStartInfo startInfo = new ProcessStartInfo(Path.Combine(workingDir, "tortoisemerge.exe"))
+            ProcessStartInfo startInfo = new ProcessStartInfo("merge.exe")
             {
                 CreateNoWindow = true,
                 RedirectStandardOutput = true,
                 RedirectStandardError = true,
                 RedirectStandardInput = true,
                 UseShellExecute = false,
-                Arguments = String.Format("/patchpath {0} /diff {1}", workingCopy, patchFile)
+                Arguments = String.Format("--unified {0} /diff {1}", patchFile, workingCopy)
             };
 
             startInfo.EnvironmentVariables[CommandKey] = PatchCommand;
@@ -222,13 +282,58 @@ namespace SvnTransfer
                 Int32 rev = set.Key;
                 ChangeSet changeSet = set.Value;
 
-                if (String.IsNullOrEmpty(changeSet.UnifiedPatch))
+                foreach (Diff diff in changeSet.Diffs)
                 {
-                    continue;
+                    switch (diff.Change)
+                    {
+                        case ChangeType.Added:
+                            if (String.IsNullOrEmpty(diff.BinaryFilePath))
+                            {
+                                break;
+                            }
+
+                            String addPath = Path.Combine(wc, diff.RelativePath.Replace('/', '\\'));
+
+                            if (diff.Kind == TargetKind.Dir)
+                            {
+                                Directory.CreateDirectory(addPath);
+                            }
+                            else 
+                            {
+                                File.Create(addPath).Close();
+                            }
+
+                            runSvn(createAddStartInfo(addPath));
+                            break;
+                        case ChangeType.Deleted:
+                            String delPath = Path.Combine(wc, diff.RelativePath.Replace('/', '\\'));
+
+                            runSvn(createDeleteStartInfo(delPath));
+                            break;
+                    }
                 }
 
-                ProcessStartInfo patchStartInfo = createPatchStartInfo(wc, changeSet.UnifiedPatch);
-                startProcess(patchStartInfo);
+                if (!String.IsNullOrEmpty(changeSet.UnifiedPatch))
+                {
+                    runSvn(createPatchStartInfo(wc, changeSet.UnifiedPatch));
+                    String downloadPath = Path.Combine(_rootDir, rev.ToString());
+                    copyBinariesToTarget(downloadPath, rev, wc);
+                }
+
+                runSvn(createCommitStartInfo(wc, changeSet.LogMessage.Message));
+            }
+        }
+
+        private void copyBinariesToTarget(String root, Int32 rev, String wc)
+        {
+            String srcRoot = Path.Combine(Path.Combine(root, rev.ToString()), "binaries");
+
+            foreach (String srcFile in Directory.GetFiles(srcRoot, "*", SearchOption.AllDirectories))
+            {
+                String dstFile = srcFile.Remove(srcRoot.Length);
+                dstFile = Path.Combine(wc, dstFile);
+                File.Copy(srcFile, dstFile, true);
+                runSvn(createAddStartInfo(dstFile));
             }
         }
 
@@ -245,19 +350,31 @@ namespace SvnTransfer
             return workingCopyPath;
         }
 
-        private string getDiff(int rev)
+        private String getDiff(int rev)
         {
-            ProcessStartInfo startInfo = createDiffStartInfo(_from, rev);
-            Process process = startProcess(startInfo);
-
-            string data = process.StandardOutput.ReadToEnd();
-            process.WaitForExit();
-            closeProcess(process);
+            String data = runSvn(createDiffStartInfo(_from, rev));
 
             return String.IsNullOrEmpty(data) ? null : data;
         }
 
-        private void addPatchAndBinaryFiles(string patch, int rev)
+        private String runSvn(ProcessStartInfo startInfo) 
+        {
+            Process process = startProcess(startInfo);
+
+            String data = process.StandardOutput.ReadToEnd();
+            String error = process.StandardError.ReadToEnd();
+            process.WaitForExit();
+            closeProcess(process);
+
+            if (!String.IsNullOrEmpty(error))
+            {
+                throw new Exception(error);
+            }
+
+            return data;
+        }
+
+        private void addPatchAndBinaryFiles(String patch, int rev)
         {
             var binaryFiles = findBinaryFiles(patch);
             var changeSet = _changeSets[rev];
@@ -271,34 +388,38 @@ namespace SvnTransfer
             foreach (var file in binaryFiles)
             {
                 String sourceFile = _from + file;
-                downloadPath = Path.Combine(downloadPath, Path.GetFileName(file));
+                String localFile = file.Replace('/', '\\');
+                downloadPath = Path.Combine(downloadPath, "binaries");
+                createPath(downloadPath, Path.GetDirectoryName(localFile));
+                downloadPath = Path.Combine(downloadPath, localFile);
 
-                ProcessStartInfo startInfo = createExportStartInfo(downloadPath, sourceFile, rev);
-                Process process = startProcess(startInfo);
-                process.WaitForExit();
+                runSvn(createExportStartInfo(downloadPath, sourceFile, rev));
 
-                Diff diff = changeSet.Diffs.Where(d => d.Path == sourceFile).FirstOrDefault();
+                Diff diff = changeSet.Diffs.Where(d => d.FullPath == sourceFile).FirstOrDefault();
 
                 if (diff != null)
                 {
                     diff.BinaryFilePath = downloadPath;
                 }
-
-                closeProcess(process);
             }
         }
 
-        private ChangeSet getChangeSet(int rev) 
+        private void createPath(String root, String file)
         {
-            ProcessStartInfo startInfo = createDiffSummaryStartInfo(_from, rev);
-            Process process = startProcess(startInfo);
+            String[] components = file.Split(Path.PathSeparator);
 
-            String data;
+            foreach (String component in components)
+            {
+                root = Path.Combine(root, component);
+                Directory.CreateDirectory(root);
+            }
+        }
+
+        private ChangeSet getChangeSet(int rev)
+        {
+            String data = runSvn(createDiffSummaryStartInfo(_from, rev));
+
             XDocument doc;
-
-            data = process.StandardOutput.ReadToEnd();
-            process.WaitForExit();
-            closeProcess(process);
 
             doc = XDocument.Parse(data);
             var diffs = from elem in doc.Descendants()
@@ -311,7 +432,8 @@ namespace SvnTransfer
                                    {
                                        Kind = kind == "file" ? TargetKind.File : TargetKind.Dir,
                                        Change = _changeTypes[changeType],
-                                       Path = path
+                                       FullPath = path,
+                                       RelativePath = path.Remove(0, _from.Length)
                                    };
 
             return new ChangeSet {Diffs = diffs.ToList()};
@@ -397,23 +519,33 @@ namespace SvnTransfer
             }
 
             _from = FromRepositoryEntry.Text;
-            ProcessStartInfo startInfo = createInfoStartInfo(_from);
-            Process process = startProcess(startInfo);
-            String data = process.StandardOutput.ReadToEnd();
-            process.WaitForExit();
-            closeProcess(process);
+
+            _fromRev = Int32.Parse(FromRepositoryFromRevEntry.Text);
+
+
+            String data = runSvn(createInfoStartInfo(_from));
 
             XDocument doc = XDocument.Parse(data);
-            String rev = (from elem in doc.Descendants()
-                          where elem.Name == "entry" && elem.Attribute("revision") != null
-                          select elem.Attribute("revision").Value).FirstOrDefault();
-            _toRev = Int32.Parse(rev);
+
+            if (String.IsNullOrEmpty(FromRepositoryToRevEntry.Text))
+            {
+                String rev = (from elem in doc.Descendants()
+                              where elem.Name == "entry" && elem.Attribute("revision") != null
+                              select elem.Attribute("revision").Value).FirstOrDefault();
+                _toRev = Int32.Parse(rev);
+            }
+            else
+            {
+                _toRev = Int32.Parse(FromRepositoryToRevEntry.Text);
+            }
+
+            FromRepositoryToRevEntry.Text = _toRev.ToString();
+
             String path = (from elem in doc.Descendants()
                            where elem.Name == "entry" && elem.Attribute("path") != null
                            select elem.Attribute("path").Value).FirstOrDefault();
             _rootDir = Path.Combine(_rootDir, path);
             Directory.CreateDirectory(_rootDir);
-            FromRepositoryToRevEntry.Text = rev;
         }
 
         private void handleOutputData(object sender, DataReceivedEventArgs e)
@@ -664,7 +796,8 @@ namespace SvnTransfer
 
     internal class Diff
     {
-        public String Path { get; set; }
+        public String FullPath { get; set; }
+        public String RelativePath { get; set; }
         public TargetKind Kind { get; set; }
         public ChangeType Change { get; set; }
         public String BinaryFilePath { get; set; }
