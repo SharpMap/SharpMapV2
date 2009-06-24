@@ -295,6 +295,7 @@ namespace SvnTransfer
                             }
                             else
                             {
+                                createPath(targetPath);
                                 File.Create(targetPath).Close();
                             }
 
@@ -401,8 +402,8 @@ namespace SvnTransfer
                 String sourceFile = _from + file;
                 String localFile = file.Replace('/', '\\');
                 downloadPath = Path.Combine(downloadPath, "binaries");
-                createPath(downloadPath, Path.GetDirectoryName(localFile));
                 downloadPath = Path.Combine(downloadPath, localFile);
+                createPath(downloadPath);
 
                 run(createExportStartInfo(downloadPath, sourceFile, rev));
 
@@ -417,12 +418,24 @@ namespace SvnTransfer
 
         private void createPath(String root, String file)
         {
-            String[] components = file.Split(Path.PathSeparator);
+            createPath(Path.Combine(root, file));
+        }
+
+        private void createPath(String path)
+        {
+            String[] components = path.Split(Path.DirectorySeparatorChar);
+            String filename = Path.GetFileName(path);
+            path = "";
 
             foreach (String component in components)
             {
-                root = Path.Combine(root, component);
-                Directory.CreateDirectory(root);
+                if (String.Equals(filename, component))
+                {
+                    continue;
+                }
+
+                path = Path.Combine(path + "\\", component);
+                Directory.CreateDirectory(path);
             }
         }
 
