@@ -215,7 +215,7 @@ namespace SharpMap.Tests.Data.Providers.PostGis
             //        SpatialOperation.Within,
             //        new GeometryExpression(prov.GeometryFactory.WktReader.Read("POLYGON((-1 -1, 0 1, 1 -1, -1 -1))")))
             //        );
-            //Assert.AreEqual(0, gl.Features.Rows.Count);
+            //Assert.AreEqual(0, gl.Features.Rows.TotalItemCount);
         }
 
         [TestMethod]
@@ -251,7 +251,7 @@ namespace SharpMap.Tests.Data.Providers.PostGis
             gl.Select(new SpatialBinaryExpression(
                           new ExtentsExpression(prov.GetExtents()), SpatialOperation.Contains, new ThisExpression()));
             gl.Features.AcceptChanges();
-            //Assert.AreEqual(4, gl.Features.Rows.Count);
+            //Assert.AreEqual(4, gl.Features.Rows.TotalItemCount);
         }
 
         [TestMethod]
@@ -278,7 +278,7 @@ namespace SharpMap.Tests.Data.Providers.PostGis
             //        new PropertyNameExpression("OID"),
             //        BinaryOperator.Equals,
             //        (Int64)999));
-            //Assert.AreEqual(5, gl.SelectedFeatures.Count);
+            //Assert.AreEqual(5, gl.SelectedFeatures.TotalItemCount);
 
             fdr = gl.Features.Find(999);
             Assert.IsNotNull(fdr);
