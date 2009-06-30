@@ -220,16 +220,16 @@ namespace SharpMap.Data.Providers
                                                                         CollectionExpression<OrderByExpression>>(
                                                                         properties,
                                                                         new CollectionExpression<OrderByExpression>(
-                                                                            new OrderByExpression[] {})),
+                                                                            new OrderByExpression[] { })),
                                                                     delegate(OrderByExpression o)
-                                                                        {
-                                                                            return "[" +
-                                                                                   o.PropertyNameExpression.PropertyName +
-                                                                                   "] " +
-                                                                                   (o.Direction == SortOrder.Ascending
-                                                                                        ? "ASC"
-                                                                                        : "DESC");
-                                                                        })));
+                                                                    {
+                                                                        return "[" +
+                                                                               o.PropertyNameExpression.PropertyName +
+                                                                               "] " +
+                                                                               (o.Direction == SortOrder.Ascending
+                                                                                    ? "ASC"
+                                                                                    : "DESC");
+                                                                    })));
 
 
             string orderByClause = string.IsNullOrEmpty(orderByCols) ? "" : " ORDER BY " + orderByCols;
@@ -263,22 +263,22 @@ namespace SharpMap.Data.Providers
                                                                         CollectionExpression<OrderByExpression>>(
                                                                         properties,
                                                                         new CollectionExpression<OrderByExpression>(
-                                                                            new OrderByExpression[] {})),
+                                                                            new OrderByExpression[] { })),
                                                                     delegate(OrderByExpression o)
-                                                                        {
-                                                                            return "[" +
-                                                                                   o.PropertyNameExpression.PropertyName +
-                                                                                   "] " +
-                                                                                   (o.Direction == SortOrder.Ascending
-                                                                                        ? "ASC"
-                                                                                        : "DESC");
-                                                                        })));
+                                                                    {
+                                                                        return "[" +
+                                                                               o.PropertyNameExpression.PropertyName +
+                                                                               "] " +
+                                                                               (o.Direction == SortOrder.Ascending
+                                                                                    ? "ASC"
+                                                                                    : "DESC");
+                                                                    })));
 
 
             orderByCols = string.IsNullOrEmpty(orderByCols) ? OidColumn : orderByCols;
 
-            int startRecord = (pageNumber*pageSize) + 1;
-            int endRecord = (pageNumber + 1)*pageSize;
+            int startRecord = (pageNumber * pageSize) + 1;
+            int endRecord = (pageNumber + 1) * pageSize;
 
             string mainQueryColumns = string.Join(",", Enumerable.ToArray(
                                                            FormatColumnNames(true, true,
@@ -324,7 +324,7 @@ WHERE rownumber BETWEEN {9} AND {10} ",
             bool withNoLock = GetProviderPropertyValue<WithNoLockExpression, bool>(properties, false);
 
             IEnumerable<string> indexNames = GetProviderPropertyValue<IndexNamesExpression, IEnumerable<string>>(
-                properties, new string[] {});
+                properties, new string[] { });
 
 
             bool forceIndex = Enumerable.Count(indexNames) > 0 &&
@@ -376,17 +376,17 @@ WHERE rownumber BETWEEN {9} AND {10} ",
         {
             Func<SqlServer2008SpatialIndexGridDensity, string> dlgtName =
                 delegate(SqlServer2008SpatialIndexGridDensity o)
+                {
+                    switch (o)
                     {
-                        switch (o)
-                        {
-                            case SqlServer2008SpatialIndexGridDensity.Low:
-                                return "LOW";
-                            case SqlServer2008SpatialIndexGridDensity.Medium:
-                                return "MEDIUM";
-                            default:
-                                return "HIGH";
-                        }
-                    };
+                        case SqlServer2008SpatialIndexGridDensity.Low:
+                            return "LOW";
+                        case SqlServer2008SpatialIndexGridDensity.Medium:
+                            return "MEDIUM";
+                        default:
+                            return "HIGH";
+                    }
+                };
 
             IExtents2D ext = GetExtents() as IExtents2D;
 
@@ -540,10 +540,10 @@ END
                 cmd.ExecuteNonQuery();
             }
 
-            CreateIndex(conn, string.Format("ndx_{0}_{1}", Table, minX), new[] {minX});
-            CreateIndex(conn, string.Format("ndx_{0}_{1}", Table, minY), new[] {minY});
-            CreateIndex(conn, string.Format("ndx_{0}_{1}", Table, maxX), new[] {maxX});
-            CreateIndex(conn, string.Format("ndx_{0}_{1}", Table, maxY), new[] {maxY});
+            CreateIndex(conn, string.Format("ndx_{0}_{1}", Table, minX), new[] { minX });
+            CreateIndex(conn, string.Format("ndx_{0}_{1}", Table, minY), new[] { minY });
+            CreateIndex(conn, string.Format("ndx_{0}_{1}", Table, maxX), new[] { maxX });
+            CreateIndex(conn, string.Format("ndx_{0}_{1}", Table, maxY), new[] { maxY });
         }
 
 
@@ -609,6 +609,20 @@ END
             return CreateTableHelper.CheckIfObjectExists(conn, schema, "Geometry_Columns");
         }
 
+        public static void UnregsiterInGeometryColumnsTable(IDbConnection conn, IDbUtility dbUtility, string schema,
+                                                          string tableName)
+        {
+            if (CreateTableHelper.CheckIfObjectExists(conn, "dbo", "geometry_columns"))
+                CreateTableHelper.UnregisterInGeometryColumns(conn, dbUtility, schema, tableName);
+        }
+
+        public static void DropTable(IDbConnection conn, IDbUtility dbUtility, string schema,
+                                                          string tableName)
+        {
+            UnregsiterInGeometryColumnsTable(conn, dbUtility, schema, tableName);
+            CreateTableHelper.DropTable(conn, dbUtility, schema, tableName);
+        }
+
         //TODO: add a set of strategies for reading srid
         protected override void ReadSpatialReference(out ICoordinateSystem cs, out string srid)
         {
@@ -655,7 +669,7 @@ IF @found = 0
                             object v = reader[0];
                             if (v is int)
                             {
-                                int isrid = (int) v;
+                                int isrid = (int)v;
                                 cs = SridMap.DefaultInstance.Process(isrid, default(ICoordinateSystem));
                                 srid = !Equals(cs, default(ICoordinateSystem))
                                            ? SridMap.DefaultInstance.Process(cs, "")
@@ -721,7 +735,7 @@ END
 	", schema, objectName);
             cmd.CommandType = CommandType.Text;
             EnsureOpenConnection(cmd);
-            return (int) cmd.ExecuteScalar() == 1;
+            return (int)cmd.ExecuteScalar() == 1;
         }
 
         internal static bool CheckProviderCompatibility<TOid>(IDbConnection connection,
@@ -882,6 +896,29 @@ ALTER TABLE [dbo].[Geometry_Columns] ADD  CONSTRAINT [DF_Geometry_Columns_Geomet
             }
         }
 
+        internal static void UnregisterInGeometryColumns(IDbConnection conn, IDbUtility dbUtility, string schema,
+                                                       string tableName)
+        {
+            string sql = string.Format(
+                @"DELETE FROM [{0}].[Geometry_Columns] 
+            WHERE 
+                F_Table_Catalog = @pCatalog 
+                AND  F_Table_Schema = @pSchema 
+                AND F_Table_Name = @pTable 
+                ", schema);
+
+            using (IDbCommand cmd = conn.CreateCommand())
+            {
+                cmd.CommandText = sql;
+                cmd.CommandType = CommandType.Text;
+
+                cmd.Parameters.Add(dbUtility.CreateParameter("pCatalog", conn.Database, ParameterDirection.Input));
+                cmd.Parameters.Add(dbUtility.CreateParameter("pSchema", schema, ParameterDirection.Input));
+                cmd.Parameters.Add(dbUtility.CreateParameter("pTable", tableName, ParameterDirection.Input));
+                ExecuteNoQuery(cmd);
+            }
+        }
+
         internal static void RegisterInGeometryColumns(IDbConnection conn, IDbUtility dbUtility, string schema,
                                                        string tableName, string geometryColumnName, int coordDimension,
                                                        int srid, string geometryType)
@@ -995,6 +1032,19 @@ ELSE
         {
             if (cmd.Connection.State == ConnectionState.Closed || cmd.Connection.State == ConnectionState.Broken)
                 cmd.Connection.Open();
+        }
+
+        internal static void DropTable(IDbConnection conn, IDbUtility dbUtility, string schema, string tableName)
+        {
+            if (CheckIfObjectExists(conn, schema, tableName))
+            {
+                using (IDbCommand cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = String.Format("DROP TABLE [{0}].[{1}]", schema, tableName);
+                    cmd.CommandType = CommandType.Text;
+                    ExecuteNoQuery(cmd);
+                }
+            }
         }
     }
 
