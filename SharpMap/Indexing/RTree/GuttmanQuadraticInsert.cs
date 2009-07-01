@@ -155,5 +155,22 @@ namespace SharpMap.Indexing.RTree
 
         #endregion
 
+
+        #region IItemInsertStrategy<IExtents,TItem> Members
+
+
+        public ISpatialIndexNodeFactory<IExtents, TItem> NodeFactory
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+            set
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        #endregion
     }
 }

@@ -59,6 +59,23 @@ namespace SharpMap.Indexing.QuadTree
         {
             throw new NotImplementedException();
         }
+
+        #region IItemInsertStrategy<IExtents,TItem> Members
+
+
+        public ISpatialIndexNodeFactory<IExtents, TItem> NodeFactory
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+            set
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        #endregion
     }
 
     [global::System.Serializable]
