@@ -152,8 +152,8 @@ namespace SharpMap.Tests.Indexing
                 List<IBoundable<TBounds>> entries = new List<IBoundable<TBounds>>(boundablesCount);
                 entries.AddRange(boundables);
 
-                IBoundable<TBounds>[] group1 = new IBoundable<TBounds>[heuristic.NodeItemMaximumCount];
-                IBoundable<TBounds>[] group2 = new IBoundable<TBounds>[heuristic.NodeItemMaximumCount];
+                IList<IBoundable<TBounds>> group1 = new List<IBoundable<TBounds>>();
+                IList<IBoundable<TBounds>> group2 = new List<IBoundable<TBounds>>();
 
                 pickSeeds(entries, group1, group2);
 
@@ -173,7 +173,7 @@ namespace SharpMap.Tests.Indexing
                     }
                 }
 
-                node.RemoveRange(node.ChildBoundables);
+                node.Clear();
 
 
                 ISpatialIndexNode<TBounds, TItem> sibling = NodeFactory.CreateNode(node.Level);
@@ -205,12 +205,13 @@ namespace SharpMap.Tests.Indexing
             }
 
             private static void fillShortGroup(IEnumerable<IBoundable<TBounds>> entries,
-                                               IBoundable<TBounds>[] shortGroup,
+                                               IList<IBoundable<TBounds>> shortGroup,
                                                ref Int32 shortGroupCount)
             {
                 foreach (IBoundable<TBounds> entry in entries)
                 {
-                    shortGroup[shortGroupCount++] = entry;
+                    shortGroup.Add(entry);
+                    shortGroupCount++;
                 }
             }
 
@@ -222,8 +223,8 @@ namespace SharpMap.Tests.Indexing
             }
 
             private static void pickSeeds(IList<IBoundable<TBounds>> items,
-                                          IBoundable<TBounds>[] group1,
-                                          IBoundable<TBounds>[] group2)
+                                          IList<IBoundable<TBounds>> group1,
+                                          IList<IBoundable<TBounds>> group2)
             {
                 Int32 group1Count = 0, group2Count = 0;
                 Double largestWaste = -1;
@@ -250,8 +251,8 @@ namespace SharpMap.Tests.Indexing
                             continue;
                         }
 
-                        TBounds e1 = (TBounds)allExtents[i].Clone();
-                        TBounds e2 = (TBounds)allExtents[j].Clone();
+                        TBounds e1 = allExtents[i];
+                        TBounds e2 = allExtents[j];
                         TBounds minBoundingRectangle = (TBounds)e1.Union(e2);
                         TBounds intersection = (TBounds)e1.Intersection(e2);
 
@@ -298,8 +299,8 @@ namespace SharpMap.Tests.Indexing
             Random _random = new Random(DateTime.Now.Millisecond);
 
             private void distribute(IList<IBoundable<TBounds>> entries,
-                                    IBoundable<TBounds>[] group1,
-                                    IBoundable<TBounds>[] group2,
+                                    IList<IBoundable<TBounds>> group1,
+                                    IList<IBoundable<TBounds>> group2,
                                     IndexBalanceHeuristic heuristic,
                                     ref Int32 group1Count,
                                     ref Int32 group2Count)
@@ -416,7 +417,7 @@ namespace SharpMap.Tests.Indexing
                 return group;
             }
 
-            private TBounds computeBounds(IBoundable<TBounds>[] entries, Int32 count)
+            private TBounds computeBounds(IList<IBoundable<TBounds>> entries, Int32 count)
             {
                 TBounds bounds = (TBounds)_geometryFactory.CreateExtents();
 
@@ -464,6 +465,8 @@ namespace SharpMap.Tests.Indexing
             public void Insert(TBounds bounds, TItem entry, ISpatialIndexNode<TBounds, TItem> node, INodeSplitStrategy<TBounds, TItem> nodeSplitStrategy, IndexBalanceHeuristic heuristic, out ISpatialIndexNode<TBounds, TItem> newSiblingFromSplit)
             {
                 newSiblingFromSplit = null;
+
+                //TODO: handle null node..
 
                 // Terminating case
                 if (node.IsLeaf)
@@ -571,6 +574,16 @@ namespace SharpMap.Tests.Indexing
                 return width * height;
             }
 
+
+            #region IItemInsertStrategy<TBounds,TItem> Members
+
+
+            public ISpatialIndexNodeFactory<TBounds, TItem> NodeFactory
+            {
+                get; set;
+            }
+
+            #endregion
         }
     }
 }
