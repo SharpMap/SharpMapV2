@@ -185,6 +185,7 @@
     <Compile Include="Expressions\ExcludedOidCollectionExpression.cs" />
     <Compile Include="Expressions\Expression.cs" />
     <Compile Include="Expressions\ExpressionParseException.cs" />
+    <Compile Include="Expressions\NullExpression.cs" />
     <Compile Include="Expressions\ProviderPropertiesExpression.cs" />
     <Compile Include="Expressions\ProviderQueryExpression.cs" />
     <Compile Include="Expressions\ExtentsExpression.cs" />
@@ -204,6 +205,12 @@
     <Compile Include="Expressions\ProviderPropertyExpression.cs" />
     <Compile Include="Expressions\QueryExpression.cs" />
     <Compile Include="Expressions\RasterQueryExpression.cs" />
+    <Compile Include="Expressions\SpatialAnalysisBufferExpression.cs" />
+    <Compile Include="Expressions\SpatialAnalysisConvexHullExpression.cs" />
+    <Compile Include="Expressions\SpatialAnalysisDistanceExpression.cs" />
+    <Compile Include="Expressions\SpatialAnalysisExpression.cs" />
+    <Compile Include="Expressions\SpatialAnalysisGeometricExpression.cs" />
+    <Compile Include="Expressions\SpatialAnalysisOperation.cs" />
     <Compile Include="Expressions\SpatialBinaryExpression.cs" />
     <Compile Include="Expressions\SpatialExpression.cs" />
     <Compile Include="Expressions\SpatialOperation.cs" />

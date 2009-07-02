@@ -25,7 +25,7 @@ namespace SharpMap.Expressions
         private readonly TValue _value;
         private readonly IEqualityComparer<TValue> _comparer;
 
-        public LiteralExpression(TValue value) 
+        public LiteralExpression(TValue value)
             : this(value, EqualityComparer<TValue>.Default) { }
 
         public LiteralExpression(TValue value, IEqualityComparer<TValue> comparer)
@@ -36,7 +36,7 @@ namespace SharpMap.Expressions
 
         public TValue Value
         {
-            get { return _value; }
+            get { return (TValue)base.Value; }
         }
 
         public IEqualityComparer<TValue> Comparer

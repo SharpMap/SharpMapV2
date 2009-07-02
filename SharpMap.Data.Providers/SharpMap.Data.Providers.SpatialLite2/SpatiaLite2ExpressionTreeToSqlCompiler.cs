@@ -84,6 +84,11 @@ namespace SharpMap.Data.Providers.SpatiaLite2
                 Provider.GeometryColumn ) );
 
         }
+
+        protected override void VisitSpatialAnalysisExpressionInternal(StringBuilder builder, SpatialAnalysisExpression expression)
+        {
+            throw new NotImplementedException();
+        }
     }
 
 }

@@ -29,35 +29,40 @@ namespace SharpMap.Data.Providers.MsSqlServer2008
         {
         }
 
-        protected override void WriteSpatialGeometryExpressionSqlInternal(StringBuilder builder,
-                                                                  SpatialOperation op,
-                                                                  IGeometry geom)
+        protected string DeclareSqlGeometry(IGeometry geometry)
         {
-
-            int? geomSrid = SridMap.DefaultInstance.Process(geom.SpatialReference, (int?)null);
+            int? geomSrid = SridMap.DefaultInstance.Process(geometry.SpatialReference, (int?)null);
             int? provSrid = SridMap.DefaultInstance.Process(Provider.SpatialReference, (int?)null);
 
             string declaredParamName = string.Format("@dparam_{0}", ParameterDeclarations.Count);
             ParameterDeclarations.Add(
                 string.Format("DECLARE {0} geometry\n SET {0} = geometry::STGeomFromWKB({1},{2}).MakeValid()\n ",
                               declaredParamName,
-                              CreateParameter(geom).ParameterName,
+                              CreateParameter(geometry).ParameterName,
                              geomSrid.HasValue && geomSrid.Value > 0
                                   ? geomSrid.Value
                                   : !provSrid.HasValue || provSrid.Value < 0
                                         ? 0
                                         : provSrid.Value));
 
+            return declaredParamName;
+        }
+
+
+        protected override void WriteSpatialGeometryExpressionSqlInternal(StringBuilder builder,
+                                                                  SpatialOperation op,
+                                                                  IGeometry geom)
+        {
             builder.AppendFormat(" {0}.{1}.{2}({3}) = 1 ",
                                  Provider.Table,
                                  Provider.GeometryColumn,
                                  GetSpatialMethodName(op),
-                                 declaredParamName);
+                                 DeclareSqlGeometry(geom));
         }
 
-        private static string GetSpatialMethodName(SpatialOperation op)
+        private static string GetSpatialMethodName<TEnum>(TEnum op)
         {
-            return string.Format("ST{0}", Enum.GetName(typeof(SpatialOperation), op));
+            return string.Format("ST{0}", Enum.GetName(typeof(TEnum), op));
         }
 
         protected override void WriteSpatialExtentsExpressionSqlInternal(StringBuilder builder,
@@ -66,6 +71,23 @@ namespace SharpMap.Data.Providers.MsSqlServer2008
             /// seems faster to test the actual geometry and take advantage of spatial indexing
             /// than to test the envelope without spatial indexing.
             WriteSpatialGeometryExpressionSqlInternal(builder, spatialOperation, ext.ToGeometry());
+        }
+
+        protected override void VisitSpatialAnalysisExpressionInternal(StringBuilder builder, SpatialAnalysisExpression expression)
+        {
+            string paramName = expression.RightExpression is GeometryExpression
+                                   ? DeclareSqlGeometry(TransformGeometry((expression.RightExpression as GeometryExpression).Geometry))
+                                   :
+                                       expression.RightExpression is LiteralExpression
+                                           ? CreateParameterFromObject(
+                                                 ((LiteralExpression)expression.RightExpression).Value).ParameterName
+                                           : string.Empty;
+
+            builder.AppendFormat(" {0}.{1}.{2}({3}) ",
+                      Provider.Table,
+                      Provider.GeometryColumn,
+                      GetSpatialMethodName(expression.SpatialAnalysisOperator),
+                      paramName);
         }
     }
 }

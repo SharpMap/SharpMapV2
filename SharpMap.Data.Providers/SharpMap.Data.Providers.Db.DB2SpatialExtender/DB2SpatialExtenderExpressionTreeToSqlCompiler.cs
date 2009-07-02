@@ -123,5 +123,10 @@ namespace SharpMap.Data.Providers
 
         //    return p;
         //}
+
+        protected override void VisitSpatialAnalysisExpressionInternal(StringBuilder builder, SpatialAnalysisExpression expression)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

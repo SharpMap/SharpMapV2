@@ -101,5 +101,10 @@ namespace SharpMap.Data.Providers.PostGis
 
             return ret.Value;
         }
+
+        protected override void VisitSpatialAnalysisExpressionInternal(StringBuilder builder, SpatialAnalysisExpression expression)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

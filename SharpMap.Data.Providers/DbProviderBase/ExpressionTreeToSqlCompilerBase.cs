@@ -20,6 +20,7 @@ using System.Reflection;
 using System.Reflection.Emit;
 using System.Text;
 using GeoAPI.CoordinateSystems.Transformations;
+using GeoAPI.DataStructures;
 using GeoAPI.Geometries;
 using SharpMap.Expressions;
 #if DOTNET35
@@ -27,10 +28,9 @@ using Processor = System.Linq.Enumerable;
 using Enumerable = System.Linq.Enumerable;
 using Caster = GeoAPI.DataStructures.Caster;
 #else
-using Processor = GeoAPI.DataStructures.Processor;
-using Caster = GeoAPI.DataStructures.Caster;
-using Enumerable = GeoAPI.DataStructures.Enumerable;
+
 #endif
+
 namespace SharpMap.Data.Providers.Db
 {
     public abstract class ExpressionTreeToSqlCompilerBase<TOid>
@@ -286,9 +286,16 @@ namespace SharpMap.Data.Providers.Db
                 VisitCollectionExpression(builder, (CollectionExpression) exp);
             else if (exp is OidExpression)
                 VisitOidExpression(builder, (OidExpression) exp);
+            else if (exp is SpatialAnalysisExpression)
+                VisitSpatialAnalysisExpression(builder, (SpatialAnalysisExpression) exp);
             else
                 throw new NotImplementedException(string.Format("Unknown Expression Type {0}", exp.GetType()));
         }
+
+
+        protected abstract void VisitSpatialAnalysisExpressionInternal(StringBuilder builder,
+                                                                       SpatialAnalysisExpression expression);
+
 
         private void VisitOidExpression(StringBuilder builder, OidExpression oidExpression)
         {
@@ -648,7 +655,7 @@ namespace SharpMap.Data.Providers.Db
             return ext;
         }
 
-        private IGeometry TransformGeometry(IGeometry geom)
+        protected IGeometry TransformGeometry(IGeometry geom)
         {
             if (!Provider.SpatialReference.EqualParams(geom.SpatialReference))
             {
@@ -674,6 +681,11 @@ namespace SharpMap.Data.Providers.Db
                                                          IGeometry geom)
         {
             WriteSpatialGeometryExpressionSqlInternal(builder, op, TransformGeometry(geom));
+        }
+
+        private void VisitSpatialAnalysisExpression(StringBuilder builder, SpatialAnalysisExpression expression)
+        {
+            VisitSpatialAnalysisExpressionInternal(builder, expression);
         }
 
 

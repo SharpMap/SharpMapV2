@@ -18,6 +18,12 @@ namespace SharpMap.Data.Providers.Db.Test
     [TestClass]
     public class UnitTest1
     {
+        static UnitTest1()
+        {
+            SridMap.DefaultInstance =
+                new SridMap(new[] {new SridProj4Strategy(0, new GeometryServices().CoordinateSystemFactory)});
+        }
+
         /// <summary>
         ///Gets or sets the test context which provides
         ///information about and functionality for the current test run.
@@ -91,6 +97,54 @@ namespace SharpMap.Data.Providers.Db.Test
 
             Assert.IsNotNull(obj);
         }
+
+        [TestMethod]
+        public void TestSqlServer2008Distance()
+        {
+            GeometryServices services = new GeometryServices();
+
+            MsSqlServer2008Provider<long> search = new MsSqlServer2008Provider<long>(services.DefaultGeometryFactory,
+                                                                                     ConfigurationManager.
+                                                                                         ConnectionStrings["sql2008"].
+                                                                                         ConnectionString,
+                                                                                     "dbo",
+                                                                                     "GeoPlaces", "OId", "Geom")
+                                                       {
+                                                           DefaultProviderProperties
+                                                               = new ProviderPropertiesExpression(
+                                                               new ProviderPropertyExpression[]
+                                                                   {
+                                                                       new WithNoLockExpression(true),
+                                                                       new ForceIndexExpression(true)
+                                                                   })
+                                                       };
+
+            IGeometry point = services["EPSG:27700"].CreatePoint2D(500000, 180000);
+
+            SpatialAnalysisExpression analysisExpresssion =
+                new SpatialAnalysisDistanceExpression(new GeometryExpression(null),
+                                                      new GeometryExpression(point));
+
+
+            BinaryExpression expression = new BinaryExpression(analysisExpresssion, BinaryOperator.LessThanOrEqualTo,
+                                                               new LiteralExpression<double>(2000.00));
+            ProviderPropertiesExpression providerProps =
+                new ProviderPropertiesExpression(
+                    new ProviderPropertyExpression[]
+                        {
+                            new WithNoLockExpression(true),
+                            new ForceIndexExpression(true)
+                        });
+
+
+            ProviderQueryExpression prov = new ProviderQueryExpression(providerProps, new AllAttributesExpression(),
+                                                                       expression);
+
+            object obj = search.ExecuteQuery(prov);
+
+            Assert.IsNotNull(obj);
+        }
+
 
         [TestMethod]
         public void TestSqlServer2008Paged()
@@ -281,7 +335,7 @@ namespace SharpMap.Data.Providers.Db.Test
         [TestMethod]
         public void TestSridMap()
         {
-            SridMap map = new SridMap(new[] {new SridProj4Strategy(0, new GeometryServices().CoordinateSystemFactory)});
+            SridMap map = SridMap.DefaultInstance;
 
             ICoordinateSystem cs = map.Process(27700, default(ICoordinateSystem));
 
