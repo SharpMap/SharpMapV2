@@ -35,6 +35,8 @@ namespace SharpMap.Demo.FormatConverter.SqlServer2008
         private Type _specializedType;
         private IWritableFeatureProvider _targetProvider;
         private bool disposed;
+        private Type _sourceProviderOidType;
+        private Type _targetProviderOidType;
 
         #region IConfigureFeatureSource Members
 
@@ -84,7 +86,7 @@ namespace SharpMap.Demo.FormatConverter.SqlServer2008
                 Activator.CreateInstance(specialized, geometryServices[srid], connectionString, dtschema, tableName,
                                          _oidColumn, geometryColumn);
             _sourceProvider.Open();
-
+            _sourceProviderOidType = type;
             return _sourceProvider;
         }
 
@@ -121,6 +123,7 @@ namespace SharpMap.Demo.FormatConverter.SqlServer2008
 
             Type typ = typeof (MsSqlServer2008Provider<>);
             _specializedType = typ.MakeGenericType(oidType);
+            _targetProviderOidType = oidType;
 
             Console.WriteLine(
                 "Please enter the connection string for the target database server. Press enter to use the one below.(Remember 'Connection Timeout=0' for large datasets.)");
@@ -252,5 +255,23 @@ namespace SharpMap.Demo.FormatConverter.SqlServer2008
         {
             Dispose(false);
         }
+
+        #region IConfigureFeatureSource Members
+
+
+        Type IConfigureFeatureSource.OidType
+        {
+            get { return _sourceProviderOidType; }
+        }
+
+        Type IConfigureFeatureTarget.OidType
+        {
+            get
+            {
+                return _targetProviderOidType;
+            }
+        }
+
+        #endregion
     }
 }

@@ -24,6 +24,7 @@ namespace SharpMap.Demo.FormatConverter.Common
     public interface IConfigureFeatureTarget : IDisposable
     {
         IWritableFeatureProvider ConstructTargetProvider(Type oidType, IGeometryFactory geometryFactory, ICoordinateSystemFactory csFactory, FeatureDataTable schemaTable);
+        Type OidType { get; }
         void PostImport();
     }
 }

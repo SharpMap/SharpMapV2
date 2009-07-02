@@ -286,5 +286,15 @@ namespace SharpMap.Demo.FormatConverter.ShapeFile
         }
 
         #endregion
+
+        #region IConfigureFeatureSource Members
+
+
+        public Type OidType
+        {
+            get { return typeof(UInt32); }
+        }
+
+        #endregion
     }
 }

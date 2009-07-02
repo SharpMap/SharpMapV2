@@ -313,5 +313,15 @@ namespace SharpMap.Demo.FormatConverter.SpatiaLite2
             }
         }
 
+
+        #region IConfigureFeatureSource Members
+
+
+        public Type OidType
+        {
+            get { return typeof (Int64); }
+        }
+
+        #endregion
     }
 }

@@ -37,7 +37,6 @@
     <UseVSHostingProcess>true</UseVSHostingProcess>
     <DocumentationFile>bin\Debug_Net20\SharpMap.xml</DocumentationFile>
     <TargetFrameworkVersion>2.0</TargetFrameworkVersion>
-
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release_Net20|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -134,6 +133,7 @@
     <Compile Include="Data\AdoNetInternalTypes.cs" />
     <Compile Include="Data\Caching\IQueryCache.cs" />
     <Compile Include="Data\Caching\NullQueryCache.cs" />
+    <Compile Include="Data\DataConverter.cs" />
     <Compile Include="Data\DataSourcePassThroughPropertyDescriptor.cs" />
     <Compile Include="Data\EnumerableOfFeatureDataRecordAdapter.cs" />
     <Compile Include="Data\Providers\FeatureProviderBase.cs" />

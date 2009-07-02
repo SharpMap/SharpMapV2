@@ -40,6 +40,8 @@ namespace SharpMap.Demo.FormatConverter.PostGis
         private IWritableFeatureProvider _targetProvider;
         private bool disposed;
         private bool settingChanged;
+        private Type _sourceProviderOidType;
+        private Type _targetProviderOidType;
 
         #region IConfigureFeatureSource Members
 
@@ -76,6 +78,8 @@ namespace SharpMap.Demo.FormatConverter.PostGis
                     type = cmd.ExecuteScalar().GetType();
                 }
             }
+
+            _sourceProviderOidType = type;
 
             Type t = typeof (PostGisProvider<>);
             Type specialized = t.MakeGenericType(type);
@@ -128,6 +132,8 @@ namespace SharpMap.Demo.FormatConverter.PostGis
                 oidType = typeof (Int32);
             else if (oidType == typeof (UInt64))
                 oidType = typeof (Int64);
+
+            _targetProviderOidType = oidType;
 
             Type typ = typeof (PostGisProvider<>);
             _specializedType = typ.MakeGenericType(oidType);
@@ -366,5 +372,20 @@ namespace SharpMap.Demo.FormatConverter.PostGis
         //        Console.WriteLine("Invalid option.");
         //    }
         //}
+
+        Type IConfigureFeatureSource.OidType
+        {
+            get
+            {
+                return _sourceProviderOidType;
+            }
+        }
+        Type IConfigureFeatureTarget.OidType
+        {
+            get
+            {
+                return _targetProviderOidType;
+            }
+        }
     }
 }

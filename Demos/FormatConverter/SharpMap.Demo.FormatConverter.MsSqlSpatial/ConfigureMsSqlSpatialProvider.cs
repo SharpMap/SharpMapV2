@@ -107,5 +107,15 @@ namespace SharpMap.Demo.FormatConverter.MsSqlSpatial
         }
 
         #endregion
+
+        #region IConfigureFeatureTarget Members
+
+
+        public Type OidType
+        {
+            get { return typeof(long); }
+        }
+
+        #endregion
     }
 }

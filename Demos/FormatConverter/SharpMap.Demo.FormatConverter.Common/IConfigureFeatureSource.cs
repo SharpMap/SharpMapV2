@@ -25,6 +25,8 @@ namespace SharpMap.Demo.FormatConverter.Common
 
         FeatureQueryExpression ConstructSourceQueryExpression();
 
+        Type OidType { get; }
+
         string OidColumnName { get; }
     }
 }
