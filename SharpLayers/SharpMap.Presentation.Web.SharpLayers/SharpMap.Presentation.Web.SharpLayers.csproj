@@ -130,6 +130,7 @@
     <Compile Include="Controls\Scale\ScaleBarBuilderParams.cs" />
     <Compile Include="Controls\SelectFeature\SelectFeatureTool.cs" />
     <Compile Include="Controls\SelectFeature\SelectFeatureToolBuilderParams.cs" />
+    <Compile Include="Controls\SharpLayersConfigControl.cs" />
     <Compile Include="Controls\ToolBaseComponent.cs" />
     <Compile Include="Controls\ToolBuilderParamsBase.cs" />
     <Compile Include="Format\GeoJsonFormat.cs" />
