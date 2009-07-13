@@ -111,6 +111,12 @@ namespace SharpMap.Utilities.SridUtility
 
         public override bool Process(ICoordinateSystem input, out int? output)
         {
+            if(Equals(input, default(ICoordinateSystem)))
+            {
+                output = null;
+                return true;
+            }
+
             int hash = HashCoordSystem(input);
             if (_hashMap.ContainsKey(hash))
             {
