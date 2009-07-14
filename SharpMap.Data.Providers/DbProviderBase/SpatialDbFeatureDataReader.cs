@@ -59,10 +59,10 @@ namespace SharpMap.Data.Providers.Db
             // note: GetOrdinal crashes if the column does not exist so loop through fields
             {
                 string name = internalReader.GetName(i);
-                if (name == geometryColumn)
+                if (String.Compare(name, geometryColumn, StringComparison.CurrentCultureIgnoreCase) == 0)
                     _geomColumnIndex = i;
 
-                if (name == oidColumn)
+                if (String.Compare(name, oidColumn, StringComparison.CurrentCultureIgnoreCase) == 0)
                     _oidColumnIndex = i;
 
                 if (_geomColumnIndex > -1 && _oidColumnIndex > -1)
@@ -346,7 +346,7 @@ namespace SharpMap.Data.Providers.Db
             }
             Close();//jd:re-implementing close here due to strange exceptions when the finalizer is called.
             yield break;
-            
+
         }
 
         IEnumerator IEnumerable.GetEnumerator()
@@ -368,7 +368,7 @@ namespace SharpMap.Data.Providers.Db
             Dispose(false);
         }
 
-        
+
         private void Dispose(bool disposing)
         {
             if (_disposed)

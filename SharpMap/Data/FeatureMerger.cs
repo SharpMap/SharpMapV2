@@ -154,10 +154,10 @@ namespace SharpMap.Data
                 throw new NotImplementedException("SchemaMergeAction.KeyByType is currently not supported.");
             }
 
-            if ((SchemaMergeAction.CaseInsensitive & mergeAction) != SchemaMergeAction.None)
-            {
-                throw new NotImplementedException("SchemaMergeAction.CaseInsensitive is currently not supported.");
-            }
+            //if ((SchemaMergeAction.CaseInsensitive & mergeAction) != SchemaMergeAction.None)
+            //{
+            //    throw new NotImplementedException("SchemaMergeAction.CaseInsensitive is currently not supported.");
+            //}
 
             _isTableStandalone = true;
             _targetDataTable = target;
@@ -245,7 +245,20 @@ namespace SharpMap.Data
 
             foreach (DataColumn column in schemaModel.Columns)
             {
-                mapper.AddMapping(column.Ordinal, _targetDataTable.Columns[column.ColumnName].Ordinal);
+                int trgtOrdinal = _targetDataTable.Columns[column.ColumnName].Ordinal;
+                if (trgtOrdinal == -1 && (_mergeAction & SchemaMergeAction.CaseInsensitive) != SchemaMergeAction.None)
+                {
+                    foreach (DataColumn c in _targetDataTable.Columns)
+                    {
+                        if (String.Compare(c.ColumnName, column.ColumnName, StringComparison.CurrentCultureIgnoreCase) == 0)
+                        {
+                            trgtOrdinal = c.Ordinal;
+                            break;
+                        }
+                    }
+                }
+
+                mapper.AddMapping(column.Ordinal, trgtOrdinal);
             }
 
             return mapper;
@@ -547,12 +560,12 @@ namespace SharpMap.Data
         {
             MissingSchemaAction missingSchemaAction = MissingSchemaAction.Error;
 
-            if ((Int32) (schemaMergeAction & SchemaMergeAction.AddAll) != 0)
+            if ((Int32)(schemaMergeAction & SchemaMergeAction.AddAll) != 0)
             {
                 missingSchemaAction = MissingSchemaAction.Add;
             }
 
-            if ((Int32) (schemaMergeAction & SchemaMergeAction.Key) != 0)
+            if ((Int32)(schemaMergeAction & SchemaMergeAction.Key) != 0)
             {
                 missingSchemaAction = MissingSchemaAction.AddWithKey;
             }
@@ -577,7 +590,7 @@ namespace SharpMap.Data
             DynamicMethod createMergerMethod = new DynamicMethod("Merger_Create",
                                                                  PublicStaticMethod,
                                                                  CallingConventions.Standard,
-                                                                 typeof (Object),
+                                                                 typeof(Object),
                                                                  ctorParams,
                                                                  AdoNetInternalTypes.MergerType,
                                                                  false);
@@ -591,11 +604,11 @@ namespace SharpMap.Data
                                                                                  ctorParams,
                                                                                  null);
             il.Emit(OpCodes.Newobj, ctor);
-            il.Emit(OpCodes.Isinst, typeof (Object));
+            il.Emit(OpCodes.Isinst, typeof(Object));
             il.Emit(OpCodes.Ret);
 
             CreateMergerDelegate d
-                = (CreateMergerDelegate) createMergerMethod.CreateDelegate(typeof (CreateMergerDelegate));
+                = (CreateMergerDelegate)createMergerMethod.CreateDelegate(typeof(CreateMergerDelegate));
             return d;
         }
 
@@ -604,8 +617,8 @@ namespace SharpMap.Data
             DynamicMethod mergeSchemaMethod = new DynamicMethod("Merger_MergeSchema",
                                                                 PublicStaticMethod,
                                                                 CallingConventions.Standard,
-                                                                typeof (DataTable),
-                                                                new[] {typeof (Object), typeof (DataTable)},
+                                                                typeof(DataTable),
+                                                                new[] { typeof(Object), typeof(DataTable) },
                                                                 AdoNetInternalTypes.MergerType,
                                                                 false);
 
@@ -619,7 +632,7 @@ namespace SharpMap.Data
             il.Emit(OpCodes.Ret);
 
             MergeSchemaDelegate d
-                = (MergeSchemaDelegate) mergeSchemaMethod.CreateDelegate(typeof (MergeSchemaDelegate));
+                = (MergeSchemaDelegate)mergeSchemaMethod.CreateDelegate(typeof(MergeSchemaDelegate));
             return d;
         }
 
@@ -635,20 +648,20 @@ namespace SharpMap.Data
                 "FeatureMerger_GetDataKeyFromUniqueConstraint",
                 PublicStaticMethod,
                 CallingConventions.Standard,
-                typeof (Object),
-                new[] {typeof (UniqueConstraint)},
-                typeof (UniqueConstraint),
+                typeof(Object),
+                new[] { typeof(UniqueConstraint) },
+                typeof(UniqueConstraint),
                 false);
 
             ILGenerator il = getDataKeyFromUniqueConstraintMethod.GetILGenerator();
             il.Emit(OpCodes.Ldarg_0);
-            PropertyInfo keyInfo = typeof (UniqueConstraint).GetProperty("Key", NonPublicInstance);
+            PropertyInfo keyInfo = typeof(UniqueConstraint).GetProperty("Key", NonPublicInstance);
             il.Emit(OpCodes.Call, keyInfo.GetGetMethod(true));
             il.Emit(OpCodes.Box, AdoNetInternalTypes.DataKeyType);
             il.Emit(OpCodes.Ret);
 
             GetDataKeyFromUniqueConstraintDelegate d
-                = getDataKeyFromUniqueConstraintMethod.CreateDelegate(typeof (GetDataKeyFromUniqueConstraintDelegate))
+                = getDataKeyFromUniqueConstraintMethod.CreateDelegate(typeof(GetDataKeyFromUniqueConstraintDelegate))
                   as GetDataKeyFromUniqueConstraintDelegate;
 
             return d;
@@ -659,7 +672,7 @@ namespace SharpMap.Data
             DynamicMethod createEmptyDataKeyMethod = new DynamicMethod("FeatureMerger_CreateEmptyDataKey",
                                                                        PublicStaticMethod,
                                                                        CallingConventions.Standard,
-                                                                       typeof (Object),
+                                                                       typeof(Object),
                                                                        null,
                                                                        AdoNetInternalTypes.DataKeyType,
                                                                        false);
@@ -673,7 +686,7 @@ namespace SharpMap.Data
             il.Emit(OpCodes.Ret);
 
             CreateEmptyDataKeyDelegate d
-                = createEmptyDataKeyMethod.CreateDelegate(typeof (CreateEmptyDataKeyDelegate))
+                = createEmptyDataKeyMethod.CreateDelegate(typeof(CreateEmptyDataKeyDelegate))
                   as CreateEmptyDataKeyDelegate;
 
             return d;
@@ -684,8 +697,8 @@ namespace SharpMap.Data
             DynamicMethod createDataKeyMethod = new DynamicMethod("FeatureMerger_CreateDataKey",
                                                                   PublicStaticMethod,
                                                                   CallingConventions.Standard,
-                                                                  typeof (Object),
-                                                                  new[] {typeof (DataColumn[]), typeof (Boolean)},
+                                                                  typeof(Object),
+                                                                  new[] { typeof(DataColumn[]), typeof(Boolean) },
                                                                   AdoNetInternalTypes.DataKeyType,
                                                                   false);
 
@@ -694,7 +707,7 @@ namespace SharpMap.Data
             il.Emit(OpCodes.Ldloca_S, newDataKey);
             il.Emit(OpCodes.Ldarg_0);
             il.Emit(OpCodes.Ldarg_1);
-            Type[] ctorParams = new[] {typeof (DataColumn[]), typeof (Boolean)};
+            Type[] ctorParams = new[] { typeof(DataColumn[]), typeof(Boolean) };
             ConstructorInfo ctor = AdoNetInternalTypes.DataKeyType.GetConstructor(NonPublicInstance,
                                                                                   null,
                                                                                   ctorParams,
@@ -705,7 +718,7 @@ namespace SharpMap.Data
             il.Emit(OpCodes.Ret);
 
             CreateDataKeyDelegate d
-                = createDataKeyMethod.CreateDelegate(typeof (CreateDataKeyDelegate))
+                = createDataKeyMethod.CreateDelegate(typeof(CreateDataKeyDelegate))
                   as CreateDataKeyDelegate;
 
             return d;
@@ -717,8 +730,8 @@ namespace SharpMap.Data
                 "FeatureMerger_GetDataKeyColumnReference",
                 PublicStaticMethod,
                 CallingConventions.Standard,
-                typeof (DataColumn[]),
-                new[] {typeof (Object)},
+                typeof(DataColumn[]),
+                new[] { typeof(Object) },
                 AdoNetInternalTypes.DataKeyType,
                 false);
 
@@ -729,11 +742,11 @@ namespace SharpMap.Data
                                                                                             NonPublicInstance);
             MethodInfo getMethod = columnsReferenceInfo.GetGetMethod(true);
             il.Emit(OpCodes.Call, getMethod);
-            il.Emit(OpCodes.Isinst, typeof (Object));
+            il.Emit(OpCodes.Isinst, typeof(Object));
             il.Emit(OpCodes.Ret);
 
             GetDataKeyColumnReferenceDelegate d
-                = getDataKeyColumnReferenceMethod.CreateDelegate(typeof (GetDataKeyColumnReferenceDelegate))
+                = getDataKeyColumnReferenceMethod.CreateDelegate(typeof(GetDataKeyColumnReferenceDelegate))
                   as GetDataKeyColumnReferenceDelegate;
 
             return d;
@@ -744,8 +757,8 @@ namespace SharpMap.Data
             DynamicMethod dataKeyGetSortIndex = new DynamicMethod("FeatureMerger_DataKeyGetSortIndex_DynamicMethod",
                                                                   PublicStaticMethod,
                                                                   CallingConventions.Standard,
-                                                                  typeof (Object),
-                                                                  new[] {typeof (Object), typeof (DataViewRowState)},
+                                                                  typeof(Object),
+                                                                  new[] { typeof(Object), typeof(DataViewRowState) },
                                                                   AdoNetInternalTypes.DataKeyType,
                                                                   false);
 
@@ -754,7 +767,7 @@ namespace SharpMap.Data
             il.Emit(OpCodes.Ldarg_0);
             il.Emit(OpCodes.Unbox_Any, AdoNetInternalTypes.DataKeyType);
             il.Emit(OpCodes.Stloc_0);
-            Type[] methodParams = new[] {typeof (DataViewRowState)};
+            Type[] methodParams = new[] { typeof(DataViewRowState) };
             MethodInfo getSortIndexInfo = AdoNetInternalTypes.DataKeyType.GetMethod("GetSortIndex",
                                                                                     NonPublicInstance,
                                                                                     null,
@@ -763,10 +776,10 @@ namespace SharpMap.Data
             il.Emit(OpCodes.Ldloca_S, localKey);
             il.Emit(OpCodes.Ldarg_1);
             il.Emit(OpCodes.Call, getSortIndexInfo);
-            il.Emit(OpCodes.Isinst, typeof (Object));
+            il.Emit(OpCodes.Isinst, typeof(Object));
             il.Emit(OpCodes.Ret);
 
-            DataKeyGetSortIndex d = dataKeyGetSortIndex.CreateDelegate(typeof (DataKeyGetSortIndex))
+            DataKeyGetSortIndex d = dataKeyGetSortIndex.CreateDelegate(typeof(DataKeyGetSortIndex))
                                     as DataKeyGetSortIndex;
 
             return d;
@@ -778,8 +791,8 @@ namespace SharpMap.Data
                 "FeatureMerger_DataKey_get_HasValue_DynamicMethod",
                 PublicStaticMethod,
                 CallingConventions.Standard,
-                typeof (Boolean),
-                new[] {typeof (Object)},
+                typeof(Boolean),
+                new[] { typeof(Object) },
                 AdoNetInternalTypes.DataKeyType,
                 false);
 
@@ -791,14 +804,14 @@ namespace SharpMap.Data
             PropertyInfo hasValueInfo = AdoNetInternalTypes.DataKeyType.GetProperty("HasValue",
                                                                                     NonPublicInstance,
                                                                                     null,
-                                                                                    typeof (Boolean),
+                                                                                    typeof(Boolean),
                                                                                     Type.EmptyTypes,
                                                                                     null);
             il.Emit(OpCodes.Ldloca_S, localKey);
             il.Emit(OpCodes.Call, hasValueInfo.GetGetMethod(true));
             il.Emit(OpCodes.Ret);
 
-            GetDataKeyHasValue d = getDataKeyHasValue.CreateDelegate(typeof (GetDataKeyHasValue))
+            GetDataKeyHasValue d = getDataKeyHasValue.CreateDelegate(typeof(GetDataKeyHasValue))
                                    as GetDataKeyHasValue;
 
             return d;
@@ -810,18 +823,18 @@ namespace SharpMap.Data
                 "DataColumn_Clone_DynamicMethod",
                 PublicStaticMethod,
                 CallingConventions.Standard,
-                typeof (DataColumn),
-                new[] {typeof (DataColumn)},
-                typeof (DataColumn),
+                typeof(DataColumn),
+                new[] { typeof(DataColumn) },
+                typeof(DataColumn),
                 false);
 
             ILGenerator il = cloneDataColumn.GetILGenerator();
             il.Emit(OpCodes.Ldarg_0);
-            MethodInfo cloneInfo = typeof (DataColumn).GetMethod("Clone", NonPublicInstance);
+            MethodInfo cloneInfo = typeof(DataColumn).GetMethod("Clone", NonPublicInstance);
             il.Emit(OpCodes.Call, cloneInfo);
             il.Emit(OpCodes.Ret);
 
-            CloneDataColumn d = cloneDataColumn.CreateDelegate(typeof (CloneDataColumn))
+            CloneDataColumn d = cloneDataColumn.CreateDelegate(typeof(CloneDataColumn))
                                 as CloneDataColumn;
 
             return d;

@@ -32,7 +32,7 @@ namespace SharpMap.Data
         {
             _factory = factory;
         }
-        
+
         public Int32 Fill(FeatureDataTable table, IFeatureDataReader dataReader)
         {
             return Fill(new FeatureDataTable[] { table }, dataReader);
@@ -77,7 +77,7 @@ namespace SharpMap.Data
                     FillSchema(table, SchemaType.Mapped, featureReader);
                 }
 
-                table.Merge((IEnumerable<IFeatureDataRecord>)featureReader, _factory);
+                table.Merge((IEnumerable<IFeatureDataRecord>)featureReader, null, _factory, SchemaMergeAction.AddWithKey | SchemaMergeAction.CaseInsensitive);
 
                 tableIndex++;
             } while (dataReader.NextResult());

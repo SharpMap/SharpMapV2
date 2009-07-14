@@ -543,11 +543,11 @@ namespace SharpMap.Data
             Merge(records, null, factory);
         }
 
-        public void Merge(IEnumerable<IFeatureDataRecord> records, 
+        public void Merge(IEnumerable<IFeatureDataRecord> records,
                           ICoordinateTransformation transform,
                           IGeometryFactory factory)
         {
-            Merge(records, transform, factory, SchemaMergeAction.AddWithKey);
+            Merge(records, transform, factory, SchemaMergeAction.AddWithKey );
         }
 
         public void Merge(IEnumerable<IFeatureDataRecord> records,
@@ -767,7 +767,7 @@ namespace SharpMap.Data
                     if (SpatialBinaryExpression.IsMatch(op, isLeft, filterExtents, row.Geometry.Extents))
                     {
                         yield return row;
-                    }   
+                    }
                 }
             }
 
