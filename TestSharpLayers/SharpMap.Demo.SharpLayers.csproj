@@ -151,7 +151,7 @@
         <WebProjectProperties>
           <UseIIS>False</UseIIS>
           <AutoAssignPort>True</AutoAssignPort>
-          <DevelopmentServerPort>50479</DevelopmentServerPort>
+          <DevelopmentServerPort>51467</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
           <IISUrl>http://localhost/TestSharpLayers</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
