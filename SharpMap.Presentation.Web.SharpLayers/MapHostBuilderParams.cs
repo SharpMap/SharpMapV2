@@ -74,6 +74,14 @@ namespace SharpMap.Presentation.Web.SharpLayers
         public Bounds MinExtent { get; set; }
 
         [ExtenderControlProperty]
+        [ClientPropertyName("initialExtent")]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)
+        , PersistenceMode(PersistenceMode.InnerProperty)]
+        public Bounds InitialExtent { get; set; }
+
+
+
+        [ExtenderControlProperty]
         [ClientPropertyName("restrictedExtent")]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)
         , PersistenceMode(PersistenceMode.InnerProperty)]

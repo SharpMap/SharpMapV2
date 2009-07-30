@@ -16,7 +16,7 @@ Type.registerNamespace('SharpMap.Presentation.Web.SharpLayers');
 
 SharpMap.Presentation.Web.SharpLayers.MapHostBehavior = function(element) {
     SharpMap.Presentation.Web.SharpLayers.MapHostBehavior.initializeBase(this, [element]);
-
+    _initialExtent = null;
 
 
 }
@@ -30,8 +30,12 @@ SharpMap.Presentation.Web.SharpLayers.MapHostBehavior.prototype = {
         SharpMap.Presentation.Web.SharpLayers.MapHostBehavior.callBaseMethod(this, 'dispose');
         delete this._mapBuilderDelegate;
     },
-
-
+    get_initialExtent: function() {
+        return this._initialExtent;
+    },
+    set_initialExtent: function(value) {
+        this._initialExtent = value;
+    },
     _mapBuilderDelegate: function() {
         var options = this.get_builderParams();
         options.controls = [new OpenLayers.Control.Navigation(),
@@ -39,13 +43,24 @@ SharpMap.Presentation.Web.SharpLayers.MapHostBehavior.prototype = {
                             new OpenLayers.Control.Attribution(),
                             new OpenLayers.Control.KeyboardDefaults()];
 
+        this.set_initialExtent(options.initialExtent);
+        delete options.initialExtent;
+
         var map = new OpenLayers.Map(this.get_element(), options);
         map.options = options; //hack to aid serialization
         return map;
     },
     addControl: function(cntrl) {
         this.get_hostedItem().addControl(cntrl);
+    },
+    zoomToInitialExtent: function() {
+        var bounds = this.get_initialExtent();
+        if ((bounds))
+            this.get_hostedItem().zoomToMaxExtent();
+        else
+            this.get_hostedItem().zoomTo(bounds, true);
     }
+
 
 }
 
