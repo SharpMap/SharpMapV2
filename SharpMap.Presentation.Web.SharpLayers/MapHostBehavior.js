@@ -56,12 +56,10 @@ SharpMap.Presentation.Web.SharpLayers.MapHostBehavior.prototype = {
     zoomToInitialExtent: function() {
         var bounds = this.get_initialExtent();
         if ((bounds))
-            this.get_hostedItem().zoomToMaxExtent();
+            this.get_hostedItem().zoomToExtent(bounds, true);
         else
-            this.get_hostedItem().zoomTo(bounds, true);
+            this.get_hostedItem().zoomToMaxExtent();
     }
-
-
 }
 
 SharpMap.Presentation.Web.SharpLayers.MapHostBehavior.zoomToFeature = function(mapHost, feature) {
