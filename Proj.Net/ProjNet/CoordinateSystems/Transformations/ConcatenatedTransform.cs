@@ -132,8 +132,9 @@ namespace ProjNet.CoordinateSystems.Transformations
 
             foreach (ICoordinateTransformation<TCoordinate> transformation in reversed)
             {
+                 
                 ICoordinateTransformation<TCoordinate> inverse =
-                    transformation.MathTransform.Inverse as ICoordinateTransformation<TCoordinate>;
+                    transformation.Inverse;
                 _transforms.Add(inverse);
             }
         }

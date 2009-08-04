@@ -39,25 +39,37 @@ namespace SharpMap.Presentation.AspNet.Demo.Common
         private static void setupShapefile(HttpContext context, Map m)
         {
             GeometryServices geometryServices = new GeometryServices();
-            ShapeFileProvider shapeFile =
-                new ShapeFileProvider(context.Server.MapPath("~/App_Data/Shapefiles/BCRoads.shp"),
-                                      geometryServices.DefaultGeometryFactory,
-                                      geometryServices.CoordinateSystemFactory, false);
-            shapeFile.IsSpatiallyIndexed = false;
 
-            AppStateMonitoringFeatureProvider provider = new AppStateMonitoringFeatureProvider(shapeFile);
+            string[] layernames = new[]
+                                      {
+                                          "Countries",
+                                          "Rivers",
+                                          "Cities"
+                                      };
 
-            GeoJsonGeometryStyle style = RandomStyle.RandomGeometryStyle();
-            /* include GeoJson styles */
-            style.IncludeAttributes = false;
-            style.IncludeBBox = true;
-            style.PreProcessGeometries = false;
-            style.CoordinateNumberFormatString = "{0:F}";
+            foreach (string s in layernames)
+            {
+                ShapeFileProvider shapeFile =
+               new ShapeFileProvider(context.Server.MapPath(string.Format("~/App_Data/Shapefiles/{0}.shp", s)),
+                                     geometryServices.DefaultGeometryFactory,
+                                     geometryServices.CoordinateSystemFactory, false);
+                shapeFile.IsSpatiallyIndexed = false;
 
-            GeometryLayer geometryLayer = new GeometryLayer("BCRoads", style, provider);
-            geometryLayer.Features.IsSpatiallyIndexed = false;
-            m.AddLayer(geometryLayer);
-            provider.Open();
+                AppStateMonitoringFeatureProvider provider = new AppStateMonitoringFeatureProvider(shapeFile);
+
+                GeoJsonGeometryStyle style = RandomStyle.RandomGeometryStyle();
+                /* include GeoJson styles */
+                style.IncludeAttributes = false;
+                style.IncludeBBox = true;
+                style.PreProcessGeometries = false;
+                style.CoordinateNumberFormatString = "{0:F}";
+
+                GeometryLayer geometryLayer = new GeometryLayer(s, style, provider);
+                geometryLayer.Features.IsSpatiallyIndexed = false;
+                m.AddLayer(geometryLayer);
+                provider.Open();
+            }
+
         }
 
         private static void setupMsSqlSpatial(Map m)

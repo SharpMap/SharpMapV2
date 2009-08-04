@@ -235,12 +235,18 @@
     <Content Include="Maps\GeoJson.ashx" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App_Data\Shapefiles\BCROADS.DBF" />
-    <None Include="App_Data\Shapefiles\BCROADS.prj" />
-    <None Include="App_Data\Shapefiles\BCROADS.SBN" />
-    <None Include="App_Data\Shapefiles\BCROADS.SBX" />
-    <None Include="App_Data\Shapefiles\BCROADS.SHP" />
-    <None Include="App_Data\Shapefiles\BCROADS.SHX" />
+    <None Include="App_Data\Shapefiles\cities.DBF" />
+    <None Include="App_Data\Shapefiles\cities.prj" />
+    <None Include="App_Data\Shapefiles\cities.SHP" />
+    <None Include="App_Data\Shapefiles\cities.SHX" />
+    <None Include="App_Data\Shapefiles\countries.dbf" />
+    <None Include="App_Data\Shapefiles\countries.prj" />
+    <None Include="App_Data\Shapefiles\countries.shp" />
+    <None Include="App_Data\Shapefiles\countries.shx" />
+    <None Include="App_Data\Shapefiles\rivers.dbf" />
+    <None Include="App_Data\Shapefiles\rivers.prj" />
+    <None Include="App_Data\Shapefiles\rivers.shp" />
+    <None Include="App_Data\Shapefiles\rivers.shx" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v9.0\WebApplications\Microsoft.WebApplication.targets" />
