@@ -25,7 +25,7 @@ namespace SharpMap.Presentation.AspNet.WmsServer
     {
         public new WmsMapRequestConfig MapRequestConfig
         {
-            get { return (WmsMapRequestConfig) base.MapRequestConfig; }
+            get { return (WmsMapRequestConfig)base.MapRequestConfig; }
         }
 
         public Capabilities.WmsServiceDescription ServiceDescription
@@ -39,7 +39,7 @@ namespace SharpMap.Presentation.AspNet.WmsServer
         /// <returns></returns>
         protected abstract override IMapRequestConfigFactory CreateConfigFactory();
 
-       
+
 
 
         public override Stream Render(out string mimeType)
@@ -96,9 +96,9 @@ namespace SharpMap.Presentation.AspNet.WmsServer
                     {
                         ///don't cache it if there is a mime type mismatch.
                         ///perhaps we should raise an exception?
-                        s.Position = 0;
+                        s.Seek(0L, SeekOrigin.Begin);
                         CacheProvider.SaveToCache(MapRequestConfig, s);
-                        s.Position = 0;
+                        s.Seek(0L, SeekOrigin.Begin);
                     }
                     RaiseMapRenderDone();
                     return s;
