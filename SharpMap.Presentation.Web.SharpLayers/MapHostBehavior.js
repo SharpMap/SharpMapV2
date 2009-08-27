@@ -54,6 +54,8 @@ SharpMap.Presentation.Web.SharpLayers.MapHostBehavior.prototype = {
         this.get_hostedItem().addControl(cntrl);
     },
     zoomToInitialExtent: function() {
+        if (!(this.get_hostedItem()))
+            return;
         var bounds = this.get_initialExtent();
         if ((bounds))
             this.get_hostedItem().zoomToExtent(bounds, true);
