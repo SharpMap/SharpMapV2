@@ -320,8 +320,11 @@ namespace SharpMap.Data.Providers.Db
         private void VisitSortExpressionCollectionExpression(StringBuilder builder, SortExpressionCollectionExpression sortExpressionCollectionExpression)
         {
             int i = 0;
-            foreach(SortExpression expr in sortExpressionCollectionExpression)
+            foreach (SortExpression expr in sortExpressionCollectionExpression)
             {
+                if (expr == null)
+                    continue;
+
                 if (i > 0)
                     builder.Append(", ");
 
@@ -329,6 +332,7 @@ namespace SharpMap.Data.Providers.Db
 
                 builder.Append(expr.Direction == SortOrder.Ascending ? " ASC " : " DESC ");
 
+                i++;
             }
         }
 
