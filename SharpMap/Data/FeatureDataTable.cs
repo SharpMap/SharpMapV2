@@ -727,7 +727,7 @@ namespace SharpMap.Data
                 throw new ArgumentException("The Expression value of the query cannot be evaluated.");
             }
 
-            OnSelectRequested(new FeatureQueryExpression(GetAttributesExpression(), query));
+            OnSelectRequested(new FeatureQueryExpression(GetAttributesExpression(), query, null));
 
             ExtentsExpression extentsExpression = spatialExpression as ExtentsExpression;
             GeometryExpression geometryExpression = spatialExpression as GeometryExpression;

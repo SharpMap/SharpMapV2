@@ -83,7 +83,7 @@ namespace SharpMap.Data.Providers
                 if (spatialBinaryExpression != null)
                 {
                     query = new FeatureQueryExpression(new AllAttributesExpression(), 
-                                                       spatialBinaryExpression);
+                                                       spatialBinaryExpression, query.Sort);
                 }
             }
 

@@ -101,7 +101,7 @@ namespace SharpMap.Demo.FormatConverter.ShapeFile
         {
             CheckOpen();
             return new FeatureQueryExpression(
-                new AllAttributesExpression(), null);
+                new AllAttributesExpression(), null, null);
         }
 
         public void Dispose()

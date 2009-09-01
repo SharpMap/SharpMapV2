@@ -39,14 +39,14 @@ namespace SharpMap.Data.Providers.Db
             ProviderQueryExpression expression, PredicateExpression binaryExpression)
         {
             return new ProviderQueryExpression(expression.ProviderProperties, expression.Projection,
-                                               MergePredicateExpressions(expression.Predicate, binaryExpression));
+                                               MergePredicateExpressions(expression.Predicate, binaryExpression), expression.Sort);
         }
 
         private static Expression MergeFeatureQueryAndPredicateExpression(FeatureQueryExpression expression,
                                                                           PredicateExpression predicateExpression)
         {
             return new FeatureQueryExpression(expression.Projection,
-                                              MergePredicateExpressions(expression.Predicate, predicateExpression));
+                                              MergePredicateExpressions(expression.Predicate, predicateExpression), expression.Sort);
         }
 
         private static Exception GetMergeException(Expression expr1, Expression expr2)

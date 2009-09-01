@@ -271,7 +271,7 @@ namespace SharpMap.Tools
                         = SpatialBinaryExpression.Intersects(new FeaturesCollectionExpression(filterLayer.Features),
 				                                             new ExtentsExpression(worldBounds));
 					filterLayer.SelectedFilter = filterLayer.SelectedFilter == null 
-                        ? new FeatureQueryExpression(new AllAttributesExpression(), spatialExpression)
+                        ? new FeatureQueryExpression(new AllAttributesExpression(), spatialExpression, null)
                         : new FeatureQueryExpression(filterLayer.SelectedFilter, spatialExpression);
 				}
 			}

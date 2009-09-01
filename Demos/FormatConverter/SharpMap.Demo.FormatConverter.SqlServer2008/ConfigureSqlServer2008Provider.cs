@@ -92,7 +92,7 @@ namespace SharpMap.Demo.FormatConverter.SqlServer2008
 
         public FeatureQueryExpression ConstructSourceQueryExpression()
         {
-            return new FeatureQueryExpression(new AllAttributesExpression(), null);
+            return new FeatureQueryExpression(new AllAttributesExpression(),(PredicateExpression) null, null);
         }
 
         public void Dispose()

@@ -55,7 +55,7 @@ namespace SharpMap.Demo.FormatConverter.MsSqlSpatial
 
         public FeatureQueryExpression ConstructSourceQueryExpression()
         {
-            return new FeatureQueryExpression(new AllAttributesExpression(), null);
+            return new FeatureQueryExpression(new AllAttributesExpression(), null, null);
         }
 
         public void Dispose()

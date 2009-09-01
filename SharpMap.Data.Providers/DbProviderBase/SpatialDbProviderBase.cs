@@ -439,7 +439,7 @@ namespace SharpMap.Data.Providers.Db
                         new[]
                             {
                                 GeometryColumn
-                            }), null, null, new OidCollectionExpression(new[] { oid }));
+                            }), null, null, new OidCollectionExpression(new[] { oid }), null);
 
 
             using (IFeatureDataReader reader = ExecuteFeatureQuery(exp))
@@ -454,7 +454,7 @@ namespace SharpMap.Data.Providers.Db
         {
             FeatureQueryExpression exp
                 = new FeatureQueryExpression(
-                    new AllAttributesExpression(), null, null, new OidCollectionExpression(new[] { oid }));
+                    new AllAttributesExpression(), null, null, new OidCollectionExpression(new[] { oid }), null);
 
             using (IFeatureDataReader reader = ExecuteFeatureQuery(exp))
             {
@@ -567,7 +567,7 @@ namespace SharpMap.Data.Providers.Db
         {
             FeatureQueryExpression query =
                 new FeatureQueryExpression(new AttributesProjectionExpression(new[] { GeometryColumn }),
-                                           null, null, new OidCollectionExpression(new[] { oid }));
+                                           null, null, new OidCollectionExpression(new[] { oid }), null);
             using (IFeatureDataReader fdr = ExecuteFeatureQuery(query))
             {
                 while (fdr.Read())

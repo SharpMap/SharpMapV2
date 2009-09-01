@@ -223,7 +223,7 @@ namespace SharpMap.Data
                 {
                     if (value != null)
                     {
-                        ViewDefinition = new FeatureQueryExpression(new AllAttributesExpression(), value);
+                        ViewDefinition = new FeatureQueryExpression(new AllAttributesExpression(), value, null);
                     }
                 }
                 else
@@ -262,7 +262,7 @@ namespace SharpMap.Data
                 {
                     if (value != null)
                     {
-                        ViewDefinition = new FeatureQueryExpression(new AllAttributesExpression(), value);
+                        ViewDefinition = new FeatureQueryExpression(new AllAttributesExpression(), value, null);
                     }
                 }
                 else
@@ -279,7 +279,7 @@ namespace SharpMap.Data
                                                                                _viewDefinition.SpatialPredicate);
 
                     ViewDefinition = new FeatureQueryExpression(_viewDefinition.Projection,
-                                                                predicate);
+                                                                predicate, null);
                 }
             }
         }

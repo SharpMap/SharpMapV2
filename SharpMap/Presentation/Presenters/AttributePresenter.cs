@@ -163,7 +163,7 @@ namespace SharpMap.Presentation.Presenters
             if (viewDefinition == null)
             {
                 viewDefinition = new FeatureQueryExpression(new AllAttributesExpression(),
-                                                            oidExpression);
+                                                            oidExpression, null);
             }
             else
             {
@@ -171,14 +171,14 @@ namespace SharpMap.Presentation.Presenters
 
                 if (viewDefinition.SpatialPredicate == null)
                 {
-                    viewDefinition = new FeatureQueryExpression(projection, oidExpression);
+                    viewDefinition = new FeatureQueryExpression(projection, oidExpression, null);
                 }
                 else
                 {
                     PredicateExpression predicate = new BinaryExpression(viewDefinition.SpatialPredicate,
                                                                          BinaryOperator.And,
                                                                          oidExpression);
-                    viewDefinition = new FeatureQueryExpression(projection, predicate);
+                    viewDefinition = new FeatureQueryExpression(projection, predicate, null);
                 }
             }
 

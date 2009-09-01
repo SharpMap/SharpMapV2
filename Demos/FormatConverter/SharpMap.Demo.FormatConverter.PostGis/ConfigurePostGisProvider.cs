@@ -104,7 +104,7 @@ namespace SharpMap.Demo.FormatConverter.PostGis
 
         public FeatureQueryExpression ConstructSourceQueryExpression()
         {
-            return new FeatureQueryExpression(new AllAttributesExpression(), null);
+            return new FeatureQueryExpression(new AllAttributesExpression(), null, null);
         }
 
         public void Dispose()
