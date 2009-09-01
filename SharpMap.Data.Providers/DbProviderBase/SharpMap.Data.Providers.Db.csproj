@@ -92,7 +92,6 @@
     <Compile Include="Expressions\DataPageSizeExpression.cs" />
     <Compile Include="Expressions\ForceIndexExpression.cs" />
     <Compile Include="Expressions\IndexNamesExpression.cs" />
-    <Compile Include="Expressions\OrderByCollectionExpression.cs" />
     <Compile Include="Expressions\WithNoLockExpression.cs" />
     <Compile Include="ExpressionTreeToSqlCompilerBase.cs" />
     <Compile Include="IDbUtility.cs" />

@@ -205,6 +205,9 @@
     <Compile Include="Expressions\ProviderPropertyExpression.cs" />
     <Compile Include="Expressions\QueryExpression.cs" />
     <Compile Include="Expressions\RasterQueryExpression.cs" />
+    <Compile Include="Expressions\SortExpression.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Expressions\SpatialAnalysisBufferExpression.cs" />
     <Compile Include="Expressions\SpatialAnalysisConvexHullExpression.cs" />
     <Compile Include="Expressions\SpatialAnalysisDistanceExpression.cs" />

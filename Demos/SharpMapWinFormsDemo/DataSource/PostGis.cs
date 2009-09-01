@@ -86,13 +86,13 @@ namespace MapViewer.DataSource
                 string oidColumnName = (String) dgvColumns.Rows[oidcolumn].Cells["ColumnName"].Value;
 
                 List<String> columns = new List<string>();
-                List<OrderByExpression> orderby = new List<OrderByExpression>();
+                //List<OrderByExpression> orderby = new List<OrderByExpression>();
                 foreach (DataGridViewRow dgvr in dgvColumns.Rows)
                 {
                     if ((bool) dgvr.Cells["Include"].Value) columns.Add((String) dgvr.Cells["ColumnName"].Value);
-                    if (dgvr.Cells["SortOrder"].Value != null)
-                        orderby.Add(new OrderByExpression((String) dgvr.Cells[1].Value,
-                                                          (SortOrder) dgvr.Cells["SortOrder"].Value));
+                    //if (dgvr.Cells["SortOrder"].Value != null)
+                    //    orderby.Add(new OrderByExpression((String) dgvr.Cells[1].Value,
+                    //                                      (SortOrder) dgvr.Cells["SortOrder"].Value));
                 }
 
                 if (!columns.Contains(oidColumnName))
@@ -102,23 +102,23 @@ namespace MapViewer.DataSource
 
                 ProviderPropertiesExpression ppe = null;
 
-                if (orderby.Count == 0)
-                {
+                //if (orderby.Count == 0)
+                //{
+                //    ppe = new ProviderPropertiesExpression(
+                //        new ProviderPropertyExpression[]
+                //            {
+                //                new AttributesCollectionExpression(columns)
+                //            });
+                //}
+                //else
+                //{
                     ppe = new ProviderPropertiesExpression(
                         new ProviderPropertyExpression[]
                             {
+                                //new OrderByCollectionExpression(orderby),
                                 new AttributesCollectionExpression(columns)
                             });
-                }
-                else
-                {
-                    ppe = new ProviderPropertiesExpression(
-                        new ProviderPropertyExpression[]
-                            {
-                                new OrderByCollectionExpression(orderby),
-                                new AttributesCollectionExpression(columns)
-                            });
-                }
+                //}
 
                 IFeatureProvider prov = null;
 

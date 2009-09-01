@@ -454,18 +454,18 @@ LIMIT 1;";
                 sql = GenerateSelectSql(properties, compiler, pageSize, pageNumber);
             else
             {
-                string orderByCols = String.Join(",",
-                                                 Enumerable.ToArray(Processor.Select(
-                                                                        GetProviderPropertyValue
-                                                                            <OrderByCollectionExpression,
-                                                                            CollectionExpression<OrderByExpression>>(
-                                                                            properties,
-                                                                            new CollectionExpression<OrderByExpression>(
-                                                                                new OrderByExpression[] {})),
-                                                                        delegate(OrderByExpression o) { return o.ToString("\"{0}\""); })));
+                //string orderByCols = String.Join(",",
+                //                                 Enumerable.ToArray(Processor.Select(
+                //                                                        GetProviderPropertyValue
+                //                                                            <OrderByCollectionExpression,
+                //                                                            CollectionExpression<OrderByExpression>>(
+                //                                                            properties,
+                //                                                            new CollectionExpression<OrderByExpression>(
+                //                                                                new OrderByExpression[] {})),
+                //                                                        delegate(OrderByExpression o) { return o.ToString("\"{0}\""); })));
 
 
-                string orderByClause = string.IsNullOrEmpty(orderByCols) ? "" : " ORDER BY " + orderByCols;
+                string orderByClause = string.IsNullOrEmpty(compiler.OrderByClause) ? "" : " ORDER BY " + compiler.OrderByClause;
 
                 string mainQueryColumns = string.Join(",", Enumerable.ToArray(
                                                                FormatColumnNames(true, true,
@@ -506,18 +506,18 @@ LIMIT 1;";
                                                     ExpressionTreeToSqlCompilerBase<TOid> compiler, int pageSize,
                                                     int pageNumber)
         {
-            string orderByCols = String.Join(",",
-                                             Enumerable.ToArray(Processor.Select(
-                                                                    GetProviderPropertyValue
-                                                                        <OrderByCollectionExpression,
-                                                                        CollectionExpression<OrderByExpression>>(
-                                                                        properties,
-                                                                        new CollectionExpression<OrderByExpression>(
-                                                                            new OrderByExpression[] {})),
-                                                                    delegate(OrderByExpression o) { return o.ToString("\"{0}\""); })));
+            //string orderByCols = String.Join(",",
+            //                                 Enumerable.ToArray(Processor.Select(
+            //                                                        GetProviderPropertyValue
+            //                                                            <OrderByCollectionExpression,
+            //                                                            CollectionExpression<OrderByExpression>>(
+            //                                                            properties,
+            //                                                            new CollectionExpression<OrderByExpression>(
+            //                                                                new OrderByExpression[] {})),
+            //                                                        delegate(OrderByExpression o) { return o.ToString("\"{0}\""); })));
 
 
-            orderByCols = string.IsNullOrEmpty(orderByCols) ? QualifyColumnName(OidColumn) : orderByCols;
+            string orderByCols = string.IsNullOrEmpty(compiler.OrderByClause) ? QualifyColumnName(OidColumn) : compiler.OrderByClause;
 
             Int64 startRecord = (pageNumber*pageSize) + 1;
 

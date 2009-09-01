@@ -11,16 +11,38 @@ namespace SharpMap.Expressions
         {
             get { return _providerPropertiesExpression; }
         }
+        public ProviderQueryExpression(
+           ProviderPropertiesExpression providerPropertiesExpression,
+           ProjectionExpression projection,
+           PredicateExpression predicate)
+            : this(providerPropertiesExpression, projection, predicate, null)
+        {
 
-        public ProviderQueryExpression(ProviderPropertiesExpression providerPropertiesExpression, ProjectionExpression projection, PredicateExpression predicate)
-            : base(projection, predicate)
+        }
+        public ProviderQueryExpression(
+            ProviderPropertiesExpression providerPropertiesExpression,
+            ProjectionExpression projection,
+            PredicateExpression predicate,
+            SortExpressionCollectionExpression sort)
+            : base(projection, predicate, sort)
         {
             _providerPropertiesExpression = providerPropertiesExpression;
         }
 
+        public ProviderQueryExpression(
+           IEnumerable<ProviderPropertyExpression> providerProperties,
+           ProjectionExpression projection,
+           PredicateExpression predicate)
+            : this(providerProperties, projection, predicate, null)
+        {
 
-        public ProviderQueryExpression(IEnumerable<ProviderPropertyExpression> providerProperties, ProjectionExpression projection, PredicateExpression predicate)
-            : this(new ProviderPropertiesExpression(providerProperties), projection, predicate)
+        }
+        public ProviderQueryExpression(
+            IEnumerable<ProviderPropertyExpression> providerProperties,
+            ProjectionExpression projection,
+            PredicateExpression predicate,
+            SortExpressionCollectionExpression sort)
+            : this(new ProviderPropertiesExpression(providerProperties), projection, predicate, sort)
         { }
     }
 }

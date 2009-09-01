@@ -996,17 +996,17 @@ WHERE type='table' AND NOT( name like 'cache_%' ) AND NOT( name like 'sqlite%' )
                                                                                      ? compiler.ProjectedColumns
                                                                                      : SelectAllColumnNames())));
 
-                string orderByCols = String.Join(",",
-                                                 Enumerable.ToArray(Processor.Select(
-                                                                        GetProviderPropertyValue
-                                                                            <OrderByCollectionExpression,
-                                                                            CollectionExpression<OrderByExpression>>(
-                                                                            properties,
-                                                                            new CollectionExpression<OrderByExpression>(
-                                                                                new OrderByExpression[] {})),
-                                                                        delegate(OrderByExpression o) { return o.ToString("[{0}]"); })));
+                //string orderByCols = String.Join(",",
+                //                                 Enumerable.ToArray(Processor.Select(
+                //                                                        GetProviderPropertyValue
+                //                                                            <OrderByCollectionExpression,
+                //                                                            CollectionExpression<OrderByExpression>>(
+                //                                                            properties,
+                //                                                            new CollectionExpression<OrderByExpression>(
+                //                                                                new OrderByExpression[] {})),
+                //                                                        delegate(OrderByExpression o) { return o.ToString("[{0}]"); })));
 
-                string orderByClause = string.IsNullOrEmpty(orderByCols) ? "" : " ORDER BY " + orderByCols;
+                string orderByClause = string.IsNullOrEmpty(compiler.OrderByClause) ? "" : " ORDER BY " + compiler.OrderByClause;
 
                 sql =
                     String.Format("SELECT {0} FROM {1} {2} {3} {4} {5}",
@@ -1044,17 +1044,17 @@ WHERE type='table' AND NOT( name like 'cache_%' ) AND NOT( name like 'sqlite%' )
                                                     ExpressionTreeToSqlCompilerBase<long> compiler, int pageSize,
                                                     int pageNumber)
         {
-            string orderByCols = String.Join(",",
-                                             Enumerable.ToArray(Processor.Select(
-                                                                    GetProviderPropertyValue
-                                                                        <OrderByCollectionExpression,
-                                                                        CollectionExpression<OrderByExpression>>(
-                                                                        properties,
-                                                                        new CollectionExpression<OrderByExpression>(
-                                                                            new OrderByExpression[] {})),
-                                                                    delegate(OrderByExpression o) { return o.ToString("[{0}]"); })));
+            //string orderByCols = String.Join(",",
+            //                                 Enumerable.ToArray(Processor.Select(
+            //                                                        GetProviderPropertyValue
+            //                                                            <OrderByCollectionExpression,
+            //                                                            CollectionExpression<OrderByExpression>>(
+            //                                                            properties,
+            //                                                            new CollectionExpression<OrderByExpression>(
+            //                                                                new OrderByExpression[] {})),
+            //                                                        delegate(OrderByExpression o) { return o.ToString("[{0}]"); })));
 
-            string orderByClause = string.IsNullOrEmpty(orderByCols) ? "ROWID" : " ORDER BY " + orderByCols;
+            string orderByClause = string.IsNullOrEmpty(compiler.OrderByClause) ? "ROWID" : " ORDER BY " + compiler.OrderByClause;
 
             int startRecord = (pageNumber*pageSize);
             int endRecord = (pageNumber + 1)*pageSize - 1;

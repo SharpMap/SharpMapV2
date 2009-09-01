@@ -117,8 +117,8 @@ namespace SharpMap.Tests.Data.Providers.PostGis
                 new ProviderPropertiesExpression(
                     new ProviderPropertyExpression[]
                         {
-                            new OrderByCollectionExpression(
-                                new OrderByExpression("z_order", SortOrder.Descending)),
+                            //new OrderByCollectionExpression(
+                            //    new OrderByExpression("z_order", SortOrder.Descending)),
                             new DataPageSizeExpression(10),
                             new DataPageNumberExpression(5)
                         });

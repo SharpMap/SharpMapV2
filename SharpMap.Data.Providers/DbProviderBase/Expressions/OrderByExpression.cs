@@ -1,33 +1,60 @@
-﻿/*
- *  The attached / following is part of SharpMap.Data.Providers.Db
- *  SharpMap.Data.Providers.Db is free software © 2008 Newgrove Consultants Limited, 
- *  www.newgrove.com; you can redistribute it and/or modify it under the terms 
- *  of the current GNU Lesser General Public License (LGPL) as published by and 
- *  available from the Free Software Foundation, Inc., 
- *  59 Temple Place, Suite 330, Boston, MA 02111-1307 USA: http://fsf.org/    
- *  This program is distributed without any warranty; 
- *  without even the implied warranty of merchantability or fitness for purpose.  
- *  See the GNU Lesser General Public License for the full details. 
- *  
- *  Author: John Diss 2008
- * 
- */
-using System.Collections.Generic;
+using System;
+using System.Data.SqlClient;
 using SharpMap.Expressions;
 
 namespace SharpMap.Data.Providers.Db.Expressions
 {
-    public class OrderByExpression
-        : ProviderPropertyExpression<IEnumerable<string>>
+    public class OrderByExpression : Expression
     {
-        public OrderByExpression(IEnumerable<string> orderBy)
-            : base("OrderBy", orderBy)
+        public OrderByExpression(string name)
+            : this(name, SortOrder.Ascending)
+        { }
+
+        public OrderByExpression(string name, SortOrder direction)
+            : this(new PropertyNameExpression(name), direction)
+        { }
+
+        public OrderByExpression(Expression nameExpression, SortOrder direction)
         {
+            Expression = nameExpression;
+            Direction = direction;
+        }
+
+        public Expression Expression
+        {
+            get;
+            protected set;
+        }
+
+        public SortOrder Direction { get; protected set; }
+
+        public override bool Contains(Expression other)
+        {
+            throw new NotImplementedException();
         }
 
         public override Expression Clone()
         {
-            return new OrderByExpression(PropertyValueExpression.Value);
+            return new OrderByExpression(Expression.Clone(), Direction);
+        }
+
+        public override bool Equals(Expression other)
+        {
+            OrderByExpression order = other as OrderByExpression;
+            if (order == null)
+                return false;
+            return order.Expression.Equals(Expression) && order.Direction == Direction; 
+        }
+
+        public override string ToString()
+        {
+            return Expression.ToString() + (Direction == SortOrder.Descending ? " DESC " : " ASC ");
+        }
+
+        public string ToString(string formatString)
+        {
+            return string.Format(formatString, Expression) + 
+                   (Direction == SortOrder.Descending ? " DESC " : " ASC ");
         }
     }
 }

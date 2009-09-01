@@ -460,18 +460,18 @@ SELECT COLS.COLUMN_NAME
 
             string sql = "";
 
-            string orderByCols = String.Join(",",
-                                             Enumerable.ToArray(Processor.Select(
-                                                                    GetProviderPropertyValue
-                                                                        <OrderByCollectionExpression,
-                                                                        CollectionExpression<OrderByExpression>>(
-                                                                        properties,
-                                                                        new CollectionExpression<OrderByExpression>(
-                                                                            new OrderByExpression[] {})),
-                                                                    delegate(OrderByExpression o) { return o.ToString("\"{0}\""); })));
+            //string orderByCols = String.Join(",",
+            //                                 Enumerable.ToArray(Processor.Select(
+            //                                                        GetProviderPropertyValue
+            //                                                            <OrderByCollectionExpression,
+            //                                                            CollectionExpression<OrderByExpression>>(
+            //                                                            properties,
+            //                                                            new CollectionExpression<OrderByExpression>(
+            //                                                                new OrderByExpression[] {})),
+            //                                                        delegate(OrderByExpression o) { return o.ToString("\"{0}\""); })));
 
 
-            string orderByClause = string.IsNullOrEmpty(orderByCols) ? "" : " ORDER BY " + orderByCols;
+            string orderByClause = string.IsNullOrEmpty(compiler.OrderByClause) ? "" : " ORDER BY " + compiler.OrderByClause;
 
             string mainQueryColumns = string.Join(",", Enumerable.ToArray(
                                                            FormatColumnNames(true, true,

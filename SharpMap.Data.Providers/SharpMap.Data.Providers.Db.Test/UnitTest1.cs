@@ -1,4 +1,5 @@
 ﻿using System.Configuration;
+using System.Data.SqlClient;
 using System.Diagnostics;
 using System.IO;
 using GeoAPI.CoordinateSystems;
@@ -21,7 +22,7 @@ namespace SharpMap.Data.Providers.Db.Test
         static UnitTest1()
         {
             SridMap.DefaultInstance =
-                new SridMap(new[] {new SridProj4Strategy(0, new GeometryServices().CoordinateSystemFactory)});
+                new SridMap(new[] { new SridProj4Strategy(0, new GeometryServices().CoordinateSystemFactory) });
         }
 
         /// <summary>
@@ -77,14 +78,14 @@ namespace SharpMap.Data.Providers.Db.Test
 
             CollectionBinaryExpression binaryExpression =
                 new CollectionBinaryExpression(new PropertyNameExpression("PostCode"), CollectionOperator.In,
-                                               new CollectionExpression(new[] {3, 4, 5, 6}));
+                                               new CollectionExpression(new[] { 3, 4, 5, 6 }));
 
             ProviderPropertiesExpression providerProps =
                 new ProviderPropertiesExpression(
                     new ProviderPropertyExpression[]
                         {
                             new WithNoLockExpression(true),
-                            new OrderByCollectionExpression(new[] {"PostCode"}),
+                            //new OrderByCollectionExpression(new[] {"PostCode"}),
                             new ForceIndexExpression(true),
                             new IndexNamesExpression(new[] {"Index1", "Index2"})
                         });
@@ -181,7 +182,7 @@ namespace SharpMap.Data.Providers.Db.Test
                     new ProviderPropertyExpression[]
                         {
                             new WithNoLockExpression(true),
-                            new OrderByCollectionExpression(new[] {"PostCode"}),
+                            //new OrderByCollectionExpression(new[] {"PostCode"}),
                             new ForceIndexExpression(true),
                             new IndexNamesExpression(new[] {"Index1", "Index2"}),
                             new DataPageSizeExpression(10),
@@ -233,7 +234,7 @@ namespace SharpMap.Data.Providers.Db.Test
                     new ProviderPropertyExpression[]
                         {
                             new WithNoLockExpression(true),
-                            new OrderByCollectionExpression(new[] {"NAME"}),
+                            //new OrderByCollectionExpression(new[] {"NAME"}),
                             new ForceIndexExpression(true),
                             new IndexNamesExpression(new[] {"Index1", "Index2"}),
                             new DataPageSizeExpression(10),
@@ -267,7 +268,7 @@ namespace SharpMap.Data.Providers.Db.Test
 
             ProviderPropertiesExpression providerProps =
                 new ProviderPropertiesExpression(
-                    new ProviderPropertyExpression[] {});
+                    new ProviderPropertyExpression[] { });
 
 
             ProviderQueryExpression prov = new ProviderQueryExpression(providerProps, new AllAttributesExpression(),
@@ -342,7 +343,7 @@ namespace SharpMap.Data.Providers.Db.Test
             Assert.IsNotNull(cs);
 
 
-            int? srid = map.Process(cs, (int?) null);
+            int? srid = map.Process(cs, (int?)null);
 
             Assert.IsTrue(srid == 27700);
 
@@ -365,9 +366,9 @@ namespace SharpMap.Data.Providers.Db.Test
             string wkt =
                 "PROJCS[\"British_National_Grid\",GEOGCS[\"GCS_OSGB_1936\",DATUM[\"D_OSGB_1936\",SPHEROID[\"Airy_1830\",6377563.396,299.3249646]],PRIMEM[\"Greenwich\",0],UNIT[\"Degree\",0.017453292519943295]],PROJECTION[\"Transverse_Mercator\"],PARAMETER[\"False_Easting\",400000],PARAMETER[\"False_Northing\",-100000],PARAMETER[\"Central_Meridian\",-2],PARAMETER[\"Scale_Factor\",0.999601272],PARAMETER[\"Latitude_Of_Origin\",49],UNIT[\"Meter\",1]]";
 
-            SridMap map = new SridMap(new[] {new SridProj4Strategy(0, new GeometryServices().CoordinateSystemFactory)});
+            SridMap map = new SridMap(new[] { new SridProj4Strategy(0, new GeometryServices().CoordinateSystemFactory) });
 
-            int? srid = map.Process(wkt, (int?) null);
+            int? srid = map.Process(wkt, (int?)null);
 
             Assert.IsNotNull(srid);
 
@@ -379,9 +380,9 @@ namespace SharpMap.Data.Providers.Db.Test
         public void TestEpsgToSridMap()
         {
             string wkt = "EPSG:27700";
-            SridMap map = new SridMap(new[] {new SridProj4Strategy(0, new GeometryServices().CoordinateSystemFactory)});
+            SridMap map = new SridMap(new[] { new SridProj4Strategy(0, new GeometryServices().CoordinateSystemFactory) });
 
-            int? srid = map.Process(wkt, (int?) null);
+            int? srid = map.Process(wkt, (int?)null);
 
             Assert.IsNotNull(srid);
 
@@ -398,7 +399,7 @@ namespace SharpMap.Data.Providers.Db.Test
 
             IGeometry geom = g.DefaultGeometryFactory.WktReader.Read(File.ReadAllText("D:\\geometries.txt"));
 
-            prov = new GeometryProvider(new[] {geom});
+            prov = new GeometryProvider(new[] { geom });
 
 
             using (IFeatureDataReader fdr =
@@ -424,6 +425,67 @@ namespace SharpMap.Data.Providers.Db.Test
             ICoordinateSystem dst = gs.CoordinateSystemFactory.CreateFromWkt(toWkt); //WGS84
             ICoordinateTransformation ics = gs.CoordinateTransformationFactory.CreateFromCoordinateSystems(srs, dst);
             Assert.IsNotNull(ics);
+        }
+
+        [TestMethod]
+        public void TestMsSqlServer2008OrderBy()
+        {
+            GeometryServices services = new GeometryServices();
+
+            MsSqlServer2008Provider<long> search = new MsSqlServer2008Provider<long>(services.DefaultGeometryFactory,
+                                                                                     ConfigurationManager.
+                                                                                         ConnectionStrings["sql2008"].
+                                                                                         ConnectionString,
+                                                                                     "dbo",
+                                                                                     "vwGeoCustomers", "OID", "Geom")
+            {
+                DefaultProviderProperties
+                    = new ProviderPropertiesExpression(
+                    new ProviderPropertyExpression[]
+                                                                   {
+                                                                       new WithNoLockExpression(true),
+                                                                       new ForceIndexExpression(true)
+                                                                   })
+            };
+
+            //var binaryExpression =
+            //    new CollectionBinaryExpression(new PropertyNameExpression("PostCode"), CollectionOperator.In, new CollectionExpression(new[] { 3, 4, 5, 6 }));
+
+
+            AttributeBinaryStringExpression binaryExpression = new AttributeBinaryStringExpression("PostCode",
+                                                                                                   BinaryStringOperator.
+                                                                                                       StartsWith, "W");
+
+
+            IGeometry testPoint = new GeometryServices()["EPSG:27700"].CreatePoint2D(500000, 180000);
+            ProviderPropertiesExpression providerProps =
+                new ProviderPropertiesExpression(
+                    new ProviderPropertyExpression[]
+                        {
+                            new WithNoLockExpression(true),
+                            //new OrderByCollectionExpression(
+                            //    new []
+                            //        {
+                            //            new OrderByExpression(
+                            //                new SpatialAnalysisDistanceExpression(new GeometryExpression(null),new GeometryExpression(testPoint) ),SortOrder.Ascending),
+                            //        }),
+                           
+                            new DataPageSizeExpression(10),
+                            new DataPageNumberExpression(0)
+                        });
+
+
+            ProviderQueryExpression prov = new ProviderQueryExpression(providerProps, new AllAttributesExpression(),
+                                                                       binaryExpression,
+                                                                       new SortExpressionCollectionExpression(
+                                                                           new[]{new SortExpression( 
+                                                                               new SpatialAnalysisDistanceExpression(
+                                                                                   new GeometryExpression(null),
+                                                                                   new GeometryExpression(testPoint)),SortOrder.Ascending)}));
+
+            object obj = search.ExecuteQuery(prov);
+
+            Assert.IsNotNull(obj);
         }
     }
 }

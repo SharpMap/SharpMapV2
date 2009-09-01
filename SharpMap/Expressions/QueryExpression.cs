@@ -6,11 +6,17 @@ namespace SharpMap.Expressions
     {
         private readonly ProjectionExpression _projection;
         private readonly PredicateExpression _predicate;
-
+        private readonly SortExpressionCollectionExpression _sort;
         public QueryExpression(ProjectionExpression projection, PredicateExpression predicate)
+            : this(projection, predicate, null)
+        {
+        }
+
+        public QueryExpression(ProjectionExpression projection, PredicateExpression predicate, SortExpressionCollectionExpression sort)
         {
             _projection = projection;
             _predicate = predicate;
+            _sort = sort;
         }
 
         public ProjectionExpression Projection
@@ -21,6 +27,14 @@ namespace SharpMap.Expressions
         public PredicateExpression Predicate
         {
             get { return _predicate; }
+        }
+
+        public SortExpressionCollectionExpression Sort
+        {
+            get
+            {
+                return _sort;
+            }
         }
 
         public override Boolean Contains(Expression other)
@@ -34,7 +48,7 @@ namespace SharpMap.Expressions
 
         public override Expression Clone()
         {
-            return new QueryExpression((ProjectionExpression)_projection.Clone(), 
+            return new QueryExpression((ProjectionExpression)_projection.Clone(),
                                        (PredicateExpression)_predicate.Clone());
         }
 

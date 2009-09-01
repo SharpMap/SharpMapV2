@@ -213,26 +213,26 @@ namespace SharpMap.Data.Providers
             if (pageSize > 0 && pageNumber > -1)
                 return GenerateSelectSql(properties, compiler, pageSize, pageNumber);
 
-            string orderByCols = String.Join(",",
-                                             Enumerable.ToArray(Processor.Select(
-                                                                    GetProviderPropertyValue
-                                                                        <OrderByCollectionExpression,
-                                                                        CollectionExpression<OrderByExpression>>(
-                                                                        properties,
-                                                                        new CollectionExpression<OrderByExpression>(
-                                                                            new OrderByExpression[] { })),
-                                                                    delegate(OrderByExpression o)
-                                                                    {
-                                                                        return "[" +
-                                                                               o.PropertyNameExpression.PropertyName +
-                                                                               "] " +
-                                                                               (o.Direction == SortOrder.Ascending
-                                                                                    ? "ASC"
-                                                                                    : "DESC");
-                                                                    })));
+            //string orderByCols = String.Join(",",
+            //                                 Enumerable.ToArray(Processor.Select(
+            //                                                        GetProviderPropertyValue
+            //                                                            <OrderByCollectionExpression,
+            //                                                            CollectionExpression<OrderByExpression>>(
+            //                                                            properties,
+            //                                                            new CollectionExpression<OrderByExpression>(
+            //                                                                new OrderByExpression[] { })),
+            //                                                        delegate(OrderByExpression o)
+            //                                                        {
+            //                                                            return "[" +
+            //                                                                   o.PropertyNameExpression.PropertyName +
+            //                                                                   "] " +
+            //                                                                   (o.Direction == SortOrder.Ascending
+            //                                                                        ? "ASC"
+            //                                                                        : "DESC");
+            //                                                        })));
 
 
-            string orderByClause = string.IsNullOrEmpty(orderByCols) ? "" : " ORDER BY " + orderByCols;
+            string orderByClause = string.IsNullOrEmpty(compiler.OrderByClause) ? "" : " ORDER BY " + compiler.OrderByClause;
 
             string mainQueryColumns = string.Join(",", Enumerable.ToArray(
                                                            FormatColumnNames(true, true,
@@ -256,26 +256,26 @@ namespace SharpMap.Data.Providers
                                                     ExpressionTreeToSqlCompilerBase<TOid> compiler, int pageSize,
                                                     int pageNumber)
         {
-            string orderByCols = String.Join(",",
-                                             Enumerable.ToArray(Processor.Select(
-                                                                    GetProviderPropertyValue
-                                                                        <OrderByCollectionExpression,
-                                                                        CollectionExpression<OrderByExpression>>(
-                                                                        properties,
-                                                                        new CollectionExpression<OrderByExpression>(
-                                                                            new OrderByExpression[] { })),
-                                                                    delegate(OrderByExpression o)
-                                                                    {
-                                                                        return "[" +
-                                                                               o.PropertyNameExpression.PropertyName +
-                                                                               "] " +
-                                                                               (o.Direction == SortOrder.Ascending
-                                                                                    ? "ASC"
-                                                                                    : "DESC");
-                                                                    })));
+            //string orderByCols = String.Join(",",
+            //                                 Enumerable.ToArray(Processor.Select(
+            //                                                        GetProviderPropertyValue
+            //                                                            <OrderByCollectionExpression,
+            //                                                            CollectionExpression<OrderByExpression>>(
+            //                                                            properties,
+            //                                                            new CollectionExpression<OrderByExpression>(
+            //                                                                new OrderByExpression[] { })),
+            //                                                        delegate(OrderByExpression o)
+            //                                                        {
+            //                                                            return "[" +
+            //                                                                   o.PropertyNameExpression.PropertyName +
+            //                                                                   "] " +
+            //                                                                   (o.Direction == SortOrder.Ascending
+            //                                                                        ? "ASC"
+            //                                                                        : "DESC");
+            //                                                        })));
 
 
-            orderByCols = string.IsNullOrEmpty(orderByCols) ? OidColumn : orderByCols;
+            string orderByCols = string.IsNullOrEmpty(compiler.OrderByClause) ? OidColumn : compiler.OrderByClause;
 
             int startRecord = (pageNumber * pageSize) + 1;
             int endRecord = (pageNumber + 1) * pageSize;
