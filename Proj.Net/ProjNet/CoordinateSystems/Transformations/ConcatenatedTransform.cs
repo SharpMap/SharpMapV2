@@ -46,7 +46,11 @@ namespace ProjNet.CoordinateSystems.Transformations
                                      ICoordinateFactory<TCoordinate> coordinateFactory)
             : base(null, coordinateFactory)
         {
-            _transforms = new List<ICoordinateTransformation<TCoordinate>>(transforms);
+            _transforms = new List<ICoordinateTransformation<TCoordinate>>();
+            foreach (ICoordinateTransformation<TCoordinate> transform in transforms)
+            {
+                if ( transform != null ) _transforms.Add(transform);
+            }
         }
 
         public ConcatenatedTransform(IEnumerable<ICoordinateTransformation<TCoordinate>> transforms,

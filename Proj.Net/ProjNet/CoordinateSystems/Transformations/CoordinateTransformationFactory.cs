@@ -116,7 +116,12 @@ namespace ProjNet.CoordinateSystems.Transformations
                 // Geographic -> Geographic
                 if (targetGeographic != null)
                 {
-                    return createGeographicToGeographic(sourceGeographic, targetGeographic);
+                    return targetGeographic.EqualParams(sourceGeographic)
+                        ?
+                            null
+                        :
+                            createGeographicToGeographic(sourceGeographic, targetGeographic);
+
                 }
 
                 // ================================================

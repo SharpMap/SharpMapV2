@@ -166,7 +166,7 @@ namespace ProjNet.CoordinateSystems
 
             foreach (ProjectionParameter parameter in _parameters)
             {
-                ProjectionParameter found = _parameters.Find(
+                ProjectionParameter found = p._parameters.Find(
                     delegate(ProjectionParameter seek) { return seek.Name.Equals(parameter.Name, StringComparison.OrdinalIgnoreCase); });
 
                 if (found == null)
