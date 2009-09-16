@@ -69,7 +69,8 @@ namespace ProjNet.CoordinateSystems.Transformations
             _semiMajor = semiMajorParam.Value;
             _semiMinor = semiMinorParam.Value;
 
-            _e2 = 1.0 - Math.Pow(_semiMinor / _semiMajor, 2);
+            //_e2 = 1.0d - Math.Pow(_semiMinor / _semiMajor, 2d);
+            _e2 = 1.0d - Math.Pow(_semiMinor, 2d) / Math.Pow(_semiMajor, 2d);
             _e = Math.Sqrt(_e2);
         }
 

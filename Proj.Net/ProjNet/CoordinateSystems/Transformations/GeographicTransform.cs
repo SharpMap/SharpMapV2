@@ -79,7 +79,8 @@ namespace ProjNet.CoordinateSystems.Transformations
 
         public override ICoordinate Transform(ICoordinate coordinate)
         {
-            throw new System.NotImplementedException();
+            return Transform((TCoordinate) coordinate);
+            //throw new System.NotImplementedException();
         }
 
         public override IEnumerable<ICoordinate> Transform(IEnumerable<ICoordinate> points)
@@ -127,20 +128,20 @@ namespace ProjNet.CoordinateSystems.Transformations
         /// </summary>
         public override TCoordinate Transform(TCoordinate point)
         {
-            Double value = (Double)point[0];
+            Double value = point[Ordinates.X];
 
             value /= Source.AngularUnit.RadiansPerUnit;
             value -= Source.PrimeMeridian.Longitude / Source.PrimeMeridian.AngularUnit.RadiansPerUnit;
             value += Target.PrimeMeridian.Longitude / Target.PrimeMeridian.AngularUnit.RadiansPerUnit;
             value *= Source.AngularUnit.RadiansPerUnit;
 
-            Int32 componentCount = point.ComponentCount;
-            Double[] coordValues = new Double[componentCount];
-            coordValues[0] = value;
+            //Int32 componentCount = point.ComponentCount;
+            //Double[] coordValues = new Double[componentCount];
+            //coordValues[0] = value;
 
-            return point is ICoordinate3D
-                       ? CreateCoordinate(point[Ordinates.X], point[Ordinates.Y], point[Ordinates.Z])
-                       : CreateCoordinate(point[Ordinates.X], point[Ordinates.Y]);
+            return point.ComponentCount == 2
+                       ? CreateCoordinate(value, point[Ordinates.Y])
+                       : CreateCoordinate(value, point[Ordinates.Y], point[Ordinates.Z]);
         }
 
         /// <summary>

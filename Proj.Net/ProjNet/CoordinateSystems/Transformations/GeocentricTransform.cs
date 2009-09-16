@@ -206,6 +206,7 @@ namespace ProjNet.CoordinateSystems.Transformations
                 }
             }
 
+            Double semiMinor = SemiMinor;
             Double semiMajor = SemiMajor;
 
             Double w2 = x * x + y * y; // Square of distance from Z axis
@@ -215,7 +216,7 @@ namespace ProjNet.CoordinateSystems.Transformations
             Double sinB0 = t0 / s0; //sin(B0), B0 is estimate of Bowring aux variable
             Double cosB0 = w / s0; //cos(B0)
             Double sin3B0 = Math.Pow(sinB0, 3);
-            Double t1 = z + semiMajor * _ses * sin3B0; //corrected estimate of vertical component
+            Double t1 = z + semiMinor * _ses * sin3B0; //corrected estimate of vertical component
             Double sum = w - semiMajor * E2 * cosB0 * cosB0 * cosB0; //numerator of cos(phi1)
             Double s1 = Math.Sqrt(t1 * t1 + sum * sum); //corrected estimate of horizontal component
             Double sinP1 = t1 / s1; //sin(phi1), phi1 is estimated latitude

@@ -74,14 +74,20 @@ namespace ProjNet.CoordinateSystems.Transformations
             _inverseTransform = _transform.Inverse;
         }
 
+        /// <summary>
+        /// Gets the dimension of input points.
+        /// </summary>
         public override Int32 SourceDimension
         {
-            get { throw new System.NotImplementedException(); }
+            get { throw new NotImplementedException(); }
         }
 
+        /// <summary>
+        /// Gets the dimension of output points.
+        /// </summary>
         public override Int32 TargetDimension
         {
-            get { throw new System.NotImplementedException(); }
+            get { throw new NotImplementedException(); }
         }
 
         public override ICoordinate Transform(ICoordinate coordinate)
@@ -133,17 +139,18 @@ namespace ProjNet.CoordinateSystems.Transformations
 
         private TCoordinate applyTransformToPoint(TCoordinate p)
         {
-            return (TCoordinate)_transform.TransformVector(p);
-            //return _coordinateFactory(
+            return CoordinateFactory.Create(_transform.TransformVector(p));
+
+            //return CoordinateFactory.Create( new [] {
             //        _transform[0]*p[0] - _transform[3]*p[1] + _transform[2]*p[2] + _transform[4],
             //        _transform[3]*p[0] + _transform[0]*p[1] - _transform[1]*p[2] + _transform[5],
-            //        -_transform[2]*p[0] + _transform[1]*p[1] + _transform[0]*p[2] + _transform[6],
+            //        -_transform[2]*p[0] + _transform[1]*p[1] + _transform[0]*p[2] + _transform[6] });,
             //    );
         }
 
         private TCoordinate applyInvertedTransformToPoint(TCoordinate p)
         {
-            return (TCoordinate)_inverseTransform.TransformVector(p);
+            return CoordinateFactory.Create(_inverseTransform.TransformVector(p));
             //return _coordinateFactory(
             //        _transform[0]*p[0] + _transform[3]*p[1] - _transform[2]*p[2] - _transform[4],
             //        -_transform[3]*p[0] + _transform[0]*p[1] + _transform[1]*p[2] - _transform[5],
