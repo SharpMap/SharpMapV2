@@ -16,7 +16,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug_Net20\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;unBuffered</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
@@ -85,6 +85,10 @@
     <ProjectReference Include="..\..\NTS\NetTopologySuite\NetTopologySuite.csproj">
       <Project>{5770DAA9-84E5-4770-AF43-F6B815894368}</Project>
       <Name>NetTopologySuite</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\NTS\SimpleCoordinate\Coordinates.Simple.csproj">
+      <Project>{FA286D16-E405-4FCB-95EA-BE1F9A4A83A4}</Project>
+      <Name>Coordinates.Simple</Name>
     </ProjectReference>
     <ProjectReference Include="..\ProjNet\ProjNet.csproj">
       <Project>{E028BDD2-55E1-4E5F-BE31-35FAEC8D6428}</Project>

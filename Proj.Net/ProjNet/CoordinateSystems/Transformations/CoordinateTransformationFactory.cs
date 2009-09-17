@@ -591,6 +591,9 @@ namespace ProjNet.CoordinateSystems.Transformations
                 case "lambertconicconformal(2sp)":
                     transform = new LambertConformalConic2SP<TCoordinate>(parameterList, _coordinateFactory);
                     break;
+                case "krovak":
+                    transform = new KrovakProjection<TCoordinate>(parameterList, _coordinateFactory);
+                    break;
                 case "affine":
                 case "abridgedmolodenski":
                 case "geocentrictoellipsoid":

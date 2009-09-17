@@ -10,10 +10,15 @@ using NPack.Matrix;
 using NUnit.Framework;
 using ProjNet.CoordinateSystems;
 using ProjNet.CoordinateSystems.Transformations;
+#if Buffered
 using Coordinate2D = NetTopologySuite.Coordinates.BufferedCoordinate;
 using Coordinate2DFactory = NetTopologySuite.Coordinates.BufferedCoordinateFactory;
 using Coordinate2DSequenceFactory = NetTopologySuite.Coordinates.BufferedCoordinateSequenceFactory;
-
+#else
+using Coordinate2D = NetTopologySuite.Coordinates.Simple.Coordinate;
+using Coordinate2DFactory = NetTopologySuite.Coordinates.Simple.CoordinateFactory;
+using Coordinate2DSequenceFactory = NetTopologySuite.Coordinates.Simple.CoordinateSequenceFactory;
+#endif
 namespace ProjNet.Tests
 {
     [TestFixture]
@@ -740,6 +745,73 @@ namespace ProjNet.Tests
             //Assert.IsTrue(Math.Abs((pUTMWGS84 as Point3D).Z - 36.35) < 0.5);
             //Point pExpected = Point.FromDMS(2, 7, 46.38, 53, 48, 33.82);
             //ED50_to_WGS84_Denmark: datum.Wgs84Parameters = new Wgs84ConversionInfo(-89.5, -93.8, 127.6, 0, 0, 4.5, 1.2);
+        }
+
+        [Test]
+        public void TestKrovakProjection()
+        {
+            ICoordinateFactory<Coordinate2D> cf = new Coordinate2DFactory();
+            IGeometryFactory<Coordinate2D> gf =
+                new GeometryFactory<Coordinate2D>(new Coordinate2DSequenceFactory());
+            CoordinateSystemFactory<Coordinate2D> cFac =
+                new CoordinateSystemFactory<Coordinate2D>(cf, gf);
+
+            IEllipsoid ellipsoid = cFac.CreateFlattenedSphere(6377397.155, 299.15281, LinearUnit.Meter, "Bessel 1840");
+
+            IHorizontalDatum datum = cFac.CreateHorizontalDatum(DatumType.HorizontalGeocentric, ellipsoid, null, "Bessel 1840");
+            IGeographicCoordinateSystem<Coordinate2D> gcs = cFac.CreateGeographicCoordinateSystem(gf.CreateExtents(), AngularUnit.Degrees, datum,
+                PrimeMeridian.Greenwich, new AxisInfo(AxisOrientation.East, "Lon"),
+                new AxisInfo(AxisOrientation.North, "Lat"), "Bessel 1840");
+            List<ProjectionParameter> parameters = new List<ProjectionParameter>(5);
+            parameters.Add(new ProjectionParameter("latitude_of_center", 49.5));
+            parameters.Add(new ProjectionParameter("longitude_of_center", 42.5));
+            parameters.Add(new ProjectionParameter("azimuth", 30.28813972222222));
+            parameters.Add(new ProjectionParameter("pseudo_standard_parallel_1", 78.5));
+            parameters.Add(new ProjectionParameter("scale_factor", 0.9999));
+            parameters.Add(new ProjectionParameter("false_easting", 0));
+            parameters.Add(new ProjectionParameter("false_northing", 0));
+            IProjection projection = cFac.CreateProjection("Krovak", parameters, "Krovak");
+
+            IProjectedCoordinateSystem<Coordinate2D> coordsys = cFac.CreateProjectedCoordinateSystem(
+                gcs, projection, LinearUnit.Meter, 
+                new AxisInfo(AxisOrientation.East, "East"), 
+                new AxisInfo(AxisOrientation.North, "North"), 
+                "WGS 84");
+
+            LinearFactory<DoubleComponent> factory = new LinearFactory<DoubleComponent>();
+            ICoordinateTransformation trans = new CoordinateTransformationFactory<Coordinate2D>(cf, gf, factory ).CreateFromCoordinateSystems(gcs, coordsys);
+
+            // test case 1
+            //double[] pGeo = new double[] { 12, 48 };
+            //double[] expected = new double[] { -953172.26, -1245573.32 };
+            ICoordinate pGeo = cf.Create(12,48);
+            ICoordinate pExpected = cf.Create(-953172.26, -1245573.32);
+
+            //double[] pUtm = trans.MathTransform.Transform(pGeo);
+            ICoordinate pUtm = trans.MathTransform.Transform(pGeo);
+            //double[] pGeo2 = trans.MathTransform.Inverse().Transform(pGeo2);
+            ICoordinate pGeo2 = trans.MathTransform.Inverse.Transform(pUtm);
+
+            Assert.IsTrue(ToleranceLessThan(pUtm, pExpected, 0.02), 
+                String.Format("Krovak forward transformation outside tolerance, Expected [{0},{1}], got [{2},{3}]", 
+                    pExpected[0], pExpected[1], pUtm[0], pUtm[1]));
+            Assert.IsTrue(ToleranceLessThan(pGeo, pGeo2, 0.0000001), 
+                String.Format("Krovak reverse transformation outside tolerance, Expected [{0},{1}], got [{2},{3}]", 
+                    pGeo[0], pGeo[1], pGeo2[0], pGeo2[1]));
+
+            // test case 2
+            //pGeo = new double[] { 18, 49 };
+            pGeo = cf.Create(18, 49);
+            //expected = new double[] { -499258.06, -1192389.16 };
+            pExpected = cf.Create(-499258.06, -1192389.16);
+
+            pUtm = trans.MathTransform.Transform(pGeo);
+            pGeo2 = trans.MathTransform.Inverse.Transform(pUtm);
+
+            Assert.IsTrue(ToleranceLessThan(pUtm, pExpected, 0.02), 
+                String.Format("Krovak forward transformation outside tolerance, Expected [{0},{1}], got [{2},{3}]", 
+                    pExpected[0], pExpected[1], pUtm[0], pUtm[1]));
+            Assert.IsTrue(ToleranceLessThan(pGeo, pGeo2, 0.0000001), String.Format("Krovak reverse transformation outside tolerance, Expected [{0},{1}], got [{2},{3}]", pGeo[0], pGeo[1], pGeo2[0], pGeo2[1]));
         }
 
         private bool ToleranceLessThan(ICoordinate p1, ICoordinate p2, Double tolerance)

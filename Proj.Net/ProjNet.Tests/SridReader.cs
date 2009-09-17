@@ -7,10 +7,15 @@ using GeoAPI.Geometries;
 using GeoAPI.IO.WellKnownText;
 using GisSharpBlog.NetTopologySuite.Geometries;
 using ProjNet.CoordinateSystems;
+#if Buffered
 using Coordinate2D = NetTopologySuite.Coordinates.BufferedCoordinate;
 using Coordinate2DFactory = NetTopologySuite.Coordinates.BufferedCoordinateFactory;
 using Coordinate2DSequenceFactory = NetTopologySuite.Coordinates.BufferedCoordinateSequenceFactory;
-
+#else
+using Coordinate2D = NetTopologySuite.Coordinates.Simple.Coordinate;
+using Coordinate2DFactory = NetTopologySuite.Coordinates.Simple.CoordinateFactory;
+using Coordinate2DSequenceFactory = NetTopologySuite.Coordinates.Simple.CoordinateSequenceFactory;
+#endif
 namespace ProjNet.Tests
 {
     internal class SridReader
