@@ -73,6 +73,9 @@ namespace SharpMap.Expressions
 
         public new IEnumerator<TValue> GetEnumerator()
         {
+            if (Collection == null)
+                return null;
+
             return Collection.GetEnumerator();
         }
 

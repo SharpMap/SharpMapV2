@@ -8,7 +8,7 @@ namespace SharpMap.Expressions
     public class SortExpressionCollectionExpression : CollectionExpression<SortExpression>
     {
         public SortExpressionCollectionExpression(IEnumerable<SortExpression> sortExpressions)
-            : base(sortExpressions)
+            : base(sortExpressions ?? new SortExpression[] { })
         {
         }
     }
