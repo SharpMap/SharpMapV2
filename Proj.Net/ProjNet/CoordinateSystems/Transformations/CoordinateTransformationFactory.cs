@@ -594,6 +594,9 @@ namespace ProjNet.CoordinateSystems.Transformations
                 case "krovak":
                     transform = new KrovakProjection<TCoordinate>(parameterList, _coordinateFactory);
                     break;
+                case "cassinisoldner":
+                    transform = new CassiniSoldnerProjection<TCoordinate>(parameterList, _coordinateFactory);
+                    break;
                 case "affine":
                 case "abridgedmolodenski":
                 case "geocentrictoellipsoid":

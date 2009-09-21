@@ -47,12 +47,12 @@ using NPack.Interfaces;
 namespace ProjNet.CoordinateSystems.Projections
 {
 
-    internal class InverseKrovacProjection<TCoordinate> : KrovakProjection<TCoordinate>
+    internal class InverseKrovakProjection<TCoordinate> : KrovakProjection<TCoordinate>
         where TCoordinate : ICoordinate<TCoordinate>, IEquatable<TCoordinate>,
                             IComparable<TCoordinate>, IConvertible,
                             IComputable<Double, TCoordinate>
     {
-        public InverseKrovacProjection(IEnumerable<ProjectionParameter> parameters,
+        public InverseKrovakProjection(IEnumerable<ProjectionParameter> parameters,
                                ICoordinateFactory<TCoordinate> coordinateFactory)
             : base(parameters, coordinateFactory)
         {
@@ -121,8 +121,8 @@ namespace ProjNet.CoordinateSystems.Projections
         protected Radians _centralMeridian;
         protected Radians _latitudeOfOrigin;
         protected double _scaleFactor;
-        protected double _excentricitySquared;
-        protected double _excentricity;
+        //protected double _excentricitySquared;
+        //protected double _excentricity;
 
         /**
          * Useful constant - 45° in radians.
@@ -151,10 +151,10 @@ namespace ProjNet.CoordinateSystems.Projections
         public KrovakProjection(IEnumerable<ProjectionParameter> parameters, ICoordinateFactory<TCoordinate> coordinateFactory)
             : base(parameters, coordinateFactory)
         {
-            this.Authority = "EPSG";
-            this.AuthorityCode = "9819";
+            Authority = "EPSG";
+            AuthorityCode = "9819";
 
-            //        PROJCS["S-JTSK (Ferro) / Krovak",
+            //PROJCS["S-JTSK (Ferro) / Krovak",
             //GEOGCS["S-JTSK (Ferro)",
             //    DATUM["D_S_JTSK_Ferro",
             //        SPHEROID["Bessel 1841",6377397.155,299.1528128]],
@@ -198,11 +198,11 @@ namespace ProjNet.CoordinateSystems.Projections
             _pseudoStandardParallel = (Radians)new Degrees((Double)par_pseudo_standard_parallel_1.Value);
             _scaleFactor = par_scale_factor.Value;
 
-            this._falseEasting = par_false_easting.Value * MetersPerUnit;
-            this._falseNorthing = par_false_northing.Value * MetersPerUnit;
+            _falseEasting = par_false_easting.Value * MetersPerUnit;
+            _falseNorthing = par_false_northing.Value * MetersPerUnit;
 
-            _excentricitySquared = 1.0 - (SemiMinor * SemiMinor) / (SemiMajor * SemiMajor);
-            _excentricity = Math.Sqrt(_excentricitySquared);
+            //_excentricitySquared = 1.0 - (SemiMinor * SemiMinor) / (SemiMajor * SemiMajor);
+            //_excentricity = Math.Sqrt(_excentricitySquared);
 
             // Calculates useful constants.
             _sinAzim = Math.Sin(_azimuth);
@@ -213,16 +213,16 @@ namespace ProjNet.CoordinateSystems.Projections
             double sinLat = Math.Sin(_latitudeOfOrigin);
             double cosLat = Math.Cos(_latitudeOfOrigin);
             double cosL2 = cosLat * cosLat;
-            _alfa = Math.Sqrt(1 + ((_excentricitySquared * (cosL2 * cosL2)) / (1 - _excentricitySquared))); // parameter B
-            _hae = _alfa * _excentricity / 2;
+            _alfa = Math.Sqrt(1 + ((E2 * (cosL2 * cosL2)) / (1 - E2))); // parameter B
+            _hae = _alfa * E / 2;
             double u0 = Math.Asin(sinLat / _alfa);
 
-            double esl = _excentricity * sinLat;
-            double g = Math.Pow((1 - esl) / (1 + esl), (_alfa * _excentricity) / 2);
+            double esl = E * sinLat;
+            double g = Math.Pow((1 - esl) / (1 + esl), (_alfa * E) / 2);
             _k1 = Math.Pow(Math.Tan(_latitudeOfOrigin / 2 + S45), _alfa) * g / Math.Tan(u0 / 2 + S45);
             _ka = Math.Pow(1 / _k1, -1 / _alfa);
 
-            double radius = Math.Sqrt(1 - _excentricitySquared) / (1 - (_excentricitySquared * (sinLat * sinLat)));
+            double radius = Math.Sqrt(1 - E2) / (1 - (E2 * (sinLat * sinLat)));
 
             _ro0 = _scaleFactor * radius / Math.Tan(_pseudoStandardParallel);
             _rop = _ro0 * Math.Pow(_tanS2, _n);
@@ -236,7 +236,7 @@ namespace ProjNet.CoordinateSystems.Projections
 
         public override string Name
         {
-            get { return "Krovac"; }
+            get { return "Krovak"; }
         }
 
         /// <summary>
@@ -249,7 +249,7 @@ namespace ProjNet.CoordinateSystems.Projections
             Radians lambda = (Radians) new Degrees((Double)lonlat[0]) - _centralMeridian;
             Radians phi = (Radians) new Degrees((Double)lonlat[1]);
 
-            double esp = _excentricity * Math.Sin(phi);
+            double esp = E * Math.Sin(phi);
             double gfi = Math.Pow(((1.0 - esp) / (1.0 + esp)), _hae);
             double u = 2 * (Math.Atan(Math.Pow(Math.Tan(phi / 2 + S45), _alfa) / _k1 * gfi) - S45);
             double deltav = -lambda * _alfa;
@@ -293,8 +293,8 @@ namespace ProjNet.CoordinateSystems.Projections
             for (int i = MAXIMUM_ITERATIONS; ; )
             {
                 fi1 = phi;
-                double esf = _excentricity * Math.Sin(fi1);
-                phi = 2.0 * (Math.Atan(kau * Math.Pow((1.0 + esf) / (1.0 - esf), _excentricity / 2.0)) - S45);
+                double esf = E * Math.Sin(fi1);
+                phi = 2.0 * (Math.Atan(kau * Math.Pow((1.0 + esf) / (1.0 - esf), E / 2.0)) - S45);
                 if (Math.Abs(fi1 - phi) <= ITERATION_TOLERANCE)
                 {
                     break;
@@ -330,7 +330,7 @@ namespace ProjNet.CoordinateSystems.Projections
             IEnumerable<ProjectionParameter> parameters =
                 Caster.Downcast<ProjectionParameter, Parameter>(Parameters);
 
-            return new InverseKrovacProjection<TCoordinate>(parameters, CoordinateFactory);
+            return new InverseKrovakProjection<TCoordinate>(parameters, CoordinateFactory);
         }
 
     }

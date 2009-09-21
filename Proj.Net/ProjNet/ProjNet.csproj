@@ -136,6 +136,8 @@
     <Compile Include="CoordinateSystems\ProjectedCoordinateSystem.cs" />
     <Compile Include="CoordinateSystems\Projection.cs" />
     <Compile Include="CoordinateSystems\Projections\AlbersProjection.cs" />
+    <Compile Include="CoordinateSystems\Projections\CassiniSoldnerProjection.cs" />
+    <Compile Include="CoordinateSystems\Projections\DistanceAlongMeridian.cs" />
     <Compile Include="CoordinateSystems\Projections\KrovakProjection.cs" />
     <Compile Include="CoordinateSystems\Projections\LambertConformalConic.cs" />
     <Compile Include="CoordinateSystems\Projections\MapProjection.cs" />

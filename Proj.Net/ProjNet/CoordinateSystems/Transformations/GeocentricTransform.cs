@@ -273,9 +273,15 @@ namespace ProjNet.CoordinateSystems.Transformations
                 throw new ArgumentNullException("points");
             }
 
-            foreach (TCoordinate point in points)
+            if (!IsInverse)
             {
-                yield return Transform(point);
+                foreach (TCoordinate point in points)
+                    yield return degreesToMeters(point);
+            }
+            else
+            {
+                foreach (TCoordinate point in points)
+                    yield return metersToDegrees(point);
             }
         }
 
@@ -286,7 +292,7 @@ namespace ProjNet.CoordinateSystems.Transformations
                 throw new ArgumentNullException("points");
             }
 
-            return points.CoordinateSequenceFactory.Create(Transform(points));
+            return points.CoordinateSequenceFactory.Create(Transform((IEnumerable<TCoordinate>)points));
         }
 
         public override Int32 SourceDimension

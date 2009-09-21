@@ -32,6 +32,7 @@ namespace ProjNet.CoordinateSystems.Transformations
         private readonly Double _e;
         private readonly Double _e2;
         private readonly Double _semiMajor;
+        private readonly Double _reciprocalSemiMajor;
         private readonly Double _semiMinor;
 
         protected GeoMathTransform(IEnumerable<Parameter> parameters,
@@ -68,6 +69,7 @@ namespace ProjNet.CoordinateSystems.Transformations
 
             _semiMajor = semiMajorParam.Value;
             _semiMinor = semiMinorParam.Value;
+            _reciprocalSemiMajor = 1.0d / _semiMajor;
 
             //_e2 = 1.0d - Math.Pow(_semiMinor / _semiMajor, 2d);
             _e2 = 1.0d - Math.Pow(_semiMinor, 2d) / Math.Pow(_semiMajor, 2d);
@@ -77,6 +79,11 @@ namespace ProjNet.CoordinateSystems.Transformations
         public Double SemiMajor
         {
             get { return _semiMajor; }
+        }
+
+        public Double ReciprocalSemiMajor
+        {
+            get { return _reciprocalSemiMajor; }
         }
 
         public Double SemiMinor

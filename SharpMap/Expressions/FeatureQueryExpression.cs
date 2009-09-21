@@ -253,8 +253,9 @@ namespace SharpMap.Expressions
                    expressionToCopy.OidPredicate, expressionToCopy.Sort) { }
 
         public FeatureQueryExpression(ProjectionExpression projection,
-                                                  PredicateExpression predicate, SortExpressionCollectionExpression sort)//jd: made public
+                                                  PredicateExpression predicate, SortExpressionCollectionExpression sort)
             : base(projection, predicate, sort) { }
+
 
         public SpatialBinaryExpression SpatialPredicate
         {

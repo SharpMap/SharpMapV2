@@ -56,14 +56,26 @@ namespace ProjNet.CoordinateSystems.Projections
                             IComputable<Double, TCoordinate>
     {
         private readonly Double _metersPerUnit;
+        private readonly Double _unitsPerMeter;
 
         // TODO: can these fields / properties get factored out and shared with CoordinateTransformation<TCoordinate>?
         private String _abbreviation;
         private String _alias;
         private String _authority;
         private String _authorityCode;
-        private String _name;
+        //private String _name;
         private String _remarks;
+
+        private DistanceAlongMeridianTool _damTool;
+        public DistanceAlongMeridianTool DamTool
+        {
+            get 
+            {
+                if ( _damTool == null )
+                    _damTool = new DistanceAlongMeridianTool(E2);
+                return _damTool;
+            }
+        }
 
         protected MapProjection(IEnumerable<ProjectionParameter> parameters,
                                 ICoordinateFactory<TCoordinate> coordinateFactory)
@@ -71,7 +83,8 @@ namespace ProjNet.CoordinateSystems.Projections
                    coordinateFactory)
         {
             ProjectionParameter unit = GetParameter("unit");
-            _metersPerUnit = unit != null ? unit.Value : 1.0;
+            _metersPerUnit = unit != null ? unit.Value : 1.0d;
+            _unitsPerMeter = 1d/_metersPerUnit;
         }
 
         #region IProjection Members
@@ -194,6 +207,11 @@ namespace ProjNet.CoordinateSystems.Projections
             get { return _metersPerUnit; }
         }
 
+        protected internal Double UnitsPerMeter
+        {
+            get { return _unitsPerMeter; }
+        }
+
         /// <summary>
         /// Transforms the given point.
         /// </summary>
@@ -206,9 +224,15 @@ namespace ProjNet.CoordinateSystems.Projections
 
         public override IEnumerable<TCoordinate> Transform(IEnumerable<TCoordinate> points)
         {
-            foreach (TCoordinate coordinate in points)
+            if (!IsInverse)
             {
-                yield return Transform(coordinate);
+                foreach (TCoordinate point in points)
+                    yield return DegreesToMeters(point);
+            }
+            else
+            {
+                foreach (TCoordinate point in points)
+                    yield return MetersToDegrees(point);
             }
         }
 
@@ -270,7 +294,7 @@ namespace ProjNet.CoordinateSystems.Projections
 
             if (ReferenceEquals(m, null))
             {
-                return false;
+                return true;
             }
 
             if (m.ParameterCount != ParameterCount)
@@ -733,6 +757,19 @@ namespace ProjNet.CoordinateSystems.Projections
                    e1 * Math.Sin(2.0 * phi) +
                    e2 * Math.Sin(4.0 * phi) -
                    e3 * Math.Sin(6.0 * phi);
+        }
+
+        /// <summary>
+        /// Function computes the value of M which is the distance along a meridian
+        /// from the Equator to latitude <paramref name="phi"/>.
+        /// </summary>
+        /// <param name="phi">The measure of the latitude to measure to, in radians.</param>
+        protected Double MeridianLength(Radians phi)
+        {
+            if ( _damTool == null )
+                _damTool = new DistanceAlongMeridianTool(E2);
+
+            return _damTool.Length(phi);
         }
 
         /// <summary>

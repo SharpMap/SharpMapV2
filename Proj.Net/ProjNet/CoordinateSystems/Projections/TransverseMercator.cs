@@ -168,11 +168,11 @@ namespace ProjNet.CoordinateSystems.Projections
             _falseNorthing = falseNorthing.Value * MetersPerUnit;
 
             Double semiMajor = SemiMajor;
-            _e0 = ComputeE0(E2);
-            _e1 = ComputeE1(E2);
-            _e2 = ComputeE2(E2);
-            _e3 = ComputeE3(E2);
-            _ml0 = semiMajor * MeridianLength(_e0, _e1, _e2, _e3, _latOrigin);
+            //_e0 = ComputeE0(E2);
+            //_e1 = ComputeE1(E2);
+            //_e2 = ComputeE2(E2);
+            //_e3 = ComputeE3(E2);
+            _ml0 = semiMajor * MeridianLength(_latOrigin);
             _esp = E2 / (1.0 - E2);
         }
 
@@ -201,7 +201,7 @@ namespace ProjNet.CoordinateSystems.Projections
             Double t = Math.Pow(tq, 2);
             Double con = 1.0 - E2 * Math.Pow(sinPhi, 2);
             Double n = semiMajor / Math.Sqrt(con);
-            Double ml = semiMajor * MeridianLength(_e0, _e1, _e2, _e3, lat);
+            Double ml = semiMajor * MeridianLength(lat);
 
             Double x = _scaleFactor * n * al *
                        (1.0 + als / 6.0 *
@@ -246,29 +246,32 @@ namespace ProjNet.CoordinateSystems.Projections
             Double y = ((Double)p[1]) * MetersPerUnit - _falseNorthing;
 
             Double con = (_ml0 + y / _scaleFactor) / semiMajor;
-            Double phi = con;
+            Double phi = DamTool.Phi1(con);
 
-            for (i = 0; ; i++)
-            {
-                Double deltaPhi; /* difference between longitudes		*/
+            //Double con = (_ml0 + y / _scaleFactor) / semiMajor;
+            //Double phi = con;
 
-                deltaPhi = -phi +
-                           ((con + _e1 * Math.Sin(2.0 * phi) -
-                                   _e2 * Math.Sin(4.0 * phi) +
-                                   _e3 * Math.Sin(6.0 * phi)) / _e0);
+            //for (i = 0; ; i++)
+            //{
+            //    Double deltaPhi; /* difference between longitudes		*/
 
-                phi += deltaPhi;
+            //    deltaPhi = -phi +
+            //          ((con + _e1 * Math.Sin(2.0 * phi) -
+            //                  _e2 * Math.Sin(4.0 * phi) +
+            //                  _e3 * Math.Sin(6.0 * phi)) / _e0);
 
-                if (Math.Abs(deltaPhi) <= Epsilon)
-                {
-                    break;
-                }
+            //    phi += deltaPhi;
 
-                if (i >= MaxIterationCount)
-                {
-                    throw ComputationalConvergenceError();
-                }
-            }
+            //    if (Math.Abs(deltaPhi) <= Epsilon)
+            //    {
+            //        break;
+            //    }
+
+            //    if (i >= MaxIterationCount)
+            //    {
+            //        throw ComputationalConvergenceError();
+            //    }
+            //}
 
             TCoordinate transformed;
 
