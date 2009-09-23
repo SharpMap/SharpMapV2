@@ -597,6 +597,12 @@ namespace ProjNet.CoordinateSystems.Transformations
                 case "cassinisoldner":
                     transform = new CassiniSoldnerProjection<TCoordinate>(parameterList, _coordinateFactory);
                     break;
+				case "obliquemercator":
+                    transform = new HotineObliqueMercator<TCoordinate>(parameterList, _coordinateFactory, false);
+					break;
+				case "hotineoblique_mercator":
+                    transform = new HotineObliqueMercator<TCoordinate>(parameterList, _coordinateFactory, true);
+					break;
                 case "affine":
                 case "abridgedmolodenski":
                 case "geocentrictoellipsoid":

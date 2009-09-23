@@ -18,6 +18,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 using GeoAPI.Coordinates;
 using GeoAPI.CoordinateSystems;
@@ -181,6 +182,32 @@ namespace ProjNet.CoordinateSystems.Transformations
         public abstract ICoordinateSequence Transform(ICoordinateSequence points);
 
         #endregion
+
+        protected TCoordinate CreateCoordinate<TCoordinate>(Double x, Double y, TCoordinate coordinate)
+        where TCoordinate : ICoordinate<TCoordinate>, IEquatable<TCoordinate>,
+                            IComparable<TCoordinate>, IConvertible,
+                            IComputable<Double, TCoordinate>
+        {
+            ICoordinateFactory<TCoordinate> factory = CoordinateFactory as ICoordinateFactory<TCoordinate>;
+            if ( factory == null)
+                throw new Exception("Where does this coordinate factory come from?");
+
+            switch(coordinate.ComponentCount)
+            {
+                case 2:
+                    return factory.Create(x, y);
+                case 3:
+                    return !coordinate.ContainsOrdinate(Ordinates.Z)
+                               ?
+                                   factory.Create(x, y, coordinate[Ordinates.W])
+                               :
+                                   factory.Create3D(x, y, coordinate[Ordinates.Z]);
+                case 4:
+                    return factory.Create3D(x, y, coordinate[Ordinates.Z], coordinate[Ordinates.W]);
+                default:
+                    throw new InvalidDataException("coordinate");
+            }
+        }
 
         protected ICoordinate CreateCoordinate(Double x, Double y)
         {

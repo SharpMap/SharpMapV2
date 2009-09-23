@@ -67,6 +67,52 @@ namespace ProjNet.CoordinateSystems.Projections
                 return true;
             }
         }
+        public override TCoordinate Transform(TCoordinate coordinate)
+        {
+            Int64 i; // counter variable
+            Double semiMajor = SemiMajor;
+
+            Double x = ((Double)coordinate[0]) * MetersPerUnit - _falseEasting;
+            Double y = ((Double)coordinate[1]) * MetersPerUnit - _falseNorthing;
+
+            Double con = (_ml0 + y / _scaleFactor) / semiMajor;
+            Double phi = DamTool.Phi1(con);
+
+            TCoordinate transformed;
+
+            if (Math.Abs(phi) < HalfPI)
+            {
+                Double sinPhi, cosPhi; // sin cos and tangent values
+                SinCos(phi, out sinPhi, out cosPhi);
+                Double tanPhi = Math.Tan(phi);
+                Double c = _esp * Math.Pow(cosPhi, 2);
+                Double cs = Math.Pow(c, 2);
+                Double t = Math.Pow(tanPhi, 2);
+                Double ts = Math.Pow(t, 2);
+                con = 1.0 - E2 * Math.Pow(sinPhi, 2);
+                Double n = semiMajor / Math.Sqrt(con);
+                Double r = n * (1.0 - E2) / con;
+                Double d = x / (n * _scaleFactor);
+                Double ds = Math.Pow(d, 2);
+
+                Radians lat = (Radians)(phi -
+                                        (n * tanPhi * ds / r) *
+                                        (0.5 - ds / 24.0 *
+                                            (5.0 + 3.0 * t + 10.0 * c - 4.0 * cs - 9.0 * _esp - ds / 30.0 *
+                                                (61.0 + 90.0 * t + 298.0 * c + 45.0 * ts - 252.0 * _esp - 3.0 * cs))));
+
+                Radians lon = (Radians)AdjustLongitude(_centralMeridian +
+                                                       (d *
+                                                            (1.0 - ds / 6.0 *
+                                                                (1.0 + 2.0 * t + c - ds / 20.0 *
+                                                                    (5.0 - 2.0 * c + 28.0 * t -
+                                                                     3.0 * cs + 8.0 * _esp + 24.0 * ts))) / cosPhi));
+
+                return CreateCoordinate((Degrees)lon, (Degrees)lat, coordinate);
+            }
+
+            return CreateCoordinate((Degrees) new Radians(HalfPI*Sign(y)), new Degrees(_centralMeridian), coordinate);
+        }
     }
 
     /// <summary>
@@ -91,14 +137,14 @@ namespace ProjNet.CoordinateSystems.Projections
                             IComparable<TCoordinate>, IConvertible,
                             IComputable<Double, TCoordinate>
     {
-        private readonly Double _scaleFactor; /* scale factor				*/
-        private readonly Radians _centralMeridian; /* Center longitude (projection center) */
+        protected readonly Double _scaleFactor; /* scale factor				*/
+        protected readonly Radians _centralMeridian; /* Center longitude (projection center) */
         private readonly Radians _latOrigin; /* center latitude			*/
         private readonly Double _e0, _e1, _e2, _e3; /* eccentricity constants	*/
-        private readonly Double _esp; /* eccentricity constants	*/
-        private readonly Double _ml0; /* small value m			*/
-        private readonly Double _falseNorthing; /* y offset in meters		*/
-        private readonly Double _falseEasting; /* x offset in meters		*/
+        protected readonly Double _esp; /* eccentricity constants	*/
+        protected readonly Double _ml0; /* small value m			*/
+        protected readonly Double _falseNorthing; /* y offset in meters		*/
+        protected readonly Double _falseEasting; /* x offset in meters		*/
         //static Double ind;		               /* spherical flag			*/
 
         /// <summary>
@@ -175,7 +221,7 @@ namespace ProjNet.CoordinateSystems.Projections
             _ml0 = semiMajor * MeridianLength(_latOrigin);
             _esp = E2 / (1.0 - E2);
         }
-
+        /*
         /// <summary>
         /// Converts coordinates in decimal degrees to projected meters.
         /// </summary>
@@ -191,7 +237,7 @@ namespace ProjNet.CoordinateSystems.Projections
 
             Double deltaLon = AdjustLongitude(lon - _centralMeridian);
 
-            Double sinPhi, cosPhi; /* sin and cos value				*/
+            Double sinPhi, cosPhi; // sin and cos value
             SinCos(lat, out sinPhi, out cosPhi);
 
             Double al = cosPhi * deltaLon;
@@ -221,7 +267,7 @@ namespace ProjNet.CoordinateSystems.Projections
                        ? CreateCoordinate(x / MetersPerUnit, y / MetersPerUnit)
                        : CreateCoordinate(x / MetersPerUnit, y / MetersPerUnit, (Double)lonlat[2]);
         }
-
+        */
         public override string ProjectionClassName
         {
             get { return "Transverse_Mercator"; }
@@ -231,7 +277,7 @@ namespace ProjNet.CoordinateSystems.Projections
         {
             get { return "Transverse_Mercator"; }
         }
-
+        /*
         /// <summary>
         /// Converts coordinates in projected meters to decimal degrees.
         /// </summary>
@@ -239,7 +285,7 @@ namespace ProjNet.CoordinateSystems.Projections
         /// <returns>Transformed point in decimal degrees</returns>
         public override TCoordinate MetersToDegrees(TCoordinate p)
         {
-            Int64 i; /* counter variable	*/
+            Int64 i; // counter variable
             Double semiMajor = SemiMajor;
 
             Double x = ((Double)p[0]) * MetersPerUnit - _falseEasting;
@@ -253,7 +299,7 @@ namespace ProjNet.CoordinateSystems.Projections
 
             //for (i = 0; ; i++)
             //{
-            //    Double deltaPhi; /* difference between longitudes		*/
+            //    Double deltaPhi; /* difference between longitudes
 
             //    deltaPhi = -phi +
             //          ((con + _e1 * Math.Sin(2.0 * phi) -
@@ -277,7 +323,7 @@ namespace ProjNet.CoordinateSystems.Projections
 
             if (Math.Abs(phi) < HalfPI)
             {
-                Double sinPhi, cosPhi; /* sin cos and tangent values	*/
+                Double sinPhi, cosPhi; // sin cos and tangent values
                 SinCos(phi, out sinPhi, out cosPhi);
                 Double tanPhi = Math.Tan(phi);
                 Double c = _esp * Math.Pow(cosPhi, 2);
@@ -322,7 +368,7 @@ namespace ProjNet.CoordinateSystems.Projections
 
             return transformed;
         }
-
+        */
         public override Int32 SourceDimension
         {
             get { throw new System.NotImplementedException(); }
@@ -343,6 +389,45 @@ namespace ProjNet.CoordinateSystems.Projections
             IEnumerable<ProjectionParameter> parameters =
                 Caster.Downcast<ProjectionParameter, Parameter>(Parameters);
             return new InverseTransverseMercator<TCoordinate>(parameters, CoordinateFactory, this);
+        }
+
+        public override TCoordinate Transform(TCoordinate point)
+        {
+            DoubleComponent lonVal, latVal;
+            point.GetComponents(out lonVal, out latVal);
+            Radians lon = (Radians)new Degrees((Double)lonVal);
+            Radians lat = (Radians)new Degrees((Double)latVal);
+            Double semiMajor = SemiMajor;
+
+            Double deltaLon = AdjustLongitude(lon - _centralMeridian);
+
+            Double sinPhi, cosPhi; // sin and cos value
+            SinCos(lat, out sinPhi, out cosPhi);
+
+            Double al = cosPhi * deltaLon;
+            Double als = Math.Pow(al, 2);
+            Double c = _esp * Math.Pow(cosPhi, 2);
+            Double tq = Math.Tan(lat);
+            Double t = Math.Pow(tq, 2);
+            Double con = 1.0 - E2 * Math.Pow(sinPhi, 2);
+            Double n = semiMajor / Math.Sqrt(con);
+            Double ml = semiMajor * MeridianLength(lat);
+
+            Double x = _scaleFactor * n * al *
+                       (1.0 + als / 6.0 *
+                            (1.0 - t + c + als / 20.0 *
+                                (5.0 - 18.0 * t + Math.Pow(t, 2) + 72.0 * c - 58.0 * _esp)))
+                       + _falseEasting;
+
+            Double y = _scaleFactor *
+                       (ml - _ml0 + n * tq *
+                            (als *
+                                (0.5 + als / 24.0 *
+                                    (5.0 - t + 9.0 * c + 4.0 * Math.Pow(c, 2) + als / 30.0 *
+                                        (61.0 - 58.0 * t + Math.Pow(t, 2) + 600.0 * c - 330.0 * _esp)))))
+                       + _falseNorthing;
+
+            return CreateCoordinate(x*UnitsPerMeter, y*UnitsPerMeter, point);
         }
     }
 }

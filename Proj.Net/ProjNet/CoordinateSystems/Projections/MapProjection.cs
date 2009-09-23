@@ -197,8 +197,8 @@ namespace ProjNet.CoordinateSystems.Projections
 
         #endregion
 
-        public abstract TCoordinate MetersToDegrees(TCoordinate coordinate);
-        public abstract TCoordinate DegreesToMeters(TCoordinate coordinate);
+        //public abstract TCoordinate MetersToDegrees(TCoordinate coordinate);
+        //public abstract TCoordinate DegreesToMeters(TCoordinate coordinate);
 
         #region IMathTransform
 
@@ -217,23 +217,27 @@ namespace ProjNet.CoordinateSystems.Projections
         /// </summary>
         public override TCoordinate Transform(TCoordinate point)
         {
-            return !IsInverse
-                       ? DegreesToMeters(point)
-                       : MetersToDegrees(point);
+            throw new NotImplementedException();
+            //return !IsInverse
+            //           ? DegreesToMeters(point)
+            //           : MetersToDegrees(point);
         }
 
         public override IEnumerable<TCoordinate> Transform(IEnumerable<TCoordinate> points)
         {
-            if (!IsInverse)
-            {
-                foreach (TCoordinate point in points)
-                    yield return DegreesToMeters(point);
-            }
-            else
-            {
-                foreach (TCoordinate point in points)
-                    yield return MetersToDegrees(point);
-            }
+            foreach (TCoordinate point in points)
+                yield return Transform(point);
+
+            //if (!IsInverse)
+            //{
+            //    foreach (TCoordinate point in points)
+            //        yield return Transform(point);
+            //}
+            //else
+            //{
+            //    foreach (TCoordinate point in points)
+            //        yield return MetersToDegrees(point);
+            //}
         }
 
         /// <summary>

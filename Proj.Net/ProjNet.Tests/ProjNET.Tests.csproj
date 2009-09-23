@@ -16,7 +16,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug_Net20\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;unBuffered</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;Buffered</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>

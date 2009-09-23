@@ -45,60 +45,11 @@ namespace ProjNet.CoordinateSystems.Projections
         private const Double Eps = 1e-11;
         private const Int32 MaxIter = 10;
 
-        /*
-#define C88 
-#define Eps 1e-11
-#define MaxIter 10
-#define EN_SIZE 5
-	double *
-pj_enfn(double es) {
-	double t, *en;
-
-	if (en = (double *)pj_malloc(EN_SIZE * sizeof(double))) {
-		en[0] = C00 - es * (C02 + es * (C04 + es * (C06 + es * C08)));
-		en[1] = es * (C22 - es * (C04 + es * (C06 + es * C08)));
-		en[2] = (t = es * es) * (C44 - es * (C46 + es * C48));
-		en[3] = (t *= es) * (C66 - es * C68);
-		en[4] = t * es * C88;
-	} // else return NULL if unable to allocate memory
-	return en;
-}
-	double
-pj_mlfn(double phi, double sphi, double cphi, double *en) {
-	cphi *= sphi;
-	sphi *= sphi;
-	return(en[0] * phi - cphi * (en[1] + sphi*(en[2]
-		+ sphi*(en[3] + sphi*en[4]))));
-}
-	double
-pj_inv_mlfn(double arg, double es, double *en) {
-	double s, t, phi, k = 1./(1.-es);
-	int i;
-
-	phi = arg;
-	for (i = MaxIter; i ; --i) { // rarely goes over 2 iterations 
-		s = sin(phi);
-		t = 1. - es * s * s;
-		phi -= t = (pj_mlfn(phi, s, cos(phi), en) - arg) * (t * sqrt(t)) * k;
-		if (fabs(t) < Eps)
-			return phi;
-	}
-	pj_errno = -17;
-	return phi;
-}
-         */
         private readonly Double[] _e;
         private readonly Double _eccPow2;
 
         public DistanceAlongMeridianTool(Double eccPow2)
         {
-            /*	if (en = (double *)pj_malloc(EN_SIZE * sizeof(double))) {
-		en[0] = C00 - es * (C02 + es * (C04 + es * (C06 + es * C08)));
-		en[1] = es * (C22 - es * (C04 + es * (C06 + es * C08)));
-		en[2] = (t = es * es) * (C44 - es * (C46 + es * C48));
-		en[3] = (t *= es) * (C66 - es * C68);
-		en[4] = t * es * C88;
-	}*/
             Double eccPow4 = eccPow2*eccPow2;
             Double eccPow6 = eccPow4*eccPow2;
             _e = new[]
@@ -130,11 +81,6 @@ pj_inv_mlfn(double arg, double es, double *en) {
         /// <param name="phi">The measure of the latitude to measure to, in radians.</param>
         public Double Length(Double phi, Double sinPhi, Double cosPhi)
         {
-            /*	cphi *= sphi;
-	sphi *= sphi;
-	return(en[0] * phi - cphi * (en[1] + sphi*(en[2]
-		+ sphi*(en[3] + sphi*en[4]))));
-*/
             cosPhi *= sinPhi;
             sinPhi *= sinPhi;
 
@@ -153,18 +99,6 @@ pj_inv_mlfn(double arg, double es, double *en) {
         ///<exception cref="ComputationConvergenceException"></exception>
         public Radians Phi1(Double arg)
         {
-/*
-	double s, t, phi, k = 1./(1.-es);
-	int i;
-
-	phi = arg;
-	for (i = MAX_ITER; i ; --i) { // rarely goes over 2 iterations /
-		s = sin(phi);
-		t = 1. - es * s * s;
-		phi -= t = (pj_mlfn(phi, s, cos(phi), en) - arg) * (t * sqrt(t)) * k;
-		if (fabs(t) < EPS)
-			return phi;
-	}*/
             Double k = 1.0d / (1.0d-_eccPow2);
 
             Double phi = arg;

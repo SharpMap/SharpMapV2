@@ -63,6 +63,50 @@ namespace ProjNet.CoordinateSystems.Projections
         {
             get { return true; }
         }
+
+        public override TCoordinate Transform(TCoordinate point)
+        {
+            Radians lat;
+
+            Double rh1; // height above ellipsoid
+            Double con; // sign variable
+
+            Double dX = ((Double)point[0]) * MetersPerUnit - _falseEasting;
+            Double dY = _rh - ((Double)point[1]) * MetersPerUnit + _falseNorthing;
+
+            if (_ns > 0)
+            {
+                rh1 = Math.Sqrt(dX * dX + dY * dY);
+                con = 1.0;
+            }
+            else
+            {
+                rh1 = -Math.Sqrt(dX * dX + dY * dY);
+                con = -1.0;
+            }
+
+            Double theta = 0.0;
+
+            if (rh1 != 0)
+            {
+                theta = Math.Atan2((con * dX), (con * dY));
+            }
+
+            if ((rh1 != 0) || (_ns > 0.0))
+            {
+                con = 1.0 / _ns;
+                Double smallT = Math.Pow((rh1 / (SemiMajor * _f0)), con);
+                lat = (Radians)ComputePhi2(E, smallT);
+            }
+            else
+            {
+                lat = new Radians(-HalfPI);
+            }
+
+            Radians lon = new Radians(AdjustLongitude(theta / _ns + _centerLon));
+
+            return CreateCoordinate((Degrees) lon, (Degrees) lat, point);
+        }
     }
 
     /// <summary>
@@ -80,13 +124,13 @@ namespace ProjNet.CoordinateSystems.Projections
                             IComparable<TCoordinate>, IConvertible,
                             IComputable<Double, TCoordinate>
     {
-        private readonly Double _falseEasting;
-        private readonly Double _falseNorthing;
-        private readonly Radians _centerLon; /* center longituted            */
+        protected readonly Double _falseEasting;
+        protected readonly Double _falseNorthing;
+        protected readonly Radians _centerLon; /* center longituted            */
         private readonly Radians _centerLat; /* cetner latitude              */
-        private readonly Double _ns; /* ratio of angle between meridian*/
-        private readonly Double _f0; /* flattening of ellipsoid      */
-        private readonly Double _rh; /* height above ellipsoid       */
+        protected readonly Double _ns; /* ratio of angle between meridian*/
+        protected readonly Double _f0; /* flattening of ellipsoid      */
+        protected readonly Double _rh; /* height above ellipsoid       */
 
         #region Constructors
 
@@ -204,7 +248,7 @@ namespace ProjNet.CoordinateSystems.Projections
         }
 
         #endregion
-
+        /*
         /// <summary>
         /// Converts coordinates in decimal degrees to projected meters.
         /// </summary>
@@ -215,7 +259,7 @@ namespace ProjNet.CoordinateSystems.Projections
             Radians lon = (Radians)new Degrees((Double)lonlat[0]);
             Radians lat = (Radians)new Degrees((Double)lonlat[1]);
 
-            Double rh1; /* height above ellipsoid               */
+            Double rh1; // height above ellipsoid
 
             Double con = Math.Abs(Math.Abs(lat) - HalfPI);
 
@@ -247,7 +291,7 @@ namespace ProjNet.CoordinateSystems.Projections
                        ? CreateCoordinate(lon / MetersPerUnit, lat / MetersPerUnit)
                        : CreateCoordinate(lon / MetersPerUnit, lat / MetersPerUnit, (Double)lonlat[2]);
         }
-
+        */
         public override string ProjectionClassName
         {
             get { return "Lambert_Conformal_Conic_2SP"; }
@@ -257,7 +301,7 @@ namespace ProjNet.CoordinateSystems.Projections
         {
             get { return "Lambert_Conformal_Conic_2SP"; }
         }
-
+        /*
         /// <summary>
         /// Converts coordinates in projected meters to decimal degrees.
         /// </summary>
@@ -267,8 +311,8 @@ namespace ProjNet.CoordinateSystems.Projections
         {
             Radians lat;
 
-            Double rh1; /* height above ellipsoid	*/
-            Double con; /* sign variable		    */
+            Double rh1; // height above ellipsoid
+            Double con; // sign variable
 
             Double dX = ((Double)p[0]) * MetersPerUnit - _falseEasting;
             Double dY = _rh - ((Double)p[1]) * MetersPerUnit + _falseNorthing;
@@ -308,30 +352,20 @@ namespace ProjNet.CoordinateSystems.Projections
                        ? CreateCoordinate((Degrees)lon, (Degrees)lat)
                        : CreateCoordinate((Degrees)lon, (Degrees)lat, (Double)p[2]);
         }
-
+        */
         public override Int32 SourceDimension
         {
-            get { throw new System.NotImplementedException(); }
+            get { throw new NotImplementedException(); }
         }
 
         public override Int32 TargetDimension
         {
-            get { throw new System.NotImplementedException(); }
+            get { throw new NotImplementedException(); }
         }
 
         public override Boolean IsInverse
         {
             get { return false; }
-        }
-
-        public override IEnumerable<ICoordinate> Transform(IEnumerable<ICoordinate> points)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public override ICoordinateSequence Transform(ICoordinateSequence points)
-        {
-            throw new System.NotImplementedException();
         }
 
         protected override IMathTransform ComputeInverse(IMathTransform setAsInverse)
@@ -344,13 +378,40 @@ namespace ProjNet.CoordinateSystems.Projections
                                                                     this);
         }
 
-        #region Overrides of MathTransform<TCoordinate>
-
-        public override ICoordinateSequence<TCoordinate> Transform(ICoordinateSequence<TCoordinate> points)
+        public override TCoordinate Transform(TCoordinate lonlat)
         {
-            throw new System.NotImplementedException();
-        }
+            Radians lon = (Radians)new Degrees((Double)lonlat[0]);
+            Radians lat = (Radians)new Degrees((Double)lonlat[1]);
 
-        #endregion
+            Double rh1; // height above ellipsoid
+
+            Double con = Math.Abs(Math.Abs(lat) - HalfPI);
+
+            if (con > Epsilon)
+            {
+                Double sinPhi = Math.Sin(lat);
+                Double smallT = ComputeSmallT(E, lat, sinPhi);
+                rh1 = SemiMajor * _f0 * Math.Pow(smallT, _ns);
+            }
+            else
+            {
+                con = lat * _ns;
+
+                if (con <= 0)
+                {
+                    throw new ArgumentOutOfRangeException("lonlat",
+                                                          lonlat,
+                                                          "Latitude must be less than 90?.");
+                }
+
+                rh1 = 0;
+            }
+
+            Double theta = _ns * AdjustLongitude(lon - _centerLon);
+            lon = (Radians)(rh1 * Math.Sin(theta) + _falseEasting);
+            lat = (Radians)(_rh - rh1 * Math.Cos(theta) + _falseNorthing);
+
+            return CreateCoordinate(UnitsPerMeter * lon, UnitsPerMeter * lat, lonlat);
+        }
     }
 }

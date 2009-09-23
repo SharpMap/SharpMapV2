@@ -86,23 +86,25 @@ namespace ProjNet.Tests
 
             ICoordinate expected = gf.CreatePoint2D(1885472.7, 1535925).Coordinate;
 
-            Assert.IsTrue(ToleranceLessThan(pUtm, expected, 0.05),
-                          String.Format(
-                              "Albers forward transformation outside tolerance, " +
-                              "Expected [{0},{1}], got [{2},{3}]",
-                              expected[0],
-                              expected[1],
-                              pUtm[0],
-                              pUtm[1]));
+            ToleranceLessThan("Albers forward", expected, pUtm, 0.05);
+            //    Assert.IsTrue(ToleranceLessThan(pUtm, expected, 0.05),
+            //                  String.Format(
+            //                      "Albers forward transformation outside tolerance, " +
+            //                      "Expected [{0},{1}], got [{2},{3}]",
+            //                      expected[0],
+            //                      expected[1],
+            //                      pUtm[0],
+            //                      pUtm[1]));
 
-            Assert.IsTrue(ToleranceLessThan(pGeo, pGeo2, 0.0000001),
-                          String.Format(
-                              "Albers reverse transformation outside tolerance, " +
-                              "Expected [{0},{1}], got [{2},{3}]",
-                              pGeo[0],
-                              pGeo[1],
-                              pGeo2[0],
-                              pGeo2[1]));
+            ToleranceLessThan("Albers reverse", pGeo, pGeo2, 0.0000001);
+            //    Assert.IsTrue(ToleranceLessThan(pGeo, pGeo2, 0.0000001),
+            //                  String.Format(
+            //                      "Albers reverse transformation outside tolerance, " +
+            //                      "Expected [{0},{1}], got [{2},{3}]",
+            //                      pGeo[0],
+            //                      pGeo[1],
+            //                      pGeo2[0],
+            //                      pGeo2[1]));
         }
 
         [Test]
@@ -164,20 +166,23 @@ namespace ProjNet.Tests
             ICoordinate expected =
                 gf.CreatePoint2D(1885472.7 / LinearUnit.Foot.MetersPerUnit,
                                  1535925 / LinearUnit.Foot.MetersPerUnit).Coordinate;
-            Assert.IsTrue(ToleranceLessThan(pUtm, expected, 0.1),
-                          String.Format(
-                              "Albers forward transformation outside tolerance, Expected [{0},{1}], got [{2},{3}]",
-                              expected[0],
-                              expected[1],
-                              pUtm[0],
-                              pUtm[1]));
-            Assert.IsTrue(ToleranceLessThan(pGeo, pGeo2, 0.0000001),
-                          String.Format(
-                              "Albers reverse transformation outside tolerance, Expected [{0},{1}], got [{2},{3}]",
-                              pGeo[0],
-                              pGeo[1],
-                              pGeo2[0],
-                              pGeo2[1]));
+
+            ToleranceLessThan("Albers forward", expected, pUtm, 0.1);
+            //Assert.IsTrue(ToleranceLessThan(pUtm, expected, 0.1),
+            //              String.Format(
+            //                  "Albers forward transformation outside tolerance, Expected [{0},{1}], got [{2},{3}]",
+            //                  expected[0],
+            //                  expected[1],
+            //                  pUtm[0],
+            //                  pUtm[1]));
+            ToleranceLessThan("Albers reverse", pGeo, pGeo2, 0.0000001);
+            //Assert.IsTrue(ToleranceLessThan(pGeo, pGeo2, 0.0000001),
+            //              String.Format(
+            //                  "Albers reverse transformation outside tolerance, Expected [{0},{1}], got [{2},{3}]",
+            //                  pGeo[0],
+            //                  pGeo[1],
+            //                  pGeo2[0],
+            //                  pGeo2[1]));
         }
 
         [Test]
@@ -237,20 +242,23 @@ namespace ProjNet.Tests
             ICoordinate pGeo2 = trans.MathTransform.Inverse.Transform(pUtm);
 
             ICoordinate expected = gf.CreatePoint2D(5009726.58, 569150.82).Coordinate;
-            Assert.IsTrue(ToleranceLessThan(pUtm, expected, 0.02),
-                          String.Format(
-                              "Mercator_1SP forward transformation outside tolerance, Expected [{0},{1}], got [{2},{3}]",
-                              expected[0],
-                              expected[1],
-                              pUtm[0],
-                              pUtm[1]));
-            Assert.IsTrue(ToleranceLessThan(pGeo, pGeo2, 0.0000001),
-                          String.Format(
-                              "Mercator_1SP reverse transformation outside tolerance, Expected [{0},{1}], got [{2},{3}]",
-                              pGeo[0],
-                              pGeo[1],
-                              pGeo2[0],
-                              pGeo2[1]));
+
+            ToleranceLessThan("Mercator_1SP forward", pUtm, expected, 0.02);
+            //Assert.IsTrue(ToleranceLessThan(pUtm, expected, 0.02),
+            //              String.Format(
+            //                  "Mercator_1SP forward transformation outside tolerance,\nExpected\t[{0},{1}],\ngot\t[{2},{3}]",
+            //                  expected[0],
+            //                  expected[1],
+            //                  pUtm[0],
+            //                  pUtm[1]));
+            ToleranceLessThan("Mercator_1SP reverse", pGeo, pGeo2, 0.0000001);
+            //Assert.IsTrue(ToleranceLessThan(pGeo, pGeo2, 0.0000001),
+            //              String.Format(
+            //                  "Mercator_1SP reverse transformation outside tolerance,\nExpected\t[{0},{1}],\ngot\t[{2},{3}]",
+            //                  pGeo[0],
+            //                  pGeo[1],
+            //                  pGeo2[0],
+            //                  pGeo2[1]));
         }
 
         [Test]
@@ -313,20 +321,24 @@ namespace ProjNet.Tests
             ICoordinate expected =
                 gf.CreatePoint2D(5009726.58 / LinearUnit.Foot.MetersPerUnit,
                                  569150.82 / LinearUnit.Foot.MetersPerUnit).Coordinate;
-            Assert.IsTrue(ToleranceLessThan(pUtm, expected, 0.02),
-                          String.Format(
-                              "Mercator_1SP forward transformation outside tolerance, Expected [{0},{1}], got [{2},{3}]",
-                              expected[0],
-                              expected[1],
-                              pUtm[0],
-                              pUtm[1]));
-            Assert.IsTrue(ToleranceLessThan(pGeo, pGeo2, 0.0000001),
-                          String.Format(
-                              "Mercator_1SP reverse transformation outside tolerance, Expected [{0},{1}], got [{2},{3}]",
-                              pGeo[0],
-                              pGeo[1],
-                              pGeo2[0],
-                              pGeo2[1]));
+
+            ToleranceLessThan("Mercator_1SP forward", pUtm, expected, 0.02);
+            //Assert.IsTrue(ToleranceLessThan(pUtm, expected, 0.02),
+            //              String.Format(
+            //                  "Mercator_1SP forward transformation outside tolerance,\nExpected\t[{0},{1}],\ngot\t[{2},{3}]",
+            //                  expected[0],
+            //                  expected[1],
+            //                  pUtm[0],
+            //                  pUtm[1]));
+
+            ToleranceLessThan("Mercator_1SP reverse", pGeo, pGeo2, 0.0000001);
+            //Assert.IsTrue(ToleranceLessThan(pGeo, pGeo2, 0.0000001),
+            //              String.Format(
+            //                  "Mercator_1SP reverse transformation outside tolerance,\nExpected\t[{0},{1}],\ngot\t[{2},{3}]",
+            //                  pGeo[0],
+            //                  pGeo[1],
+            //                  pGeo2[0],
+            //                  pGeo2[1]));
         }
 
         [Test]
@@ -384,16 +396,20 @@ namespace ProjNet.Tests
             ICoordinate pGeo2 = trans.MathTransform.Inverse.Transform(pUtm);
 
             ICoordinate expected = gf.CreatePoint2D(165704.29, 5171848.07).Coordinate;
-            Assert.IsTrue(ToleranceLessThan(pUtm, expected, 0.02),
-                          String.Format(
-                              "Mercator_2SP forward transformation outside tolerance, Expected {0}, got {1}",
-                              expected,
-                              pUtm));
-            Assert.IsTrue(ToleranceLessThan(pGeo, pGeo2, 0.0000001),
-                          String.Format(
-                              "Mercator_2SP reverse transformation outside tolerance, Expected {0}, got {1}",
-                              pGeo,
-                              pGeo2));
+
+            ToleranceLessThan("Mercator_2SP forward", pUtm, expected, 0.02);
+            //Assert.IsTrue(ToleranceLessThan(pUtm, expected, 0.02),
+            //              String.Format(
+            //                  "Mercator_2SP forward transformation outside tolerance,\nExpected\t[{0},{1}],\ngot\t[{2},{3}]",
+            //                  expected,
+            //                  pUtm));
+
+            ToleranceLessThan("Mercator_2SP reverse", pGeo, pGeo2, 0.0000001);
+            //Assert.IsTrue(ToleranceLessThan(pGeo, pGeo2, 0.0000001),
+            //              String.Format(
+            //                  "Mercator_2SP reverse transformation outside tolerance,\nExpected\t[{0},{1}],\ngot\t[{2},{3}]",
+            //                  pGeo,
+            //                  pGeo2));
         }
 
         [Test]
@@ -452,16 +468,19 @@ namespace ProjNet.Tests
             ICoordinate pGeo2 = trans.MathTransform.Inverse.Transform(pUtm);
 
             ICoordinate expected = gf.CreatePoint2D(577274.99, 69740.50).Coordinate;
-            Assert.IsTrue(ToleranceLessThan(pUtm, expected, 0.02),
-                          String.Format(
-                              "TransverseMercator forward transformation outside tolerance, Expected {0}, got {1}",
-                              expected,
-                              pUtm));
-            Assert.IsTrue(ToleranceLessThan(pGeo, pGeo2, 0.0000001),
-                          String.Format(
-                              "TransverseMercator reverse transformation outside tolerance, Expected {0}, got {1}",
-                              pGeo,
-                              pGeo2));
+
+            ToleranceLessThan("TransverseMercator forward", pUtm, expected, 0.02);
+            //Assert.IsTrue(ToleranceLessThan(pUtm, expected, 0.02),
+            //              String.Format(
+            //                  "TransverseMercator forward transformation outside tolerance,\nExpected\t[{0},{1}],\ngot\t[{2},{3}]",
+            //                  expected,
+            //                  pUtm));
+            ToleranceLessThan("TransverseMercator reverse", pGeo, pGeo2, 0.0000001);
+            //Assert.IsTrue(ToleranceLessThan(pGeo, pGeo2, 0.0000001),
+            //              String.Format(
+            //                  "TransverseMercator reverse transformation outside tolerance,\nExpected\t[{0},{1}],\ngot\t[{2},{3}]",
+            //                  pGeo,
+            //                  pGeo2));
         }
 
         [Test]
@@ -524,20 +543,23 @@ namespace ProjNet.Tests
             ICoordinate expected =
                 gf.CreatePoint2D(2963503.91 / LinearUnit.USSurveyFoot.MetersPerUnit,
                                  254759.80 / LinearUnit.USSurveyFoot.MetersPerUnit).Coordinate;
-            Assert.IsTrue(ToleranceLessThan(pUtm, expected, 0.05),
-                          String.Format(
-                              "LambertConicConformal2SP forward transformation outside tolerance, Expected [{0},{1}], got [{2},{3}]",
-                              expected[0],
-                              expected[1],
-                              pUtm[0],
-                              pUtm[1]));
-            Assert.IsTrue(ToleranceLessThan(pGeo, pGeo2, 0.0000001),
-                          String.Format(
-                              "LambertConicConformal2SP reverse transformation outside tolerance, Expected [{0},{1}], got [{2},{3}]",
-                              pGeo[0],
-                              pGeo[1],
-                              pGeo2[0],
-                              pGeo2[1]));
+
+            ToleranceLessThan("LambertConicConformal2SP forward", pUtm, expected, 0.05);
+            //Assert.IsTrue(ToleranceLessThan(pUtm, expected, 0.05),
+            //              String.Format(
+            //                  "LambertConicConformal2SP forward transformation outside tolerance,\nExpected\t[{0},{1}],\ngot\t[{2},{3}]",
+            //                  expected[0],
+            //                  expected[1],
+            //                  pUtm[0],
+            //                  pUtm[1]));
+            ToleranceLessThan("LambertConicConformal2SP reverse", pGeo, pGeo2, 0.0000001);
+            //Assert.IsTrue(ToleranceLessThan(pGeo, pGeo2, 0.0000001),
+            //              String.Format(
+            //                  "LambertConicConformal2SP reverse transformation outside tolerance,\nExpected\t[{0},{1}],\ngot\t[{2},{3}]",
+            //                  pGeo[0],
+            //                  pGeo[1],
+            //                  pGeo2[0],
+            //                  pGeo2[1]));
         }
 
         [Test]
@@ -574,16 +596,19 @@ namespace ProjNet.Tests
                                                                              gcenCs as
                                                                              ICoordinateSystem
                                                                                  <Coordinate2D>);
-            IPoint2D pExpected = gf.CreatePoint2D(2 + 7.0 / 60 + 46.38 / 3600, 
+            IPoint2D pExpected = gf.CreatePoint2D(2 + 7.0 / 60 + 46.38 / 3600,
                                                   53 + 48.0 / 60 + 33.82 / 3600);
             // Point.FromDMS(2, 7, 46.38, 53, 48, 33.82);
             ICoordinate pExpected3D = gf.CreatePoint3D(pExpected, 73.0).Coordinate;
             ICoordinate p0 = gf.CreatePoint3D(3771793.97, 140253.34, 5124304.35).Coordinate;
             ICoordinate p1 = ct.MathTransform.Transform(pExpected3D);
             ICoordinate p2 = ct.MathTransform.Inverse.Transform(p1);
-            Assert.IsTrue(ToleranceLessThan(p1, p0, 0.01));
+
+            ToleranceLessThan("Geocentric forward", p1, p0, 0.01);
+            //Assert.IsTrue(ToleranceLessThan(p1, p0, 0.01));
             // TODO: why is the tolerance on this previously 0.00001, but computation results in ~0.0004?
-            Assert.IsTrue(ToleranceLessThan(p2, pExpected.Coordinate, 0.001)); //0.00001));
+            ToleranceLessThan("Geocentric reverse", p2, pExpected.Coordinate, 0.001);
+            //Assert.IsTrue(ToleranceLessThan(p2, pExpected.Coordinate, 0.001)); //0.00001));
         }
 
         [Test]
@@ -723,25 +748,35 @@ namespace ProjNet.Tests
             ICoordinate pGeoCenWGS84 = geocen_ed50_2_Wgs84.MathTransform.Transform(pGeoCenWGS72);
             //Point3D pGeoCenWGS84 = wgs72.Wgs84Parameters.Apply(pGeoCenWGS72);
 
-            Assert.IsTrue(
-                ToleranceLessThan(gf.CreatePoint3D(3657660.78, 255778.43, 5201387.75).Coordinate,
-                                  pGeoCenWGS84,
-                                  0.01));
+            ToleranceLessThan("Datum transform WGS72->WGS84", gf.CreatePoint3D(3657660.78, 255778.43, 5201387.75).Coordinate,
+                              pGeoCenWGS84,
+                              0.01);
+            //Assert.IsTrue(
+            //    ToleranceLessThan(gf.CreatePoint3D(3657660.78, 255778.43, 5201387.75).Coordinate,
+            //                      pGeoCenWGS84,
+            //                      0.01));
 
             ICoordinateTransformation utm_ed50_2_Wgs84 = ctFac.CreateFromCoordinateSystems(utmED50,
                                                                                            utmWGS84);
             ICoordinate pUTMED50 = gf.CreatePoint2D(600000, 6100000).Coordinate;
             ICoordinate pUTMWGS84 = utm_ed50_2_Wgs84.MathTransform.Transform(pUTMED50);
-            Assert.IsTrue(ToleranceLessThan(gf.CreatePoint2D(599928.6, 6099790.2).Coordinate,
-                                            pUTMWGS84,
-                                            0.1));
+            ToleranceLessThan("Datum transform ED50->WGS84", gf.CreatePoint2D(599928.6, 6099790.2).Coordinate,
+                              pUTMWGS84,
+                              0.1);
+            //Assert.IsTrue(ToleranceLessThan(gf.CreatePoint2D(599928.6, 6099790.2).Coordinate,
+            //                                pUTMWGS84,
+            //                                0.1));
             //Perform reverse
             ICoordinateTransformation utm_Wgs84_2_Ed50 = ctFac.CreateFromCoordinateSystems(
                 utmWGS84, utmED50);
             pUTMED50 = utm_Wgs84_2_Ed50.MathTransform.Transform(pUTMWGS84);
-            Assert.IsTrue(ToleranceLessThan(gf.CreatePoint2D(600000, 6100000).Coordinate,
-                                            pUTMED50,
-                                            0.1));
+
+            ToleranceLessThan("Datum transform WGS84->ED50", gf.CreatePoint2D(600000, 6100000).Coordinate,
+                              pUTMED50,
+                              0.1);
+            //Assert.IsTrue(ToleranceLessThan(gf.CreatePoint2D(600000, 6100000).Coordinate,
+            //                                pUTMED50,
+            //                                0.1));
             //Assert.IsTrue(Math.Abs((pUTMWGS84 as Point3D).Z - 36.35) < 0.5);
             //Point pExpected = Point.FromDMS(2, 7, 46.38, 53, 48, 33.82);
             //ED50_to_WGS84_Denmark: datum.Wgs84Parameters = new Wgs84ConversionInfo(-89.5, -93.8, 127.6, 0, 0, 4.5, 1.2);
@@ -773,18 +808,18 @@ namespace ProjNet.Tests
             IProjection projection = cFac.CreateProjection("Krovak", parameters, "Krovak");
 
             IProjectedCoordinateSystem<Coordinate2D> coordsys = cFac.CreateProjectedCoordinateSystem(
-                gcs, projection, LinearUnit.Meter, 
-                new AxisInfo(AxisOrientation.East, "East"), 
-                new AxisInfo(AxisOrientation.North, "North"), 
+                gcs, projection, LinearUnit.Meter,
+                new AxisInfo(AxisOrientation.East, "East"),
+                new AxisInfo(AxisOrientation.North, "North"),
                 "WGS 84");
 
             LinearFactory<DoubleComponent> factory = new LinearFactory<DoubleComponent>();
-            ICoordinateTransformation trans = new CoordinateTransformationFactory<Coordinate2D>(cf, gf, factory ).CreateFromCoordinateSystems(gcs, coordsys);
+            ICoordinateTransformation trans = new CoordinateTransformationFactory<Coordinate2D>(cf, gf, factory).CreateFromCoordinateSystems(gcs, coordsys);
 
             // test case 1
             //double[] pGeo = new double[] { 12, 48 };
             //double[] expected = new double[] { -953172.26, -1245573.32 };
-            ICoordinate pGeo = cf.Create(12,48);
+            ICoordinate pGeo = cf.Create(12, 48);
             ICoordinate pExpected = cf.Create(-953172.26, -1245573.32);
 
             //double[] pUtm = trans.MathTransform.Transform(pGeo);
@@ -792,12 +827,14 @@ namespace ProjNet.Tests
             //double[] pGeo2 = trans.MathTransform.Inverse().Transform(pGeo2);
             ICoordinate pGeo2 = trans.MathTransform.Inverse.Transform(pUtm);
 
-            Assert.IsTrue(ToleranceLessThan(pUtm, pExpected, 0.02), 
-                String.Format("Krovak forward transformation outside tolerance, Expected [{0},{1}], got [{2},{3}]", 
-                    pExpected[0], pExpected[1], pUtm[0], pUtm[1]));
-            Assert.IsTrue(ToleranceLessThan(pGeo, pGeo2, 0.0000001), 
-                String.Format("Krovak reverse transformation outside tolerance, Expected [{0},{1}], got [{2},{3}]", 
-                    pGeo[0], pGeo[1], pGeo2[0], pGeo2[1]));
+            ToleranceLessThan("Krovak forward", pUtm, pExpected, 0.02);
+            //Assert.IsTrue(ToleranceLessThan(pUtm, pExpected, 0.02), 
+            //    String.Format("Krovak forward transformation outside tolerance, Expected [{0},{1}], got [{2},{3}]", 
+            //        pExpected[0], pExpected[1], pUtm[0], pUtm[1]));
+            ToleranceLessThan("Krovak reverse", pGeo, pGeo2, 0.0000001);
+            //Assert.IsTrue(ToleranceLessThan(pGeo, pGeo2, 0.0000001), 
+            //    String.Format("Krovak reverse transformation outside tolerance, Expected [{0},{1}], got [{2},{3}]", 
+            //        pGeo[0], pGeo[1], pGeo2[0], pGeo2[1]));
 
             // test case 2
             //pGeo = new double[] { 18, 49 };
@@ -808,32 +845,126 @@ namespace ProjNet.Tests
             pUtm = trans.MathTransform.Transform(pGeo);
             pGeo2 = trans.MathTransform.Inverse.Transform(pUtm);
 
-            Assert.IsTrue(ToleranceLessThan(pUtm, pExpected, 0.02), 
-                String.Format("Krovak forward transformation outside tolerance, Expected [{0},{1}], got [{2},{3}]", 
-                    pExpected[0], pExpected[1], pUtm[0], pUtm[1]));
-            Assert.IsTrue(ToleranceLessThan(pGeo, pGeo2, 0.0000001), String.Format("Krovak reverse transformation outside tolerance, Expected [{0},{1}], got [{2},{3}]", pGeo[0], pGeo[1], pGeo2[0], pGeo2[1]));
+            ToleranceLessThan("Krovak forward", pUtm, pExpected, 0.02);
+            //Assert.IsTrue(ToleranceLessThan(pUtm, pExpected, 0.02), 
+            //    String.Format("Krovak forward transformation outside tolerance, Expected [{0},{1}], got [{2},{3}]", 
+            //        pExpected[0], pExpected[1], pUtm[0], pUtm[1]));
+            ToleranceLessThan("Krovak reverse", pGeo, pGeo2, 0.0000001);
+            //Assert.IsTrue(ToleranceLessThan(pGeo, pGeo2, 0.0000001), String.Format("Krovak reverse transformation outside tolerance, Expected [{0},{1}], got [{2},{3}]", pGeo[0], pGeo[1], pGeo2[0], pGeo2[1]));
         }
 
-        private bool ToleranceLessThan(ICoordinate p1, ICoordinate p2, Double tolerance)
+        [Test]
+        public void TestCassiniSoldnerProjection()
         {
+            ICoordinateFactory<Coordinate2D> cf = new Coordinate2DFactory();
+            IGeometryFactory<Coordinate2D> gf =
+                new GeometryFactory<Coordinate2D>(new Coordinate2DSequenceFactory());
+            CoordinateSystemFactory<Coordinate2D> cFac =
+                new CoordinateSystemFactory<Coordinate2D>(cf, gf);
+
+            IProjectedCoordinateSystem<Coordinate2D> coordsys = (IProjectedCoordinateSystem<Coordinate2D>)cFac.CreateFromWkt(
+                "PROJCS[\"Trinidad 1903 / Trinidad Grid\",GEOGCS[\"Trinidad 1903\",DATUM[\"Trinidad_1903\",SPHEROID[\"Clarke 1858\",6378293.645208759,294.2606763692569,AUTHORITY[\"EPSG\",\"7007\"]],AUTHORITY[\"EPSG\",\"6302\"]],PRIMEM[\"Greenwich\",0,AUTHORITY[\"EPSG\",\"8901\"]],UNIT[\"degree\",0.01745329251994328,AUTHORITY[\"EPSG\",\"9122\"]],AUTHORITY[\"EPSG\",\"4302\"]],UNIT[\"Clarke's link\",0.201166195164,AUTHORITY[\"EPSG\",\"9039\"]],PROJECTION[\"Cassini_Soldner\"],PARAMETER[\"latitude_of_origin\",10.44166666666667],PARAMETER[\"central_meridian\",-61.33333333333334],PARAMETER[\"false_easting\",430000],PARAMETER[\"false_northing\",325000],AUTHORITY[\"EPSG\",\"30200\"],AXIS[\"Easting\",EAST],AXIS[\"Northing\",NORTH]]");
+            LinearFactory<DoubleComponent> factory = new LinearFactory<DoubleComponent>();
+            ICoordinateTransformation trans = new CoordinateTransformationFactory<Coordinate2D>(cf, gf, factory).CreateFromCoordinateSystems(coordsys.GeographicCoordinateSystem, coordsys);
+
+            // test case 1
+            ICoordinate pGeo = cf.Create(-62, 10);
+            ICoordinate pExpected = cf.Create(66644.94, 82536.22);
+
+            //double[] pUtm = trans.MathTransform.Transform(pGeo);
+            ICoordinate pCSTG = trans.MathTransform.Transform(pGeo);
+            //double[] pGeo2 = trans.MathTransform.Inverse().Transform(pGeo2);
+            ICoordinate pGeo2 = trans.MathTransform.Inverse.Transform(pCSTG);
+
+            ToleranceLessThan("Cassini-Soldner forward", pCSTG, pExpected, 0.02);
+            //Assert.IsTrue(ToleranceLessThan(pCSTG, pExpected, 0.02),
+            //    String.Format("Cassini-Soldner forward transformation outside tolerance,\nExpected\t[{0},{1}],\ngot\t[{2},{3}]",
+            //        pExpected[0], pExpected[1], pCSTG[0], pCSTG[1]));
+            ToleranceLessThan("Cassini-Soldner reverse", pGeo, pGeo2, 0.0000001);
+            //Assert.IsTrue(ToleranceLessThan(pGeo, pGeo2, 0.0000001),
+            //    String.Format("Cassini-Soldner reverse transformation outside tolerance,\nExpected\t[{0},{1}],\ngot\t[{2},{3}]",
+            //        pGeo[0], pGeo[1], pGeo2[0], pGeo2[1]));
+
+        }
+
+        private void ToleranceLessThan(String testDescription, ICoordinate p1, ICoordinate p2, Double tolerance)
+        {
+            Boolean passed = false;
             if (p1.ComponentCount > 2 && p2.ComponentCount > 2)
             {
                 ICoordinate3D p13D = p1 as ICoordinate3D;
                 ICoordinate3D p23D = p2 as ICoordinate3D;
 
-                return Math.Abs(p13D.X - p23D.X) < tolerance &&
-                       Math.Abs(p13D.Y - p23D.Y) < tolerance &&
-                       Math.Abs(p13D.Z - p23D.Z) < tolerance;
+                passed = Math.Abs(p13D.X - p23D.X) < tolerance &&
+                        Math.Abs(p13D.Y - p23D.Y) < tolerance &&
+                        Math.Abs(p13D.Z - p23D.Z) < tolerance;
             }
             else
             {
                 ICoordinate2D p12D = p1 as ICoordinate2D;
                 ICoordinate2D p22D = p2 as ICoordinate2D;
 
-                return Math.Abs(p12D.X - p22D.X) < tolerance &&
-                       Math.Abs(p12D.Y - p22D.Y) < tolerance;
+                passed = Math.Abs(p12D.X - p22D.X) < tolerance &&
+                         Math.Abs(p12D.Y - p22D.Y) < tolerance;
             }
+
+            Assert.IsTrue(passed,
+                          String.Format("{0} transformation outside tolerance.\nExpected\t[{1}]\ngot\t\t[{2}]", testDescription, p1, p2));
+
         }
+
+        [Test]
+        public void TestHotineObliqueMercator_Projection()
+        {
+            ICoordinateFactory<Coordinate2D> cf = new Coordinate2DFactory();
+            IGeometryFactory<Coordinate2D> gf =
+                new GeometryFactory<Coordinate2D>(new Coordinate2DSequenceFactory());
+            CoordinateSystemFactory<Coordinate2D> cFac =
+                new CoordinateSystemFactory<Coordinate2D>(cf, gf);
+
+            IEllipsoid ellipsoid = cFac.CreateFlattenedSphere(6377298.556, 300.8017, LinearUnit.Meter, "Everest 1830");
+
+            IHorizontalDatum datum = cFac.CreateHorizontalDatum(DatumType.HorizontalGeocentric, ellipsoid, null, "Everest 1830");
+            IGeographicCoordinateSystem<Coordinate2D> gcs = cFac.CreateGeographicCoordinateSystem(gf.CreateExtents(), AngularUnit.Degrees, datum,
+                PrimeMeridian.Greenwich, new AxisInfo(AxisOrientation.East, "Lon"),
+                new AxisInfo(AxisOrientation.North, "Lat"), "Everest 1830");
+            List<ProjectionParameter> parameters = new List<ProjectionParameter>(5);
+            parameters.Add(new ProjectionParameter("latitude_of_center", 4));
+            parameters.Add(new ProjectionParameter("longitude_of_center", 115));
+            parameters.Add(new ProjectionParameter("azimuth", 53.315820472));
+            parameters.Add(new ProjectionParameter("rectified_grid_angle", 53.130102361));
+            parameters.Add(new ProjectionParameter("scale_factor", 0.99984));
+            parameters.Add(new ProjectionParameter("false_easting", 590476.87));
+            parameters.Add(new ProjectionParameter("false_northing", 442857.65));
+
+            IProjection projection = cFac.CreateProjection("Oblique_Mercator", parameters, "Oblique Mercator");
+
+            IProjectedCoordinateSystem<Coordinate2D> coordsys = cFac.CreateProjectedCoordinateSystem(gcs, projection, LinearUnit.Meter, new AxisInfo(AxisOrientation.East, "East"), new AxisInfo(AxisOrientation.North, "North"), "Timbalai 1948 / R.S.O. Borneo (m)");
+
+            LinearFactory<DoubleComponent> lf = new LinearFactory<DoubleComponent>();
+            ICoordinateTransformation<Coordinate2D> trans = new CoordinateTransformationFactory<Coordinate2D>(cf, gf, lf).CreateFromCoordinateSystems(gcs, coordsys);
+
+            Coordinate2D pGeo = cf.Create(115.805505444, 5.387253583);
+            Coordinate2D pUtm = trans.MathTransform.Transform(pGeo);
+            Coordinate2D pGeo2 = trans.MathTransform.Inverse.Transform(pUtm);
+
+            Coordinate2D expected = cf.Create(679245.73, 596562.78);
+            ToleranceLessThan("HotlineObliqueMercator forward", pUtm, expected, 0.02);
+            //Assert.IsTrue(ToleranceLessThan(pUtm, expected, 0.02), String.Format("HotlineObliqueMercator forward transformation outside tolerance, Expected {0}, got {1}", expected.ToString(), pUtm.ToString()));
+            ToleranceLessThan("HotlineObliqueMercator reverse", pGeo, pGeo2, 0.0000001);
+            //Assert.IsTrue(ToleranceLessThan(pGeo, pGeo2, 0.0000001), String.Format("HotlineObliqueMercator reverse transformation outside tolerance, Expected {0}, got {1}", pGeo.ToString(), pGeo2.ToString()));
+
+            pGeo = cf.Create(115, 4);
+            pUtm = trans.MathTransform.Transform(pGeo);
+            pGeo2 = trans.MathTransform.Inverse.Transform(pUtm);
+
+            expected = cf.Create(590476.87, 442857.65);
+            ToleranceLessThan("HotlineObliqueMercator forward", pUtm, expected, 0.02);
+            //Assert.IsTrue(ToleranceLessThan(pUtm, expected, 0.02), String.Format("HotlineObliqueMercator forward transformation outside tolerance, Expected {0}, got {1}", expected.ToString(), pUtm.ToString()));
+            ToleranceLessThan("HotlineObliqueMercator reverse", pGeo, pGeo2, 0.0000001);
+            //Assert.IsTrue(ToleranceLessThan(pGeo, pGeo2, 0.0000001), String.Format("HotlineObliqueMercator reverse transformation outside tolerance, Expected {0}, got {1}", pGeo.ToString(), pGeo2.ToString()));
+        }
+
 
         [Test]
         public void TestUnitTransforms()
@@ -859,21 +990,23 @@ namespace ProjNet.Tests
             ICoordinate p1 = trans.MathTransform.Transform(p0);
             ICoordinate p2 = trans.MathTransform.Inverse.Transform(p1);
 
-            Assert.IsTrue(ToleranceLessThan(p1, expected, 0.013),
-                          String.Format(
-                              "Transformation outside tolerance, Expected [{0},{1}], got [{2},{3}]",
-                              expected[0],
-                              expected[1],
-                              p1[0],
-                              p1[1]));
+            ToleranceLessThan("Unit Transformation", expected, p1, 0.013);
+            //Assert.IsTrue(ToleranceLessThan(p1, expected, 0.013),
+            //              String.Format(
+            //                  "Unit Transformation outside tolerance,\nExpected\t[{0},{1}],\ngot\t[{2},{3}]",
+            //                  expected[0],
+            //                  expected[1],
+            //                  p1[0],
+            //                  p1[1]));
             //WARNING: This accuracy is too poor!
-            Assert.IsTrue(ToleranceLessThan(p0, p2, 0.0000001),
-                          String.Format(
-                              "Transformation outside tolerance, Expected [{0},{1}], got [{2},{3}]",
-                              p0[0],
-                              p0[1],
-                              p2[0],
-                              p2[1]));
+            ToleranceLessThan("Unit transform reverse", p0, p2, 0.0000001);
+            //Assert.IsTrue(ToleranceLessThan(p0, p2, 0.0000001),
+            //              String.Format(
+            //                  "Unit Transformation outside tolerance,\nExpected\t[{0},{1}],\ngot\t[{2},{3}]",
+            //                  p0[0],
+            //                  p0[1],
+            //                  p2[0],
+            //                  p2[1]));
         }
     }
 }

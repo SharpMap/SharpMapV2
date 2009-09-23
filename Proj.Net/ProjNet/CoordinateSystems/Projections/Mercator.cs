@@ -70,6 +70,31 @@ namespace ProjNet.CoordinateSystems.Projections
         {
             get { return true; }
         }
+
+        public override TCoordinate Transform(TCoordinate point)
+        {
+            Double semiMajor = SemiMajor;
+
+            // Inverse equations
+            Double dX = point[Ordinates.X] * MetersPerUnit - _falseEasting;
+            Double dY = point[Ordinates.Y] * MetersPerUnit - _falseNorthing;
+            Double smallT = Math.Exp(-dY / (semiMajor * _k0)); // t
+
+            Double chi = HalfPI - 2 * Math.Atan(smallT);
+            Double e2 = E2;
+            Double e4 = e2 * e2;
+            Double e6 = e4 * e2;
+            Double e8 = e4 * e4;
+
+            Radians lat = (Radians)(chi + (e2 * 0.5 + 5 * e4 / 24 + e6 / 12 + 13 * e8 / 360) * Math.Sin(2 * chi) +
+                                    (7 * e4 / 48 + 29 * e6 / 240 + 811 * e8 / 11520) * Math.Sin(4 * chi) +
+                                    (7 * e6 / 120 + 81 * e8 / 1120) * Math.Sin(6 * chi) +
+                                    (4279 * e8 / 161280) * Math.Sin(8 * chi));
+
+            Radians lon = (Radians)(dX / (semiMajor * _k0) + _lon_center);
+
+            return CreateCoordinate((Degrees) lon, (Degrees) lat, point);
+        }
     }
 
     /// <summary>
@@ -97,12 +122,12 @@ namespace ProjNet.CoordinateSystems.Projections
                             IComparable<TCoordinate>, IConvertible,
                             IComputable<Double, TCoordinate>
     {
-        private String _name;   
-        private readonly Double _falseEasting;
-        private readonly Double _falseNorthing;
-        private readonly Radians _lon_center; //Center longitude (projection center)
+        private readonly String _name;   
+        protected readonly Double _falseEasting;
+        protected readonly Double _falseNorthing;
+        protected readonly Radians _lon_center; //Center longitude (projection center)
         private readonly Radians _lat_origin; //center latitude
-        private readonly Double _k0; //small value m
+        protected readonly Double _k0; //small value m
 
         /// <summary>
         /// Initializes a <see cref="Mercator{TCoordinate}"/> projection 
@@ -219,7 +244,7 @@ namespace ProjNet.CoordinateSystems.Projections
 
             Authority = "EPSG";
         }
-
+        /*
         /// <summary>
         /// Converts coordinates in decimal degrees to projected meters.
         /// </summary>
@@ -246,7 +271,7 @@ namespace ProjNet.CoordinateSystems.Projections
             Radians lon = (Radians)(Degrees)(Double)lonlat[0];
             Radians lat = (Radians)(Degrees)(Double)lonlat[1];
 
-            /* Forward equations */
+            // Forward equations
             if (Math.Abs(Math.Abs(lat) - HalfPI) <= Epsilon)
             {
                 throw new ComputationException("Transformation cannot be computed at the poles.");
@@ -265,7 +290,7 @@ namespace ProjNet.CoordinateSystems.Projections
                        ? CreateCoordinate(x / MetersPerUnit, y / MetersPerUnit)
                        : CreateCoordinate(x / MetersPerUnit, y / MetersPerUnit, (Double)lonlat[2]);
         }
-
+        */
         public override string ProjectionClassName
         {
             get { return _name; }
@@ -275,7 +300,7 @@ namespace ProjNet.CoordinateSystems.Projections
         {
             get { return _name; }
         }
-
+        /*
         /// <summary>
         /// Converts coordinates in projected meters to decimal degrees.
         /// </summary>
@@ -285,8 +310,7 @@ namespace ProjNet.CoordinateSystems.Projections
         {
             Double semiMajor = SemiMajor;
 
-            /* Inverse equations
-              -----------------*/
+            // Inverse equations
             Double dX = p[Ordinates.X] * MetersPerUnit - _falseEasting;
             Double dY = p[Ordinates.Y] * MetersPerUnit - _falseNorthing;
             Double smallT = Math.Exp(-dY / (semiMajor * _k0)); // t
@@ -308,7 +332,7 @@ namespace ProjNet.CoordinateSystems.Projections
                        ? CreateCoordinate((Degrees)lon, (Degrees)lat)
                        : CreateCoordinate((Degrees)lon, (Degrees)lat, (Double)p[2]);
         }
-
+        */
         public override Int32 SourceDimension
         {
             get { throw new System.NotImplementedException(); }
@@ -342,13 +366,32 @@ namespace ProjNet.CoordinateSystems.Projections
             return new InverseMercator<TCoordinate>(parameters, CoordinateFactory);
         }
 
-        #region Overrides of MathTransform<TCoordinate>
-
-        public override ICoordinateSequence<TCoordinate> Transform(ICoordinateSequence<TCoordinate> points)
+        public override TCoordinate Transform(TCoordinate lonlat)
         {
-            throw new System.NotImplementedException();
-        }
+            if (Double.IsNaN((Double)lonlat[0]) || Double.IsNaN((Double)lonlat[1]))
+            {
+                return CreateCoordinate(Double.NaN, Double.NaN, lonlat);
+            }
 
-        #endregion
+            Radians lon = (Radians)(Degrees)(Double)lonlat[0];
+            Radians lat = (Radians)(Degrees)(Double)lonlat[1];
+
+            // Forward equations
+            if (Math.Abs(Math.Abs(lat) - HalfPI) <= Epsilon)
+            {
+                throw new ComputationException("Transformation cannot be computed at the poles.");
+            }
+
+            Double esinphi = E * Math.Sin(lat);
+            Double semiMajor = SemiMajor;
+
+            Double x = _falseEasting + semiMajor * _k0 * (lon - _lon_center);
+            Double y = _falseNorthing +
+                       semiMajor * _k0 *
+                       Math.Log(Math.Tan(PI * 0.25 + lat * 0.5) *
+                                Math.Pow((1 - esinphi) / (1 + esinphi), E * 0.5));
+
+            return CreateCoordinate(x*UnitsPerMeter, y*UnitsPerMeter, lonlat);
+        }
     }
 }

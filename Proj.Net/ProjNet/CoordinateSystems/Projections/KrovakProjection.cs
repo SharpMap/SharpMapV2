@@ -53,10 +53,11 @@ namespace ProjNet.CoordinateSystems.Projections
                             IComputable<Double, TCoordinate>
     {
         public InverseKrovakProjection(IEnumerable<ProjectionParameter> parameters,
-                               ICoordinateFactory<TCoordinate> coordinateFactory)
+                               ICoordinateFactory<TCoordinate> coordinateFactory,
+                               KrovakProjection<TCoordinate> transform )
             : base(parameters, coordinateFactory)
         {
-
+            Inverse = transform;
         }
 
         public override string Name
@@ -67,6 +68,45 @@ namespace ProjNet.CoordinateSystems.Projections
         public override bool IsInverse
         {
             get { return true; }
+        }
+
+        public override TCoordinate Transform(TCoordinate point)
+        {
+            Double x = (Double)point[0].Divide(SemiMajor);
+            Double y = (Double)point[1].Divide(SemiMajor);
+
+            // x -> southing, y -> westing
+            Double ro = Math.Sqrt(x * x + y * y);
+            Double eps = Math.Atan2(-x, -y);
+            Double d = eps / _n;
+            Double s = 2 * (Math.Atan(Math.Pow(_ro0 / ro, 1 / _n) * _tanS2) - S45);
+            Double cs = Math.Cos(s);
+            Double u = Math.Asin((_cosAzim * Math.Sin(s)) - (_sinAzim * cs * Math.Cos(d)));
+            Double kau = _ka * Math.Pow(Math.Tan((u / 2.0) + S45), 1 / _alfa);
+            Double deltav = Math.Asin((cs * Math.Sin(d)) / Math.Cos(u));
+            Double lambda = -deltav / _alfa;
+            Double phi = 0;
+            Double fi1 = u;
+
+            // iteration calculation
+            for (int i = MaximumIterations; ; )
+            {
+                fi1 = phi;
+                Double esf = E * Math.Sin(fi1);
+                phi = 2.0 * (Math.Atan(kau * Math.Pow((1.0 + esf) / (1.0 - esf), E / 2.0)) - S45);
+                if (Math.Abs(fi1 - phi) <= IterationTolerance)
+                {
+                    break;
+                }
+
+                if (--i < 0)
+                {
+                    break;
+                    //throw new ProjectionException(Errors.format(ErrorKeys.NO_CONVERGENCE));
+                }
+            }
+
+            return CreateCoordinate((Degrees)new Radians(lambda + _centralMeridian), (Degrees)new Radians(phi), point);
         }
     }
 
@@ -86,20 +126,16 @@ namespace ProjNet.CoordinateSystems.Projections
                             IComparable<TCoordinate>, IConvertible,
                             IComputable<Double, TCoordinate>
     {
-
-        double _falseEasting;
-        double _falseNorthing;
-
-
+        private readonly Double _falseEasting, _falseNorthing;
         /**
          * Maximum number of iterations for iterative computations.
          */
-        private const int MAXIMUM_ITERATIONS = 15;
+        protected const int MaximumIterations = 15;
 
         /**
          * When to stop the iteration.
          */
-        private const double ITERATION_TOLERANCE = 1E-11;
+        protected const double IterationTolerance = 1E-11;
 
         /**
          * Azimuth of the centre line passing through the centre of the projection.
@@ -116,18 +152,16 @@ namespace ProjNet.CoordinateSystems.Projections
         /**
          * Useful variables calculated from parameters defined by user.
          */
-        private double _sinAzim, _cosAzim, _n, _tanS2, _alfa, _hae, _k1, _ka, _ro0, _rop;
+        protected double _sinAzim, _cosAzim, _n, _tanS2, _alfa, _hae, _k1, _ka, _ro0, _rop;
 
         protected Radians _centralMeridian;
         protected Radians _latitudeOfOrigin;
         protected double _scaleFactor;
-        //protected double _excentricitySquared;
-        //protected double _excentricity;
 
         /**
          * Useful constant - 45° in radians.
          */
-        private const double S45 = 0.785398163397448;
+        protected const Double S45 = 0.785398163397448;
 
         #region Constructors
 
@@ -170,36 +204,36 @@ namespace ProjNet.CoordinateSystems.Projections
             //PARAMETER["false_northing",0],
             //UNIT["metre",1]]
 
-            ProjectionParameter par_latitude_of_center = GetParameter("latitude_of_center");
-            ProjectionParameter par_longitude_of_center = GetParameter("longitude_of_center");
-            ProjectionParameter par_azimuth = GetParameter("azimuth");
-            ProjectionParameter par_pseudo_standard_parallel_1 = GetParameter("pseudo_standard_parallel_1");
-            ProjectionParameter par_scale_factor = GetParameter("scale_factor");
-            ProjectionParameter par_false_easting = GetParameter("false_easting");
-            ProjectionParameter par_false_northing = GetParameter("false_northing");
+            ProjectionParameter parLatitudeOfCenter = GetParameter("latitude_of_center");
+            ProjectionParameter parLongitudeOfCenter = GetParameter("longitude_of_center");
+            ProjectionParameter parAzimuth = GetParameter("azimuth");
+            ProjectionParameter parPseudoStandardParallel1 = GetParameter("pseudo_standard_parallel_1");
+            ProjectionParameter parScaleFactor = GetParameter("scale_factor");
+            ProjectionParameter parFalseEasting = GetParameter("false_easting");
+            ProjectionParameter parFalseNorthing = GetParameter("false_northing");
 
             //Check for missing parameters
-            if (par_latitude_of_center == null)
+            if (parLatitudeOfCenter == null)
                 throw new ArgumentException("Missing projection parameter 'latitude_of_center'");
-            if (par_longitude_of_center == null)
+            if (parLongitudeOfCenter == null)
                 throw new ArgumentException("Missing projection parameter 'longitude_of_center'");
-            if (par_azimuth == null)
+            if (parAzimuth == null)
                 throw new ArgumentException("Missing projection parameter 'azimuth'");
-            if (par_pseudo_standard_parallel_1 == null)
+            if (parPseudoStandardParallel1 == null)
                 throw new ArgumentException("Missing projection parameter 'pseudo_standard_parallel_1'");
-            if (par_false_easting == null)
+            if (parFalseEasting == null)
                 throw new ArgumentException("Missing projection parameter 'false_easting'");
-            if (par_false_northing == null)
+            if (parFalseNorthing == null)
                 throw new ArgumentException("Missing projection parameter 'false_northing'");
 
-            _latitudeOfOrigin = (Radians) new Degrees((Double)par_latitude_of_center.Value);
-            _centralMeridian = (Radians) new Degrees((Double)(24 + (50.0 / 60)));// par_longitude_of_center.Value);
-            _azimuth = (Radians)new Degrees((Double)par_azimuth.Value);
-            _pseudoStandardParallel = (Radians)new Degrees((Double)par_pseudo_standard_parallel_1.Value);
-            _scaleFactor = par_scale_factor.Value;
+            _latitudeOfOrigin = (Radians) new Degrees(parLatitudeOfCenter.Value);
+            _centralMeridian = (Radians) new Degrees((24 + (50.0 / 60)));// par_longitude_of_center.Value);
+            _azimuth = (Radians)new Degrees((Double)parAzimuth.Value);
+            _pseudoStandardParallel = (Radians)new Degrees(parPseudoStandardParallel1.Value);
+            _scaleFactor = parScaleFactor.Value;
 
-            _falseEasting = par_false_easting.Value * MetersPerUnit;
-            _falseNorthing = par_false_northing.Value * MetersPerUnit;
+            _falseEasting = parFalseEasting.Value * MetersPerUnit;
+            _falseNorthing = parFalseNorthing.Value * MetersPerUnit;
 
             //_excentricitySquared = 1.0 - (SemiMinor * SemiMinor) / (SemiMajor * SemiMajor);
             //_excentricity = Math.Sqrt(_excentricitySquared);
@@ -210,19 +244,19 @@ namespace ProjNet.CoordinateSystems.Projections
             _n = Math.Sin(_pseudoStandardParallel);
             _tanS2 = Math.Tan(_pseudoStandardParallel / 2 + S45);
 
-            double sinLat = Math.Sin(_latitudeOfOrigin);
-            double cosLat = Math.Cos(_latitudeOfOrigin);
-            double cosL2 = cosLat * cosLat;
+            Double sinLat = Math.Sin(_latitudeOfOrigin);
+            Double cosLat = Math.Cos(_latitudeOfOrigin);
+            Double cosL2 = cosLat * cosLat;
             _alfa = Math.Sqrt(1 + ((E2 * (cosL2 * cosL2)) / (1 - E2))); // parameter B
             _hae = _alfa * E / 2;
-            double u0 = Math.Asin(sinLat / _alfa);
+            Double u0 = Math.Asin(sinLat / _alfa);
 
-            double esl = E * sinLat;
-            double g = Math.Pow((1 - esl) / (1 + esl), (_alfa * E) / 2);
+            Double esl = E * sinLat;
+            Double g = Math.Pow((1 - esl) / (1 + esl), (_alfa * E) / 2);
             _k1 = Math.Pow(Math.Tan(_latitudeOfOrigin / 2 + S45), _alfa) * g / Math.Tan(u0 / 2 + S45);
             _ka = Math.Pow(1 / _k1, -1 / _alfa);
 
-            double radius = Math.Sqrt(1 - E2) / (1 - (E2 * (sinLat * sinLat)));
+            Double radius = Math.Sqrt(1 - E2) / (1 - (E2 * (sinLat * sinLat)));
 
             _ro0 = _scaleFactor * radius / Math.Tan(_pseudoStandardParallel);
             _rop = _ro0 * Math.Pow(_tanS2, _n);
@@ -238,7 +272,7 @@ namespace ProjNet.CoordinateSystems.Projections
         {
             get { return "Krovak"; }
         }
-
+        /*
         /// <summary>
         /// Converts coordinates in decimal degrees to projected meters.
         /// </summary>
@@ -259,13 +293,15 @@ namespace ProjNet.CoordinateSystems.Projections
             double eps = _n * d;
             double ro = _rop / Math.Pow(Math.Tan(s / 2 + S45), _n);
 
-            /* x and y are reverted  */
+            //x and y are reverted
             double y = -(ro * Math.Cos(eps)) * SemiMajor;
             double x = -(ro * Math.Sin(eps)) * SemiMajor;
 
-            return CoordinateFactory.Create( x, y );
+            return CreateCoordinate( x, y, lonlat );
         }
+            */
 
+            /*
         /// <summary>
         /// Converts coordinates in projected meters to decimal degrees.
         /// </summary>
@@ -273,29 +309,30 @@ namespace ProjNet.CoordinateSystems.Projections
         /// <returns>Transformed point in decimal degrees</returns>
         public override TCoordinate MetersToDegrees(TCoordinate p)
         {
-            double x = (Double)p[0].Divide(SemiMajor);
-            double y = (Double)p[1].Divide(SemiMajor);
+            throw new NotSupportedException();
+            Double x = (Double)p[0].Divide(SemiMajor);
+            Double y = (Double)p[1].Divide(SemiMajor);
 
-            // x -> southing, y -> westing
-            double ro = Math.Sqrt(x * x + y * y);
-            double eps = Math.Atan2(-x, -y);
-            double d = eps / _n;
-            double s = 2 * (Math.Atan(Math.Pow(_ro0 / ro, 1 / _n) * _tanS2) - S45);
-            double cs = Math.Cos(s);
-            double u = Math.Asin((_cosAzim * Math.Sin(s)) - (_sinAzim * cs * Math.Cos(d)));
-            double kau = _ka * Math.Pow(Math.Tan((u / 2.0) + S45), 1 / _alfa);
-            double deltav = Math.Asin((cs * Math.Sin(d)) / Math.Cos(u));
-            double lambda = -deltav / _alfa;
-            double phi = 0;
-            double fi1 = u;
+            //x -> southing, y -> westing
+            Double ro = Math.Sqrt(x * x + y * y);
+            Double eps = Math.Atan2(-x, -y);
+            Double d = eps / _n;
+            Double s = 2 * (Math.Atan(Math.Pow(_ro0 / ro, 1 / _n) * _tanS2) - S45);
+            Double cs = Math.Cos(s);
+            Double u = Math.Asin((_cosAzim * Math.Sin(s)) - (_sinAzim * cs * Math.Cos(d)));
+            Double kau = _ka * Math.Pow(Math.Tan((u / 2.0) + S45), 1 / _alfa);
+            Double deltav = Math.Asin((cs * Math.Sin(d)) / Math.Cos(u));
+            Double lambda = -deltav / _alfa;
+            Double phi = 0;
+            Double fi1 = u;
 
             // iteration calculation
-            for (int i = MAXIMUM_ITERATIONS; ; )
+            for (int i = MaximumIterations; ; )
             {
                 fi1 = phi;
-                double esf = E * Math.Sin(fi1);
+                Double esf = E * Math.Sin(fi1);
                 phi = 2.0 * (Math.Atan(kau * Math.Pow((1.0 + esf) / (1.0 - esf), E / 2.0)) - S45);
-                if (Math.Abs(fi1 - phi) <= ITERATION_TOLERANCE)
+                if (Math.Abs(fi1 - phi) <= IterationTolerance)
                 {
                     break;
                 }
@@ -307,17 +344,18 @@ namespace ProjNet.CoordinateSystems.Projections
                 }
             }
 
-            return CoordinateFactory.Create ( (Degrees) new Radians(lambda + _centralMeridian), (Degrees)new Radians(phi) );
+            return CreateCoordinate((Degrees) new Radians(lambda + _centralMeridian), (Degrees)new Radians(phi), p);
         }
+            */
 
         public override Int32 SourceDimension
         {
-            get { throw new System.NotImplementedException(); }
+            get { throw new NotImplementedException(); }
         }
 
         public override Int32 TargetDimension
         {
-            get { throw new System.NotImplementedException(); }
+            get { throw new NotImplementedException(); }
         }
 
         public override Boolean IsInverse
@@ -330,7 +368,29 @@ namespace ProjNet.CoordinateSystems.Projections
             IEnumerable<ProjectionParameter> parameters =
                 Caster.Downcast<ProjectionParameter, Parameter>(Parameters);
 
-            return new InverseKrovakProjection<TCoordinate>(parameters, CoordinateFactory);
+            return new InverseKrovakProjection<TCoordinate>(parameters, CoordinateFactory, this);
+        }
+
+        public override TCoordinate Transform(TCoordinate lonlat)
+        {
+            Radians lambda = (Radians)new Degrees((Double)lonlat[0]) - _centralMeridian;
+            Radians phi = (Radians)new Degrees((Double)lonlat[1]);
+
+            double esp = E * Math.Sin(phi);
+            double gfi = Math.Pow(((1.0 - esp) / (1.0 + esp)), _hae);
+            double u = 2 * (Math.Atan(Math.Pow(Math.Tan(phi / 2 + S45), _alfa) / _k1 * gfi) - S45);
+            double deltav = -lambda * _alfa;
+            double cosU = Math.Cos(u);
+            double s = Math.Asin((_cosAzim * Math.Sin(u)) + (_sinAzim * cosU * Math.Cos(deltav)));
+            double d = Math.Asin(cosU * Math.Sin(deltav) / Math.Cos(s));
+            double eps = _n * d;
+            double ro = _rop / Math.Pow(Math.Tan(s / 2 + S45), _n);
+
+            /* x and y are reverted  */
+            double y = -(ro * Math.Cos(eps)) * SemiMajor;
+            double x = -(ro * Math.Sin(eps)) * SemiMajor;
+
+            return CreateCoordinate(x, y, lonlat);
         }
 
     }

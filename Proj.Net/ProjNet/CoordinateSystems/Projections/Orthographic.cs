@@ -47,6 +47,28 @@ namespace ProjNet.CoordinateSystems.Projections
         {
             get { return true; }
         }
+
+        public override TCoordinate Transform(TCoordinate point)
+        {
+            Double lat = point[Ordinates.X];
+            Double lon = point[Ordinates.Y];
+
+            Double sinLat = Math.Sin(lat);
+            Double cosLat = Math.Cos(lat);
+
+            Double sinDeltaLon = Math.Sin(lon - _lon_center);
+            Double cosDeltaLon = Math.Cos(lon - _lon_center);
+
+            Double x = _radius * cosLat * sinDeltaLon;
+            Double y = _radius * (_cosLatOrigin * sinLat - _sinLatOrigin * cosLat * cosDeltaLon);
+
+            Double distanceCheck = _sinLatOrigin * sinLat + _cosLatOrigin + cosLat * cosDeltaLon;
+
+            // NOTE: not sure if returning +Inf, +Inf makes sense for points not on the projection
+            return distanceCheck < 0
+                       ? CreateCoordinate(Double.PositiveInfinity, Double.PositiveInfinity, point)
+                       : CreateCoordinate(x, y, point);
+        }
     }
 
     internal class Orthographic<TCoordinate> : MapProjection<TCoordinate>
@@ -54,13 +76,13 @@ namespace ProjNet.CoordinateSystems.Projections
                             IComparable<TCoordinate>, IConvertible,
                             IComputable<Double, TCoordinate>
     {
-        private readonly Radians _lon_center;
-        private readonly Radians _lat_origin;
+        protected readonly Radians _lon_center;
+        protected readonly Radians _lat_origin;
         private readonly Double _falseEasting;
         private readonly Double _falseNorthing;
-        private readonly Double _radius;
-        private readonly Double _cosLatOrigin;
-        private readonly Double _sinLatOrigin;
+        protected readonly Double _radius;
+        protected readonly Double _cosLatOrigin;
+        protected readonly Double _sinLatOrigin;
         private readonly TCoordinate _zero;
 
         /// <summary>
@@ -175,7 +197,7 @@ namespace ProjNet.CoordinateSystems.Projections
         {
             get { throw new System.NotImplementedException(); }
         }
-
+        /*
         public override TCoordinate MetersToDegrees(TCoordinate coordinate)
         {
             Double lat = coordinate[Ordinates.X];
@@ -197,7 +219,8 @@ namespace ProjNet.CoordinateSystems.Projections
                        ? CoordinateFactory.Create(Double.PositiveInfinity, Double.PositiveInfinity)
                        : CoordinateFactory.Create(x, y);
         }
-
+        */
+        /*
         public override TCoordinate DegreesToMeters(TCoordinate coordinate)
         {
             Double rho = coordinate.Distance(_zero);
@@ -228,10 +251,10 @@ namespace ProjNet.CoordinateSystems.Projections
 
             return CoordinateFactory.Create(lon, lat);
         }
-
+        */
         public override Int32 SourceDimension
         {
-            get { throw new System.NotImplementedException(); }
+            get { throw new NotImplementedException(); }
         }
 
         public override Int32 TargetDimension
@@ -244,16 +267,6 @@ namespace ProjNet.CoordinateSystems.Projections
             get { return false; }
         }
 
-        public override IEnumerable<ICoordinate> Transform(IEnumerable<ICoordinate> points)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public override ICoordinateSequence Transform(ICoordinateSequence points)
-        {
-            throw new System.NotImplementedException();
-        }
-
         protected override IMathTransform ComputeInverse(IMathTransform setAsInverse)
         {
             IEnumerable<ProjectionParameter> parameters =
@@ -264,13 +277,35 @@ namespace ProjNet.CoordinateSystems.Projections
                        : new InverseOrthographic<TCoordinate>(parameters, CoordinateFactory);
         }
 
-        #region Overrides of MathTransform<TCoordinate>
-
-        public override ICoordinateSequence<TCoordinate> Transform(ICoordinateSequence<TCoordinate> points)
+        public override TCoordinate Transform(TCoordinate point)
         {
-            throw new System.NotImplementedException();
-        }
+            Double rho = point.Distance(_zero);
+            Double c = Math.Asin(rho / _radius);
 
-        #endregion
+            Double x = (Radians)new Degrees(point[Ordinates.X]);
+            Double y = (Radians)new Degrees(point[Ordinates.Y]);
+
+            Double cosC = Math.Cos(c);
+            Double sinC = Math.Sin(c);
+
+            Double lat = Math.Asin(cosC * _sinLatOrigin + (y * sinC * _cosLatOrigin) / rho);
+            Double lon;
+
+            if (y == HalfPI)
+            {
+                lon = x + Math.Atan2(x, -y);
+            }
+            else if (y == -HalfPI)
+            {
+                lon = x + Math.Atan2(x, y);
+            }
+            else
+            {
+                lon = _lon_center +
+                      Math.Atan2(x * sinC, (rho * _cosLatOrigin * cosC) - (y * _sinLatOrigin * sinC));
+            }
+
+            return CreateCoordinate(lon, lat, point);
+        }
     }
 }

@@ -60,9 +60,56 @@ namespace ProjNet.CoordinateSystems.Projections
             Inverse = transform;
         }
 
-        public override Boolean IsInverse
+        public override string Name
+        {
+            get { return "Inverse_" + base.Name; }
+        }
+
+        public override bool IsInverse
         {
             get { return true; }
+        }
+
+        public override TCoordinate Transform(TCoordinate point)
+        {
+            Double p0 = (Double)point[0];
+            Double theta = Math.Atan((p0 * MetersPerUnit - _falseEasting) /
+                                     (_rho0 - (point[1].Multiply(MetersPerUnit) - _falseNorthing)));
+
+            Double rho = Math.Sqrt(Math.Pow(p0 * MetersPerUnit - _falseEasting, 2) +
+                                   Math.Pow(_rho0 - (point[1].Multiply(MetersPerUnit) - _falseNorthing), 2));
+
+            Double q = (_c - Math.Pow(rho, 2) * Math.Pow(_n, 2) / Math.Pow(SemiMajor, 2)) / _n;
+            //Double b = Math.Sin(q / (1 - ((1 - e_sq) / (2 * e)) * Math.Log((1 - e) / (1 + e))));
+
+            Radians lat = (Radians)Math.Asin(q * 0.5);
+            Double preLat = Double.MaxValue;
+            Int32 iterationCounter = 0;
+
+            while (Math.Abs(lat - preLat) > 0.000001)
+            {
+                preLat = lat;
+                Double sin = Math.Sin(lat);
+                Double e2sin2 = E2 * Math.Pow(sin, 2);
+
+                lat = (Radians)
+                      ((Math.Pow(1 - e2sin2, 2) / (2 * Math.Cos(lat))) *
+                        ((q / (1 - E2)) - sin / (1 - e2sin2) + 1 / (2 * E) *
+                            Math.Log((1 - E * sin) / (1 + E * sin))) +
+                                lat);
+
+                iterationCounter++;
+
+                if (iterationCounter > 25)
+                {
+                    throw new ComputationConvergenceException("Transformation failed to converge " +
+                                                              "in Albers backwards transformation.");
+                }
+            }
+
+            Radians lon = (Radians)(_centerLongitude + (theta / _n));
+
+            return CreateCoordinate((Degrees) lon, (Degrees) lat, point);
         }
     }
 
@@ -89,12 +136,12 @@ namespace ProjNet.CoordinateSystems.Projections
                             IComparable<TCoordinate>, IConvertible,
                             IComputable<Double, TCoordinate>
     {
-        private readonly Double _falseEasting;
-        private readonly Double _falseNorthing;
-        private readonly Double _c; //constant c
-        private readonly Double _rho0;
-        private readonly Double _n;
-        private readonly Radians _centerLongitude; //center longitude   
+        protected readonly Double _falseEasting;
+        protected readonly Double _falseNorthing;
+        protected readonly Double _c; //constant c
+        protected readonly Double _rho0;
+        protected readonly Double _n;
+        protected readonly Radians _centerLongitude; //center longitude   
 
         #region Constructors
         /// <summary>
@@ -252,7 +299,7 @@ namespace ProjNet.CoordinateSystems.Projections
         #endregion
 
         #region Public methods
-
+        /*
         /// <summary>
         /// Converts coordinates in decimal degrees to projected meters.
         /// </summary>
@@ -273,7 +320,7 @@ namespace ProjNet.CoordinateSystems.Projections
                        ? CreateCoordinate(x / MetersPerUnit, y / MetersPerUnit)
                        : CreateCoordinate(x / MetersPerUnit, y / MetersPerUnit, (Double)lonlat[2]);
         }
-
+        */
         public override string ProjectionClassName
         {
             get { return "Albers_Conic_Equal_Area"; }
@@ -283,7 +330,7 @@ namespace ProjNet.CoordinateSystems.Projections
         {
             get { return "Albers_Conic_Equal_Area"; }
         }
-
+        /*
         /// <summary>
         /// Converts coordinates in projected meters to decimal degrees.
         /// </summary>
@@ -332,7 +379,7 @@ namespace ProjNet.CoordinateSystems.Projections
                        ? CreateCoordinate((Degrees)lon, (Degrees)lat)
                        : CreateCoordinate((Degrees)lon, (Degrees)lat, (Double)p[2]);
         }
-
+        */
         public override Int32 SourceDimension
         {
             get { throw new System.NotImplementedException(); }
@@ -346,16 +393,6 @@ namespace ProjNet.CoordinateSystems.Projections
         public override Boolean IsInverse
         {
             get { return false; }
-        }
-
-        public override IEnumerable<ICoordinate> Transform(IEnumerable<ICoordinate> points)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public override ICoordinateSequence Transform(ICoordinateSequence points)
-        {
-            throw new System.NotImplementedException();
         }
 
         protected override IMathTransform ComputeInverse(IMathTransform setAsInverse)
@@ -396,13 +433,18 @@ namespace ProjNet.CoordinateSystems.Projections
 
         #endregion
 
-        #region Overrides of MathTransform<TCoordinate>
-
-        public override ICoordinateSequence<TCoordinate> Transform(ICoordinateSequence<TCoordinate> points)
+        public override TCoordinate Transform(TCoordinate lonlat)
         {
-            throw new System.NotImplementedException();
-        }
+            Radians lon = (Radians)new Degrees((Double)lonlat[0]);
+            Radians lat = (Radians)new Degrees((Double)lonlat[1]);
 
-        #endregion
+            Double a = computeAlpha(lat);
+            Double rho = computeRho(a);
+            Double theta = _n * (lon - _centerLongitude);
+            Double x = _falseEasting + rho * Math.Sin(theta);
+            Double y = _falseNorthing + _rho0 - (rho * Math.Cos(theta));
+
+            return CreateCoordinate(x * UnitsPerMeter, y * UnitsPerMeter, lonlat);
+        }
     }
 }
