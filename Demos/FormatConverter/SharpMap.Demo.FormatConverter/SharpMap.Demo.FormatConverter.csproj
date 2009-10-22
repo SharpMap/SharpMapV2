@@ -68,7 +68,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\GeoAPI\src\GeoAPI\GeoAPI.Net.csproj">
+    <ProjectReference Include="..\..\..\NTS\GeoAPI\src\GeoAPI\GeoAPI.Net.csproj">
       <Project>{FFB69466-79DE-466A-ADA7-5C47C5C5CA3A}</Project>
       <Name>GeoAPI.Net</Name>
     </ProjectReference>
@@ -101,7 +101,6 @@
     <spatialite2dbg Include="..\SharpMap.Demo.FormatConverter.SpatialLite2\bin\$(Configuration)\*.pdb" />
     <postgis Include="..\SharpMap.Demo.FormatConverter.PostGis\bin\$(Configuration)\*.dll" />
     <postgisdbg Include="..\SharpMap.Demo.FormatConverter.PostGis\bin\$(Configuration)\*.pdb" />
-    
   </ItemGroup>
   <Target Name="AfterBuild">
     <Copy SourceFiles="@(mssqlspatial)" DestinationFolder="$(TargetDir)" />

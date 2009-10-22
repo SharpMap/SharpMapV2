@@ -55,46 +55,6 @@
     <ErrorReport>prompt</ErrorReport>
     <TargetFrameworkVersion>3.5</TargetFrameworkVersion>
   </PropertyGroup>
-  <Choose>
-    <When Condition="'$(Configuration)' == 'Debug_Net35'">
-      <ItemGroup>
-        <Reference Include="NPack, Version=0.8.15119.0, Culture=neutral, PublicKeyToken=56f174b1685ddc6a, processorArchitecture=MSIL">
-          <SpecificVersion>False</SpecificVersion>
-          <HintPath>..\GeoAPI\branches\v2.0\ExternalReferences\Debug_Net35\NPack.dll</HintPath>
-        </Reference>
-      </ItemGroup>
-    </When>
-  </Choose>
-  <Choose>
-    <When Condition="'$(Configuration)' == 'Release_Net35'">
-      <ItemGroup>
-        <Reference Include="NPack, Version=0.8.15119.0, Culture=neutral, PublicKeyToken=56f174b1685ddc6a, processorArchitecture=MSIL">
-          <SpecificVersion>False</SpecificVersion>
-          <HintPath>..\GeoAPI\branches\v2.0\ExternalReferences\Release_Net35\NPack.dll</HintPath>
-        </Reference>
-      </ItemGroup>
-    </When>
-  </Choose>
-  <Choose>
-    <When Condition="'$(Configuration)' == 'Release_Net20'">
-      <ItemGroup>
-        <Reference Include="NPack, Version=0.8.15119.0, Culture=neutral, PublicKeyToken=56f174b1685ddc6a, processorArchitecture=MSIL">
-          <SpecificVersion>False</SpecificVersion>
-          <HintPath>..\GeoAPI\branches\v2.0\ExternalReferences\Release_Net20\NPack.dll</HintPath>
-        </Reference>
-      </ItemGroup>
-    </When>
-  </Choose>
-  <Choose>
-    <When Condition="'$(Configuration)' == 'Debug_Net20'">
-      <ItemGroup>
-        <Reference Include="NPack, Version=0.8.15119.0, Culture=neutral, PublicKeyToken=56f174b1685ddc6a, processorArchitecture=MSIL">
-          <SpecificVersion>False</SpecificVersion>
-          <HintPath>..\GeoAPI\branches\v2.0\ExternalReferences\Debug_Net20\NPack.dll</HintPath>
-        </Reference>
-      </ItemGroup>
-    </When>
-  </Choose>
   <ItemGroup>
     <Reference Include="System.Drawing" />
     <Reference Include="System.Web" />
@@ -131,13 +91,9 @@
     <None Include="SharpMap.Presentation.AspNet.cd" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\GeoAPI\src\GeoAPI\GeoAPI.Net.csproj">
+    <ProjectReference Include="..\..\NTS\GeoAPI\src\GeoAPI\GeoAPI.Net.csproj">
       <Project>{FFB69466-79DE-466A-ADA7-5C47C5C5CA3A}</Project>
       <Name>GeoAPI.Net</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\NPack\NPack\NPack.csproj">
-      <Project>{B139E1D5-091B-40D2-B7A2-7D7D82E13019}</Project>
-      <Name>NPack</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\NTS\ManagedBufferedCoordinate\ManagedBufferedCoordinate.csproj">
       <Project>{5C268D0D-93D0-4FB5-874C-2C07C1F331A9}</Project>
@@ -146,6 +102,10 @@
     <ProjectReference Include="..\..\NTS\NetTopologySuite\NetTopologySuite.csproj">
       <Project>{5770DAA9-84E5-4770-AF43-F6B815894368}</Project>
       <Name>NetTopologySuite</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\NTS\NPack\NPack\NPack.csproj">
+      <Project>{B139E1D5-091B-40D2-B7A2-7D7D82E13019}</Project>
+      <Name>NPack</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\SharpMap.Rendering\GeoJSON\SharpMap.Rendering.GeoJson.csproj">
       <Project>{019FE8B5-5822-4272-B75C-8BDDAB479284}</Project>

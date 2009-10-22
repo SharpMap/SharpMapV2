@@ -1,16 +1,4 @@
 ﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
-  <PropertyGroup Condition="Exists('$(ProjectDir)..\GeoAPI\src\GeoAPI\GeoAPI.Net.csproj')">
-    <GeoAPIProjectReference>true</GeoAPIProjectReference>
-  </PropertyGroup>
-  <PropertyGroup Condition="!Exists('$(ProjectDir)..\GeoAPI\src\GeoAPI\GeoAPI.Net.csproj')">
-    <GeoAPIProjectReference>false</GeoAPIProjectReference>
-  </PropertyGroup>
-  <PropertyGroup Condition="Exists('$(ProjectDir)..\NPack\NPack\NPack.csproj')">
-    <NPackProjectReference>true</NPackProjectReference>
-  </PropertyGroup>
-  <PropertyGroup Condition="!Exists('$(ProjectDir)..\NPack\NPack\NPack.csproj')">
-    <NPackProjectReference>false</NPackProjectReference>
-  </PropertyGroup>
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug_Net20</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -63,30 +51,6 @@
     <ErrorReport>prompt</ErrorReport>
   </PropertyGroup>
   <Choose>
-    <When Condition="'$(GeoAPIProjectReference)' == 'false'">
-      <ItemGroup>
-        <Reference Include="GeoAPI, Version=2.0, Culture=neutral, PublicKeyToken=a1a0da7def465678, processorArchitecture=MSIL">
-          <SpecificVersion>False</SpecificVersion>
-          <HintPath>..\ExternalReferences\$(Configuration)\GeoAPI.dll</HintPath>
-        </Reference>
-      </ItemGroup>
-    </When>
-    <Otherwise>
-    </Otherwise>
-  </Choose>
-  <Choose>
-    <When Condition="'$(NPackProjectReference)' == 'false'">
-      <ItemGroup>
-        <Reference Include="NPack, Version=0.9.23543.0, Culture=neutral, PublicKeyToken=56f174b1685ddc6a, processorArchitecture=MSIL">
-          <SpecificVersion>False</SpecificVersion>
-          <HintPath>..\ExternalReferences\$(Configuration)\NPack.dll</HintPath>
-        </Reference>
-      </ItemGroup>
-    </When>
-    <Otherwise>
-    </Otherwise>
-  </Choose>
-  <Choose>
     <When Condition="'$(Configuration)' == 'Release_Net35' Or '$(Configuration)' == 'Debug_Net35'">
       <ItemGroup>
         <Reference Include="nunit.framework, Version=2.4.0.2, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
@@ -120,15 +84,15 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\ExternalReferences\xunit1.1\xunit.dll</HintPath>
     </Reference>
-    <ProjectReference Include="..\GeoAPI\src\GeoAPI\GeoAPI.Net.csproj">
+    <ProjectReference Include="..\NTS\GeoAPI\src\GeoAPI\GeoAPI.Net.csproj">
       <Project>{FFB69466-79DE-466A-ADA7-5C47C5C5CA3A}</Project>
       <Name>GeoAPI.Net</Name>
     </ProjectReference>
-    <ProjectReference Include="..\NPack\NPack.Matrix\NPack.Matrix.csproj">
+    <ProjectReference Include="..\NTS\NPack\NPack.Matrix\NPack.Matrix.csproj">
       <Project>{D03CD20F-5081-4974-82E4-291577169B46}</Project>
       <Name>NPack.Matrix</Name>
     </ProjectReference>
-    <ProjectReference Include="..\NPack\NPack\NPack.csproj">
+    <ProjectReference Include="..\NTS\NPack\NPack\NPack.csproj">
       <Project>{B139E1D5-091B-40D2-B7A2-7D7D82E13019}</Project>
       <Name>NPack</Name>
     </ProjectReference>
