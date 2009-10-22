@@ -77,8 +77,8 @@ namespace SharpMap.Presentation.AspNet.Demo.Common
             string[] layernames = new[]
                                       {
                                           "Countries",
-                                          "Rivers",
-                                          "Cities"
+                                          "Rivers"/*,
+                                          "Cities"*/
                                       };
 
             string sridstr = SridMap.DefaultInstance.Process(4326, "");
