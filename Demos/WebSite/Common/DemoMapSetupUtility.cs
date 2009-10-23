@@ -75,9 +75,9 @@ namespace SharpMap.Presentation.AspNet.Demo.Common
         private static void setupMsSqlSpatial(Map m)
         {
             string[] layernames = new[]
-                                      {
-                                          "Countries",
-                                          "Rivers"/*,
+                                      {"Rivers",
+                                          "Countries"
+                                          /*,
                                           "Cities"*/
                                       };
 
@@ -113,7 +113,7 @@ namespace SharpMap.Presentation.AspNet.Demo.Common
                 {
                     case "Rivers":
                         {
-                            StyleBrush brush = new SolidStyleBrush(new StyleColor(255, 255, 0, 255));
+                            StyleBrush brush = new SolidStyleBrush(StyleColor.Blue);
                             StylePen pen = new StylePen(brush, 1);
                             style.Enabled = true;
                             style.EnableOutline = true;
@@ -126,11 +126,10 @@ namespace SharpMap.Presentation.AspNet.Demo.Common
                         {
                             StyleBrush brush = new SolidStyleBrush(new StyleColor(0, 0, 0, 255));
                             StylePen pen = new StylePen(brush, 2);
-                            StyleBrush trans = new SolidStyleBrush(new StyleColor(255, 255, 255, 0));
                             style.Enabled = true;
                             style.EnableOutline = true;
                             style.Line = pen;
-                            style.Fill = trans;
+                            style.Fill = new SolidStyleBrush(StyleColor.Green);
 
                             break;
                         }

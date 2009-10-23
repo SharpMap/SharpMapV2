@@ -71,7 +71,7 @@ namespace SharpMap.Presentation.AspNet.Handlers
                         {
                             using (BinaryWriter outStream = new BinaryWriter(context.Response.OutputStream))
                             {
-                                outStream.Write(br.ReadBytes((Int32) s.Length), 0, (Int32) s.Length);
+                                outStream.Write(br.ReadBytes((Int32)s.Length), 0, (Int32)s.Length);
                                 outStream.Flush();
                             }
 
@@ -269,9 +269,9 @@ namespace SharpMap.Presentation.AspNet.Handlers
                     {
                         ///don't cache it if there is a mime type mismatch.
                         ///perhaps we should raise an exception?
-                        s.Position = 0;
+                        s.Seek(0, SeekOrigin.Begin);
                         CacheProvider.SaveToCache(MapRequestConfig, s);
-                        s.Position = 0;
+                        s.Seek(0, SeekOrigin.Begin);
                     }
 
                     RaiseMapRenderDone();
@@ -429,7 +429,7 @@ namespace SharpMap.Presentation.AspNet.Handlers
             {
                 if ((l.DataSource is AppStateMonitoringFeatureProvider))
                 {
-                    ((AppStateMonitoringFeatureProvider) l.DataSource).Monitor = monitor;
+                    ((AppStateMonitoringFeatureProvider)l.DataSource).Monitor = monitor;
                 }
                 else if (l.DataSource is AsyncFeatureProviderAdapter)
                 {

@@ -14,6 +14,9 @@ using CairoGraphics = Cairo.Context;
 using CairoLineCap = Cairo.LineCap;
 using CairoLineJoin = Cairo.LineJoin;
 using CairoAntialias = Cairo.Antialias;
+using Color = Cairo.Color;
+using Graphics = System.Drawing.Graphics;
+using Path = Cairo.Path;
 using Rectangle = System.Drawing.Rectangle;
 
 namespace SharpMap.Rendering.Web.Cairo
@@ -84,28 +87,31 @@ namespace SharpMap.Rendering.Web.Cairo
 
         public Image Render(WebMapView mapView, out string mimeType)
         {
-            using (Surface s = CreateSurface())
+            using (Surface s = CreateImageSurface())
             {
                 Context c = new Context(s);
+                c.Antialias = Antialias.Subpixel;
                 if (!MapView.Presenter.IsRenderingSelection)
-                {
                     SetColour(c, MapView.BackgroundColor);
-                    c.FillExtents();
-                }
+                else
+                    SetColour(c, new StyleColor(0, 0, 0, 0));
 
+                c.FillExtents();
 
                 while (_renderQueue.Count > 0)
                 {
                     RenderObject(_renderQueue.Dequeue(), c);
                 }
 
-
-                Bitmap bmp = new Bitmap(Width, Height, PixelFormat);
-
-                using (Win32Surface winSurface = new Win32Surface(bmp.GetHbitmap()))
+                Bitmap bmp = new Bitmap(Width, Height, PixelFormat.Format32bppArgb);
+                using (Graphics graphics = Graphics.FromImage(bmp))
+                using (Win32Surface winSurface = new Win32Surface(graphics.GetHdc()))
                 using (Context context = new Context(winSurface))
                 {
-                    context.SetSourceSurface(s, 0, 0);
+                    context.SetSourceRGBA(0, 0, 0, 0);
+                    context.FillExtents();
+
+                    context.SetSource(s);
                     context.Paint();
                 }
 
@@ -175,7 +181,7 @@ namespace SharpMap.Rendering.Web.Cairo
 
         #endregion
 
-        protected virtual Surface CreateSurface()
+        protected virtual Surface CreateImageSurface()
         {
             return new ImageSurface(Format.Argb32, Width, Height);
         }
@@ -209,7 +215,7 @@ namespace SharpMap.Rendering.Web.Cairo
 
             im.Save(ms, ImageCodec, EncoderParams);
             im.Dispose();
-            ms.Position = 0;
+            ms.Seek(0, SeekOrigin.Begin);
             mimeType = ImageCodec.MimeType;
             return ms;
         }
@@ -366,7 +372,7 @@ namespace SharpMap.Rendering.Web.Cairo
             context.LineWidth = outline.Width;
             context.Antialias = Antialias.Subpixel;
             context.MiterLimit = outline.MiterLimit;
-
+            SetColour(context, outline.BackgroundBrush);
             context.StrokePreserve();
         }
 
@@ -417,6 +423,8 @@ namespace SharpMap.Rendering.Web.Cairo
 
         private static double[] ConvertDash(float[] pattern)
         {
+            if (pattern == null)
+                return new double[] { 1 };
             double[] p = new double[pattern.Length];
             for (int i = 0; i < pattern.Length; i++)
                 p[i] = pattern[i];
