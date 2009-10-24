@@ -1,13 +1,12 @@
+using SharpMap.Data;
+using SharpMap.Styles;
+
 namespace SharpMap.Rendering.Symbolize
 {
-    public interface ISymbolizerRule<TArtifact>
+    public interface ISymbolizerRule
     {
+        ISymbolizer Symbolizer { get; }
         bool Enabled { get; }
-        bool Symbolize(TArtifact obj, out object output);
-    }
-
-    public interface ISymbolizerRule<TArtifact, TOutput> : ISymbolizerRule<TArtifact>
-    {
-        bool Symbolize(TArtifact obj, out TOutput output);
+        bool EvaluateStyle(IFeatureDataRecord record, out IStyle style);
     }
 }

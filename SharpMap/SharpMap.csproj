@@ -347,6 +347,9 @@
     <Compile Include="Rendering\LinearFactory.cs" />
     <Compile Include="Rendering\Matrix.cs" />
     <Compile Include="Rendering\MatrixProcessor.cs" />
+    <Compile Include="Rendering\Rasterize\IFeatureRasterizer.cs" />
+    <Compile Include="Rendering\Rasterize\IRasterizer.cs" />
+    <Compile Include="Rendering\Rasterize\ITextRasterizer.cs" />
     <Compile Include="Rendering\Rendering2D\IRasterRenderer2D.cs" />
     <Compile Include="Rendering\Rendering2D\IRasterRenderer2D`1.cs" />
     <Compile Include="Rendering\Rendering2D\ITextRenderer2D.cs" />
@@ -364,9 +367,15 @@
     <Compile Include="Rendering\Rendering2D\IVectorRenderer2D`1.cs" />
     <Compile Include="Rendering\RenderState.cs" />
     <Compile Include="Rendering\Symbolize\FeatureSymbolizerRule.cs" />
+    <Compile Include="Rendering\Symbolize\IFeatureSymbolizer.cs" />
+    <Compile Include="Rendering\Symbolize\IFeatureSymbolizerRule.cs" />
     <Compile Include="Rendering\Symbolize\ISymbolizer.cs" />
     <Compile Include="Rendering\Symbolize\ISymbolizerRule.cs" />
-    <Compile Include="Rendering\Symbolize\Symbolizer.cs" />
+    <Compile Include="Rendering\Symbolize\FeatureSymbolizer.cs" />
+    <Compile Include="Rendering\Symbolize\ITextSymbolizer.cs" />
+    <Compile Include="Rendering\Symbolize\ITextSymbolizerRule.cs" />
+    <Compile Include="Rendering\Symbolize\TextSymbolizer.cs" />
+    <Compile Include="Rendering\Symbolize\TextSymbolizingDelegate.cs" />
     <Compile Include="Rendering\Symbol`2.cs" />
     <Compile Include="Rendering\Vector.cs" />
     <Compile Include="Styles\CollisionDetectionType.cs" />

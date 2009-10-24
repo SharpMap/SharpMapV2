@@ -1,25 +1,36 @@
 ﻿using SharpMap.Data;
+using SharpMap.Rendering.Rasterize;
+using SharpMap.Styles;
 
 namespace SharpMap.Rendering.Symbolize
 {
-    public abstract class FeatureSymbolizerRule<TOutput> : ISymbolizerRule<IFeatureDataRecord, TOutput>
+    public abstract class FeatureSymbolizerRule : IFeatureSymbolizerRule
     {
-        #region ISymbolizerRule<IFeatureDataRecord,TOutput> Members
-
-        public abstract bool Symbolize(IFeatureDataRecord obj, out TOutput output);
+        #region ISymbolizerRule Members
 
         public abstract bool Enabled { get; }
 
-        public bool Symbolize(IFeatureDataRecord obj, out object output)
+        public IFeatureSymbolizer Symbolizer { get; set; }
+
+        public void Symbolize(IFeatureDataRecord obj, IFeatureRasterizer rasterizer)
         {
-            TOutput toutput;
-            if (Symbolize(obj, out toutput))
-            {
-                output = toutput;
-                return true;
-            }
-            output = null;
-            return false;
+            if (!Enabled)
+                return;
+
+            IStyle style;
+            if (EvaluateStyle(obj, out style))
+                rasterizer.Rasterize(obj.Geometry, style);
+        }
+
+        public abstract bool EvaluateStyle(IFeatureDataRecord record, out IStyle style);
+
+        #endregion
+
+        #region ISymbolizerRule Members
+
+        ISymbolizer ISymbolizerRule.Symbolizer
+        {
+            get { return Symbolizer; }
         }
 
         #endregion

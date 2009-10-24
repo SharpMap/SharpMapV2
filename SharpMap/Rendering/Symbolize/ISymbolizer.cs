@@ -1,15 +1,13 @@
 ﻿using System.Collections.Generic;
+using SharpMap.Data;
+using SharpMap.Rendering.Rasterize;
 
 namespace SharpMap.Rendering.Symbolize
 {
-    public interface ISymbolizer<TArtifact>
+    public interface ISymbolizer
     {
-
-    }
-
-    public interface ISymbolizer<TArtifact, TOutput> : ISymbolizer<TArtifact>
-    {
-        ICollection<ISymbolizerRule<TArtifact, TOutput>> Rules { get; }
-        IEnumerable<TOutput> Symbolize(IEnumerable<TArtifact> artifacts);
+        IRasterizer Rasterizer { get; }
+        ICollection<ISymbolizerRule> Rules { get; }
+        void Symbolize(IEnumerable<IFeatureDataRecord> features);
     }
 }
