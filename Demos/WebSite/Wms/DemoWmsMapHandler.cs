@@ -17,6 +17,7 @@ using SharpMap.Presentation.AspNet.Demo.Common;
 using SharpMap.Presentation.AspNet.WmsServer;
 using SharpMap.Presentation.AspNet.WmsServer.Caching;
 using SharpMap.Rendering.Web;
+using SharpMap.Rendering.Web.Cairo;
 
 namespace SharpMap.Presentation.AspNet.Demo.Wms
 {
@@ -29,7 +30,8 @@ namespace SharpMap.Presentation.AspNet.Demo.Wms
 
         protected override IWebMapRenderer CreateMapRenderer()
         {
-            return new GdiImageRenderer();
+            return new CairoImageRenderer();
+            //return new GdiImageRenderer();
         }
 
         /// <summary>

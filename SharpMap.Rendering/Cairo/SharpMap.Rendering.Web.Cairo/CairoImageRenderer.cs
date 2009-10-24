@@ -90,6 +90,7 @@ namespace SharpMap.Rendering.Web.Cairo
             using (Surface s = CreateImageSurface())
             {
                 Context c = new Context(s);
+                c.FillRule = FillRule.EvenOdd;
                 c.Antialias = Antialias.Subpixel;
                 if (!MapView.Presenter.IsRenderingSelection)
                     SetColour(c, MapView.BackgroundColor);

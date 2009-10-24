@@ -41,7 +41,7 @@
     <div>
         <asp:ScriptManager ID="ScriptManager1" runat="server">
         </asp:ScriptManager>
-        <asp:Panel ID="mapPanel1" runat="server" Height="700px">
+        <asp:Panel ID="mapPanel1" runat="server" Height="700px" Width="700px">
         </asp:Panel>
         <style:SldComponent runat="server" ID="stylemap1">
             <BuilderParams SldDocumentPath="mysld.xml"/>
@@ -77,7 +77,7 @@
                                 <cc1:StringValue Value="Cities" />
                             </WmsLayerNames>
                             <WmsServerUrls>
-                                <cc1:UriValue Value="http://localhost:50322/Maps/Map.ashx" />
+                                <cc1:UriValue Value="http://localhost:51464/Maps/Map.ashx" />
                                 <%--This should be updated to the port number assigned by vs dev web server or IIS to the SharpMap.Demo.AspNet project --%>
                             </WmsServerUrls>
                         </WmsParameters>

@@ -363,6 +363,10 @@
     <Compile Include="Rendering\IGeometryRenderer`2.cs" />
     <Compile Include="Rendering\Rendering2D\IVectorRenderer2D`1.cs" />
     <Compile Include="Rendering\RenderState.cs" />
+    <Compile Include="Rendering\Symbolize\FeatureSymbolizerRule.cs" />
+    <Compile Include="Rendering\Symbolize\ISymbolizer.cs" />
+    <Compile Include="Rendering\Symbolize\ISymbolizerRule.cs" />
+    <Compile Include="Rendering\Symbolize\Symbolizer.cs" />
     <Compile Include="Rendering\Symbol`2.cs" />
     <Compile Include="Rendering\Vector.cs" />
     <Compile Include="Styles\CollisionDetectionType.cs" />

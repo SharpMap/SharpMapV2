@@ -43,8 +43,8 @@ namespace SharpMap.Presentation.AspNet.Demo.Common
             string[] layernames = new[]
                                       {
                                           "Countries",
-                                          "Rivers",
-                                          "Cities"
+                                          "Rivers"/*,
+                                          "Cities"*/
                                       };
 
             foreach (string s in layernames)
