@@ -31,6 +31,7 @@ using GeoAPI.Geometries;
 using SharpMap.Presentation.Views;
 using SharpMap.Rendering;
 using SharpMap.Rendering.Gdi;
+using SharpMap.Rendering.Rasterize;
 using SharpMap.Rendering.Rendering2D;
 using SharpMap.Styles;
 using SharpMap.Tools;
@@ -48,22 +49,21 @@ namespace SharpMap.Presentation.WinForms
     /// </summary>
     public class MapViewControl : Control, IMapView2D, IToolsView
     {
-        private IMapTool _selectedTool;
         private readonly Double _dpi;
-        private Boolean _dragging;
-        private GdiPoint _mouseDownLocation = GdiPoint.Empty;
-        private GdiPoint _mouseRelativeLocation = GdiPoint.Empty;
-        private GdiPoint _mousePreviousLocation = GdiPoint.Empty;
-        private readonly Queue<GdiRenderObject> _renderObjectQueue = new Queue<GdiRenderObject>();
-        private readonly GdiMapActionEventArgs _globalActionArgs = new GdiMapActionEventArgs();
-        private MapToolSet _tools;
-        private MapPresenter _presenter;
-        private GdiMatrix _gdiViewMatrix;
         private readonly StringFormat _format;
+        private readonly GdiMapActionEventArgs _globalActionArgs = new GdiMapActionEventArgs();
+        private readonly Label _infoLabel = new Label();
         private readonly PointF[] _symbolTargetPointsTransfer = new PointF[3];
         private Boolean _backgroundBeingSet;
-        private readonly Label _infoLabel = new Label();
         private Bitmap _bufferedMapImage;
+        private Boolean _dragging;
+        private GdiMatrix _gdiViewMatrix;
+        private GdiPoint _mouseDownLocation = GdiPoint.Empty;
+        private GdiPoint _mousePreviousLocation = GdiPoint.Empty;
+        private GdiPoint _mouseRelativeLocation = GdiPoint.Empty;
+        private MapPresenter _presenter;
+        private IMapTool _selectedTool;
+        private MapToolSet _tools;
 
         /// <summary>
         /// Initializes a new WinForms map view control.
@@ -96,24 +96,10 @@ namespace SharpMap.Presentation.WinForms
                                                   base.BackColor.B);
 
             Controls.Add(_infoLabel);
-        }
-
-        protected override void Dispose(Boolean disposing)
-        {
-            if (disposing)
-            {
-                if (Map != null)
-                {
-                    Map.Dispose();
-                }
-
-                if (_bufferedMapImage != null)
-                {
-                    _bufferedMapImage.Dispose();
-                }
-            }
-
-            base.Dispose(disposing);
+            RasterizeSurface.RenderComplete += delegate
+                                                   {
+                                                       Refresh();
+                                                   };
         }
 
         /// <summary>
@@ -137,7 +123,7 @@ namespace SharpMap.Presentation.WinForms
             set { _infoLabel.Text = value; }
         }
 
-        #region IView Members
+        #region IMapView2D Members
 
         public String Title
         {
@@ -145,9 +131,18 @@ namespace SharpMap.Presentation.WinForms
             set { Name = value; }
         }
 
-        #endregion
+        GdiRasterizeSurface _surface;
+        public IRasterizeSurface RasterizeSurface
+        {
+            get
+            {
+                if (_surface == null)
+                    _surface = new GdiRasterizeSurface(this);
+                return _surface;
+            }
+        }
 
-        #region IMapView2D Members
+        #endregion
 
         #region Events
 
@@ -359,34 +354,16 @@ namespace SharpMap.Presentation.WinForms
             onRequestOffset(offsetVector);
         }
 
-        /// <summary>
-        /// Draws the rendered object to the view.
-        /// </summary>
-        /// <param name="renderedObjects">The rendered objects to draw.</param>
-        public void ShowRenderedObjects(IEnumerable<GdiRenderObject> renderedObjects)
-        {
-            if (renderedObjects == null)
-            {
-                throw new ArgumentNullException("renderedObjects");
-            }
+        //void IMapView2D.ShowRenderedObjects(IEnumerable renderedObjects)
+        //{
+        //    if (renderedObjects is IEnumerable<GdiRenderObject>)
+        //    {
+        //        ShowRenderedObjects(renderedObjects as IEnumerable<GdiRenderObject>);
+        //        return;
+        //    }
 
-            foreach (GdiRenderObject ro in renderedObjects)
-            {
-                GdiRenderObject go = ro;
-                _renderObjectQueue.Enqueue(go);
-            }
-        }
-
-        void IMapView2D.ShowRenderedObjects(IEnumerable renderedObjects)
-        {
-            if (renderedObjects is IEnumerable<GdiRenderObject>)
-            {
-                ShowRenderedObjects(renderedObjects as IEnumerable<GdiRenderObject>);
-                return;
-            }
-
-            throw new ArgumentException("Rendered objects must be an IEnumerable<GdiRenderObject>.");
-        }
+        //    throw new ArgumentException("Rendered objects must be an IEnumerable<GdiRenderObject>.");
+        //}
 
         public void ZoomToExtents()
         {
@@ -408,7 +385,23 @@ namespace SharpMap.Presentation.WinForms
             onRequestZoomToWorldWidth(newWorldWidth);
         }
 
-        #endregion
+        ///// <summary>
+        ///// Draws the rendered object to the view.
+        ///// </summary>
+        ///// <param name="renderedObjects">The rendered objects to draw.</param>
+        //public void ShowRenderedObjects(IEnumerable<GdiRenderObject> renderedObjects)
+        //{
+        //    if (renderedObjects == null)
+        //    {
+        //        throw new ArgumentNullException("renderedObjects");
+        //    }
+
+        //    foreach (GdiRenderObject ro in renderedObjects)
+        //    {
+        //        GdiRenderObject go = ro;
+        //        _renderObjectQueue.Enqueue(go);
+        //    }
+        //}
 
         #endregion
 
@@ -565,207 +558,218 @@ namespace SharpMap.Presentation.WinForms
 
         protected override void OnPaint(PaintEventArgs e)
         {
-            Graphics g = e.Graphics;
+            //base.OnPaint(e);
+            e.Graphics.Clear(BackColor);
+            GdiRasterizeSurface surface = RasterizeSurface as GdiRasterizeSurface;
 
-            Graphics screenGraphics = e.Graphics;
 
-            g.SmoothingMode = SmoothingMode.AntiAlias;
 
-            if (DesignMode || _presenter == null)
-            {
-                g.Clear(BackColor);
-                return;
-            }
+            if (surface.FrontSurface != null)
+                e.Graphics.DrawImageUnscaled(surface.FrontSurface, 0, 0);
 
-            // dump to screen and return
-            if (_bufferedMapImage != null)
-            {
-                g.Clear(BackColor);
+            //Graphics g = e.Graphics;
 
-                g.DrawImageUnscaled(_bufferedMapImage,
-                                    (Int32)((Width - _bufferedMapImage.Width) / 2.0f),
-                                    (Int32)((Height - _bufferedMapImage.Height) / 2.0f));
+            //Graphics screenGraphics = e.Graphics;
 
-                if (_renderObjectQueue.Count == 0)
-                {
-                    return;
-                }
-            }
+            //g.SmoothingMode = SmoothingMode.AntiAlias;
 
-            if (_bufferedMapImage != null &&
-                (_bufferedMapImage.Width != Width || _bufferedMapImage.Height != Height))
-            {
-                _bufferedMapImage.Dispose();
-                _bufferedMapImage = null;
-            }
+            //if (DesignMode || _presenter == null)
+            //{
+            //    g.Clear(BackColor);
+            //    return;
+            //}
 
-            if (_bufferedMapImage == null)
-            {
-                _bufferedMapImage = new Bitmap(Width, Height);
-            }
+            //// dump to screen and return
+            //if (_bufferedMapImage != null)
+            //{
+            //    g.Clear(BackColor);
 
-            g = Graphics.FromImage(_bufferedMapImage);
-            g.SmoothingMode = SmoothingMode.AntiAlias;
+            //    g.DrawImageUnscaled(_bufferedMapImage,
+            //                        (Int32) ((Width - _bufferedMapImage.Width)/2.0f),
+            //                        (Int32) ((Height - _bufferedMapImage.Height)/2.0f));
 
-            // kbd4hire Leave GDI transform at identity.
-            //g.Transform = getGdiViewTransform();
+            //    if (_renderObjectQueue.Count == 0)
+            //    {
+            //        return;
+            //    }
+            //}
 
-            if (!_presenter.IsRenderingSelection)
-            {
-                g.Clear(BackColor);
-            }
+            //if (_bufferedMapImage != null &&
+            //    (_bufferedMapImage.Width != Width || _bufferedMapImage.Height != Height))
+            //{
+            //    _bufferedMapImage.Dispose();
+            //    _bufferedMapImage = null;
+            //}
 
-            while (_renderObjectQueue.Count > 0)
-            {
-                GdiRenderObject ro = _renderObjectQueue.Dequeue();
+            //if (_bufferedMapImage == null)
+            //{
+            //    _bufferedMapImage = new Bitmap(Width, Height);
+            //}
 
-                if (ro.State == RenderState.Unknown)
-                {
-                    continue;
-                }
+            //g = Graphics.FromImage(_bufferedMapImage);
+            //g.SmoothingMode = SmoothingMode.AntiAlias;
 
-                try
-                {
-                    switch (ro.State)
-                    {
-                        case RenderState.Normal:
-                            if (ro.GdiPath != null)
-                            {
-                                if (ro.Line != null)
-                                {
-                                    if (ro.Outline != null)
-                                    {
-                                        g.DrawPath(ro.Outline, ro.GdiPath);
-                                    }
+            //// kbd4hire Leave GDI transform at identity.
+            ////g.Transform = getGdiViewTransform();
 
-                                    g.DrawPath(ro.Line, ro.GdiPath);
-                                }
-                                else if (ro.Fill != null)
-                                {
-                                    g.FillPath(ro.Fill, ro.GdiPath);
+            //if (!_presenter.IsRenderingSelection)
+            //{
+            //    g.Clear(BackColor);
+            //}
 
-                                    if (ro.Outline != null)
-                                    {
-                                        g.DrawPath(ro.Outline, ro.GdiPath);
-                                    }
-                                }
-                            }
+            //while (_renderObjectQueue.Count > 0)
+            //{
+            //    GdiRenderObject ro = _renderObjectQueue.Dequeue();
 
-                            if (ro.Text != null)
-                            {
-                                RectangleF newBounds = AdjustForLabel(g, ro);
-                                g.DrawString(ro.Text, ro.Font, ro.Fill, newBounds.Location);
+            //    if (ro.State == RenderState.Unknown)
+            //    {
+            //        continue;
+            //    }
 
-                                // kbd4hire Leave GDI transform at identity.
-                                //g.Transform = getGdiViewTransform();
-                            }
+            //    try
+            //    {
+            //        switch (ro.State)
+            //        {
+            //            case RenderState.Normal:
+            //                if (ro.GdiPath != null)
+            //                {
+            //                    if (ro.Line != null)
+            //                    {
+            //                        if (ro.Outline != null)
+            //                        {
+            //                            g.DrawPath(ro.Outline, ro.GdiPath);
+            //                        }
 
-                            break;
-                        case RenderState.Highlighted:
-                            if (ro.GdiPath != null)
-                            {
-                                if (ro.HighlightLine != null)
-                                {
-                                    if (ro.HighlightOutline != null)
-                                    {
-                                        g.DrawPath(ro.HighlightOutline, ro.GdiPath);
-                                    }
+            //                        g.DrawPath(ro.Line, ro.GdiPath);
+            //                    }
+            //                    else if (ro.Fill != null)
+            //                    {
+            //                        g.FillPath(ro.Fill, ro.GdiPath);
 
-                                    g.DrawPath(ro.HighlightLine, ro.GdiPath);
-                                }
-                                else if (ro.HighlightFill != null)
-                                {
-                                    g.FillPath(ro.HighlightFill, ro.GdiPath);
+            //                        if (ro.Outline != null)
+            //                        {
+            //                            g.DrawPath(ro.Outline, ro.GdiPath);
+            //                        }
+            //                    }
+            //                }
 
-                                    if (ro.HighlightOutline != null)
-                                    {
-                                        g.DrawPath(ro.HighlightOutline, ro.GdiPath);
-                                    }
-                                }
-                            }
+            //                if (ro.Text != null)
+            //                {
+            //                    RectangleF newBounds = AdjustForLabel(g, ro);
+            //                    g.DrawString(ro.Text, ro.Font, ro.Fill, newBounds.Location);
 
-                            if (ro.Text != null)
-                            {
-                                RectangleF newBounds = AdjustForLabel(g, ro);
-                                g.DrawString(ro.Text, ro.Font, ro.HighlightFill, newBounds);
+            //                    // kbd4hire Leave GDI transform at identity.
+            //                    //g.Transform = getGdiViewTransform();
+            //                }
 
-                                // kbd4hire 20090318 Leave transfrom at identity
-                                //g.Transform = getGdiViewTransform();
-                            }
+            //                break;
+            //            case RenderState.Highlighted:
+            //                if (ro.GdiPath != null)
+            //                {
+            //                    if (ro.HighlightLine != null)
+            //                    {
+            //                        if (ro.HighlightOutline != null)
+            //                        {
+            //                            g.DrawPath(ro.HighlightOutline, ro.GdiPath);
+            //                        }
 
-                            break;
-                        case RenderState.Selected:
-                            if (ro.GdiPath != null)
-                            {
-                                if (ro.SelectLine != null)
-                                {
-                                    if (ro.SelectOutline != null)
-                                    {
-                                        g.DrawPath(ro.SelectOutline, ro.GdiPath);
-                                    }
+            //                        g.DrawPath(ro.HighlightLine, ro.GdiPath);
+            //                    }
+            //                    else if (ro.HighlightFill != null)
+            //                    {
+            //                        g.FillPath(ro.HighlightFill, ro.GdiPath);
 
-                                    g.DrawPath(ro.SelectLine, ro.GdiPath);
-                                }
-                                else if (ro.SelectFill != null)
-                                {
-                                    g.FillPath(ro.SelectFill, ro.GdiPath);
+            //                        if (ro.HighlightOutline != null)
+            //                        {
+            //                            g.DrawPath(ro.HighlightOutline, ro.GdiPath);
+            //                        }
+            //                    }
+            //                }
 
-                                    if (ro.SelectOutline != null)
-                                    {
-                                        g.DrawPath(ro.SelectOutline, ro.GdiPath);
-                                    }
-                                }
-                            }
+            //                if (ro.Text != null)
+            //                {
+            //                    RectangleF newBounds = AdjustForLabel(g, ro);
+            //                    g.DrawString(ro.Text, ro.Font, ro.HighlightFill, newBounds);
 
-                            if (ro.Text != null)
-                            {
-                                RectangleF newBounds = AdjustForLabel(g, ro);
-                                g.DrawString(ro.Text, ro.Font, ro.SelectFill, newBounds);
-                                // kbd4hire 20090318 Leave transfrom at identity
-                                //g.Transform = getGdiViewTransform();
-                            }
-                            break;
-                        case RenderState.Unknown:
-                        default:
-                            break;
-                    }
-                }
-                catch(OverflowException) {}
+            //                    // kbd4hire 20090318 Leave transfrom at identity
+            //                    //g.Transform = getGdiViewTransform();
+            //                }
 
-                if (ro.Image != null)
-                {
-                    ImageAttributes imageAttributes = null;
+            //                break;
+            //            case RenderState.Selected:
+            //                if (ro.GdiPath != null)
+            //                {
+            //                    if (ro.SelectLine != null)
+            //                    {
+            //                        if (ro.SelectOutline != null)
+            //                        {
+            //                            g.DrawPath(ro.SelectOutline, ro.GdiPath);
+            //                        }
 
-                    if (ro.ColorTransform != null)
-                    {
-                        imageAttributes = new ImageAttributes();
-                        imageAttributes.SetColorMatrix(ro.ColorTransform);
-                    }
+            //                        g.DrawPath(ro.SelectLine, ro.GdiPath);
+            //                    }
+            //                    else if (ro.SelectFill != null)
+            //                    {
+            //                        g.FillPath(ro.SelectFill, ro.GdiPath);
 
-                    if (imageAttributes != null)
-                    {
-                        g.DrawImage(ro.Image,
-                                    getPoints(ro.Bounds),
-                                    getSourceRegion(ro.Image),
-                                    GraphicsUnit.Pixel,
-                                    imageAttributes);
-                    }
-                    else
-                    {
-                        g.DrawImage(ro.Image,
-                                    getPoints(ro.Bounds),
-                                    getSourceRegion(ro.Image),
-                                    GraphicsUnit.Pixel);
-                    }
-                }
-            }
+            //                        if (ro.SelectOutline != null)
+            //                        {
+            //                            g.DrawPath(ro.SelectOutline, ro.GdiPath);
+            //                        }
+            //                    }
+            //                }
 
-            g.ResetTransform();
+            //                if (ro.Text != null)
+            //                {
+            //                    RectangleF newBounds = AdjustForLabel(g, ro);
+            //                    g.DrawString(ro.Text, ro.Font, ro.SelectFill, newBounds);
+            //                    // kbd4hire 20090318 Leave transfrom at identity
+            //                    //g.Transform = getGdiViewTransform();
+            //                }
+            //                break;
+            //            case RenderState.Unknown:
+            //            default:
+            //                break;
+            //        }
+            //    }
+            //    catch (OverflowException)
+            //    {
+            //    }
 
-            if (g != screenGraphics)
-            {
-                screenGraphics.DrawImageUnscaled(_bufferedMapImage, 0, 0);
-            }
+            //    if (ro.Image != null)
+            //    {
+            //        ImageAttributes imageAttributes = null;
+
+            //        if (ro.ColorTransform != null)
+            //        {
+            //            imageAttributes = new ImageAttributes();
+            //            imageAttributes.SetColorMatrix(ro.ColorTransform);
+            //        }
+
+            //        if (imageAttributes != null)
+            //        {
+            //            g.DrawImage(ro.Image,
+            //                        getPoints(ro.Bounds),
+            //                        getSourceRegion(ro.Image),
+            //                        GraphicsUnit.Pixel,
+            //                        imageAttributes);
+            //        }
+            //        else
+            //        {
+            //            g.DrawImage(ro.Image,
+            //                        getPoints(ro.Bounds),
+            //                        getSourceRegion(ro.Image),
+            //                        GraphicsUnit.Pixel);
+            //        }
+            //    }
+            //}
+
+            //g.ResetTransform();
+
+            //if (g != screenGraphics)
+            //{
+            //    screenGraphics.DrawImageUnscaled(_bufferedMapImage, 0, 0);
+            //}
         }
 
         /// <summary>
@@ -774,84 +778,84 @@ namespace SharpMap.Presentation.WinForms
         /// <param name="g"></param>
         /// <param name="ro"></param>
         /// <returns></returns>
-        protected RectangleF AdjustForLabel(Graphics g, GdiRenderObject ro)
-        {
-            // this transform goes from the underlying coordinates to 
-            // screen coordinates, but for some reason renders text upside down
-            // we cannot just scale by 1, -1 because offsets are affected also
-            GdiMatrix m = g.Transform;
-            // used to scale text size for the current zoom level
-            float scale = Math.Abs(m.Elements[0]);
+        //protected RectangleF AdjustForLabel(Graphics g, GdiRenderObject ro)
+        //{
+        //    // this transform goes from the underlying coordinates to 
+        //    // screen coordinates, but for some reason renders text upside down
+        //    // we cannot just scale by 1, -1 because offsets are affected also
+        //    GdiMatrix m = g.Transform;
+        //    // used to scale text size for the current zoom level
+        //    float scale = Math.Abs(m.Elements[0]);
 
-            // get the bounds of the label in the underlying coordinate space
-            Point ll = new Point((Int32)ro.Bounds.X, (Int32)ro.Bounds.Y);
-            Point ur = new Point((Int32)(ro.Bounds.X + ro.Bounds.Width),
-                                 (Int32)(ro.Bounds.Y + ro.Bounds.Height));
+        //    // get the bounds of the label in the underlying coordinate space
+        //    Point ll = new Point((Int32) ro.Bounds.X, (Int32) ro.Bounds.Y);
+        //    Point ur = new Point((Int32) (ro.Bounds.X + ro.Bounds.Width),
+        //                         (Int32) (ro.Bounds.Y + ro.Bounds.Height));
 
-            Point[] transformedPoints1 =
-                {
-                    new Point((Int32) ro.Bounds.X, (Int32) ro.Bounds.Y),
-                    new Point((Int32) (ro.Bounds.X + ro.Bounds.Width),
-                              (Int32) (ro.Bounds.Y + ro.Bounds.Height))
-                };
+        //    Point[] transformedPoints1 =
+        //        {
+        //            new Point((Int32) ro.Bounds.X, (Int32) ro.Bounds.Y),
+        //            new Point((Int32) (ro.Bounds.X + ro.Bounds.Width),
+        //                      (Int32) (ro.Bounds.Y + ro.Bounds.Height))
+        //        };
 
-            // get the label bounds transformed into screen coordinates
-            // note that if we just render this as-is the label is upside down
-            m.TransformPoints(transformedPoints1);
+        //    // get the label bounds transformed into screen coordinates
+        //    // note that if we just render this as-is the label is upside down
+        //    m.TransformPoints(transformedPoints1);
 
-            // for labels, we're going to use an identity matrix and screen coordinates
-            GdiMatrix newM = new GdiMatrix();
+        //    // for labels, we're going to use an identity matrix and screen coordinates
+        //    GdiMatrix newM = new GdiMatrix();
 
-            Boolean scaleText = true;
+        //    Boolean scaleText = true;
 
-            /*
-                        if (ro.Layer != null)
-                        {
-                            Double min = ro.Layer.Style.MinVisible;
-                            Double max = ro.Layer.Style.MaxVisible;
-                            float scaleMult = Double.IsInfinity(max) ? 2.0f : 1.0f;
+        //    /*
+        //                if (ro.Layer != null)
+        //                {
+        //                    Double min = ro.Layer.Style.MinVisible;
+        //                    Double max = ro.Layer.Style.MaxVisible;
+        //                    float scaleMult = Double.IsInfinity(max) ? 2.0f : 1.0f;
 
-                            //max = Math.Min(max, _presenter.MaximumWorldWidth);
-                            max = Math.Min(max, Map.Extents.Width);
-                            //Double pct = (max - _presenter.WorldWidth) / (max - min);
-                            Double pct = 1 - (Math.Min(_presenter.WorldWidth, Map.Extents.Width) - min) / (max - min);
+        //                    //max = Math.Min(max, _presenter.MaximumWorldWidth);
+        //                    max = Math.Min(max, Map.Extents.Width);
+        //                    //Double pct = (max - _presenter.WorldWidth) / (max - min);
+        //                    Double pct = 1 - (Math.Min(_presenter.WorldWidth, Map.Extents.Width) - min) / (max - min);
 
-                            if (scaleMult > 1)
-                            {
-                                pct = Math.Max(.5, pct * 2);
-                            }
+        //                    if (scaleMult > 1)
+        //                    {
+        //                        pct = Math.Max(.5, pct * 2);
+        //                    }
 
-                            scale = (float)pct*scaleMult;
-                            labelScale = scale;
-                        }
-            */
+        //                    scale = (float)pct*scaleMult;
+        //                    labelScale = scale;
+        //                }
+        //    */
 
-            // ok, I lied, if we're scaling labels we need to scale our new matrix, but still no offsets
-            if (scaleText)
-            {
-                newM.Scale(scale, scale);
-            }
-            else
-            {
-                scale = 1.0f;
-            }
+        //    // ok, I lied, if we're scaling labels we need to scale our new matrix, but still no offsets
+        //    if (scaleText)
+        //    {
+        //        newM.Scale(scale, scale);
+        //    }
+        //    else
+        //    {
+        //        scale = 1.0f;
+        //    }
 
-            g.Transform = newM;
+        //    g.Transform = newM;
 
-            Int32 pixelWidth = ur.X - ll.X;
-            Int32 pixelHeight = ur.Y - ll.Y;
+        //    Int32 pixelWidth = ur.X - ll.X;
+        //    Int32 pixelHeight = ur.Y - ll.Y;
 
-            // if we're scaling text, then x,y position will get multiplied by our 
-            // scale, so adjust for it here so that we can use actual pixel x,y
-            // Also center our label on the coordinate instead of putting the label origin on the coordinate
-            RectangleF newBounds = new RectangleF(transformedPoints1[0].X / scale,
-                                                  (transformedPoints1[0].Y / scale) - pixelHeight,
-                                                  pixelWidth,
-                                                  pixelHeight);
-            //RectangleF newBounds = new RectangleF(transformedPoints1[0].X / scale - (pixelWidth / 2), transformedPoints1[0].Y / scale - (pixelHeight / 2), pixelWidth, pixelHeight);
+        //    // if we're scaling text, then x,y position will get multiplied by our 
+        //    // scale, so adjust for it here so that we can use actual pixel x,y
+        //    // Also center our label on the coordinate instead of putting the label origin on the coordinate
+        //    RectangleF newBounds = new RectangleF(transformedPoints1[0].X/scale,
+        //                                          (transformedPoints1[0].Y/scale) - pixelHeight,
+        //                                          pixelWidth,
+        //                                          pixelHeight);
+        //    //RectangleF newBounds = new RectangleF(transformedPoints1[0].X / scale - (pixelWidth / 2), transformedPoints1[0].Y / scale - (pixelHeight / 2), pixelWidth, pixelHeight);
 
-            return newBounds;
-        }
+        //    return newBounds;
+        //}
 
         protected override void OnSizeChanged(EventArgs args)
         {
@@ -1155,6 +1159,24 @@ namespace SharpMap.Presentation.WinForms
         }
 
         #endregion
+
+        protected override void Dispose(Boolean disposing)
+        {
+            if (disposing)
+            {
+                if (Map != null)
+                {
+                    Map.Dispose();
+                }
+
+                if (_bufferedMapImage != null)
+                {
+                    _bufferedMapImage.Dispose();
+                }
+            }
+
+            base.Dispose(disposing);
+        }
     }
 
     #region Event Arg Classes
@@ -1162,7 +1184,9 @@ namespace SharpMap.Presentation.WinForms
     public class GdiMapActionEventArgs : MapActionEventArgs<Point2D>
     {
         public GdiMapActionEventArgs()
-            : base(new Point2D()) { }
+            : base(new Point2D())
+        {
+        }
 
         public void SetActionPoint(Point2D actionLocation)
         {

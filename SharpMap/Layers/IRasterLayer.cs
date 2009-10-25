@@ -17,11 +17,14 @@
 
 using SharpMap.Data;
 using SharpMap.Layers;
+using SharpMap.Rendering.Symbolize;
 
 namespace SharpMap.Layers
 {
     public interface IRasterLayer : ILayer
     {
         new IRasterProvider DataSource { get; }
+
+        IRasterSymbolizer Symbolizer { get; }
     }
 }

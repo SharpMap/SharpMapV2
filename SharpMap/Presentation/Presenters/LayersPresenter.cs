@@ -129,16 +129,16 @@ namespace SharpMap.Presentation.Presenters
                     else if (propertyDescriptor.Name == FeatureLayer.AreFeaturesSelectableProperty.Name)
                     {
                         ILayer layer = Map.Layers[newIndex];
-                        FeatureStyle style = layer.Style as FeatureStyle;
+                        ////FeatureStyle style = layer.Style as FeatureStyle;
 
-                        if (style != null && style.AreFeaturesSelectable)
-                        {
+                        //if (style != null && style.AreFeaturesSelectable)
+                        //{
                             View.SetFeaturesSelectable(layer.LayerName, true);
-                        }
-                        else
-                        {
-                            View.SetFeaturesSelectable(layer.LayerName, false);
-                        }
+                        //}
+                        //else
+                        //{
+                        //    View.SetFeaturesSelectable(layer.LayerName, false);
+                        //}
                     }
                     break;
                 // The following are taken care of by data binding:

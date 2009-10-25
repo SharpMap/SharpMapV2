@@ -18,7 +18,7 @@
 
 using System;
 using SharpMap.Data;
-using SharpMap.Expressions;
+using SharpMap.Rendering.Symbolize;
 using SharpMap.Styles;
 
 namespace SharpMap.Layers
@@ -26,7 +26,7 @@ namespace SharpMap.Layers
     /// <summary>
     /// A map layer of feature geometries.
     /// </summary>
-    public class GeometryLayer : FeatureLayer, ILayer
+    public class GeometryLayer : FeatureLayer, IGeometryLayer
     {
         #region Instance fields
 
@@ -38,7 +38,9 @@ namespace SharpMap.Layers
         /// Initializes a new, empty vector layer.
         /// </summary>
         public GeometryLayer(IFeatureProvider dataSource)
-            : this(String.Empty, dataSource) { }
+            : this(String.Empty, dataSource)
+        {
+        }
 
         /// <summary>
         /// Initializes a new layer with the given name and datasource.
@@ -46,7 +48,9 @@ namespace SharpMap.Layers
         /// <param name="layername">Name of the layer.</param>
         /// <param name="dataSource">Data source.</param>
         public GeometryLayer(String layername, IFeatureProvider dataSource)
-            : this(layername, new GeometryStyle(), dataSource) { }
+            : this(layername, new GeometryStyle(), dataSource)
+        {
+        }
 
         /// <summary>
         /// Initializes a new layer with the given name, style and datasource.
@@ -55,9 +59,9 @@ namespace SharpMap.Layers
         /// <param name="style">Style to apply to the layer.</param>
         /// <param name="dataSource">Data source.</param>
         public GeometryLayer(String layername, GeometryStyle style, IFeatureProvider dataSource)
-            : base(layername, style, dataSource) { }
-
-        #region IDisposable Members
+            : base(layername, style, dataSource)
+        {
+        }
 
         /// <summary>
         /// Disposes the object.
@@ -79,41 +83,52 @@ namespace SharpMap.Layers
 
         #endregion
 
-        #endregion
-
         #region Properties
-        /// <summary>
-        /// Gets or sets the layer style as a VectorStyle.
-        /// </summary>
-        public new GeometryStyle Style
-        {
-            get { return base.Style as GeometryStyle; }
-            set { base.Style = value; }
-        }
+
+        ///// <summary>
+        ///// Gets or sets the layer style as a VectorStyle.
+        ///// </summary>
+        //public new GeometryStyle Style
+        //{
+        //    get { return base.Style as GeometryStyle; }
+        //    set { base.Style = value; }
+        //}
+
         #endregion
 
         #region Layer Overrides
+
+        //IStyle ILayer.Style
+        //{
+        //    get { return Style; }
+        //    set
+        //    {
+        //        if (value != null && !(value is GeometryStyle))
+        //        {
+        //            throw new ArgumentException("Style value must be of type VectorStyle.", "value");
+        //        }
+
+        //        Style = value as GeometryStyle;
+        //    }
+        //}
+
         protected override IStyle CreateStyle()
         {
             return new GeometryStyle();
         }
 
-        IStyle ILayer.Style
-        {
-            get { return Style; }
-            set
-            {
-                if (value != null && !(value is GeometryStyle))
-                {
-                    throw new ArgumentException("Style value must be of type VectorStyle.", "value");
-                }
-
-                Style = value as GeometryStyle;
-            }
-        }
         #endregion
 
-        #region ICloneable Members
+        #region IGeometryLayer Members
+
+        IGeometrySymbolizer _symbolizer = new GeometrySymbolizer();
+
+        public override ISymbolizer Symbolizer
+        {
+            get { return _symbolizer; }
+        }
+
+        #endregion
 
         /// <summary>
         /// Clones the layer.
@@ -122,6 +137,13 @@ namespace SharpMap.Layers
         public override Object Clone()
         {
             throw new NotSupportedException();
+        }
+
+        #region IGeometryLayer Members
+
+        IGeometrySymbolizer IGeometryLayer.Symbolizer
+        {
+            get { return (IGeometrySymbolizer)Symbolizer; }
         }
 
         #endregion

@@ -23,10 +23,11 @@ using System.ComponentModel;
 using System.Threading;
 using GeoAPI.CoordinateSystems;
 using GeoAPI.CoordinateSystems.Transformations;
-using SharpMap.Data;
 using GeoAPI.Geometries;
+using SharpMap.Data;
 using SharpMap.Data.Caching;
 using SharpMap.Expressions;
+using SharpMap.Rendering.Symbolize;
 using SharpMap.Styles;
 
 namespace SharpMap.Layers
@@ -102,34 +103,33 @@ namespace SharpMap.Layers
             get { return _layerTypeProperties.Find("LayerName", false); }
         }
 
-        /// <summary>
-        /// Gets a  <see cref="PropertyDescriptor"/> for 
-        /// <see cref="Layer"/>'s <see cref="Style"/> property.
-        /// </summary>
-        public static PropertyDescriptor StyleProperty
-        {
-            get { return _layerTypeProperties.Find("Style", false); }
-        }
+        ///// <summary>
+        ///// Gets a  <see cref="PropertyDescriptor"/> for 
+        ///// <see cref="Layer"/>'s <see cref="Style"/> property.
+        ///// </summary>
+        //public static PropertyDescriptor StyleProperty
+        //{
+        //    get { return _layerTypeProperties.Find("Style", false); }
+        //}
 
         #endregion
 
         #region Instance fields
 
-        private readonly ILayer _parent;
-        //private ICoordinateTransformation _coordinateTransform;
-        private String _layerName;
-        private IStyle _style;
-        private Boolean _disposed;
         private readonly IAsyncProvider _dataSource;
+        private readonly Object _loadCompletionSync = new Object();
+        private readonly ILayer _parent;
         private Boolean _asyncQuery;
         //private Boolean _handleFeaturesNotFoundEvent = true;
-        private IGeometry _loadedRegion;
-        private PropertyDescriptorCollection _instanceProperties;
-        private IGeometryFactory _geoFactory;
         private IQueryCache _cache;
+        private Boolean _disposed;
+        private IGeometryFactory _geoFactory;
+        private PropertyDescriptorCollection _instanceProperties;
+        private String _layerName;
         private IAsyncResult _loadAsyncResult;
-        private readonly Object _loadCompletionSync = new Object();
+        private IGeometry _loadedRegion;
         private Dictionary<PropertyDescriptor, Object> _propertyValues;
+        private IStyle _style;
 
         #endregion
 
@@ -143,7 +143,9 @@ namespace SharpMap.Layers
         /// for the layer.
         /// </param>
         protected Layer(IProvider dataSource) :
-            this(String.Empty, null, dataSource) { }
+            this(String.Empty, null, dataSource)
+        {
+        }
 
         /// <summary>
         /// Creates a new Layer instance identified by the given name and
@@ -157,7 +159,9 @@ namespace SharpMap.Layers
         /// for the layer.
         /// </param>
         protected Layer(String layerName, IProvider dataSource) :
-            this(layerName, null, dataSource) { }
+            this(layerName, null, dataSource)
+        {
+        }
 
         /// <summary>
         /// Creates a new Layer instance identified by the given name, with
@@ -175,7 +179,9 @@ namespace SharpMap.Layers
         /// for the layer.
         /// </param>
         protected Layer(String layerName, IStyle style, IProvider dataSource)
-            : this(layerName, style, dataSource, null, null) { }
+            : this(layerName, style, dataSource, null, null)
+        {
+        }
 
         protected Layer(String layerName,
                         IStyle style,
@@ -198,7 +204,7 @@ namespace SharpMap.Layers
                              CreateAsyncProvider(parent.DataSource);
                 CoordinateTransformation = parent.CoordinateTransformation;
                 _loadedRegion = parent.LoadedRegion;
-                style = parent.Style;
+                //style = parent.Style;
             }
 
             IAsyncProvider asyncProvider = dataSource as IAsyncProvider;
@@ -207,18 +213,21 @@ namespace SharpMap.Layers
             _style = style;
             // TODO: inject the cache type or instance...
             _cache = new NullQueryCache();
+            Symbolizer.PropertyChanged += delegate
+                                                {
+                                                    OnPropertyChanged("Symbolizer");
+                                                };
         }
 
         #region Dispose Pattern
-        /// <summary>
-        /// Releases resources if <see cref="Dispose"/> isn't called.
-        /// </summary>
-        ~Layer()
-        {
-            Dispose(false);
-        }
 
-        #region IDisposable Members
+        /// <summary>
+        /// Gets whether this layer is disposed, and no longer accessible.
+        /// </summary>
+        public Boolean IsDisposed
+        {
+            get { return _disposed; }
+        }
 
         /// <summary>
         /// Releases all resources deterministically.
@@ -239,7 +248,13 @@ namespace SharpMap.Layers
             }
         }
 
-        #endregion
+        /// <summary>
+        /// Releases resources if <see cref="Dispose"/> isn't called.
+        /// </summary>
+        ~Layer()
+        {
+            Dispose(false);
+        }
 
         /// <summary>
         /// Releases all resources, and removes from finalization 
@@ -257,14 +272,6 @@ namespace SharpMap.Layers
                     _dataSource.Dispose();
                 }
             }
-        }
-
-        /// <summary>
-        /// Gets whether this layer is disposed, and no longer accessible.
-        /// </summary>
-        public Boolean IsDisposed
-        {
-            get { return _disposed; }
         }
 
         /// <summary>
@@ -289,197 +296,6 @@ namespace SharpMap.Layers
 
         #endregion
 
-        public void SetPropertyValue<TValue>(PropertyDescriptor property, TValue value)
-        {
-            checkSetValueType<TValue>(property);
-            checkPropertyParameter(property);
-            SetPropertyValueInternal(property, value);
-        }
-
-        public void SetPropertyValue(PropertyDescriptor property, Object value)
-        {
-            checkPropertyParameter(property);
-            SetPropertyValueInternal(property, value);
-        }
-
-        public virtual Boolean HasProperty(PropertyDescriptor property)
-        {
-            PropertyDescriptorCollection properties = _instanceProperties ?? _layerTypeProperties;
-            return properties.Contains(property) || (_propertyValues != null &&
-                                                     _propertyValues.ContainsKey(property));
-        }
-
-        public override Object GetPropertyOwner(PropertyDescriptor pd)
-        {
-            return base.GetPropertyOwner(pd) ?? (HasProperty(pd) ? this : null);
-        }
-
-        public override PropertyDescriptorCollection GetProperties()
-        {
-            if (_instanceProperties != null)
-            {
-                return _instanceProperties;
-            }
-
-            PropertyDescriptorCollection parentProperties = base.GetProperties();
-
-            return parentProperties != PropertyDescriptorCollection.Empty
-                       ? parentProperties
-                       : _layerTypeProperties;
-        }
-
-        public Int32 AddProperty(PropertyDescriptor property)
-        {
-            ensureInstanceProperties();
-            return _instanceProperties.Add(property);
-        }
-
-        public Int32 AddProperty<TValue>(PropertyDescriptor property, TValue value)
-        {
-            ensureInstanceProperties();
-            Int32 index = _instanceProperties.Add(property);
-            SetPropertyValueInternal(property, value);
-            return index;
-        }
-
-        public TValue GetPropertyValue<TValue>(PropertyDescriptor property)
-        {
-            if (property == null) { throw new ArgumentNullException("property"); }
-
-            return GetPropertyValueInternal<TValue>(property);
-        }
-
-        public Object GetPropertyValue(PropertyDescriptor property)
-        {
-            if (property == null) { throw new ArgumentNullException("property"); }
-
-            return GetPropertyValueInternal(property);
-        }
-
-        #region ILayer Members
-        /// <summary>
-        /// Gets or sets a value indicating that data is obtained asynchronously.
-        /// </summary>
-        public Boolean AsyncQuery
-        {
-            get
-            {
-                return _asyncQuery;
-            }
-            set
-            {
-                checkParent();
-
-                if (_asyncQuery == value)
-                {
-                    return;
-                }
-
-                _asyncQuery = value;
-                OnAsyncQueryChanged();
-            }
-        }
-
-        /// <summary>
-        /// Gets the coordinate system of the layer.
-        /// </summary>
-        public ICoordinateSystem SpatialReference
-        {
-            get { return DataSource.SpatialReference; }
-        }
-
-        /// <summary>
-        /// Gets or sets the <see cref="ICoordinateTransformation"/> 
-        /// applied to this layer.
-        /// </summary>
-        public virtual ICoordinateTransformation CoordinateTransformation
-        {
-            get { return DataSource.CoordinateTransformation; }
-            set
-            {
-                checkParent();
-
-                ICoordinateTransformation currentTransform =
-                    DataSource.CoordinateTransformation;
-
-                if (currentTransform == value)
-                {
-                    return;
-                }
-
-                if (currentTransform != null && currentTransform.Source != SpatialReference)
-                {
-                    throw new InvalidOperationException("Coordinate transformation doesn't " +
-                                                        "have the same 'source' spatial reference " +
-                                                        "as this layer");
-                }
-
-                DataSource.CoordinateTransformation = value;
-                OnCoordinateTransformationChanged();
-            }
-        }
-
-        public event EventHandler<LayerDataLoadedEventArgs> DataLoaded;
-
-        /// <summary>
-        /// Gets the data source used to create this layer.
-        /// </summary>
-        public IProvider DataSource
-        {
-            get { return _dataSource; }
-        }
-
-        /// <summary>
-        /// Gets or sets a value which indicates if the layer 
-        /// is enabled (visible or able to participate in queries) or not.
-        /// </summary>
-        /// <remarks>
-        /// This property is a convenience property which exposes 
-        /// the value of <see cref="SharpMap.Styles.Style.Enabled"/>. 
-        /// If setting this property and the Style property 
-        /// value is null, a new <see cref="Style"/> 
-        /// object is created and assigned to the Style property, 
-        /// and then the Style.Enabled property is set.
-        /// </remarks>
-        public virtual Boolean Enabled
-        {
-            get
-            {
-                return Style.Enabled;
-            }
-            set
-            {
-                checkParent();
-
-                if (Enabled == value)
-                {
-                    return;
-                }
-
-                Style.Enabled = value;
-                OnEnabledChanged();
-            }
-        }
-
-        /// <summary>
-        /// Gets the full extent of the data available to the layer.
-        /// </summary>
-        /// <returns>
-        /// A <see cref="IExtents"/> defining the extent of 
-        /// all data available to the layer.
-        /// </returns>
-        public IExtents Extents
-        {
-            get
-            {
-                IExtents fullExtents = DataSource.GetExtents();
-
-                return CoordinateTransformation != null
-                    ? CoordinateTransformation.Transform(fullExtents, GeometryFactory)
-                    : fullExtents;
-            }
-        }
-
         public IGeometryFactory GeometryFactory
         {
             get { return _geoFactory; }
@@ -490,159 +306,45 @@ namespace SharpMap.Layers
             }
         }
 
-        public Boolean IsLoadingData
-        {
-            get { return _loadAsyncResult != null; }
-        }
+        ///// <summary>
+        ///// Gets or sets the style for the layer.
+        ///// </summary>
+        //public virtual IStyle Style
+        //{
+        //    get
+        //    {
+        //        if (_style == null)
+        //        {
+        //            _style = CreateStyle();
+        //        }
 
-        public Boolean IsVisibleWhen(Predicate<ILayer> condition)
-        {
-            return condition(this);
-        }
+        //        return _style;
+        //    }
+        //    set
+        //    {
+        //        checkParent();
 
-        /// <summary>
-        /// Gets or sets the name of the layer.
-        /// </summary>
-        public virtual String LayerName
-        {
-            get { return _layerName; }
-            set
-            {
-                if (String.IsNullOrEmpty(value))
-                {
-                    throw new ArgumentException("LayerName must not be null or empty.");
-                }
+        //        if (_style == value)
+        //        {
+        //            return;
+        //        }
 
-                if (_layerName == value)
-                {
-                    return;
-                }
-
-                _layerName = value;
-                OnLayerNameChanged();
-            }
-        }
-
-        public IGeometry LoadedRegion
-        {
-            get
-            {
-                if (_loadedRegion == null)
-                {
-                    computeLoadedRegion();
-                }
-
-                return _loadedRegion;
-            }
-            protected set
-            {
-                checkParent();
-                _loadedRegion = value;
-            }
-        }
-
-        public void LoadIntersectingLayerData(IExtents region)
-        {
-            if (region == null) throw new ArgumentNullException("region");
-
-            SpatialBinaryExpression exp = new SpatialBinaryExpression(new ExtentsExpression(region),
-                                                                      SpatialOperation.Intersects,
-                                                                      new LayerExpression(this));
-
-            QueryExpression query = GetQueryFromSpatialBinaryExpression(exp);
-
-            LoadLayerData(query);
-        }
-
-        public void LoadIntersectingLayerData(IGeometry region)
-        {
-            if (region == null) throw new ArgumentNullException("region");
-
-            SpatialBinaryExpression exp = new SpatialBinaryExpression(new GeometryExpression(region),
-                                                                      SpatialOperation.Intersects,
-                                                                      new LayerExpression(this));
-
-            QueryExpression query = GetQueryFromSpatialBinaryExpression(exp);
-
-            LoadLayerData(query);
-        }
-
-        public void LoadLayerData(QueryExpression query)
-        {
-            if (_asyncQuery)
-            {
-                LoadLayerDataAsync(query);
-            }
-            else
-            {
-                _loadAsyncResult = _dataSource.BeginExecuteQuery(query, completeLoadLayerData);
-
-                lock (_loadCompletionSync)
-                {
-
-                    Object results = _dataSource.EndExecuteQuery(_loadAsyncResult);
-                    endLoadInternal(query, results);
-                }
-            }
-        }
-
-        public void LoadLayerDataAsync(QueryExpression query)
-        {
-            AsyncCallback callback = completeLoadLayerData;
-
-            _loadAsyncResult = _dataSource.BeginExecuteQuery(query, callback);
-        }
-
-        public abstract IEnumerable Select(Expression query);
-
-        /// <summary>
-        /// Gets the spatial reference ID of the layer data source, if one is set.
-        /// </summary>
-        public virtual String Srid
-        {
-            get
-            {
-                if (DataSource == null)
-                {
-                    throw new InvalidOperationException("DataSource property is null on layer '" +
-                                                        LayerName + "'");
-                }
-
-                return DataSource.Srid;
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets the style for the layer.
-        /// </summary>
-        public virtual IStyle Style
-        {
-            get
-            {
-                if (_style == null)
-                {
-                    _style = CreateStyle();
-                }
-
-                return _style;
-            }
-            set
-            {
-                checkParent();
-
-                if (_style == value)
-                {
-                    return;
-                }
-
-                _style = value;
-                OnStyleChanged();
-            }
-        }
-
-        #endregion
+        //        _style = value;
+        //        OnStyleChanged();
+        //    }
+        //}
 
         #region Protected members
+
+        public IQueryCache QueryCache
+        {
+            get { return _cache; }
+            set
+            {
+                checkParent();
+                _cache = value;
+            }
+        }
 
         protected abstract IAsyncProvider CreateAsyncProvider(IProvider dataSource);
         //{ return new Async<Feature/Raster>ProviderAdapter(dataSource); }
@@ -672,16 +374,6 @@ namespace SharpMap.Layers
             else
             {
                 QueryCache.AddExpressionResults(expression, enumerable);
-            }
-        }
-
-        public IQueryCache QueryCache
-        {
-            get { return _cache; }
-            set
-            {
-                checkParent();
-                _cache = value;
             }
         }
 
@@ -725,15 +417,10 @@ namespace SharpMap.Layers
             OnPropertyChanged(LayerNameProperty.Name);
         }
 
-        protected virtual void OnStyleChanged()
-        {
-            OnPropertyChanged(StyleProperty.Name);
-        }
-        #endregion
-
-        #region INotifyPropertyChanged Members
-
-        public event PropertyChangedEventHandler PropertyChanged;
+        //protected virtual void OnStyleChanged()
+        //{
+        //    OnPropertyChanged(StyleProperty.Name);
+        //}
 
         #endregion
 
@@ -804,10 +491,10 @@ namespace SharpMap.Layers
                     return Enabled;
                 }
 
-                if (StyleProperty.Name.Equals(propertyName))
-                {
-                    return Style;
-                }
+                //if (StyleProperty.Name.Equals(propertyName))
+                //{
+                //    return Style;
+                //}
             }
 
             if (_instanceProperties.Contains(property))
@@ -854,10 +541,10 @@ namespace SharpMap.Layers
                 {
                     Enabled = (Boolean)value;
                 }
-                else if (StyleProperty.Name.Equals(propertyName))
-                {
-                    Style = value as Style;
-                }
+                //else if (StyleProperty.Name.Equals(propertyName))
+                //{
+                //    Style = value as Style;
+                //}
             }
             else if (_instanceProperties.Contains(property))
             {
@@ -971,7 +658,10 @@ namespace SharpMap.Layers
 
         private void checkPropertyParameter(PropertyDescriptor property)
         {
-            if (property == null) { throw new ArgumentNullException("property"); }
+            if (property == null)
+            {
+                throw new ArgumentNullException("property");
+            }
 
             if (!HasProperty(property))
             {
@@ -987,6 +677,321 @@ namespace SharpMap.Layers
         }
 
         #endregion
+
+        #region ILayer Members
+
+        public void SetPropertyValue<TValue>(PropertyDescriptor property, TValue value)
+        {
+            checkSetValueType<TValue>(property);
+            checkPropertyParameter(property);
+            SetPropertyValueInternal(property, value);
+        }
+
+        public void SetPropertyValue(PropertyDescriptor property, Object value)
+        {
+            checkPropertyParameter(property);
+            SetPropertyValueInternal(property, value);
+        }
+
+        public virtual Boolean HasProperty(PropertyDescriptor property)
+        {
+            PropertyDescriptorCollection properties = _instanceProperties ?? _layerTypeProperties;
+            return properties.Contains(property) || (_propertyValues != null &&
+                                                     _propertyValues.ContainsKey(property));
+        }
+
+        public override Object GetPropertyOwner(PropertyDescriptor pd)
+        {
+            return base.GetPropertyOwner(pd) ?? (HasProperty(pd) ? this : null);
+        }
+
+        public override PropertyDescriptorCollection GetProperties()
+        {
+            if (_instanceProperties != null)
+            {
+                return _instanceProperties;
+            }
+
+            PropertyDescriptorCollection parentProperties = base.GetProperties();
+
+            return parentProperties != PropertyDescriptorCollection.Empty
+                       ? parentProperties
+                       : _layerTypeProperties;
+        }
+
+        public Int32 AddProperty(PropertyDescriptor property)
+        {
+            ensureInstanceProperties();
+            return _instanceProperties.Add(property);
+        }
+
+        public Int32 AddProperty<TValue>(PropertyDescriptor property, TValue value)
+        {
+            ensureInstanceProperties();
+            Int32 index = _instanceProperties.Add(property);
+            SetPropertyValueInternal(property, value);
+            return index;
+        }
+
+        public TValue GetPropertyValue<TValue>(PropertyDescriptor property)
+        {
+            if (property == null)
+            {
+                throw new ArgumentNullException("property");
+            }
+
+            return GetPropertyValueInternal<TValue>(property);
+        }
+
+        public Object GetPropertyValue(PropertyDescriptor property)
+        {
+            if (property == null)
+            {
+                throw new ArgumentNullException("property");
+            }
+
+            return GetPropertyValueInternal(property);
+        }
+
+        /// <summary>
+        /// Gets or sets a value indicating that data is obtained asynchronously.
+        /// </summary>
+        public Boolean AsyncQuery
+        {
+            get { return _asyncQuery; }
+            set
+            {
+                checkParent();
+
+                if (_asyncQuery == value)
+                {
+                    return;
+                }
+
+                _asyncQuery = value;
+                OnAsyncQueryChanged();
+            }
+        }
+
+        /// <summary>
+        /// Gets the coordinate system of the layer.
+        /// </summary>
+        public ICoordinateSystem SpatialReference
+        {
+            get { return DataSource.SpatialReference; }
+        }
+
+        /// <summary>
+        /// Gets or sets the <see cref="ICoordinateTransformation"/> 
+        /// applied to this layer.
+        /// </summary>
+        public virtual ICoordinateTransformation CoordinateTransformation
+        {
+            get { return DataSource.CoordinateTransformation; }
+            set
+            {
+                checkParent();
+
+                ICoordinateTransformation currentTransform =
+                    DataSource.CoordinateTransformation;
+
+                if (currentTransform == value)
+                {
+                    return;
+                }
+
+                if (currentTransform != null && currentTransform.Source != SpatialReference)
+                {
+                    throw new InvalidOperationException("Coordinate transformation doesn't " +
+                                                        "have the same 'source' spatial reference " +
+                                                        "as this layer");
+                }
+
+                DataSource.CoordinateTransformation = value;
+                OnCoordinateTransformationChanged();
+            }
+        }
+
+        public event EventHandler<LayerDataLoadedEventArgs> DataLoaded;
+
+        /// <summary>
+        /// Gets the data source used to create this layer.
+        /// </summary>
+        public IProvider DataSource
+        {
+            get { return _dataSource; }
+        }
+
+        /// <summary>
+        /// Gets or sets a value which indicates if the layer 
+        /// is enabled (visible or able to participate in queries) or not.
+        /// </summary>
+        /// <remarks>
+        /// This property is a convenience property which exposes 
+        /// the value of <see cref="SharpMap.Styles.Style.Enabled"/>. 
+        /// If setting this property and the Style property 
+        /// value is null, a new <see cref="Style"/> 
+        /// object is created and assigned to the Style property, 
+        /// and then the Style.Enabled property is set.
+        /// </remarks>
+        public virtual Boolean Enabled
+        {
+            get { return Symbolizer.Enabled; } //Style.Enabled; }
+            set
+            {
+                checkParent();
+
+                if (Enabled == value)
+                {
+                    return;
+                }
+                Symbolizer.Enabled = value;
+                //Style.Enabled = value;
+                OnEnabledChanged();
+            }
+        }
+
+        /// <summary>
+        /// Gets the full extent of the data available to the layer.
+        /// </summary>
+        /// <returns>
+        /// A <see cref="IExtents"/> defining the extent of 
+        /// all data available to the layer.
+        /// </returns>
+        public IExtents Extents
+        {
+            get
+            {
+                IExtents fullExtents = DataSource.GetExtents();
+
+                return CoordinateTransformation != null
+                           ? CoordinateTransformation.Transform(fullExtents, GeometryFactory)
+                           : fullExtents;
+            }
+        }
+
+        public Boolean IsLoadingData
+        {
+            get { return _loadAsyncResult != null; }
+        }
+
+        public Boolean IsVisibleWhen(Predicate<ILayer> condition)
+        {
+            return condition(this);
+        }
+
+        /// <summary>
+        /// Gets or sets the name of the layer.
+        /// </summary>
+        public virtual String LayerName
+        {
+            get { return _layerName; }
+            set
+            {
+                if (String.IsNullOrEmpty(value))
+                {
+                    throw new ArgumentException("LayerName must not be null or empty.");
+                }
+
+                if (_layerName == value)
+                {
+                    return;
+                }
+
+                _layerName = value;
+                OnLayerNameChanged();
+            }
+        }
+
+        public IGeometry LoadedRegion
+        {
+            get
+            {
+                if (_loadedRegion == null)
+                {
+                    computeLoadedRegion();
+                }
+
+                return _loadedRegion;
+            }
+            protected set
+            {
+                checkParent();
+                _loadedRegion = value;
+            }
+        }
+
+        public void LoadIntersectingLayerData(IExtents region)
+        {
+            if (region == null) throw new ArgumentNullException("region");
+
+            SpatialBinaryExpression exp = new SpatialBinaryExpression(new ExtentsExpression(region),
+                                                                      SpatialOperation.Intersects,
+                                                                      new LayerExpression(this));
+
+            QueryExpression query = GetQueryFromSpatialBinaryExpression(exp);
+
+            LoadLayerData(query);
+        }
+
+        public void LoadIntersectingLayerData(IGeometry region)
+        {
+            if (region == null) throw new ArgumentNullException("region");
+
+            SpatialBinaryExpression exp = new SpatialBinaryExpression(new GeometryExpression(region),
+                                                                      SpatialOperation.Intersects,
+                                                                      new LayerExpression(this));
+
+            QueryExpression query = GetQueryFromSpatialBinaryExpression(exp);
+
+            LoadLayerData(query);
+        }
+
+        public void LoadLayerData(QueryExpression query)
+        {
+            if (_asyncQuery)
+            {
+                LoadLayerDataAsync(query);
+            }
+            else
+            {
+                _loadAsyncResult = _dataSource.BeginExecuteQuery(query, completeLoadLayerData);
+
+                lock (_loadCompletionSync)
+                {
+                    Object results = _dataSource.EndExecuteQuery(_loadAsyncResult);
+                    endLoadInternal(query, results);
+                }
+            }
+        }
+
+        public void LoadLayerDataAsync(QueryExpression query)
+        {
+            AsyncCallback callback = completeLoadLayerData;
+
+            _loadAsyncResult = _dataSource.BeginExecuteQuery(query, callback);
+        }
+
+        public abstract IEnumerable Select(Expression query);
+
+        /// <summary>
+        /// Gets the spatial reference ID of the layer data source, if one is set.
+        /// </summary>
+        public virtual String Srid
+        {
+            get
+            {
+                if (DataSource == null)
+                {
+                    throw new InvalidOperationException("DataSource property is null on layer '" +
+                                                        LayerName + "'");
+                }
+
+                return DataSource.Srid;
+            }
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
 
         //private IGeometry mergeRegions(IGeometry a, IGeometry b)
         //{
@@ -1017,5 +1022,13 @@ namespace SharpMap.Layers
         //        OnShouldHandleDataCacheMissEventChanged();
         //    }
         //}
+
+
+        #endregion
+
+        public abstract ISymbolizer Symbolizer
+        {
+            get;
+        }
     }
 }

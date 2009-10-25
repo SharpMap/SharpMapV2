@@ -19,8 +19,8 @@
 using System;
 using System.Collections.Generic;
 using SharpMap.Data;
-using SharpMap.Expressions;
 using SharpMap.Rendering.Rendering2D;
+using SharpMap.Rendering.Symbolize;
 using SharpMap.Styles;
 
 namespace SharpMap.Layers
@@ -35,7 +35,7 @@ namespace SharpMap.Layers
     /// // TODO: redo example
     /// </code>
     /// </example>
-    public class LabelLayer : FeatureLayer
+    public class LabelLayer : FeatureLayer, ILabelLayer
     {
         #region Nested Classes
 
@@ -48,36 +48,40 @@ namespace SharpMap.Layers
 
         #endregion
 
-		public delegate String LabelTextFormatter(FeatureDataRow feature);
+        #region Delegates
 
-		private LabelCollisionDetection2D collisionDetector = null;
-    	private LabelTextFormatter textFormatter = null;
+        //public delegate String LabelTextFormatter(FeatureDataRow feature);
+
+        #endregion
+
+        private readonly ITextSymbolizer _symbolizer = new TextSymbolizer();
+
+        //private LabelCollisionDetection2D collisionDetector;
+        private TextSymbolizingDelegate textFormatter;
 
         #region Fields
 
-        private Int32 _priority;
-        private String _rotationColumn;
         //private GenerateLabelTextDelegate _getLabelMethod;
         //private String _labelColumn;
         private MultipartGeometryLabelingBehavior _multipartGeometryBehaviour;
-    	private Dictionary<Object, Label2D> _renderCache = null;
+        private Int32 _priority;
+        //private Dictionary<Object, Label2D> _renderCache;
+        private String _rotationColumn;
 
         #endregion
 
         #region Object Construction / Disposal
 
-		/// <summary>
-		/// Creates a new instance of a LabelLayer with the given name.
-		/// </summary>
-		/// <param name="layerName">Name of the layer.</param>
-		/// <param name="dataSource">Data source provider for the layer.</param>
-		public LabelLayer(String layerName, IFeatureProvider dataSource)
-			: base(layerName, new LabelStyle(), dataSource)
-		{
-			_multipartGeometryBehaviour = MultipartGeometryLabelingBehavior.Default;
-		}
-
-        #region IDisposable Members
+        /// <summary>
+        /// Creates a new instance of a LabelLayer with the given name.
+        /// </summary>
+        /// <param name="layerName">Name of the layer.</param>
+        /// <param name="dataSource">Data source provider for the layer.</param>
+        public LabelLayer(String layerName, IFeatureProvider dataSource)
+            : base(layerName, new LabelStyle(), dataSource)
+        {
+            _multipartGeometryBehaviour = MultipartGeometryLabelingBehavior.Default;
+        }
 
         /// <summary>
         /// Disposes the object.
@@ -96,8 +100,6 @@ namespace SharpMap.Layers
 
             base.Dispose(disposing);
         }
-
-        #endregion
 
         #endregion
 
@@ -134,55 +136,66 @@ namespace SharpMap.Layers
             set { _priority = value; }
         }
 
-        // TODO: remove collision detection to a separate class 
-    	public Dictionary<Object, Label2D> RenderCache
-    	{
-    		get
-    		{
-				if(_renderCache == null)
-				{
-					_renderCache = new Dictionary<Object, Label2D>();
-				}
+        //// TODO: remove collision detection to a separate class 
+        //public Dictionary<Object, Label2D> RenderCache
+        //{
+        //    get
+        //    {
+        //        if (_renderCache == null)
+        //        {
+        //            _renderCache = new Dictionary<Object, Label2D>();
+        //        }
 
-    			return _renderCache;
-    		}
-    	}
+        //        return _renderCache;
+        //    }
+        //}
 
-    	public LabelCollisionDetection2D CollisionDetector
-    	{
-    		get
-    		{
-				if(collisionDetector == null)
-				{
-					collisionDetector = new LabelCollisionDetection2D();
-				}
-    			return collisionDetector;
-    		}
-    		set { collisionDetector = value; }
-    	}
+        //public LabelCollisionDetection2D CollisionDetector
+        //{
+        //    get
+        //    {
+        //        if (collisionDetector == null)
+        //        {
+        //            collisionDetector = new LabelCollisionDetection2D();
+        //        }
+        //        return collisionDetector;
+        //    }
+        //    set { collisionDetector = value; }
+        //}
 
-    	public LabelTextFormatter TextFormatter
-    	{
-    		get
-    		{
-				if(textFormatter == null)
-				{
-					if (Style == null)
-					{
-						throw new NotImplementedException("Style must be set before getting the TextFormatter");
-					}
+        public TextSymbolizingDelegate TextFormatter
+        {
+            get
+            {
+                throw new NotImplementedException();
+                //    if (textFormatter == null)
+                //    {
+                //        textFormatter =
+                //            delegate(FeatureDataRow feature) { return feature.Evaluate(((LabelStyle)Style).LabelExpression); };
+                //    }
 
-					textFormatter = delegate(FeatureDataRow feature)
-					                        {
-                                                return feature.Evaluate(((LabelStyle)Style).LabelExpression);
-					                        };
-				}
+                //    return textFormatter;
+            }
+        }
 
-    			return textFormatter;
-    		}
-    	}
+        #region ILabelLayer Members
 
-    	/// <summary>
+        public override ISymbolizer Symbolizer
+        {
+            get { return _symbolizer; }
+        }
+
+        ITextSymbolizer ILabelLayer.Symbolizer
+        {
+            get
+            {
+                return (ITextSymbolizer)Symbolizer;
+            }
+        }
+
+        #endregion
+
+        /// <summary>
         /// Clones the object.
         /// </summary>
         /// <returns>
@@ -191,12 +204,12 @@ namespace SharpMap.Layers
         /// </returns>
         public override Object Clone()
         {
-    	    return new LabelLayer(LayerName, DataSource);
+            return new LabelLayer(LayerName, DataSource);
         }
 
         protected override IStyle CreateStyle()
         {
             return new LabelStyle();
-		}
-	}
+        }
+    }
 }

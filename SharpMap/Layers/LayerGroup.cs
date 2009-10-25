@@ -23,7 +23,7 @@ using System.ComponentModel;
 using GeoAPI.CoordinateSystems.Transformations;
 using SharpMap.Data;
 using SharpMap.Expressions;
-using SharpMap.Styles;
+using SharpMap.Rendering.Symbolize;
 
 namespace SharpMap.Layers
 {
@@ -39,16 +39,6 @@ namespace SharpMap.Layers
     {
         private static readonly PropertyDescriptorCollection _layerGroupTypeProperties;
 
-        static LayerGroup()
-        {
-            _layerGroupTypeProperties = TypeDescriptor.GetProperties(typeof(LayerGroup));
-        }
-
-        public static PropertyDescriptor ShowChildrenProperty
-        {
-            get { return _layerGroupTypeProperties.Find("ShowChildren", false); }
-        }
-
         private readonly List<ILayer> _layers = new List<ILayer>();
         private readonly ILayer _master;
 
@@ -57,7 +47,9 @@ namespace SharpMap.Layers
         /// <summary>
         /// Initializes a new group layer.
         /// </summary>
-        public LayerGroup(IProvider dataSource) : base(dataSource) { }
+        public LayerGroup(IProvider dataSource) : base(dataSource)
+        {
+        }
 
         /// <summary>
         /// Initializes a new group layer.
@@ -71,7 +63,7 @@ namespace SharpMap.Layers
         /// Parameter <paramref name="layers"/> contains layers and <paramref name="master"/>
         /// is not a member of the enumeration.
         /// </exception>
-        public LayerGroup(IEnumerable<ILayer> layers, ILayer master) 
+        public LayerGroup(IEnumerable<ILayer> layers, ILayer master)
             : base(String.Empty, null, master.DataSource)
         {
             _layers.AddRange(layers);
@@ -112,37 +104,25 @@ namespace SharpMap.Layers
 
         #endregion
 
-        /// <summary>
-        /// Returns a layer by its name
-        /// </summary>
-        /// <param name="name">Name of layer</param>
-        /// <returns>Layer</returns>
-        public ILayer GetLayerByName(String name)
+        static LayerGroup()
         {
-            Predicate<ILayer> find =
-                delegate(ILayer layer)
-                {
-                    return String.Compare(layer.LayerName,
-                                          name,
-                                          StringComparison.CurrentCultureIgnoreCase) == 0;
-                };
+            _layerGroupTypeProperties = TypeDescriptor.GetProperties(typeof (LayerGroup));
+        }
 
-            return _layers.Find(find);
+        public static PropertyDescriptor ShowChildrenProperty
+        {
+            get { return _layerGroupTypeProperties.Find("ShowChildren", false); }
         }
 
         public ILayer MasterLayer
         {
-            get
-            {
-                return _master;
-            }
+            get { return _master; }
             //set
             //{
             //    if (_layers.Count > 0 && !Contains(value))
             //    {
             //        throw new ArgumentException("Master layer must be a member of the LayerGroup");
             //    }
-
             //    _master = value;
             //}
         }
@@ -217,10 +197,7 @@ namespace SharpMap.Layers
 
         public ILayer this[String layerName]
         {
-            get
-            {
-                return GetLayerByName(layerName);
-            }
+            get { return GetLayerByName(layerName); }
         }
 
         public ILayer this[Int32 index]
@@ -298,20 +275,15 @@ namespace SharpMap.Layers
         {
             return GetEnumerator();
         }
+
         #endregion
 
         #region Layer overrides
 
         public override ICoordinateTransformation CoordinateTransformation
         {
-            get
-            {
-                return base.CoordinateTransformation ?? MasterLayer.CoordinateTransformation;
-            }
-            set
-            {
-                base.CoordinateTransformation = value;
-            }
+            get { return base.CoordinateTransformation ?? MasterLayer.CoordinateTransformation; }
+            set { base.CoordinateTransformation = value; }
         }
 
         public override Boolean Enabled
@@ -345,23 +317,25 @@ namespace SharpMap.Layers
                            ? MasterLayer.LayerName
                            : base.LayerName;
             }
-            set
-            {
-                base.LayerName = value;
-            }
+            set { base.LayerName = value; }
         }
 
-        public override IStyle Style
+        //public override IStyle Style
+        //{
+        //    get
+        //    {
+        //        checkState();
+        //        return MasterLayer.Style;
+        //    }
+        //    set
+        //    {
+        //        throw new NotSupportedException("Set the style on the master layer instead.");
+        //    }
+        //}
+
+        public override ISymbolizer Symbolizer
         {
-            get
-            {
-                checkState();
-                return MasterLayer.Style;
-            }
-            set
-            {
-                throw new NotSupportedException("Set the style on the master layer instead.");
-            }
+            get { return MasterLayer.Symbolizer; }
         }
 
         public override Object Clone()
@@ -378,6 +352,7 @@ namespace SharpMap.Layers
         {
             throw new NotImplementedException();
         }
+
         #endregion
 
         #region Private helper methods
@@ -388,8 +363,27 @@ namespace SharpMap.Layers
             {
                 throw new InvalidOperationException("MasterLayer is not set yet");
             }
-        } 
+        }
+
         #endregion
+
+        /// <summary>
+        /// Returns a layer by its name
+        /// </summary>
+        /// <param name="name">Name of layer</param>
+        /// <returns>Layer</returns>
+        public ILayer GetLayerByName(String name)
+        {
+            Predicate<ILayer> find =
+                delegate(ILayer layer)
+                    {
+                        return String.Compare(layer.LayerName,
+                                              name,
+                                              StringComparison.CurrentCultureIgnoreCase) == 0;
+                    };
+
+            return _layers.Find(find);
+        }
 
         protected override IAsyncProvider CreateAsyncProvider(IProvider dataSource)
         {

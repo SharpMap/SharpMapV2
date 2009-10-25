@@ -24,6 +24,7 @@ using GeoAPI.Geometries;
 using SharpMap.Data;
 using SharpMap.Data.Caching;
 using SharpMap.Expressions;
+using SharpMap.Rendering.Symbolize;
 using SharpMap.Styles;
 
 namespace SharpMap.Layers
@@ -32,39 +33,39 @@ namespace SharpMap.Layers
     /// Interface for map layers.
     /// </summary>
     public interface ILayer : IHasDynamicProperties, IDisposable
-	{
-		/// <summary>
-		/// Gets or sets a value indicating that data is obtained asynchronously.
-		/// </summary>
-		Boolean AsyncQuery { get; set; }
+    {
+        /// <summary>
+        /// Gets or sets a value indicating that data is obtained asynchronously.
+        /// </summary>
+        Boolean AsyncQuery { get; set; }
 
-		/// <summary>
-		/// Applies a coordinate transformation to the geometries in this layer.
-		/// </summary>
-		ICoordinateTransformation CoordinateTransformation { get; set; }
+        /// <summary>
+        /// Applies a coordinate transformation to the geometries in this layer.
+        /// </summary>
+        ICoordinateTransformation CoordinateTransformation { get; set; }
 
-		/// <summary>
-		/// Gets the data source used to create this layer.
-		/// </summary>
-		IProvider DataSource { get; }
+        /// <summary>
+        /// Gets the data source used to create this layer.
+        /// </summary>
+        IProvider DataSource { get; }
 
-		/// <summary>
-		/// Gets or sets a value representing the visibility of the layer.
-		/// </summary>
-		/// <remarks>
-		/// Should be the same value as <see cref="Style"/>'s 
-		/// <see cref="IStyle.Enabled"/> value.
-		/// </remarks>
-		Boolean Enabled { get; set; }
+        /// <summary>
+        /// Gets or sets a value representing the visibility of the layer.
+        /// </summary>
+        /// <remarks>
+        /// Should be the same value as <see cref="Style"/>'s 
+        /// <see cref="IStyle.Enabled"/> value.
+        /// </remarks>
+        Boolean Enabled { get; set; }
 
-		/// <summary>
-		/// Gets the boundingbox of the entire layer.
-		/// </summary>
-		IExtents Extents { get; }
+        /// <summary>
+        /// Gets the boundingbox of the entire layer.
+        /// </summary>
+        IExtents Extents { get; }
 
-		/// <summary>
-		/// Name of layer.
-		/// </summary>
+        /// <summary>
+        /// Name of layer.
+        /// </summary>
         String LayerName { get; set; }
 
         /// <summary>
@@ -72,15 +73,17 @@ namespace SharpMap.Layers
         /// </summary>
         ICoordinateSystem SpatialReference { get; }
 
-		/// <summary>
-		/// The spatial reference ID of the layer data source.
-		/// </summary>
-		String Srid { get; }
+        /// <summary>
+        /// The spatial reference ID of the layer data source.
+        /// </summary>
+        String Srid { get; }
 
-		/// <summary>
-		/// The style for the layer.
-		/// </summary>
-		IStyle Style { get; set; }
+        ///// <summary>
+        ///// The style for the layer.
+        ///// </summary>
+        //IStyle Style { get; set; }
+
+        ISymbolizer Symbolizer { get; }
 
         /// <summary>
         /// Gets an <see cref="IGeometry"/> instance describing the region which has been
@@ -161,5 +164,5 @@ namespace SharpMap.Layers
         /// The <see cref="IQueryCache"/> is used to cache data on a layer-by-layer basis.
         /// </remarks>
         IQueryCache QueryCache { get; set; }
-	}
+    }
 }

@@ -342,39 +342,52 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="Rendering\AffineMatrix.cs" />
-    <Compile Include="Rendering\IFeatureRenderer.cs" />
-    <Compile Include="Rendering\ITextRenderer`3.cs" />
     <Compile Include="Rendering\LinearFactory.cs" />
     <Compile Include="Rendering\Matrix.cs" />
     <Compile Include="Rendering\MatrixProcessor.cs" />
-    <Compile Include="Rendering\Rasterize\IFeatureRasterizer.cs" />
+    <Compile Include="Rendering\Rasterize\IGeometryRasterizer.cs" />
     <Compile Include="Rendering\Rasterize\IRasterizer.cs" />
+    <Compile Include="Rendering\Rasterize\IRasterizeSurface.cs" />
+    <Compile Include="Rendering\Rasterize\IRasterRasterizer.cs" />
     <Compile Include="Rendering\Rasterize\ITextRasterizer.cs" />
-    <Compile Include="Rendering\Rendering2D\IRasterRenderer2D.cs" />
-    <Compile Include="Rendering\Rendering2D\IRasterRenderer2D`1.cs" />
-    <Compile Include="Rendering\Rendering2D\ITextRenderer2D.cs" />
-    <Compile Include="Rendering\Rendering2D\ITextRenderer2D`1.cs" />
-    <Compile Include="Rendering\Rendering2D\IVectorRenderer2D.cs" />
+    <Compile Include="Rendering\Rendering2D\Figure2D.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Rendering\Rendering2D\Matrix2D.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Rendering\Rendering2D\Path2D.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Rendering\Rendering2D\Point2D.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Rendering\Rendering2D\Rectangle2D.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Rendering\Rendering2D\Renderer2D.cs" />
-    <Compile Include="Rendering\Rendering2D\TextRenderer2D`1.cs" />
+    <Compile Include="Rendering\Rendering2D\Size2D.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Rendering\IHasEmpty.cs" />
     <Compile Include="Rendering\IViewRectangle`1.cs" />
     <Compile Include="Rendering\LabelFilterDelegate.cs" />
     <Compile Include="Rendering\ILabel`4.cs" />
-    <Compile Include="Rendering\Rendering2D\BasicGeometryRenderer2D`1.cs" />
-    <Compile Include="Rendering\IFeatureRenderer`1.cs" />
-    <Compile Include="Rendering\IGeometryRenderer`2.cs" />
-    <Compile Include="Rendering\Rendering2D\IVectorRenderer2D`1.cs" />
     <Compile Include="Rendering\RenderState.cs" />
-    <Compile Include="Rendering\Symbolize\FeatureSymbolizerRule.cs" />
-    <Compile Include="Rendering\Symbolize\IFeatureSymbolizer.cs" />
-    <Compile Include="Rendering\Symbolize\IFeatureSymbolizerRule.cs" />
+    <Compile Include="Rendering\Symbolize\GeometrySymbolizerRule.cs" />
+    <Compile Include="Rendering\Symbolize\IGeometrySymbolizer.cs" />
+    <Compile Include="Rendering\Symbolize\IGeometrySymbolizerRule.cs" />
+    <Compile Include="Rendering\Symbolize\IRasterSymbolizer.cs" />
     <Compile Include="Rendering\Symbolize\ISymbolizer.cs" />
     <Compile Include="Rendering\Symbolize\ISymbolizerRule.cs" />
-    <Compile Include="Rendering\Symbolize\FeatureSymbolizer.cs" />
+    <Compile Include="Rendering\Symbolize\GeometrySymbolizer.cs" />
     <Compile Include="Rendering\Symbolize\ITextSymbolizer.cs" />
     <Compile Include="Rendering\Symbolize\ITextSymbolizerRule.cs" />
+    <Compile Include="Rendering\Symbolize\SimpleGeometryStyleSymbolizerRule.cs" />
+    <Compile Include="Rendering\Symbolize\Symbolizer.cs" />
+    <Compile Include="Rendering\Symbolize\SymbolizerRule.cs" />
     <Compile Include="Rendering\Symbolize\TextSymbolizer.cs" />
+    <Compile Include="Rendering\Symbolize\TextSymbolizerRule.cs" />
     <Compile Include="Rendering\Symbolize\TextSymbolizingDelegate.cs" />
     <Compile Include="Rendering\Symbol`2.cs" />
     <Compile Include="Rendering\Vector.cs" />
@@ -393,25 +406,16 @@
     <Compile Include="Rendering\ColorMatrix.cs" />
     <Compile Include="Presentation\FeaturesSelectionChangedEventArgs.cs" />
     <Compile Include="Rendering\Figure`2.cs" />
-    <Compile Include="Rendering\Rendering2D\Figure2D.cs" />
-    <Compile Include="Rendering\Rendering2D\Path2D.cs" />
     <Compile Include="Presentation\IViewSelection`3.cs" />
-    <Compile Include="Rendering\Rendering2D\RasterRenderer2D`1.cs" />
     <Compile Include="Presentation\Views\IAttributeView.cs" />
-    <Compile Include="Rendering\ILabelRenderer`4.cs" />
     <Compile Include="Presentation\Views\ILayerStyleView.cs" />
     <Compile Include="Presentation\Views\ILayersView.cs" />
-    <Compile Include="Rendering\IRasterRenderer`1.cs" />
     <Compile Include="Presentation\Views\IToolsView.cs" />
     <Compile Include="Presentation\Presenters\MapPresenter2D.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Rendering\Rendering2D\FeatureRenderer2D`2.cs" />
     <Compile Include="Rendering\Path`2.cs" />
     <Compile Include="Rendering\IRenderer.cs" />
     <Compile Include="Presentation\Views\IMapView2D.cs" />
-    <Compile Include="Rendering\Rendering2D\Label2D.cs" />
-    <Compile Include="Rendering\Rendering2D\LabelCollisionDetection2D.cs" />
-    <Compile Include="Rendering\Rendering2D\BasicLabelRenderer2D`1.cs" />
     <Compile Include="Rendering\LayerRendererRegistry.cs" />
     <Compile Include="Presentation\MapViewPropertyChangeEventArgs`1.cs" />
     <Compile Include="Tools\IMapTool.cs" />
@@ -423,18 +427,10 @@
     <Compile Include="Tools\MapToolSetChangedEventArgs.cs" />
     <Compile Include="Tools\MapTool`1.cs" />
     <Compile Include="Rendering\Rendering2D\Symbol2D.cs" />
-    <Compile Include="Rendering\Rendering2D\VectorRenderer2D`1.cs" />
-    <Compile Include="Rendering\Rendering2D\Matrix2D.cs" />
-    <Compile Include="Rendering\Rendering2D\Rectangle2D.cs" />
     <Compile Include="Rendering\RenderExceptions.cs" />
-    <Compile Include="Rendering\Rendering2D\Point2D.cs" />
     <Compile Include="Presentation\ViewSelection`3.cs" />
     <Compile Include="Presentation\ViewSelection2D.cs" />
-    <Compile Include="Rendering\Rendering2D\Size2D.cs" />
     <Compile Include="Styles\StyleColorBlend.cs" />
-    <Compile Include="Rendering\Thematics\CustomTheme.cs" />
-    <Compile Include="Rendering\Thematics\GradientTheme.cs" />
-    <Compile Include="Rendering\Thematics\ITheme.cs" />
     <Compile Include="Styles\LinearGradientStyleBrush.cs" />
     <Compile Include="Styles\SolidStyleBrush.cs" />
     <Compile Include="Styles\StyleBrush.cs" />
@@ -477,6 +473,10 @@
     <EmbeddedResource Include="Styles\DefaultSymbol.png" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Diagnostics\.svn\all-wcprops" />
+    <None Include="Diagnostics\.svn\entries" />
+    <None Include="Diagnostics\.svn\text-base\EnumerablePrinter.cs.svn-base" />
+    <None Include="Diagnostics\.svn\text-base\TraceCategories.cs.svn-base" />
     <None Include="SharpMap.cd" />
     <None Include="Map Model.cd" />
     <None Include="Rendering\RenderingClasses.cd" />
@@ -498,6 +498,15 @@
       <Project>{4AAC52D4-D27B-4A3A-9660-73A4E796207C}</Project>
       <Name>Proj4Utility</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="bin\" />
+    <Folder Include="Diagnostics\.svn\prop-base\" />
+    <Folder Include="Diagnostics\.svn\props\" />
+    <Folder Include="Diagnostics\.svn\tmp\prop-base\" />
+    <Folder Include="Diagnostics\.svn\tmp\props\" />
+    <Folder Include="Diagnostics\.svn\tmp\text-base\" />
+    <Folder Include="Rendering\Thematics\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Target Name="BeforeBuild">

@@ -25,7 +25,7 @@ using GeoAPI.Diagnostics;
 using SharpMap.Data;
 using SharpMap.Data.Providers;
 using SharpMap.Expressions;
-using SharpMap.Rendering.Thematics;
+//using SharpMap.Rendering.Thematics;
 using SharpMap.Styles;
 using System.Collections.Generic;
 
@@ -57,7 +57,7 @@ namespace SharpMap.Layers
         private readonly FeatureDataTable _features;
         private readonly FeatureDataView _selectedFeatures;
         private readonly FeatureDataView _highlightedFeatures;
-        private ITheme _theme;
+        //private ITheme _theme;
         #endregion
 
         ///// <summary>
@@ -212,14 +212,16 @@ namespace SharpMap.Layers
             }
         }
 
-        /// <summary>
-        /// Gets or sets the layer style as a <see cref="FeatureStyle"/>.
-        /// </summary>
-        public new FeatureStyle Style
-        {
-            get { return base.Style as FeatureStyle; }
-            set { base.Style = value; }
-        }
+        ///// <summary>
+        ///// Gets or sets the layer style as a <see cref="FeatureStyle"/>.
+        ///// </summary>
+        //public new FeatureStyle Style
+        //{
+        //    get { return base.Style as FeatureStyle; }
+        //    set { base.Style = value; }
+        //}
+
+        private bool _areFeaturesSelectable;
 
         /// <summary>
         /// Gets or sets a value which allows features in the layer to be selected
@@ -227,26 +229,26 @@ namespace SharpMap.Layers
         /// </summary>
         public Boolean AreFeaturesSelectable
         {
-            get
-            {
-                FeatureStyle style = Style;
-                return style != null && style.AreFeaturesSelectable;
-            }
-            set
-            {
-                if (value == AreFeaturesSelectable)
-                {
-                    return;
-                }
-
-                FeatureStyle style = Style;
-
-                if (style != null)
-                {
-                    style.AreFeaturesSelectable = value;
-                }
-            }
+            get { return _areFeaturesSelectable; }
+            set { _areFeaturesSelectable = value; } //get
+            //{
+            //    FeatureStyle style = Style;
+            //    return style != null && style.AreFeaturesSelectable;
+            //}
+            //set
+            //{
+            //    if (value == AreFeaturesSelectable)
+            //    {
+            //        return;
+            //    }
+            //    FeatureStyle style = Style;
+            //    if (style != null)
+            //    {
+            //        style.AreFeaturesSelectable = value;
+            //    }
+            //}
         }
+
 
         public IEnumerable<FeatureDataRow> Select(FeatureQueryExpression query)
         {
@@ -255,11 +257,11 @@ namespace SharpMap.Layers
             return Features.Select(query.SpatialPredicate);
         }
 
-        public virtual ITheme Theme
-        {
-            get { return _theme; }
-            set { _theme = value; }
-        }
+        //public virtual ITheme Theme
+        //{
+        //    get { return _theme; }
+        //    set { _theme = value; }
+        //}
 
         #endregion
 

@@ -141,13 +141,16 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Core" Condition="'$(Configuration)' == 'Release_Net35' Or '$(Configuration)' == 'Debug_Net35'" />
+    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="GdiGeometryRenderer.cs" />
+    <Compile Include="GdiRasterizer.cs" />
+    <Compile Include="GdiRasterizers.cs" />
+    <Compile Include="GdiRasterizeSurface.cs" />
+    <Compile Include="GdiRasterRasterizer.cs" />
+    <Compile Include="GdiTextRasterizer.cs" />
     <Compile Include="ViewConverter.cs" />
-    <Compile Include="GdiTextRenderer.cs" />
-    <Compile Include="GdiRenderObject.cs" />
-    <Compile Include="GdiRasterRenderer.cs" />
-    <Compile Include="GdiVectorRenderer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

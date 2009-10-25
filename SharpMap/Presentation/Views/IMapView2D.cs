@@ -20,6 +20,7 @@ using System.Collections;
 using GeoAPI.Coordinates;
 using GeoAPI.Geometries;
 using SharpMap.Presentation.Presenters;
+using SharpMap.Rendering.Rasterize;
 using SharpMap.Rendering.Rendering2D;
 using SharpMap.Styles;
 
@@ -108,7 +109,7 @@ namespace SharpMap.Presentation.Views
         /// Draws the rendered object to the view.
         /// </summary>
         /// <param name="renderedObjects">The rendered objects to draw.</param>
-        void ShowRenderedObjects(IEnumerable renderedObjects);
+        //void ShowRenderedObjects(IEnumerable renderedObjects);
 
         /// <summary>
         /// Gets a <see cref="Matrix2D"/> used to project the world
@@ -269,5 +270,9 @@ namespace SharpMap.Presentation.Views
         /// are taken into account when zooming to this width.
         /// </remarks>
         void ZoomToWorldWidth(Double newWorldWidth);
+
+
+        IRasterizeSurface RasterizeSurface { get; }
+
     }
 }

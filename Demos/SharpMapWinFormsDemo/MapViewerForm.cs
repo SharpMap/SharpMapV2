@@ -1,6 +1,6 @@
-﻿/*
+/*
  *	This file is part of SharpMap.MapViewer
- *  SharpMapMapViewer is free software © 2008 Newgrove Consultants Limited, 
+ *  SharpMapMapViewer is free software � 2008 Newgrove Consultants Limited, 
  *  http://www.newgrove.com; you can redistribute it and/or modify it under the terms 
  *  of the current GNU Lesser General Public License (LGPL) as published by and 
  *  available from the Free Software Foundation, Inc., 
@@ -32,10 +32,12 @@ using SharpMap.Layers;
 using SharpMap.Presentation;
 using SharpMap.Presentation.Views;
 using SharpMap.Rendering.Rendering2D;
+using SharpMap.Rendering.Symbolize;
 using SharpMap.Styles;
 using SharpMap.Tools;
 using SharpMap.Utilities;
 using SharpMap.Utilities.SridUtility;
+
 #if DOTNET35
 using Processor = System.Linq.Enumerable;
 using Enumerable = System.Linq.Enumerable;
@@ -572,7 +574,9 @@ namespace MapViewer
 
                                                                     Map.Layers.Insert(0, lyr);
 
-                                                                    lyr.Style = RandomStyle.RandomGeometryStyle();
+                                                                    ConfigureSymbolizer(lyr);
+
+                                                                    //lyr.Style = RandomStyle.RandomGeometryStyle();
                                                                     //lyr.Style = setGeometryStyle(lyr);
 
                                                                     if (Map.Layers.Count == 1)
@@ -588,6 +592,18 @@ namespace MapViewer
                         delegate(Exception ex) { MessageBox.Show(string.Format("An error occured\n{0}\n{1}", ex.Message, ex.StackTrace)); });
                 }
             }
+        }
+
+        private void ConfigureSymbolizer(GeometryLayer lyr)
+        {
+            GeometrySymbolizer symbolizer = lyr.Symbolizer as GeometrySymbolizer;
+            symbolizer.Rules.Add(new SimpleGeometryStyleSymbolizerRule
+                                     {
+                                         GeometryStyle = RandomStyle.RandomGeometryStyle(),
+                                         Enabled = true,
+                                         MaxVisible = double.MaxValue,
+                                         MinVisible = double.MinValue
+                                     });
         }
 
         #region Nested type: CommandNames

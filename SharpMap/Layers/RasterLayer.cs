@@ -21,6 +21,7 @@ using SharpMap.Data;
 using GeoAPI.Geometries;
 using SharpMap.Data.Providers;
 using SharpMap.Expressions;
+using SharpMap.Rendering.Symbolize;
 using SharpMap.Styles;
 
 namespace SharpMap.Layers
@@ -76,5 +77,23 @@ namespace SharpMap.Layers
         {
             return new RasterQueryExpression(exp);
         }
-	}
+
+        #region IRasterLayer Members
+
+
+        public override ISymbolizer Symbolizer
+        {
+            get { throw new NotImplementedException(); }
+        }
+
+	    IRasterSymbolizer IRasterLayer.Symbolizer
+	    {
+	        get
+	        {
+	            return (IRasterSymbolizer) Symbolizer;
+	        }
+	    }
+
+        #endregion
+    }
 }

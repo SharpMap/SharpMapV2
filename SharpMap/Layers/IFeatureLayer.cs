@@ -21,31 +21,32 @@ using GeoAPI.Geometries;
 using SharpMap.Data;
 using System.Globalization;
 using SharpMap.Expressions;
-using SharpMap.Rendering.Thematics;
+using SharpMap.Rendering.Symbolize;
+//using SharpMap.Rendering.Thematics;
 
 namespace SharpMap.Layers
 {
     /// <summary>
     /// Interface to a layer of features in a <see cref="Map"/>.
     /// </summary>
-	public interface IFeatureLayer : ILayer
-	{
+    public interface IFeatureLayer : ILayer
+    {
         /// <summary>
         /// Gets the data source for this layer as a more 
         /// strongly-typed <see cref="IFeatureProvider"/>.
         /// </summary>
-		new IFeatureProvider DataSource { get; }
+        new IFeatureProvider DataSource { get; }
 
         /// <summary>
         /// Gets a <see cref="FeatureDataTable"/> of cached features for the layer.
         /// </summary>
-		FeatureDataTable Features { get; }
+        FeatureDataTable Features { get; }
 
         /// <summary>
         /// Gets a <see cref="FeatureDataView"/> of features which have been 
         /// highlighted.
         /// </summary>
-		FeatureDataView HighlightedFeatures { get; }
+        FeatureDataView HighlightedFeatures { get; }
 
         FeatureQueryExpression HighlightedFilter { get; set; }
 
@@ -69,9 +70,23 @@ namespace SharpMap.Layers
 
         IEnumerable<FeatureDataRow> Select(FeatureQueryExpression query);
 
-        /// <summary>
-        /// Gets or sets the theme used to generate styles for rendered features.
-        /// </summary>
-        ITheme Theme { get; set; }
+        ///// <summary>
+        ///// Gets or sets the theme used to generate styles for rendered features.
+        ///// </summary>
+        //ITheme Theme { get; set; }
+
+
+
+    }
+
+    public interface IGeometryLayer : IFeatureLayer
+    {
+        IGeometrySymbolizer Symbolizer { get; }
+    }
+
+    public interface ILabelLayer : IFeatureLayer
+    {
+        TextSymbolizingDelegate TextFormatter { get; }
+        ITextSymbolizer Symbolizer { get; }
     }
 }

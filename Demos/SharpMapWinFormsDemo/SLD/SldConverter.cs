@@ -386,7 +386,7 @@ namespace MapViewer.SLD
             }
 
             style.Enabled = true;
-            style.EnableOutline = true;
+            //style.EnableOutline = true;
         }
 
         #endregion

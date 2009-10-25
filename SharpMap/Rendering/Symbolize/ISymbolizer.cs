@@ -1,13 +1,9 @@
-﻿using System.Collections.Generic;
-using SharpMap.Data;
-using SharpMap.Rendering.Rasterize;
+﻿using System.ComponentModel;
 
 namespace SharpMap.Rendering.Symbolize
 {
-    public interface ISymbolizer
+    public interface ISymbolizer : INotifyPropertyChanged
     {
-        IRasterizer Rasterizer { get; }
-        ICollection<ISymbolizerRule> Rules { get; }
-        void Symbolize(IEnumerable<IFeatureDataRecord> features);
+        bool Enabled { get; set; }
     }
 }

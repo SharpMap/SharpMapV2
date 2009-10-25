@@ -16,6 +16,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System;
+using SharpMap.Rendering.Rasterize;
 using SharpMap.Styles;
 using IMatrixD = NPack.Interfaces.IMatrix<NPack.DoubleComponent>;
 
@@ -23,6 +24,7 @@ namespace SharpMap.Rendering.Rendering2D
 {
     public abstract class Renderer2D : IRenderer
     {
+
         #region Instance fields
 
         private Matrix2D _renderTransform = new Matrix2D();

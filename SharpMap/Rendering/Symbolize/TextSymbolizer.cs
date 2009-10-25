@@ -1,71 +1,50 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
+using System.ComponentModel;
 using SharpMap.Data;
+using SharpMap.Presentation;
 using SharpMap.Rendering.Rasterize;
+using SharpMap.Rendering.Rendering2D;
 
 namespace SharpMap.Rendering.Symbolize
 {
-    public class TextSymbolizer : ITextSymbolizer
+    public class TextSymbolizer : Symbolizer, ITextSymbolizer
     {
-        private readonly ICollection<ITextSymbolizerRule> _rules = new Collection<ITextSymbolizerRule>();
+        private readonly BindingList<ITextSymbolizerRule> _rules = new BindingList<ITextSymbolizerRule>();
 
-        private ITextRasterizer _rasterizer;
-
-
-        protected TextSymbolizer(ITextRasterizer rasterizer)
+        public TextSymbolizer()
         {
-            Rasterizer = rasterizer;
+            _rules.ListChanged += delegate
+                                      {
+                                          OnPropertyChanged("Rules");
+                                      };
         }
 
-        #region ITextSymbolizer Members
-
-        public ITextRasterizer Rasterizer
-        {
-            get { return _rasterizer; }
-            protected set { _rasterizer = value; }
-        }
 
         public ICollection<ITextSymbolizerRule> Rules
         {
             get { return _rules; }
         }
 
-        IRasterizer ISymbolizer.Rasterizer
-        {
-            get { return Rasterizer; }
-        }
 
-        ICollection<ISymbolizerRule> ISymbolizer.Rules
+        public void Symbolize(IEnumerable<IFeatureDataRecord> features, RenderPhase renderPhase, Matrix2D transform,
+                              ITextRasterizer rasterizer, TextSymbolizingDelegate textSymbolizingDelegate)
         {
-            get { throw new NotSupportedException(); }
-        }
+            if (!Enabled)
+                return;
 
-        public void Symbolize(IEnumerable<IFeatureDataRecord> features, TextSymbolizingDelegate textSymbolizingDelegate)
-        {
-            Rasterizer.BeginPass();
-            List<IFeatureDataRecord> working = new List<IFeatureDataRecord>(features);
-            ITextRasterizer rasterizer = Rasterizer;
             foreach (ITextSymbolizerRule rule in Rules)
             {
                 if (rule.Enabled)
-                    foreach (IFeatureDataRecord record in working)
-                        rule.Symbolize(record, textSymbolizingDelegate(record), rasterizer);
+                    foreach (IFeatureDataRecord record in features)
+                        rule.Symbolize(record, textSymbolizingDelegate(record), renderPhase, transform, rasterizer);
             }
-            Rasterizer.EndPass();
         }
 
-        #endregion
-
-
-        #region ISymbolizer Members
-
-
-        public void Symbolize(IEnumerable<IFeatureDataRecord> features)
+        public void Symbolize(IEnumerable<IFeatureDataRecord> features, RenderPhase renderPhase, Matrix2D transform,
+                              IRasterizer rasterizer)
         {
             throw new NotSupportedException();
         }
-
-        #endregion
     }
 }

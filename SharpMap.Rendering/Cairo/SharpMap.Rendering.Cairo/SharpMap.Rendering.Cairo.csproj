@@ -80,10 +80,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CairoRasterRenderer.cs" />
-    <Compile Include="CairoRenderObject.cs" />
-    <Compile Include="CairoTextRenderer.cs" />
-    <Compile Include="CairoVectorRenderer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ViewConverter.cs" />
   </ItemGroup>

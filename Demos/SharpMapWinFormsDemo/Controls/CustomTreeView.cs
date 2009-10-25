@@ -1,6 +1,6 @@
-﻿/*
+/*
  *	This file is part of SharpMap.MapViewer
- *  SharpMapMapViewer is free software © 2008 Newgrove Consultants Limited, 
+ *  SharpMapMapViewer is free software � 2008 Newgrove Consultants Limited, 
  *  http://www.newgrove.com; you can redistribute it and/or modify it under the terms 
  *  of the current GNU Lesser General Public License (LGPL) as published by and 
  *  available from the Free Software Foundation, Inc., 

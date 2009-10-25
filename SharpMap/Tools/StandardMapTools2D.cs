@@ -369,8 +369,9 @@ namespace SharpMap.Tools
         {
             return delegate(ILayer layer)
                    {
-                       return layer.Style.MaxVisible >= scale &&
-                              layer.Style.MinVisible <= scale;
+                       return true;
+                       //return layer.Style.MaxVisible >= scale &&
+                       //       layer.Style.MinVisible <= scale;
                    };
         }
 

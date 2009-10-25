@@ -16,7 +16,6 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -27,6 +26,7 @@ using SharpMap.Expressions;
 using SharpMap.Layers;
 using SharpMap.Presentation.Views;
 using SharpMap.Rendering;
+using SharpMap.Rendering.Rasterize;
 using SharpMap.Rendering.Rendering2D;
 using SharpMap.Styles;
 using SharpMap.Tools;
@@ -40,21 +40,12 @@ namespace SharpMap.Presentation.Presenters
     /// </summary>
     public abstract class MapPresenter2D : FeatureLayersListenerPresenter<IMapView2D>
     {
+        #region Nested type: RendererKey
+
         internal struct RendererKey
         {
-            private Type renderObjectType;
-            public Type RenderObjectType
-            {
-                get { return renderObjectType; }
-                private set { renderObjectType = value; }
-            }
-
             private Type rendererType;
-            public Type RendererType
-            {
-                get { return rendererType; }
-                private set { rendererType = value; }
-            }
+            private Type renderObjectType;
 
             public RendererKey(Type renderObject, Type renderType)
                 : this()
@@ -62,13 +53,29 @@ namespace SharpMap.Presentation.Presenters
                 RenderObjectType = renderObject;
                 RendererType = renderType;
             }
+
+            public Type RenderObjectType
+            {
+                get { return renderObjectType; }
+                private set { renderObjectType = value; }
+            }
+
+            public Type RendererType
+            {
+                get { return rendererType; }
+                private set { rendererType = value; }
+            }
+
             public override int GetHashCode()
             {
                 return renderObjectType.GetHashCode() ^ rendererType.GetHashCode();
             }
         }
 
+        #endregion
+
         #region Private static fields
+
         private static readonly Object _rendererInitSync = new Object();
 
         ////jd : following as it causes issues with the web where there may 
@@ -78,44 +85,41 @@ namespace SharpMap.Presentation.Presenters
         //private static Object _rasterRenderer;
         //private static Object _textRenderer;
 
-        private static readonly Dictionary<RendererKey, IRenderer> _rendererRegistry = new Dictionary<RendererKey, IRenderer>();
-
+        private static readonly Dictionary<RendererKey, IRenderer> _rendererRegistry =
+            new Dictionary<RendererKey, IRenderer>();
 
         #endregion
 
         #region Private instance fields
-        private readonly ViewSelection2D _selection;
-        private StyleColor _backgroundColor;
-        private Size2D _oldViewSize = Size2D.Empty;
-        private Double _maximumWorldWidth = Double.PositiveInfinity;
-        private Double _minimumWorldWidth;
-        private Boolean _viewIsEmpty = true;
-        private RenderPhase _currentRenderPhase = RenderPhase.None;
 
         // The origin projection matrix reflects the coordinate system along
         // the x-axis, and translates the lower left corner of Map.Extents
         // to the view coordinate (0, ViewSize.Height)
+        private readonly Matrix2D _extentsCenterTransform = new Matrix2D();
         private readonly Matrix2D _originProjectionTransform = new Matrix2D();
 
         // The rotation matrix rotates world coordinates relative to view coordinates
         private readonly Matrix2D _rotationTransform = new Matrix2D();
 
         // The translation matrix pans the world coordinates relative to view coordinates
-        private readonly Matrix2D _translationTransform = new Matrix2D();
-
-        // The extents center matrix helps translate the map extents to the center of the view.
-        private readonly Matrix2D _extentsCenterTransform = new Matrix2D();
 
         // The scale matrix zooms the world coordinates relative to view coordinates
         private readonly Matrix2D _scaleTransform = new Matrix2D();
+        private readonly ViewSelection2D _selection;
 
         // The view center matrix helps translate the map extents to the center of the view.
-        private readonly Matrix2D _viewCenterTransform = new Matrix2D();
 
         // The to view coordinates matrix shifts world coordinates down by the height 
         // of the view so that the coordinate system normalization started with the 
         // origin normalize transform is completed
         private readonly Matrix2D _toViewCoordinates = new Matrix2D();
+        private readonly Matrix2D _translationTransform = new Matrix2D();
+        private readonly Matrix2D _viewCenterTransform = new Matrix2D();
+        private StyleColor _backgroundColor;
+        private RenderPhase _currentRenderPhase = RenderPhase.None;
+        private Double _maximumWorldWidth = Double.PositiveInfinity;
+        private Double _minimumWorldWidth;
+        private Size2D _oldViewSize = Size2D.Empty;
 
         // The computed conatenated matrix which transforms world coordinates to 
         // view coordinates
@@ -124,9 +128,11 @@ namespace SharpMap.Presentation.Presenters
         // The computed conatenated matrix which transforms view coordinates to 
         // world coordinates
         private Matrix2D _toWorldTransform;
+        private Boolean _viewIsEmpty = true;
 
         //private readonly Dictionary<RenderedObjectCacheKey, IEnumerable> _renderObjectsCache
         //    = new Dictionary<RenderedObjectCacheKey, IEnumerable>();
+
         #endregion
 
         #region Object construction / disposal
@@ -139,7 +145,7 @@ namespace SharpMap.Presentation.Presenters
         protected MapPresenter2D(Map map, IMapView2D mapView)
             : base(map, mapView)
         {
-            createRenderers();
+            //createRenderers();
 
             _selection = new ViewSelection2D();
 
@@ -165,14 +171,10 @@ namespace SharpMap.Presentation.Presenters
 
             initializeViewMatrixes();
         }
+
         #endregion
 
         #region Abstract methods
-
-        protected abstract IRasterRenderer2D CreateRasterRenderer();
-        protected abstract ITextRenderer2D CreateTextRenderer();
-        protected abstract IVectorRenderer2D CreateVectorRenderer();
-        protected abstract Type GetRenderObjectType();
 
         #endregion
 
@@ -302,52 +304,6 @@ namespace SharpMap.Presentation.Presenters
             get { return WorldUnitsPerPixelInternal * WorldAspectRatioInternal; }
         }
 
-        /// <summary>
-        /// Gets the instance of the concrete
-        /// <see cref="RasterRenderer2D{TRenderObject}"/> used
-        /// for the specific display technology which a base class
-        /// is created to support.
-        /// </summary>
-        protected IRasterRenderer2D RasterRenderer
-        {
-            get
-            {
-                IRenderer r;
-
-                Type renderObjectType = GetRenderObjectType();
-                Type tRenderer = typeof(IRasterRenderer2D);
-                RendererKey key = new RendererKey(renderObjectType, tRenderer);
-                if (!_rendererRegistry.TryGetValue(key, out r))
-                {
-                    lock (_rendererInitSync)
-                    {
-                        if (!_rendererRegistry.TryGetValue(key, out r))
-                        {
-                            r = CreateRasterRenderer();
-                            _rendererRegistry.Add(key, r);
-                        }
-                    }
-                }
-
-                return r as IRasterRenderer2D;
-
-                //if (Thread.VolatileRead(ref _rasterRenderer) == null)
-                //{
-                //    lock (_rendererInitSync)
-                //    {
-                //        if (Thread.VolatileRead(ref _rasterRenderer) == null)
-                //        {
-                //            IRenderer rasterRenderer = CreateRasterRenderer();
-                //            Thread.VolatileWrite(ref _rasterRenderer, rasterRenderer);
-                //        }
-                //    }
-                //}
-
-                //return _rasterRenderer as IRasterRenderer2D;
-            }
-        }
-
-
 
         protected virtual Double RenderMaximumWorldWidth
         {
@@ -381,10 +337,7 @@ namespace SharpMap.Presentation.Presenters
                            ? null
                            : _toViewTransform;
             }
-            private set
-            {
-                _toViewTransform = value;
-            }
+            private set { _toViewTransform = value; }
         }
 
         /// <summary>
@@ -398,90 +351,6 @@ namespace SharpMap.Presentation.Presenters
             private set { _toWorldTransform = value; }
         }
 
-        /// <summary>
-        /// Gets the instance of the concrete
-        /// <see cref="VectorRenderer2D{TRenderObject}"/> used
-        /// for the specific display technology which a base class
-        /// is created to support.
-        /// </summary>
-        protected IVectorRenderer2D VectorRenderer
-        {
-            get
-            {
-
-                IRenderer r;
-
-                Type renderObjectType = GetRenderObjectType();
-                Type tRenderer = typeof(IVectorRenderer2D);
-                RendererKey key = new RendererKey(renderObjectType, tRenderer);
-                if (!_rendererRegistry.TryGetValue(key, out r))
-                {
-                    lock (_rendererInitSync)
-                    {
-                        if (!_rendererRegistry.TryGetValue(key, out r))
-                        {
-                            r = CreateVectorRenderer();
-                            _rendererRegistry.Add(key, r);
-                        }
-                    }
-                }
-
-                return r as IVectorRenderer2D;
-
-                //if (Thread.VolatileRead(ref _vectorRenderer) == null)
-                //{
-                //    lock (_rendererInitSync)
-                //    {
-                //        if (Thread.VolatileRead(ref _vectorRenderer) == null)
-                //        {
-                //            IRenderer vectorRenderer = CreateVectorRenderer();
-                //            Thread.VolatileWrite(ref _vectorRenderer, vectorRenderer);
-                //        }
-                //    }
-                //}
-
-                //return _vectorRenderer as IVectorRenderer2D;
-            }
-        }
-
-        protected ITextRenderer2D TextRenderer
-        {
-            get
-            {
-                IRenderer r;
-
-                Type renderObjectType = GetRenderObjectType();
-                Type tRenderer = typeof(ITextRenderer2D);
-                RendererKey key = new RendererKey(renderObjectType, tRenderer);
-                if (!_rendererRegistry.TryGetValue(key, out r))
-                {
-                    lock (_rendererInitSync)
-                    {
-                        if (!_rendererRegistry.TryGetValue(key, out r))
-                        {
-                            r = CreateTextRenderer();
-                            _rendererRegistry.Add(key, r);
-                        }
-                    }
-                }
-
-                return r as ITextRenderer2D;
-
-                //if (Thread.VolatileRead(ref _textRenderer) == null)
-                //{
-                //    lock (_rendererInitSync)
-                //    {
-                //        if (Thread.VolatileRead(ref _textRenderer) == null)
-                //        {
-                //            IRenderer textRenderer = CreateTextRenderer();
-                //            Thread.VolatileWrite(ref _textRenderer, textRenderer);
-                //        }
-                //    }
-                //}
-
-                //return _textRenderer as ITextRenderer2D;
-            }
-        }
 
         /// <summary>
         /// Gets or sets the extents of the current view in world units.
@@ -594,14 +463,35 @@ namespace SharpMap.Presentation.Presenters
         #endregion
 
         #region Methods
-        protected virtual void SetViewBackgroundColor(StyleColor fromColor, StyleColor toColor) { }
-        protected virtual void SetViewGeoCenter(ICoordinate fromCoordinate, ICoordinate toCoordinate) { }
-        protected virtual void SetViewEnvelope(IExtents2D fromEnvelope, IExtents2D toEnvelope) { }
-        protected virtual void SetViewLocationInformation(String text) { }
-        protected virtual void SetViewMaximumWorldWidth(Double fromMaxWidth, Double toMaxWidth) { }
-        protected virtual void SetViewMinimumWorldWidth(Double fromMinWidth, Double toMinWidth) { }
+
+        protected virtual void SetViewBackgroundColor(StyleColor fromColor, StyleColor toColor)
+        {
+        }
+
+        protected virtual void SetViewGeoCenter(ICoordinate fromCoordinate, ICoordinate toCoordinate)
+        {
+        }
+
+        protected virtual void SetViewEnvelope(IExtents2D fromEnvelope, IExtents2D toEnvelope)
+        {
+        }
+
+        protected virtual void SetViewLocationInformation(String text)
+        {
+        }
+
+        protected virtual void SetViewMaximumWorldWidth(Double fromMaxWidth, Double toMaxWidth)
+        {
+        }
+
+        protected virtual void SetViewMinimumWorldWidth(Double fromMinWidth, Double toMinWidth)
+        {
+        }
+
         //protected virtual void SetViewSize(Size2D fromSize, Size2D toSize) { }
-        protected virtual void SetViewWorldAspectRatio(Double fromRatio, Double toRatio) { }
+        protected virtual void SetViewWorldAspectRatio(Double fromRatio, Double toRatio)
+        {
+        }
 
         protected Point2D ToViewInternal(ICoordinate point)
         {
@@ -679,8 +569,8 @@ namespace SharpMap.Presentation.Presenters
             checkViewState();
 
             IExtents2D worldBounds = Map.GeometryFactory.CreateExtents(
-                ToWorldInternal(viewBounds.LowerLeft),
-                ToWorldInternal(viewBounds.UpperRight)) as IExtents2D;
+                                         ToWorldInternal(viewBounds.LowerLeft),
+                                         ToWorldInternal(viewBounds.UpperRight)) as IExtents2D;
 
             setViewEnvelopeInternal(worldBounds);
         }
@@ -760,7 +650,8 @@ namespace SharpMap.Presentation.Presenters
                 case ListChangedType.ItemAdded:
                     {
                         ILayer layer = Map.Layers[newIndex];
-                        RenderLayer(layer);
+                        IRasterizers rasterizers = View.RasterizeSurface.RetrieveSurface();
+                        RenderLayer(layer, rasterizers);
                     }
                     break;
                 case ListChangedType.ItemDeleted:
@@ -779,7 +670,8 @@ namespace SharpMap.Presentation.Presenters
                     break;
                 case ListChangedType.ItemChanged:
                     if (propertyDescriptor.Name == Layer.EnabledProperty.Name ||
-                        propertyDescriptor.Name == LayerGroup.ShowChildrenProperty.Name)
+                        propertyDescriptor.Name == LayerGroup.ShowChildrenProperty.Name ||
+                        propertyDescriptor.Name == "Symbolizer")//TODO make this const
                     {
                         RenderAllLayers();
                     }
@@ -787,6 +679,7 @@ namespace SharpMap.Presentation.Presenters
                 default:
                     break;
             }
+            View.RasterizeSurface.RenderCompleted();
             base.NotifyLayersChanged(listChangedType, oldIndex, newIndex, propertyDescriptor);
         }
 
@@ -799,40 +692,29 @@ namespace SharpMap.Presentation.Presenters
         {
             return handleSelectedFeaturesListChanged;
         }
+
         #endregion
 
         #region Protected members
 
+        //protected virtual Type GeometryRendererType
+        //{
+        //    get { return typeof(BasicGeometryRenderer2D<>); }
+        //}
 
-        protected virtual Type GeometryRendererType
+        //protected virtual Type LabelRendererType
+        //{
+        //    get { return typeof(BasicLabelRenderer2D<>); }
+        //}
+
+
+        /// <summary>
+        /// Gets a value indicating if all the parameters needed to compute a view
+        /// have been set and the world-to-view matrix has been initilized.
+        /// </summary>
+        protected Boolean IsViewMatrixInitialized
         {
-            get { return typeof(BasicGeometryRenderer2D<>); }
-        }
-
-        protected virtual Type LabelRendererType
-        {
-            get { return typeof(BasicLabelRenderer2D<>); }
-        }
-
-        protected virtual void CreateGeometryRenderer(Type renderObjectType)
-        {
-            Type layerType = typeof(GeometryLayer);
-
-            CreateRendererForLayerType(GeometryRendererType,
-                                       renderObjectType,
-                                       layerType,
-                                       VectorRenderer);
-        }
-
-        private void CreateLabelRenderer(Type renderObjectType)
-        {
-            Type layerType = typeof(LabelLayer);
-
-            CreateRendererForLayerType(LabelRendererType,
-                                       renderObjectType,
-                                       layerType,
-                                       TextRenderer,
-                                       VectorRenderer);
+            get { return !_viewIsEmpty; }
         }
 
         protected void CreateRendererForLayerType(Type rendererType,
@@ -893,18 +775,13 @@ namespace SharpMap.Presentation.Presenters
             return LayerRendererRegistry.Instance.Get<TRenderer>(layer);
         }
 
-        /// <summary>
-        /// Gets a value indicating if all the parameters needed to compute a view
-        /// have been set and the world-to-view matrix has been initilized.
-        /// </summary>
-        protected Boolean IsViewMatrixInitialized
+        protected virtual void OnViewMatrixInitialized()
         {
-            get { return !_viewIsEmpty; }
         }
 
-        protected virtual void OnViewMatrixInitialized() { }
-
-        protected virtual void OnViewMatrixChanged() { }
+        protected virtual void OnViewMatrixChanged()
+        {
+        }
 
         /// <summary>
         /// Registers a renderer for a given layer type.
@@ -922,47 +799,49 @@ namespace SharpMap.Presentation.Presenters
         protected void RenderAllLayers()
         {
             OnRenderingAllLayers();
-            RenderAllLayers(RenderPhase.Normal);
-            RenderAllLayers(RenderPhase.Selected);
-            RenderAllLayers(RenderPhase.Highlighted);
+            IRasterizers rasterizers = View.RasterizeSurface.CreateSurface();
+            RenderAllLayers(RenderPhase.Normal, rasterizers);
+            RenderAllLayers(RenderPhase.Selected, rasterizers);
+            RenderAllLayers(RenderPhase.Highlighted, rasterizers);
             _currentRenderPhase = RenderPhase.None;
+            View.RasterizeSurface.RenderCompleted();
             OnRenderedAllLayers();
         }
 
-        protected void RenderLayer(ILayer layer)
+        protected void RenderLayer(ILayer layer, IRasterizers rasterizers)
         {
             OnRenderingLayer();
-            RenderLayer(layer, RenderPhase.Normal);
-            RenderLayer(layer, RenderPhase.Selected);
-            RenderLayer(layer, RenderPhase.Highlighted);
+            RenderLayer(layer, RenderPhase.Normal, rasterizers);
+            RenderLayer(layer, RenderPhase.Selected, rasterizers);
+            RenderLayer(layer, RenderPhase.Highlighted, rasterizers);
             _currentRenderPhase = RenderPhase.None;
             OnRenderedLayer();
         }
 
-        protected void RenderAllLayers(RenderPhase phase)
+        protected void RenderAllLayers(RenderPhase phase, IRasterizers rasterizers)
         {
             OnRenderingAllLayersPhase(phase);
 
             for (Int32 i = Map.Layers.Count - 1; i >= 0; i--)
             {
-                RenderLayer(Map.Layers[i], phase);
+                RenderLayer(Map.Layers[i], phase, rasterizers);
             }
 
             OnRenderedAllLayersPhase(phase);
         }
 
-        protected void RenderLayer(ILayer layer, RenderPhase phase)
+        protected void RenderLayer(ILayer layer, RenderPhase phase, IRasterizers rasterizers)
         {
             _currentRenderPhase = phase;
 
             OnRenderingLayerPhase(layer, phase);
 
-            if (!layer.Enabled ||
-                layer.Style.MinVisible > WorldWidthInternal ||
-                layer.Style.MaxVisible < WorldWidthInternal)
-            {
-                return;
-            }
+            //if (!layer.Enabled ||
+            //    layer.Style.MinVisible > WorldWidthInternal ||
+            //    layer.Style.MaxVisible < WorldWidthInternal)
+            //{
+            //    return;
+            //}
 
             // Handle layer groups
             IEnumerable<ILayer> layers = layer as IEnumerable<ILayer>;
@@ -971,142 +850,140 @@ namespace SharpMap.Presentation.Presenters
             {
                 foreach (ILayer groupMember in layers)
                 {
-                    RenderLayer(groupMember, phase);
+                    RenderLayer(groupMember, phase, rasterizers);
                 }
             }
             else // render the individual layer
             {
                 if (layer is IFeatureLayer)
                 {
-                    RenderFeatureLayer(layer as IFeatureLayer, phase);
+                    RenderFeatureLayer(layer as IFeatureLayer, phase, rasterizers);
                 }
                 else if (layer is IRasterLayer)
                 {
-                    RenderRasterLayer(layer as IRasterLayer, phase);
+                    RenderRasterLayer(layer as IRasterLayer, phase, rasterizers.RasterRasterizer);
                 }
             }
 
             OnRenderedLayerPhase(layer, phase);
         }
 
-        protected void RenderSelection(ViewSelection2D selection)
+        //protected void RenderSelection(ViewSelection2D selection)
+        //{
+        //    OnRenderingSelection();
+        //    selection.
+        //    IVectorRenderer2D renderer = VectorRenderer;
+
+        //    Debug.Assert(renderer != null);
+
+        //    Path2D path = selection.Path.Clone() as Path2D;
+        //    Debug.Assert(path != null);
+
+        //    // kbd4hire 20090318 Vector renderer uses device / pixels.
+        //    // No need to convert to world.
+        //    //path.TransformPoints(ToWorldTransformInternal);
+
+        //    IEnumerable<Path2D> paths = new Path2D[] { path };
+
+        //    IEnumerable renderedSelection = renderer.RenderPaths(paths,
+        //                                                         selection.FillBrush,
+        //                                                         null,
+        //                                                         null,
+        //                                                         selection.OutlineStyle,
+        //                                                         null,
+        //                                                         null,
+        //                                                         RenderState.Normal);
+
+        //    View.ShowRenderedObjects(renderedSelection);
+
+        //    OnRenderedSelection();
+        //}
+
+        protected virtual void RenderFeatureLayer(IFeatureLayer layer, RenderPhase phase,
+                                                  IRasterizers rasterizers)
         {
-            OnRenderingSelection();
-
-            IVectorRenderer2D renderer = VectorRenderer;
-
-            Debug.Assert(renderer != null);
-
-            Path2D path = selection.Path.Clone() as Path2D;
-            Debug.Assert(path != null);
-
-            // kbd4hire 20090318 Vector renderer uses device / pixels.
-            // No need to convert to world.
-            //path.TransformPoints(ToWorldTransformInternal);
-
-            IEnumerable<Path2D> paths = new Path2D[] { path };
-
-            IEnumerable renderedSelection = renderer.RenderPaths(paths,
-                                                                 selection.FillBrush,
-                                                                 null,
-                                                                 null,
-                                                                 selection.OutlineStyle,
-                                                                 null,
-                                                                 null,
-                                                                 RenderState.Normal);
-
-            View.ShowRenderedObjects(renderedSelection);
-
-            OnRenderedSelection();
-        }
-
-        protected virtual void RenderFeatureLayer(IFeatureLayer layer, RenderPhase phase)
-        {
-            IFeatureRenderer renderer = GetRenderer<IFeatureRenderer>(layer);
-
-            // kbd4hire 20090318 Set internal transform.
-            renderer.RenderTransform = _toViewTransform;
-
-            Debug.Assert(renderer != null);
-            Debug.Assert(layer.Style is FeatureStyle);
-
-            FeatureStyle layerStyle = layer.Style as FeatureStyle;
-
+            IEnumerable<FeatureDataRow> features = null;
             switch (phase)
             {
                 case RenderPhase.Normal:
                     FeatureQueryExpression query =
                         FeatureQueryExpression.Intersects(ViewEnvelopeInternal);
-                    IEnumerable<FeatureDataRow> features = layer.Select(query);
-
-                    foreach (FeatureDataRow feature in features)
-                    {
-                        FeatureStyle style = getStyleForFeature(layer, feature, layerStyle);
-
-                        IEnumerable renderedFeature = renderer.RenderFeature(feature,
-                                                                             style,
-                                                                             RenderState.Normal,
-                                                                             layer);
-                        View.ShowRenderedObjects(renderedFeature);
-                    }
+                    features = layer.Select(query);
                     break;
                 case RenderPhase.Selected:
-                    IEnumerable<FeatureDataRow> selectedRows = layer.SelectedFeatures;
-
-                    foreach (FeatureDataRow selectedFeature in selectedRows)
-                    {
-                        FeatureStyle style = getStyleForFeature(layer, selectedFeature, layerStyle);
-                        IEnumerable renderedFeature = renderer.RenderFeature(selectedFeature,
-                                                                             style,
-                                                                             RenderState.Selected,
-                                                                             layer);
-                        View.ShowRenderedObjects(renderedFeature);
-                    }
+                    features = layer.SelectedFeatures;
                     break;
                 case RenderPhase.Highlighted:
-                    IEnumerable<FeatureDataRow> highlightedRows = layer.HighlightedFeatures;
-
-                    foreach (FeatureDataRow highlightedFeature in highlightedRows)
-                    {
-                        FeatureStyle style = getStyleForFeature(layer, highlightedFeature, layerStyle);
-                        IEnumerable renderedFeature = renderer.RenderFeature(highlightedFeature,
-                                                                             style,
-                                                                             RenderState.Highlighted,
-                                                                             layer);
-                        View.ShowRenderedObjects(renderedFeature);
-                    }
+                    features = layer.HighlightedFeatures;
                     break;
                 default:
                     break;
             }
 
-            renderer.CleanUp();
+            IGeometryLayer geomLayer = layer as IGeometryLayer;
+            if (geomLayer != null)
+                geomLayer.Symbolizer.Symbolize(Cast<FeatureDataRow, IFeatureDataRecord>(features), phase,
+                                                               _toViewTransform, rasterizers.GeometryRasterizer);
+            ILabelLayer lblLayer = layer as ILabelLayer;
+            if (lblLayer != null)
+                lblLayer.Symbolizer.Symbolize(Cast<FeatureDataRow, IFeatureDataRecord>(features), phase,
+                                                            _toViewTransform, rasterizers.TextRasterizer, lblLayer.TextFormatter);
         }
 
-        protected virtual void RenderRasterLayer(IRasterLayer layer, RenderPhase phase)
+        private IEnumerable<T2> Cast<T1, T2>(IEnumerable<T1> input) where T1 : T2
+        {
+            foreach (T1 enumerable in input)
+            {
+                yield return enumerable;
+            }
+        }
+
+        protected virtual void RenderRasterLayer(IRasterLayer layer, RenderPhase phase,
+                                                 IRasterRasterizer rasterRasterizer)
         {
             throw new NotImplementedException();
         }
 
-        protected virtual void OnRenderingAllLayers() { }
+        protected virtual void OnRenderingAllLayers()
+        {
+        }
 
-        protected virtual void OnRenderedAllLayers() { }
+        protected virtual void OnRenderedAllLayers()
+        {
+        }
 
-        protected virtual void OnRenderingLayer() { }
+        protected virtual void OnRenderingLayer()
+        {
+        }
 
-        protected virtual void OnRenderedLayer() { }
+        protected virtual void OnRenderedLayer()
+        {
+        }
 
-        protected virtual void OnRenderingAllLayersPhase(RenderPhase phase) { }
+        protected virtual void OnRenderingAllLayersPhase(RenderPhase phase)
+        {
+        }
 
-        protected virtual void OnRenderedAllLayersPhase(RenderPhase phase) { }
+        protected virtual void OnRenderedAllLayersPhase(RenderPhase phase)
+        {
+        }
 
-        protected virtual void OnRenderingLayerPhase(ILayer layer, RenderPhase phase) { }
+        protected virtual void OnRenderingLayerPhase(ILayer layer, RenderPhase phase)
+        {
+        }
 
-        protected virtual void OnRenderedLayerPhase(ILayer layer, RenderPhase phase) { }
+        protected virtual void OnRenderedLayerPhase(ILayer layer, RenderPhase phase)
+        {
+        }
 
-        protected virtual void OnRenderingSelection() { }
+        protected virtual void OnRenderingSelection()
+        {
+        }
 
-        protected virtual void OnRenderedSelection() { }
+        protected virtual void OnRenderedSelection()
+        {
+        }
+
         #endregion
 
         #region Event handlers
@@ -1116,6 +993,9 @@ namespace SharpMap.Presentation.Presenters
         #endregion
 
         #region View events
+
+        private Point2D _previousActionPoint = Point2D.Empty;
+
         private void handleIdentifyLocationRequested(Object sender, LocationEventArgs e)
         {
             // TODO: if map units are in latitude / longitude, terms easting and northing aren't used... are they?
@@ -1139,8 +1019,6 @@ namespace SharpMap.Presentation.Presenters
         {
             setViewMetricsInternal(View.ViewSize, getGeoCenter(), WorldWidthInternal);
         }
-
-        private Point2D _previousActionPoint = Point2D.Empty;
 
         // Handles the hover request from the view
         private void handleViewHover(Object sender, MapActionEventArgs<Point2D> e)
@@ -1272,15 +1150,16 @@ namespace SharpMap.Presentation.Presenters
         // Handles the selection changes on the view
         private void handleSelectionChanged(Object sender, EventArgs e)
         {
-            if (SelectionInternal.Path.CurrentFigure == null)
-            {
-                return;
-            }
+            //TODO reimplement:
+            //if (SelectionInternal.Path.CurrentFigure == null)
+            //{
+            //    return;
+            //}
 
-            if (ToWorldTransformInternal != null)
-            {
-                RenderSelection(SelectionInternal);
-            }
+            //if (ToWorldTransformInternal != null)
+            //{
+            //    RenderSelection(SelectionInternal);
+            //}
         }
 
         #endregion
@@ -1317,18 +1196,18 @@ namespace SharpMap.Presentation.Presenters
         //    }
         //}
 
-        private void createRenderers()
-        {
-            Type renderObjectType = GetRenderObjectType();
+        //private void createRenderers()
+        //{
+        //    Type renderObjectType = GetRenderObjectType();
 
-            // Create renderer for geometry layers
-            CreateGeometryRenderer(renderObjectType);
+        //    // Create renderer for geometry layers
+        //    CreateGeometryRenderer(renderObjectType);
 
-            // Create renderer for label layers
-            CreateLabelRenderer(renderObjectType);
+        //    // Create renderer for label layers
+        //    CreateLabelRenderer(renderObjectType);
 
-            // TODO: create raster renderer
-        }
+        //    // TODO: create raster renderer
+        //}
 
         private void initializeViewMatrixes()
         {
@@ -1579,20 +1458,20 @@ namespace SharpMap.Presentation.Presenters
             renderChangedLayer(featureLayer, layerChangeType, RenderPhase.Highlighted);
         }
 
-        protected static FeatureStyle getStyleForFeature(IFeatureLayer layer,
-                                                       FeatureDataRow feature,
-                                                       FeatureStyle layerStyle)
-        {
-            FeatureStyle style = layer.Theme == null
-                                     ? null
-                                     : layer.Theme.GetStyle(feature) as FeatureStyle;
+        //protected static FeatureStyle getStyleForFeature(IFeatureLayer layer,
+        //                                               FeatureDataRow feature,
+        //                                               FeatureStyle layerStyle)
+        //{
+        //    FeatureStyle style = layer.Theme == null
+        //                             ? null
+        //                             : layer.Theme.GetStyle(feature) as FeatureStyle;
 
-            if (style == null)
-            {
-                style = layerStyle;
-            }
-            return style;
-        }
+        //    if (style == null)
+        //    {
+        //        style = layerStyle;
+        //    }
+        //    return style;
+        //}
 
         private void renderChangedLayer(IFeatureLayer featureLayer,
                                         ListChangedType layerChangeType,
@@ -1616,8 +1495,11 @@ namespace SharpMap.Presentation.Presenters
             {
                 case ListChangedType.ItemAdded:
                 case ListChangedType.Reset:
-                    RenderLayer(featureLayer, phaseToRender);
-                    break;
+                    {
+                        IRasterizers rasterizers = View.RasterizeSurface.RetrieveSurface();
+                        RenderLayer(featureLayer, phaseToRender, rasterizers);
+                        break;
+                    }
                 default:
                     break;
             }
@@ -1674,6 +1556,7 @@ namespace SharpMap.Presentation.Presenters
 
             return null;
         }
+
         #endregion
     }
 }

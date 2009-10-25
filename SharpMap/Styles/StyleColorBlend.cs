@@ -18,7 +18,7 @@
 
 
 using System;
-using SharpMap.Rendering.Thematics;
+//using SharpMap.Rendering.Thematics;
 using SharpMap.Styles;
 
 namespace SharpMap.Styles

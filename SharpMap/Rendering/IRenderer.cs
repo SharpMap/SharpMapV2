@@ -16,6 +16,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System;
+using SharpMap.Rendering.Rasterize;
 using SharpMap.Styles;
 using IMatrix2D = NPack.Interfaces.IMatrix<NPack.DoubleComponent>;
 
@@ -26,6 +27,7 @@ namespace SharpMap.Rendering
     /// </summary>
     public interface IRenderer : IDisposable
     {
+        
         /// <summary>
         /// Gets or sets a matrix used to transform 
         /// coordinate values during rendering.

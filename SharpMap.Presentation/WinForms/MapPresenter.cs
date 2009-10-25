@@ -20,6 +20,7 @@ using GeoAPI.Coordinates;
 using SharpMap.Layers;
 using SharpMap.Presentation.Presenters;
 using SharpMap.Rendering.Gdi;
+using SharpMap.Rendering.Rasterize;
 using SharpMap.Rendering.Rendering2D;
 using SharpMap.Styles;
 using GdiMatrix = System.Drawing.Drawing2D.Matrix;
@@ -40,25 +41,25 @@ namespace SharpMap.Presentation.WinForms
             get { return View as MapViewControl; }
         }
 
-        protected override ITextRenderer2D CreateTextRenderer()
-        {
-            return new GdiTextRenderer();
-        }
+        //protected override ITextRenderer2D CreateTextRenderer()
+        //{
+        //    return new GdiTextRenderer();
+        //}
 
-        protected override IRasterRenderer2D CreateRasterRenderer()
-        {
-            return new GdiRasterRenderer();
-        }
+        //protected override IRasterRenderer2D CreateRasterRenderer()
+        //{
+        //    return new GdiRasterRenderer();
+        //}
 
-        protected override IVectorRenderer2D CreateVectorRenderer()
-        {
-            return new GdiVectorRenderer();
-        }
+        //protected override IVectorRenderer2D CreateVectorRenderer()
+        //{
+        //    return new GdiVectorRenderer();
+        //}
 
-        protected override Type GetRenderObjectType()
-        {
-            return typeof (GdiRenderObject);
-        }
+        //protected override Type GetRenderObjectType()
+        //{
+        //    return typeof (GdiRenderObject);
+        //}
 
         protected override void OnRenderingAllLayers()
         {
@@ -96,15 +97,15 @@ namespace SharpMap.Presentation.WinForms
 			_isRenderingSelection = false;
 		}
 
-        protected override void RenderFeatureLayer(IFeatureLayer layer, RenderPhase phase)
+        protected override void RenderFeatureLayer(IFeatureLayer layer, RenderPhase phase, IRasterizers rasterizers)
         {
             if (_isRenderingAll)
             {
-                base.RenderFeatureLayer(layer, phase);
+                base.RenderFeatureLayer(layer, phase, rasterizers);
             }
             else
             {
-                RenderAllLayers(phase);
+                RenderAllLayers(phase, rasterizers);
             }
         }
 
