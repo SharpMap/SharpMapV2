@@ -753,7 +753,7 @@ namespace SharpMap.Data.Providers.Db
         public MissingCoordinateTransformationFactoryException(string s)
             : base(s)
         {
-            throw new NotImplementedException();
+           
         }
     }
 }

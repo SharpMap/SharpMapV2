@@ -66,24 +66,24 @@ namespace SharpMap.Presentation.AspNet.Demo
         {
             GeoJsonGeometryStyle vs = new GeoJsonGeometryStyle();
 
-            vs.EnableOutline = random.Next(0, 2) == 1;
+            //vs.EnableOutline = random.Next(0, 2) == 1;
 
             vs.Fill = RandomBrush();
             vs.Line = RandomPen();
-            vs.Outline = RandomPen();
+            //vs.Outline = RandomPen();
             vs.Symbol = RandomSymbol();
-            vs.Outline.Width += vs.Line.Width;
+            //vs.Outline.Width += vs.Line.Width;
 
-            vs.HighlightFill = RandomBrush();
-            vs.HighlightLine = RandomPen();
-            vs.HighlightOutline = RandomPen();
-            vs.HighlightSymbol = RandomSymbol();
+            //vs.HighlightFill = RandomBrush();
+            //vs.HighlightLine = RandomPen();
+            //vs.HighlightOutline = RandomPen();
+            //vs.HighlightSymbol = RandomSymbol();
 
 
-            vs.SelectFill = RandomBrush();
-            vs.SelectLine = RandomPen();
-            vs.SelectOutline = RandomPen();
-            vs.SelectSymbol = RandomSymbol();
+            //vs.SelectFill = RandomBrush();
+            //vs.SelectLine = RandomPen();
+            //vs.SelectOutline = RandomPen();
+            //vs.SelectSymbol = RandomSymbol();
 
 
             return vs;

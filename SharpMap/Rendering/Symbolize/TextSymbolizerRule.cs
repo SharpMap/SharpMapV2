@@ -16,7 +16,7 @@ namespace SharpMap.Rendering.Symbolize
         {
             LabelStyle style;
             if (EvaluateStyle(obj, renderPhase, out style))
-                rasterizer.Rasterize(obj.Geometry, text, style, transform);
+                rasterizer.Rasterize(obj, text, style, transform);
         }
 
         public abstract bool EvaluateStyle(IFeatureDataRecord record, RenderPhase phase, out LabelStyle style);

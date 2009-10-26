@@ -47,6 +47,7 @@ namespace SharpMap.Rendering.GeoJson
                                                                             GeoJsonLabelStyle style,
                                                                             RenderState state, ILayer layer)
         {
+
             FeatureDataRow fdr = (FeatureDataRow) feature;
 
             string text = fdr.Evaluate(style.LabelExpression);

@@ -96,10 +96,10 @@ namespace SharpMap.Presentation.WinForms
                                                   base.BackColor.B);
 
             Controls.Add(_infoLabel);
-            RasterizeSurface.RenderComplete += delegate
-                                                   {
-                                                       Refresh();
-                                                   };
+            //RasterizeSurface.RenderComplete += delegate
+            //                                       {
+            //                                           Refresh();
+            //                                       };
         }
 
         /// <summary>
@@ -560,12 +560,9 @@ namespace SharpMap.Presentation.WinForms
         {
             //base.OnPaint(e);
             e.Graphics.Clear(BackColor);
-            GdiRasterizeSurface surface = RasterizeSurface as GdiRasterizeSurface;
 
-
-
-            if (surface.FrontSurface != null)
-                e.Graphics.DrawImageUnscaled(surface.FrontSurface, 0, 0);
+            if (_backBuffer != null)
+                e.Graphics.DrawImageUnscaled(_backBuffer, 0, 0);
 
             //Graphics g = e.Graphics;
 
@@ -1177,6 +1174,19 @@ namespace SharpMap.Presentation.WinForms
 
             base.Dispose(disposing);
         }
+
+        #region IMapView2D Members
+
+
+        public void Display(object viewData)
+        {
+            _backBuffer = viewData as Image;
+            Refresh();
+        }
+
+        private Image _backBuffer;
+
+        #endregion
     }
 
     #region Event Arg Classes

@@ -144,7 +144,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="GdiGeometryRenderer.cs" />
+    <Compile Include="GdiGeometryRasterizer.cs" />
     <Compile Include="GdiRasterizer.cs" />
     <Compile Include="GdiRasterizers.cs" />
     <Compile Include="GdiRasterizeSurface.cs" />

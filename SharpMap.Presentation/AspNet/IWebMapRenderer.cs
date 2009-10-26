@@ -16,6 +16,7 @@
 using System;
 using System.IO;
 using SharpMap.Presentation.AspNet.MVP;
+using SharpMap.Rendering.Rasterize;
 using SharpMap.Rendering.Rendering2D;
 
 namespace SharpMap.Presentation.AspNet
@@ -24,16 +25,7 @@ namespace SharpMap.Presentation.AspNet
     {
         WebMapView MapView { get; set; }
         double Dpi { get; }
-        IRasterRenderer2D CreateRasterRenderer();
-        IVectorRenderer2D CreateVectorRenderer();
-        ITextRenderer2D CreateTextRenderer();
-        Type GeometryRendererType { get; }
-        Type LabelRendererType { get; }
-        Type GetRenderObjectType();
-        void ClearRenderQueue();
-        void EnqueueRenderObject(object o);
-
-        event EventHandler RenderDone;
+        IRasterizeSurface RasterizeSurface { get; }
         Stream Render(WebMapView mapView, out string mimeType);
     }
 

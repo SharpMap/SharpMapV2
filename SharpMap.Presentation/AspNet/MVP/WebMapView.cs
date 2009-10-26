@@ -18,6 +18,7 @@ using System.IO;
 using GeoAPI.Coordinates;
 using GeoAPI.Geometries;
 using SharpMap.Presentation.Views;
+using SharpMap.Rendering.Rasterize;
 using SharpMap.Rendering.Rendering2D;
 using SharpMap.Styles;
 
@@ -180,15 +181,6 @@ namespace SharpMap.Presentation.AspNet.MVP
             get { return _presenter.Selection; }
         }
 
-        public void ShowRenderedObjects(IEnumerable renderedObjects)
-        {
-            //WebMapRenderer.ClearRenderQueue();
-            foreach (Object o in renderedObjects)
-            {
-                WebMapRenderer.EnqueueRenderObject(o);
-            }
-        }
-
         public Matrix2D ToViewTransform
         {
             get { return _presenter.ToViewTransform; }
@@ -293,7 +285,13 @@ namespace SharpMap.Presentation.AspNet.MVP
 
         public String Title { get; set; }
 
+        public IRasterizeSurface RasterizeSurface
+        {
+            get { return WebMapRenderer.RasterizeSurface; }
+        }
+
         #endregion
+
 
         private void onRequestBackgroundColorChange(StyleColor current, StyleColor requested)
         {
@@ -470,5 +468,24 @@ namespace SharpMap.Presentation.AspNet.MVP
                 _disposed = true;
             }
         }
+
+        #region IMapView2D Members
+
+
+        public void Display(object viewData)
+        {
+            _renderedData = viewData;
+        }
+
+        private object _renderedData;
+        public object RenderedData
+        {
+            get
+            {
+                return _renderedData;
+            }
+        }
+
+        #endregion
     }
 }

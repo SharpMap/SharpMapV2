@@ -133,18 +133,6 @@ namespace SharpMap.Presentation.AspNet.Handlers
                     WriteException(ex);
                 }
 
-                try
-                {
-                    if (_renderer != null)
-                    {
-                        _renderer.ClearRenderQueue();
-                    }
-                }
-                catch (Exception ex)
-                {
-                    WriteException(ex);
-                }
-
                 CleanUpRequest();
             }
         }

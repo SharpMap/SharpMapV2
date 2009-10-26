@@ -20,7 +20,7 @@ using System.Text;
 using SharpMap.Presentation.AspNet;
 using SharpMap.Presentation.AspNet.MVP;
 using SharpMap.Rendering.GeoJson;
-using SharpMap.Rendering.Rendering2D;
+using SharpMap.Rendering.Rasterize;
 
 namespace SharpMap.Rendering.Web
 {
@@ -42,53 +42,21 @@ namespace SharpMap.Rendering.Web
 
             sb.Append("\"features\":");
             sb.Append("[");
-            while (_renderQueue.Count > 0)
-            {
-                sb.Append(_renderQueue.Dequeue().Json);
-                if (_renderQueue.Count > 0)
-                    sb.Append(",");
-            }
+
+            StringBuilder rendered = MapView.RenderedData as StringBuilder;
+            if (rendered.Length > 0)
+                rendered.Remove(rendered.Length - 1, 1);
+            sb.Append(rendered.ToString());
+
             sb.Append("]");
             sb.Append("}");
             return sb.ToString();
-        }
-
-        public IRasterRenderer2D CreateRasterRenderer()
-        {
-            return new GeoJsonRasterRenderer();
-        }
-
-        public IVectorRenderer2D CreateVectorRenderer()
-        {
-            return new GeoJsonVectorRenderer();
-        }
-
-        public ITextRenderer2D CreateTextRenderer()
-        {
-            return new GeoJsonTextRenderer();
         }
 
         public double Dpi
         {
             get { return double.NaN; }
         }
-
-        public Type GetRenderObjectType()
-        {
-            return typeof (GeoJsonRenderObject);
-        }
-
-        public void ClearRenderQueue()
-        {
-            _renderQueue.Clear();
-        }
-
-        public void EnqueueRenderObject(object o)
-        {
-            _renderQueue.Enqueue((GeoJsonRenderObject) o);
-        }
-
-        public event EventHandler RenderDone;
 
         Stream IWebMapRenderer.Render(WebMapView mapView, out string mimeType)
         {
@@ -102,22 +70,32 @@ namespace SharpMap.Rendering.Web
             return ms;
         }
 
-        public WebMapView MapView { get; set; }
+        private WebMapView _mapView;
+        public WebMapView MapView
+        {
+            get { return _mapView; }
+            set
+            {
+                _mapView = value;
+                RasterizeSurface = new GeoJsonRasterizeSurface(value);
+            }
+        }
 
         public void Dispose()
         {
         }
 
-        public Type GeometryRendererType
-        {
-            get { return typeof (GeoJsonGeometryRenderer<>); }
-        }
+        private IRasterizeSurface _rasterizeSurface;
 
-        public Type LabelRendererType
+        public IRasterizeSurface RasterizeSurface
         {
-            get { return typeof (BasicLabelRenderer2D<>); }
+            get { return _rasterizeSurface; }
+            protected set { _rasterizeSurface = value; }
         }
 
         #endregion
+
+
+        public event EventHandler RenderDone;
     }
 }

@@ -16,7 +16,7 @@ namespace SharpMap.Rendering.Symbolize
 
             GeometryStyle style;
             if (EvaluateStyle(obj, phase, out style))
-                rasterizer.Rasterize(obj.Geometry, style, transform);
+                rasterizer.Rasterize(obj, style, transform);
         }
 
         public override bool EvaluateStyle(IFeatureDataRecord record, RenderPhase phase, out IStyle style)

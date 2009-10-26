@@ -45,6 +45,8 @@ namespace SharpMap.Presentation.AspNet.Demo.GeoJson
             char[] arr = context.Request.Url.PathAndQuery.ToLower().ToCharArray();
             Array.Reverse(arr);
 
+            config.BaseSrid = "EPSG:4326";
+
             config.CacheKey = new string(arr);
 
             return config;

@@ -274,5 +274,7 @@ namespace SharpMap.Presentation.Views
 
         IRasterizeSurface RasterizeSurface { get; }
 
+        void Display(object viewData);
+
     }
 }

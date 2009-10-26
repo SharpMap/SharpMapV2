@@ -150,17 +150,21 @@
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
+    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="GeoJsonGeometryRenderer.cs" />
+    <Compile Include="GeoJsonGeometryRasterizer.cs" />
     <Compile Include="GeoJsonGeometryStyle.cs" />
     <Compile Include="GeoJsonFeatureWriter.cs" />
-    <Compile Include="GeoJsonLabelRenderer.cs" />
     <Compile Include="GeoJsonLabelStyle.cs" />
-    <Compile Include="GeoJsonRasterRenderer.cs" />
-    <Compile Include="GeoJsonRenderObject.cs" />
-    <Compile Include="GeoJsonTextRenderer.cs" />
-    <Compile Include="GeoJsonVectorRenderer.cs" />
+    <Compile Include="GeoJsonRasterizer.cs" />
+    <Compile Include="GeoJsonRasterizers.cs" />
+    <Compile Include="GeoJsonRasterizeSurface.cs" />
+    <Compile Include="GeoJsonRasterRasterizer.cs" />
+    <Compile Include="GeoJsonRenderObject.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="GeoJsonTextRasterizer.cs" />
     <Compile Include="HttpUtility.cs" />
     <Compile Include="IGeoJsonFeatureStyle.cs" />
     <Compile Include="IGeoJsonGeometryStyle.cs" />

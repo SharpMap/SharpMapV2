@@ -2477,14 +2477,14 @@ namespace SharpMap.Data.Providers.ShapeFile
                 StreamOffset offsets = new StreamOffset(bboxOffset, xOffset, yOffset, zOffset, mOffset, recordStart, endOfRecord);
 
 #if DEBUG
-                Debug.WriteLine(string.Format("Point : {0} \nX : {1}\nY : {2}\nZ : {3}\nM : {4}\nEnd of Record : {5}\nIndex record start : {6}\nIndex Record End {7}", pointIndex, xOffset, yOffset, zOffset, mOffset, endOfRecord, recordStart, recordStart + _indexEntry.ByteLength));
+                //Debug.WriteLine(string.Format("Point : {0} \nX : {1}\nY : {2}\nZ : {3}\nM : {4}\nEnd of Record : {5}\nIndex record start : {6}\nIndex Record End {7}", pointIndex, xOffset, yOffset, zOffset, mOffset, endOfRecord, recordStart, recordStart + _indexEntry.ByteLength));
 #endif
                 return offsets;
             }
 
             public void ValidateOffset(long offset, string action)
             {
-                Debug.WriteLine(string.Format("{0} read offset : {1}", action, offset));
+                //Debug.WriteLine(string.Format("{0} read offset : {1}", action, offset));
 
                 Assert.IsTrue((offset >= IndexEntry.AbsoluteByteOffset &&
                                offset <= IndexEntry.AbsoluteByteOffset + IndexEntry.ByteLength));

@@ -66,6 +66,7 @@ namespace SharpMap.Rendering.Gdi
         public void RenderCompleted()
         {
             FrontSurface = (Bitmap)BackSurface.Clone();
+            MapView.Display(FrontSurface); 
             RaiseRenderComplete();
         }
 
