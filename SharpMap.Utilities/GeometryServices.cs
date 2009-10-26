@@ -19,6 +19,7 @@ using GeoAPI.CoordinateSystems.Transformations;
 using GeoAPI.Geometries;
 using GisSharpBlog.NetTopologySuite.Geometries;
 using NetTopologySuite.Coordinates;
+using NetTopologySuite.Coordinates.Simple;
 using NPack;
 using NPack.Interfaces;
 using NPack.Matrix;
@@ -85,20 +86,20 @@ namespace SharpMap.Utilities
 
             internal InternalFactoryService()
             {
-                _coordinateFactory = new BufferedCoordinateFactory();
+                _coordinateFactory = new CoordinateFactory();
                 _coordinateSequenceFactory =
-                    new BufferedCoordinateSequenceFactory((BufferedCoordinateFactory)_coordinateFactory);
+                    new CoordinateSequenceFactory((CoordinateFactory)_coordinateFactory);
                 _geometryFactory =
-                    new GeometryFactory<BufferedCoordinate>(
-                        (BufferedCoordinateSequenceFactory)_coordinateSequenceFactory);
+                    new GeometryFactory<Coordinate>(
+                        (CoordinateSequenceFactory)_coordinateSequenceFactory);
                 _coordinateSystemFactory =
-                    new CoordinateSystemFactory<BufferedCoordinate>((BufferedCoordinateFactory)_coordinateFactory,
-                                                                    (GeometryFactory<BufferedCoordinate>)
+                    new CoordinateSystemFactory<Coordinate>((CoordinateFactory)_coordinateFactory,
+                                                                    (GeometryFactory<Coordinate>)
                                                                     _geometryFactory);
 
-                _coordinateTransformationFactory = new CoordinateTransformationFactory<BufferedCoordinate>(
-                      (BufferedCoordinateFactory)_coordinateFactory,
-                      (GeometryFactory<BufferedCoordinate>)_geometryFactory, new LinearFactory<DoubleComponent>());
+                _coordinateTransformationFactory = new CoordinateTransformationFactory<Coordinate>(
+                      (CoordinateFactory)_coordinateFactory,
+                      (GeometryFactory<Coordinate>)_geometryFactory, new LinearFactory<DoubleComponent>());
 
             }
 
@@ -122,8 +123,8 @@ namespace SharpMap.Utilities
 
                     if (!_sridAwareGeometryFactories.TryGetValue(srid, out factory))
                     {
-                        factory = new GeometryFactory<BufferedCoordinate>(srid,
-                            (BufferedCoordinateSequenceFactory)_coordinateSequenceFactory);
+                        factory = new GeometryFactory<Coordinate>(srid,
+                            (CoordinateSequenceFactory)_coordinateSequenceFactory);
                         factory.Srid = srid;
                         factory.SpatialReference = SridMap.DefaultInstance.Process(factory.Srid,
                                                                                    (ICoordinateSystem)null);
