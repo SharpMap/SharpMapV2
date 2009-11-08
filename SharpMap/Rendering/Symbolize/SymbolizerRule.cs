@@ -8,8 +8,8 @@ namespace SharpMap.Rendering.Symbolize
     public abstract class SymbolizerRule : ISymbolizerRule
     {
         private bool _enabled;
-        private double _maxVisible;
-        private double _minVisible;
+        private double _maxVisible = double.PositiveInfinity;
+        private double _minVisible = 0.0;
 
         #region ISymbolizerRule Members
 
