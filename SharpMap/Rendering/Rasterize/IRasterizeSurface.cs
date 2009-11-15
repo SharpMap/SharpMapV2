@@ -22,6 +22,8 @@ namespace SharpMap.Rendering.Rasterize
         TSurface FrontSurface { get; }
         IRasterizers<TSurface, TContext> RetrieveSurface();
         IRasterizers<TSurface, TContext> CreateSurface();
+
+
     }
 
 

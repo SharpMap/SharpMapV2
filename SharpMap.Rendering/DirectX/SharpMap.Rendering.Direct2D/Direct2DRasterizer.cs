@@ -30,12 +30,12 @@ namespace SharpMap.Rendering.Direct2D
 
         public virtual void BeginPass()
         {
-
+            Surface.BeginDraw();
         }
 
         public virtual void EndPass()
         {
-
+            Surface.EndDraw();
         }
 
         #endregion

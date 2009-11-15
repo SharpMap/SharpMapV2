@@ -1,110 +1,39 @@
-﻿using System;
-using Cairo;
+﻿using Cairo;
 using SharpMap.Presentation.Views;
 using SharpMap.Rendering.Rasterize;
 
 namespace SharpMap.Rendering.Cairo
 {
-    public class CairoRasterizeSurface : IRasterizeSurface<Surface, Context>
+    public class CairoRasterizeSurface : RasterizeSurface<Surface, Context>
     {
-        private readonly object _backLock = new object();
-        private readonly object _frontLock = new object();
-        private readonly IMapView2D _view;
-
-        private Surface _backSurface;
-
-        private Surface _frontSurface;
-
         public CairoRasterizeSurface(IMapView2D view)
+            : base(view)
         {
-            _view = view;
         }
 
-        #region IRasterizeSurface<Surface,Context> Members
 
-        public Surface BackSurface
+        protected override Surface CreateSurfaceInternal()
         {
-            get
-            {
-                lock (_backLock)
-                    return _backSurface;
-            }
-            protected set
-            {
-                lock (_backLock)
-                    _backSurface = value;
-            }
+            return CreateCairoSurface((int)MapView.ViewSize.Width, (int)MapView.ViewSize.Height);
         }
 
-        public Surface FrontSurface
+        protected override Context CreateNewContextInternal(Surface surface)
         {
-            get
-            {
-                lock (_frontLock)
-                    return _frontSurface;
-            }
-            protected set
-            {
-                lock (_frontLock)
-                    _frontSurface = value;
-            }
-        }
-
-        public IRasterizers<Surface, Context> RetrieveSurface()
-        {
-            if (BackSurface == null)
-                return CreateSurface();
-            return CreateRasterizers(BackSurface, new Context(BackSurface));
-        }
-
-        public IRasterizers<Surface, Context> CreateSurface()
-        {
-            Surface sf = CreateCairoSurface((int) MapView.ViewSize.Width, (int) MapView.ViewSize.Height);
-            BackSurface = sf;
-            Context c = new Context(sf) {FillRule = FillRule.EvenOdd, Antialias = Antialias.Subpixel};
+            Context c = new Context(surface) { FillRule = FillRule.EvenOdd, Antialias = Antialias.Subpixel };
             c.SetSourceRGBA(MapView.BackgroundColor.R, MapView.BackgroundColor.G, MapView.BackgroundColor.B,
                             MapView.BackgroundColor.A);
             c.FillExtents();
-
-            return CreateRasterizers(sf, c);
+            return c;
         }
 
-        public IMapView2D MapView
+
+        protected override Context CreateExistingContext(Surface surface)
         {
-            get { return _view; }
+            return new Context(surface);
         }
 
-        public event EventHandler RenderComplete;
 
-        public void RenderCompleted()
-        {
-            FrontSurface = BackSurface;
-            MapView.Display(FrontSurface);
-        }
-
-        object IRasterizeSurface.BackSurface
-        {
-            get { return BackSurface; }
-        }
-
-        object IRasterizeSurface.FrontSurface
-        {
-            get { return FrontSurface; }
-        }
-
-        IRasterizers IRasterizeSurface.RetrieveSurface()
-        {
-            return RetrieveSurface();
-        }
-
-        IRasterizers IRasterizeSurface.CreateSurface()
-        {
-            return CreateSurface();
-        }
-
-        #endregion
-
-        private IRasterizers<Surface, Context> CreateRasterizers(Surface surface, Context context)
+        protected override IRasterizers<Surface, Context> CreateRasterizers(Surface surface, Context context)
         {
             return new CairoRasterizers
                        {

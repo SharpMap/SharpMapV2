@@ -1,47 +1,29 @@
 ﻿using System;
-using System.Configuration;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
-using Cairo;
 using SharpMap.Presentation.AspNet;
 using SharpMap.Presentation.AspNet.MVP;
-using SharpMap.Rendering.Cairo;
+using SharpMap.Rendering.Direct2D;
 using SharpMap.Rendering.Rasterize;
-using CairoGraphics = Cairo.Context;
-using CairoLineCap = Cairo.LineCap;
-using CairoLineJoin = Cairo.LineJoin;
-using CairoAntialias = Cairo.Antialias;
-using Graphics=System.Drawing.Graphics;
-using Rectangle=System.Drawing.Rectangle;
 
-namespace SharpMap.Rendering.Web.Cairo
+namespace SharpMap.Rendering.Web.Direct2D
 {
-    public class CairoImageRenderer : IWebMapRenderer<Image>
+    public class Direct2DImageRenderer : IWebMapRenderer<Image>
     {
         private static ImageCodecInfo _defaultCodec;
-        // private readonly RenderQueue _renderQueue = new RenderQueue();
         private ImageCodecInfo _imageCodecInfo;
         private WebMapView _mapView;
         private PixelFormat _pixelFormat;
-        private bool disposed;
-
-        static CairoImageRenderer()
-        {
-            string bin = ConfigurationManager.AppSettings["CairoUnmanagedBinDir"];
-            string path = Environment.GetEnvironmentVariable("path");
-            if (!path.Contains(bin))
-                Environment.SetEnvironmentVariable("path", path + ";" + bin);
-        }
 
         public int Width
         {
-            get { return (int) MapView.ViewSize.Width; }
+            get { return (int)MapView.ViewSize.Width; }
         }
 
         public int Height
         {
-            get { return (int) MapView.ViewSize.Height; }
+            get { return (int)MapView.ViewSize.Height; }
         }
 
         public PixelFormat PixelFormat
@@ -81,32 +63,14 @@ namespace SharpMap.Rendering.Web.Cairo
 
         #region IWebMapRenderer<Image> Members
 
+        public IRasterizeSurface RasterizeSurface { get; protected set; }
+
         public Image Render(WebMapView mapView, out string mimeType)
         {
-            Bitmap bmp = new Bitmap(Width, Height, PixelFormat.Format32bppArgb);
-
-            using (Graphics graphics = Graphics.FromImage(bmp))
-            {
-                IntPtr hdc = graphics.GetHdc();
-                using (Win32Surface winSurface = new Win32Surface(hdc))
-                using (Context context = new Context(winSurface))
-                {
-                    BitmapData data = bmp.LockBits(new Rectangle(0, 0, Width, Height), ImageLockMode.ReadWrite,
-                                                   bmp.PixelFormat);
-                    context.SetSourceRGBA(0, 0, 0, 0);
-                    context.FillExtents();
-
-                    context.SetSource(MapView.RenderedData as Surface);
-                    context.Paint();
-                    bmp.UnlockBits(data);
-                    graphics.ReleaseHdc(hdc);
-                }
-            }
-
             mimeType = "image/bmp";
-            return bmp;
-        }
+            return (RasterizeSurface as Direct2DRasterizeSurface).GetBitmap((RasterizeSurface as Direct2DRasterizeSurface).FrontSurface);
 
+        }
 
         public WebMapView MapView
         {
@@ -114,35 +78,26 @@ namespace SharpMap.Rendering.Web.Cairo
             set
             {
                 _mapView = value;
-                RasterizeSurface = new CairoRasterizeSurface(value);
+                RasterizeSurface = new Direct2DRasterizeSurface(value);
             }
         }
 
-        public double Dpi { get; set; }
-
+        public double Dpi
+        {
+            get { return MapView.Dpi; }
+        }
 
         Stream IWebMapRenderer.Render(WebMapView mapView, out string mimeType)
         {
             return RenderStreamInternal(mapView, out mimeType);
         }
 
-
         public void Dispose()
         {
-            Dispose(true);
-            GC.SuppressFinalize(this);
+            throw new NotImplementedException();
         }
-
-        public IRasterizeSurface RasterizeSurface { get; protected set; }
 
         #endregion
-
-        public event EventHandler RenderDone;
-
-        protected virtual Surface CreateImageSurface()
-        {
-            return new ImageSurface(Format.Argb32, Width, Height);
-        }
 
         private static ImageCodecInfo GetDefaultCodec()
         {
@@ -162,7 +117,7 @@ namespace SharpMap.Rendering.Web.Cairo
             return null;
         }
 
-        protected virtual Stream RenderStreamInternal(WebMapView map, out string mimeType)
+        private Stream RenderStreamInternal(WebMapView map, out string mimeType)
         {
             Image im = Render(map, out mimeType);
 
@@ -176,21 +131,6 @@ namespace SharpMap.Rendering.Web.Cairo
             ms.Seek(0, SeekOrigin.Begin);
             mimeType = ImageCodec.MimeType;
             return ms;
-        }
-
-        ~CairoImageRenderer()
-        {
-            Dispose(false);
-        }
-
-        private void Dispose(bool disposing)
-        {
-            if (disposed)
-                return;
-            disposed = true;
-            if (disposing)
-            {
-            }
         }
     }
 }

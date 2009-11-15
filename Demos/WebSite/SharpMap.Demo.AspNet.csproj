@@ -184,6 +184,7 @@
     <Compile Include="DemoMaster.Master.designer.cs">
       <DependentUpon>DemoMaster.Master</DependentUpon>
     </Compile>
+    <Compile Include="Direct2D\DemoDirect2DMapHandler.cs" />
     <Compile Include="GeoJson\DemoGeoJsonMapHandler.cs" />
     <Compile Include="GeoJson\GeoJsonRequestConfig.cs" />
     <Compile Include="GeoJson\GeoJsonRequestConfigFactory.cs" />
@@ -236,6 +237,10 @@
     <ProjectReference Include="..\..\SharpMap.Rendering\Cairo\SharpMap.Rendering.Web.Cairo\SharpMap.Rendering.Web.Cairo.csproj">
       <Project>{8E824CF1-A906-48C0-83E1-468823D10EFB}</Project>
       <Name>SharpMap.Rendering.Web.Cairo</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\SharpMap.Rendering\DirectX\SharpMap.Rendering.Web.Direct2D\SharpMap.Rendering.Web.Direct2D.csproj">
+      <Project>{7FE95546-95C1-4A6A-BB0D-AD8FADF74D63}</Project>
+      <Name>SharpMap.Rendering.Web.Direct2D</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\SharpMap.Rendering\GeoJSON\SharpMap.Rendering.GeoJson.csproj">
       <Project>{019FE8B5-5822-4272-B75C-8BDDAB479284}</Project>
@@ -296,6 +301,7 @@
     <None Include="App_Data\Shapefiles\rivers.prj" />
     <None Include="App_Data\Shapefiles\rivers.shp" />
     <None Include="App_Data\Shapefiles\rivers.shx" />
+    <Content Include="Maps\Direct2DMap.ashx" />
     <Content Include="Maps\CairoMap.ashx" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
@@ -313,7 +319,7 @@
         <WebProjectProperties>
           <UseIIS>False</UseIIS>
           <AutoAssignPort>True</AutoAssignPort>
-          <DevelopmentServerPort>51464</DevelopmentServerPort>
+          <DevelopmentServerPort>51081</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
           <IISUrl>http://localhost/SharpMapV2Demo</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>

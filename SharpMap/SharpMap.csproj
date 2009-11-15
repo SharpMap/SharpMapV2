@@ -383,6 +383,7 @@
     <Compile Include="Rendering\Symbolize\GeometrySymbolizer.cs" />
     <Compile Include="Rendering\Symbolize\ITextSymbolizer.cs" />
     <Compile Include="Rendering\Symbolize\ITextSymbolizerRule.cs" />
+    <Compile Include="Rendering\Rasterize\RasterizeSurface.cs" />
     <Compile Include="Rendering\Symbolize\SimpleGeometryStyleSymbolizerRule.cs" />
     <Compile Include="Rendering\Symbolize\Symbolizer.cs" />
     <Compile Include="Rendering\Symbolize\SymbolizerRule.cs" />
