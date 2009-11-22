@@ -181,10 +181,6 @@
       <Project>{5C268D0D-93D0-4FB5-874C-2C07C1F331A9}</Project>
       <Name>ManagedBufferedCoordinate</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\NTS\NetTopologySuite\NetTopologySuite.csproj">
-      <Project>{5770DAA9-84E5-4770-AF43-F6B815894368}</Project>
-      <Name>NetTopologySuite</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\NTS\NPack\NPack\NPack.csproj">
       <Project>{B139E1D5-091B-40D2-B7A2-7D7D82E13019}</Project>
       <Name>NPack</Name>
