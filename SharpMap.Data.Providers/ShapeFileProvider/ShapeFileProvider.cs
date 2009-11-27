@@ -2301,8 +2301,9 @@ namespace SharpMap.Data.Providers.ShapeFile
         {
             public bool Seek(Stream stream, long seekPosition, StreamOffset offsets)
             {
-                if (offsets.Bor < 0 || offsets.Eor > stream.Length)
-                    return false;
+                //reduces perf considerably
+                //if (offsets.Bor < 0 || offsets.Eor > stream.Length)
+                //    return false;
 
                 if (seekPosition > _indexEntry.AbsoluteByteOffset + ShapeFileConstants.ShapeRecordHeaderByteLength + _indexEntry.ByteLength)
                     return false;
@@ -2477,7 +2478,7 @@ namespace SharpMap.Data.Providers.ShapeFile
                 StreamOffset offsets = new StreamOffset(bboxOffset, xOffset, yOffset, zOffset, mOffset, recordStart, endOfRecord);
 
 #if DEBUG
-                Debug.WriteLine(string.Format("Point : {0} \nX : {1}\nY : {2}\nZ : {3}\nM : {4}\nEnd of Record : {5}\nIndex record start : {6}\nIndex Record End {7}", pointIndex, xOffset, yOffset, zOffset, mOffset, endOfRecord, recordStart, recordStart + _indexEntry.ByteLength));
+//                Debug.WriteLine(string.Format("Point : {0} \nX : {1}\nY : {2}\nZ : {3}\nM : {4}\nEnd of Record : {5}\nIndex record start : {6}\nIndex Record End {7}", pointIndex, xOffset, yOffset, zOffset, mOffset, endOfRecord, recordStart, recordStart + _indexEntry.ByteLength));
 #endif
                 return offsets;
             }

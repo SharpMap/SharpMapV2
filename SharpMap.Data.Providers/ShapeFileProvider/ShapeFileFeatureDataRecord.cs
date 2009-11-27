@@ -121,7 +121,7 @@ namespace SharpMap.Data.Providers.ShapeFile
             {
                 if (name.Equals(column.ColumnName))
                 {
-                    return column.Ordinal;
+                    return column.Ordinal + 1; //jd: oid column is at index 0
                 }
             }
 
