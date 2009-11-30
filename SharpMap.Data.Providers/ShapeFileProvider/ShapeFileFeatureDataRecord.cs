@@ -79,7 +79,8 @@ namespace SharpMap.Data.Providers.ShapeFile
 
         public Object GetValue(int i)
         {
-            throw new System.NotImplementedException();
+            checkIndex(i);
+            return _rowColumns[i];
         }
 
         public int GetValues(Object[] values)
