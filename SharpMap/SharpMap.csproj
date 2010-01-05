@@ -172,6 +172,7 @@
     <Compile Include="Data\DataConverter.cs" />
     <Compile Include="Data\DataSourcePassThroughPropertyDescriptor.cs" />
     <Compile Include="Data\EnumerableOfFeatureDataRecordAdapter.cs" />
+    <Compile Include="Data\IRasterRecord.cs" />
     <Compile Include="Data\Providers\FeatureProviderBase.cs" />
     <Compile Include="Data\Providers\ProviderBase.cs" />
     <Compile Include="Data\SelectRequestedEventArgs.cs" />
@@ -347,6 +348,7 @@
     <Compile Include="Rendering\LinearFactory.cs" />
     <Compile Include="Rendering\Matrix.cs" />
     <Compile Include="Rendering\MatrixProcessor.cs" />
+    <Compile Include="Rendering\Rendering2D\BasicRasterRenderer2D.cs" />
     <Compile Include="Rendering\Rendering2D\IRasterRenderer2D.cs" />
     <Compile Include="Rendering\Rendering2D\IRasterRenderer2D`1.cs" />
     <Compile Include="Rendering\Rendering2D\ITextRenderer2D.cs" />

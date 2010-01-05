@@ -231,7 +231,14 @@
     <Compile Include="DataSource\DB2SpatialExtender.Designer.cs">
       <DependentUpon>DB2SpatialExtender.cs</DependentUpon>
     </Compile>
+    <Compile Include="DataSource\Gdal.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="DataSource\Gdal.designer.cs">
+      <DependentUpon>Gdal.cs</DependentUpon>
+    </Compile>
     <Compile Include="DataSource\ICreateDataProvider.cs" />
+    <Compile Include="DataSource\ICreateRasterProvider.cs" />
     <Compile Include="DataSource\MsSqlSpatial.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -285,6 +292,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="DataSource\DB2SpatialExtender.resx">
       <DependentUpon>DB2SpatialExtender.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DataSource\Gdal.resx">
+      <DependentUpon>Gdal.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="DataSource\MsSqlSpatial.resx">
       <DependentUpon>MsSqlSpatial.cs</DependentUpon>
@@ -363,6 +373,10 @@
     <Compile Include="WorkQueue.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Extensions\Gdal\GdalForSharpMap.csproj">
+      <Project>{090050CF-1D70-4335-B594-2BA2795A0C31}</Project>
+      <Name>GdalForSharpMap</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\NTS\GeoAPI\src\GeoAPI\GeoAPI.Net.csproj">
       <Project>{FFB69466-79DE-466A-ADA7-5C47C5C5CA3A}</Project>
       <Name>GeoAPI.Net</Name>
