@@ -215,7 +215,15 @@
     <EmbeddedResource Include="Controls\Measure\MeasureToolButton.js" />
     <Content Include="OpenLayers\Build\build.py" />
     <Content Include="OpenLayers\Build\buildUncompressed.py" />
+    <Content Include="OpenLayers\Build\ipy.exe" />
+    <Content Include="OpenLayers\Build\IronPython.dll" />
+    <Content Include="OpenLayers\Build\IronPython.Modules.dll" />
     <Content Include="OpenLayers\Build\license.txt" />
+    <Content Include="OpenLayers\Build\Microsoft.Dynamic.dll" />
+    <Content Include="OpenLayers\Build\Microsoft.Scripting.Core.dll" />
+    <Content Include="OpenLayers\Build\Microsoft.Scripting.Debugging.dll" />
+    <Content Include="OpenLayers\Build\Microsoft.Scripting.dll" />
+    <Content Include="OpenLayers\Build\Microsoft.Scripting.ExtensionAttribute.dll" />
     <Content Include="OpenLayers\Build\README.txt" />
     <Content Include="OpenLayers\OpenLayersSource\apidoc_config\Languages.txt" />
     <Content Include="OpenLayers\OpenLayersSource\apidoc_config\Menu.txt" />
@@ -890,7 +898,7 @@
   </Target>
   -->
   <Target Name="BeforeBuild">
-    <Exec Command="&quot;$(ProjectDir)OpenLayers\Build\build.py&quot;" WorkingDirectory="$(ProjectDir)OpenLayers\Build\" />
-    <Exec Command="&quot;$(ProjectDir)OpenLayers\Build\buildUncompressed.py&quot;" WorkingDirectory="$(ProjectDir)OpenLayers\Build\" />
+    <Exec Command="&quot;$(ProjectDir)OpenLayers\Build\ipy.exe build.py&quot;" WorkingDirectory="$(ProjectDir)OpenLayers\Build\" />
+    <Exec Command="&quot;$(ProjectDir)OpenLayers\Build\ipy.exe buildUncompressed.py&quot;" WorkingDirectory="$(ProjectDir)OpenLayers\Build\" />
   </Target>
 </Project>
