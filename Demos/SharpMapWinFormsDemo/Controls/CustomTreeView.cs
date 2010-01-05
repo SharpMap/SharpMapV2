@@ -375,6 +375,30 @@ namespace MapViewer.Controls
 
         #endregion
 
+        #region Nested type: LabelLayerNode
+
+        protected class RasterLayerNode
+            : LayerNode<IRasterLayer>
+        {
+            public RasterLayerNode(IRasterLayer layer)
+                : base(layer)
+            {
+            }
+            protected override void BuildChildNodes()
+            {
+                {
+                    TreeNode n = new TreeNode("Type");
+                    Nodes.Add(n);
+                    n.Nodes.Add("Raster Layer");
+                    base.BuildChildNodes();
+                }
+
+                base.BuildChildNodes();
+            }
+        }
+
+        #endregion
+
         #region Nested type: LayerNode
 
         protected abstract class LayerNode : CustomTreeNode
@@ -482,6 +506,11 @@ namespace MapViewer.Controls
                 {
                     return new LabelLayerNode((LabelLayer) (object) layer);
                 }
+                if (IsAssignbleFrom(typeof(IRasterLayer), layer.GetType()))
+                {
+                    return new RasterLayerNode((IRasterLayer)layer);
+                }
+
 
                 throw new NotImplementedException();
             }
@@ -496,6 +525,9 @@ namespace MapViewer.Controls
 
                 if (layer is LabelLayer)
                     return CreateLayerNode((LabelLayer) layer);
+
+                if (layer is IRasterLayer)
+                    return CreateLayerNode((IRasterLayer) layer);
 
                 throw new NotImplementedException();
             }
@@ -532,6 +564,9 @@ namespace MapViewer.Controls
                 if (IsAssignbleFrom(typeof (ISpatialDbProvider), provider.GetType()))
                     return new DbProviderNode((ISpatialDbProvider) provider);
 
+                if (IsAssignbleFrom(typeof(IRasterProvider), provider.GetType()))
+                    return new RasterProviderNode((IRasterProvider)provider);
+
                 throw new NotImplementedException();
             }
 
@@ -543,6 +578,8 @@ namespace MapViewer.Controls
                     return CreateProviderNode((ShapeFileProvider) provider);
                 if (provider is ISpatialDbProvider)
                     return CreateProviderNode((ISpatialDbProvider) provider);
+                if (provider is IRasterProvider)
+                    return CreateProviderNode((IRasterProvider)provider);
 
                 throw new NotImplementedException();
             }
@@ -681,6 +718,30 @@ namespace MapViewer.Controls
         }
 
         #endregion
+
+        #region Nested type: RasterProviderNode
+
+        protected class RasterProviderNode : ProviderNode<IRasterProvider>
+        {
+            public RasterProviderNode(IRasterProvider provider)
+                : base(provider)
+            {
+            }
+
+            protected override void BuildChildNodes()
+            {
+                base.BuildChildNodes();
+
+                TreeNode con = new TreeNode("Connection String");
+                Nodes.Add(con);
+                con.Nodes.Add(Provider.ConnectionId);
+
+                Nodes.Add(new CoordinateTransformNode(Provider.CoordinateTransformation));
+            }
+        }
+
+        #endregion
+
 
         #region Nested type: StyleNode
 

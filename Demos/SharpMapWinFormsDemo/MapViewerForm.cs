@@ -548,44 +548,117 @@ namespace MapViewer
                 if (choose.ShowDialog() == DialogResult.OK)
                 {
                     IFeatureProvider prov = choose.Provider;
-                    string name = choose.ProviderName;
+                    if (prov != null)
+                    {
+                        string name = choose.ProviderName;
 
-                    workQueue.AddWorkItem(
-                        string.Format("Loading Datasource {0}", name),
-                        delegate
+                        workQueue.AddWorkItem(
+                            string.Format("Loading Datasource {0}", name),
+                            delegate
+                                {
+                                    GeometryLayer lyr =
+                                        new GeometryLayer(
+                                            name,
+                                            prov);
+                                    lyr.Features.IsSpatiallyIndexed = false;
+                                    prov.Open();
+
+
+                                    InvokeIfRequired(new Action(delegate
+                                                                    {
+                                                                        if (Map.Layers.Count == 0)
+                                                                        {
+                                                                            if (lyr.SpatialReference != null)
+                                                                                Map.SpatialReference =
+                                                                                    lyr.SpatialReference;
+                                                                        }
+
+                                                                        Map.Layers.Insert(0, lyr);
+
+                                                                        lyr.Style = RandomStyle.RandomGeometryStyle();
+                                                                        //lyr.Style = setGeometryStyle(lyr);
+
+                                                                        if (Map.Layers.Count == 1)
+                                                                        {
+                                                                            mapViewControl1.Map = Map;
+
+                                                                            layersView1.Map = Map;
+                                                                            MapView.ZoomToExtents();
+                                                                        }
+                                                                    }));
+                                }, EnableDisableCommandsRequiringLayers
+                            ,
+                            delegate(Exception ex)
+                                {
+                                    MessageBox.Show(string.Format("An error occured\n{0}\n{1}", ex.Message,
+                                                                  ex.StackTrace));
+                                });
+                        return;
+                    }
+                    IEnumerable<IRasterProvider> providers = choose.RasterProviders;
+                    if (providers != null)
+                    {
+                        Boolean zoomToExtents = false;
+                        foreach (IRasterProvider provider in providers)
+                        {
+                            string name = provider.ConnectionId;
+
+                            GdalRasterLayer lyr = new GdalRasterLayer(name, provider);
+                            if (Map.Layers.Count == 0)
                             {
-                                GeometryLayer lyr =
-                                    new GeometryLayer(
-                                        name,
-                                        prov);
-                                lyr.Features.IsSpatiallyIndexed = false;
-                                prov.Open();
+                                zoomToExtents = true;
+                                if (lyr.SpatialReference != null)
+                                    Map.SpatialReference =
+                                        lyr.SpatialReference;
+                            }
 
+                            Map.Layers.Insert(0, lyr);
 
-                                InvokeIfRequired(new Action(delegate
-                                                                {
-                                                                    if (Map.Layers.Count == 0)
+                            if (Map.Layers.Count == 1)
+                            {
+                                mapViewControl1.Map = Map;
+                                layersView1.Map = Map;
+                                mapViewControl1.ZoomToExtents();
+                            }
+                            /*
+                        workQueue.AddWorkItem(
+                            string.Format("Loading Datasource {0}", name),
+                            delegate
+                                {
+                                    GdalRasterLayer lyr =
+                                        
+
+                                    InvokeIfRequired(new Action(delegate
                                                                     {
-                                                                        if (lyr.SpatialReference != null)
-                                                                            Map.SpatialReference = lyr.SpatialReference;
-                                                                    }
+                                                                        if (Map.Layers.Count == 0)
+                                                                        {
+                                                                            if (lyr.SpatialReference != null)
+                                                                                Map.SpatialReference =
+                                                                                    lyr.SpatialReference;
+                                                                        }
 
-                                                                    Map.Layers.Insert(0, lyr);
+                                                                        Map.Layers.Insert(0, lyr);
 
-                                                                    lyr.Style = RandomStyle.RandomGeometryStyle();
-                                                                    //lyr.Style = setGeometryStyle(lyr);
+                                                                        if (Map.Layers.Count == 1)
+                                                                        {
+                                                                            mapViewControl1.Map = Map;
 
-                                                                    if (Map.Layers.Count == 1)
-                                                                    {
-                                                                        mapViewControl1.Map = Map;
-
-                                                                        layersView1.Map = Map;
-                                                                        MapView.ZoomToExtents();
-                                                                    }
-                                                                }));
-                            }, EnableDisableCommandsRequiringLayers
-                        ,
-                        delegate(Exception ex) { MessageBox.Show(string.Format("An error occured\n{0}\n{1}", ex.Message, ex.StackTrace)); });
+                                                                            layersView1.Map = Map;
+                                                                            MapView.ZoomToExtents();
+                                                                        }
+                                                                    }));
+                                }, EnableDisableCommandsRequiringLayers
+                            ,
+                            delegate(Exception ex)
+                                {
+                                    MessageBox.Show(string.Format("An error occured\n{0}\n{1}", ex.Message,
+                                                                  ex.StackTrace));
+                                })
+                             */ ;
+                        }
+                        if (zoomToExtents) MapView.ZoomToExtents();
+                        return;
+                    }
                 }
             }
         }

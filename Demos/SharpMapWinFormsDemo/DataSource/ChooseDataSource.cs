@@ -4,7 +4,7 @@
  *  http://www.newgrove.com; you can redistribute it and/or modify it under the terms 
  *  of the current GNU Lesser General Public License (LGPL) as published by and 
  *  available from the Free Software Foundation, Inc., 
- *  59 Temple Place, Suite 330, Boston, MA 02111-1307 USA: http://fsf.org/    
+ *  59 Temple Place, Suite 330, Boston, MA 02111-1307 USA: http://fsf.org/
  *  This program is distributed without any warranty; 
  *  without even the implied warranty of merchantability or fitness for purpose.  
  *  See the GNU Lesser General Public License for the full details. 
@@ -13,37 +13,61 @@
  * 
  */
 using System;
+using System.Collections.Generic;
 using System.Windows.Forms;
 using SharpMap.Data;
 
 namespace MapViewer.DataSource
 {
-    public partial class ChooseDataSource : Form, ICreateDataProvider
+    public partial class ChooseDataSource : Form, ICreateDataProvider, ICreateRasterProvider
     {
+        private static Int32 _lastProviderPick;
+
         public ChooseDataSource()
         {
             InitializeComponent();
-            cbDataSource.SelectedIndex = 0;
+            cbDataSource.SelectedIndex = _lastProviderPick;
         }
 
-        private ICreateDataProvider Builder
+        private ICreateDataProvider DataBuilder
         {
             get
             {
-                if (pContainer.Controls.Count == 0) return null;
+                if (pContainer.Controls.Count == 0) 
+                    return null;
 
-                return pContainer.Controls[0] as ICreateDataProvider;
+                ICreateDataProvider cdp = pContainer.Controls[0] as ICreateDataProvider;
+                if(cdp == null)
+                    return null;
+
+                return cdp;
+            }
+        }
+
+        private ICreateRasterProvider RasterBuilder
+        {
+            get
+            {
+                if ( pContainer.Controls.Count == 0)
+                    return null;
+
+                ICreateRasterProvider crp = pContainer.Controls[0] as ICreateRasterProvider;
+                if ( crp == null )
+                    return null;
+
+                return crp;
             }
         }
 
         public IFeatureProvider Provider { get; protected set; }
+        public IEnumerable<IRasterProvider> RasterProviders { get; protected set; }
 
         #region ICreateDataProvider Members
 
         public IFeatureProvider GetProvider()
         {
-            if (Builder != null)
-                return Builder.GetProvider();
+            if (DataBuilder != null)
+                return DataBuilder.GetProvider();
             return null;
         }
 
@@ -71,7 +95,15 @@ namespace MapViewer.DataSource
                 case "ibm db2 spatialextender":
                     LoadDB2SpatialExtender();
                     return;
+                case "gdal for sharpmap":
+                    LoadGdalForSharpMap();
+                    return;
             }
+        }
+
+        private void LoadGdalForSharpMap()
+        {
+            LoadBuilder(new GdalMask());
         }
 
         private void LoadDB2SpatialExtender()
@@ -84,8 +116,12 @@ namespace MapViewer.DataSource
             LoadBuilder(new PostGis());
         }
 
-        private void LoadBuilder(ICreateDataProvider builder)
+        private void LoadBuilder(Object builder)
         {
+            if (!(builder is ICreateDataProvider ||
+                 builder is ICreateRasterProvider))
+                return;
+
             if (pContainer.Controls.Count != 0)
             {
                 Control c = pContainer.Controls[0];
@@ -130,16 +166,37 @@ namespace MapViewer.DataSource
             {
                 Provider = prov;
                 DialogResult = DialogResult.OK;
+                _lastProviderPick = cbDataSource.SelectedIndex;
+                Close();
+            }
+            IEnumerable<IRasterProvider> providers = GetRasterProviders();
+            if ( providers != null)
+            {
+                RasterProviders = providers;
+                DialogResult = DialogResult.OK;
+                _lastProviderPick = cbDataSource.SelectedIndex;
                 Close();
             }
         }
 
         #region ICreateDataProvider Members
 
+        public IEnumerable<IRasterProvider> GetRasterProviders()
+        {
+            if (RasterBuilder != null)
+                return RasterBuilder.GetRasterProviders();
+            return null;
+        }
 
         public string ProviderName
         {
-            get { return Builder.ProviderName; }
+            get
+            {
+                if (DataBuilder != null)
+                    return DataBuilder.ProviderName;
+
+                return RasterBuilder.ProviderName;
+            }
         }
 
         #endregion

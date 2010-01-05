@@ -814,6 +814,11 @@ namespace SharpMap.Presentation.Presenters
             get { return typeof(BasicLabelRenderer2D<>); }
         }
 
+        protected virtual Type RasterRendererType
+        {
+            get { return typeof(BasicRasterRenderer2D<>); }
+        }
+
         protected virtual void CreateGeometryRenderer(Type renderObjectType)
         {
             Type layerType = typeof(GeometryLayer);
@@ -833,6 +838,16 @@ namespace SharpMap.Presentation.Presenters
                                        layerType,
                                        TextRenderer,
                                        VectorRenderer);
+        }
+
+        protected virtual void CreateRasterRenderer(Type renderObjectType)
+        {
+            Type layerType = typeof(IRasterLayer);
+
+            CreateRendererForLayerType(RasterRendererType,
+                                       renderObjectType,
+                                       layerType,
+                                       RasterRenderer);
         }
 
         protected void CreateRendererForLayerType(Type rendererType,
@@ -914,6 +929,7 @@ namespace SharpMap.Presentation.Presenters
         protected void RegisterRendererForLayerType(Type layerType, IRenderer renderer)
         {
             LayerRendererRegistry.Instance.Register(layerType, renderer);
+            LayerRendererRegistry.Instance.Register(layerType.Name, renderer);
         }
 
         /// <summary>
@@ -1085,7 +1101,23 @@ namespace SharpMap.Presentation.Presenters
 
         protected virtual void RenderRasterLayer(IRasterLayer layer, RenderPhase phase)
         {
-            throw new NotImplementedException();
+            if (phase == RenderPhase.Normal)
+            {
+                IRasterRenderer2D renderer = GetRenderer<IRasterRenderer2D>(layer);
+                if (renderer == null)
+                    renderer = GetRenderer<IRasterRenderer2D>("IRasterLayer");
+                renderer.RenderTransform = _toViewTransform;
+
+                RasterStyle style = layer.Style as RasterStyle;
+                RasterQueryExpression query = RasterQueryExpression.Intersects(ViewEnvelopeInternal);
+
+                foreach (IRasterRecord rr in layer.Select(query))
+                {
+                    View.ShowRenderedObjects(
+                        renderer.RenderRaster(rr.GetImage(ViewEnvelopeInternal, _toViewTransform), rr.ViewBounds, rr.RasterBounds));
+                }
+
+            }
         }
 
         protected virtual void OnRenderingAllLayers() { }
@@ -1327,7 +1359,8 @@ namespace SharpMap.Presentation.Presenters
             // Create renderer for label layers
             CreateLabelRenderer(renderObjectType);
 
-            // TODO: create raster renderer
+            // Create renderer for raster/coverage layers
+            CreateRasterRenderer(renderObjectType);
         }
 
         private void initializeViewMatrixes()

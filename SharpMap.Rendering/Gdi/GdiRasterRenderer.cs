@@ -17,6 +17,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using NPack;
 using NPack.Interfaces;
@@ -28,12 +29,39 @@ namespace SharpMap.Rendering.Gdi
     {
         public override IEnumerable<GdiRenderObject> RenderRaster(Stream rasterData, Rectangle2D viewBounds, Rectangle2D rasterBounds)
         {
-            throw new NotImplementedException();
+            return RenderRaster(rasterData, viewBounds, rasterBounds, Matrix2D.Identity);
         }
 
         public override IEnumerable<GdiRenderObject> RenderRaster(Stream rasterData, Rectangle2D viewBounds, Rectangle2D rasterBounds, IMatrix<DoubleComponent> rasterTransform)
         {
-            throw new NotImplementedException();
+            GdiRenderObject renderedRaster = new GdiRenderObject();
+
+            try
+            {
+                if (rasterData != null)
+                {
+                    if (rasterData.Position != 0 && !rasterData.CanSeek)
+                        yield break;
+
+                    rasterData.Seek(0, SeekOrigin.Begin);
+                    if (rasterData.CanRead)
+                    {
+                        Bitmap raster = (Bitmap)Image.FromStream(rasterData);
+                        renderedRaster = new GdiRenderObject(raster, 
+                            ViewConverter.Convert(viewBounds),
+                            ViewConverter.Convert((Matrix2D)rasterTransform), 
+                            ViewConverter.Convert(ColorMatrix.Identity));
+                        renderedRaster.State = RenderState.Normal;
+                    }
+                }
+
+
+            }
+            catch (Exception)
+            {
+                yield break;
+            }
+            yield return renderedRaster;
         }
     }
 }

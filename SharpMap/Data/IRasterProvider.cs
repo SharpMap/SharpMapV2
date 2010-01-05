@@ -15,7 +15,7 @@
 // along with SharpMap; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
-using GeoAPI.Geometries;
+using System.Collections.Generic;
 using System.IO;
 using SharpMap.Expressions;
 
@@ -32,6 +32,6 @@ namespace SharpMap.Data
         /// </summary>
         /// <param name="query">Query select with.</param>
         /// <returns>A Stream to access the raster data of the result.</returns>
-        Stream ExecuteRasterQuery(RasterQueryExpression query);
+        IEnumerable<IRasterRecord> ExecuteRasterQuery(RasterQueryExpression query);
     }
 }

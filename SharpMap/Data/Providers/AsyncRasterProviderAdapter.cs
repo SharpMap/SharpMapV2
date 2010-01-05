@@ -16,6 +16,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Threading;
@@ -45,17 +46,17 @@ namespace SharpMap.Data.Providers
                 throw new ArgumentException("query must be non-null and of type RasterQueryExpression.", "query");
             }
 
-            AsyncResult<Stream> asyncResult = new AsyncResult<Stream>(callback, query);
+            AsyncResult<IEnumerable<IRasterRecord>> asyncResult = new AsyncResult<IEnumerable<IRasterRecord>>(callback, query);
             ThreadPool.QueueUserWorkItem(QueueableBeginQuery, asyncResult);
             return asyncResult;
         }
 
         public override Object EndExecuteQuery(IAsyncResult asyncResult)
         {
-            AsyncResult<Stream> typedAsyncResult = asyncResult as AsyncResult<Stream>;
+            AsyncResult<IEnumerable<IRasterRecord>> typedAsyncResult = asyncResult as AsyncResult<IEnumerable<IRasterRecord>>;
             if (typedAsyncResult == null)
             {
-                throw new ArgumentException("Result must be of type AsyncResult<Stream>", "asyncResult");
+                throw new ArgumentException("Result must be of type AsyncResult<IEnumerable<IRasterRecord>>", "asyncResult");
             }
 
             return typedAsyncResult.EndInvoke();
@@ -63,7 +64,7 @@ namespace SharpMap.Data.Providers
 
         private void QueueableBeginQuery(Object asyncResult)
         {
-            AsyncResult<Stream> typedAsyncResult = asyncResult as AsyncResult<Stream>;
+            AsyncResult<IEnumerable<IRasterRecord>> typedAsyncResult = asyncResult as AsyncResult<IEnumerable<IRasterRecord>>;
             RasterQueryExpression query = typedAsyncResult.AsyncState as RasterQueryExpression;
 
             try
@@ -89,7 +90,7 @@ namespace SharpMap.Data.Providers
 
         #region wrapped IRasterProvider methods
 
-        public Stream ExecuteRasterQuery(RasterQueryExpression query)
+        public IEnumerable<IRasterRecord> ExecuteRasterQuery(RasterQueryExpression query)
         {
             return InnerRasterProvider.ExecuteRasterQuery(query);
         }

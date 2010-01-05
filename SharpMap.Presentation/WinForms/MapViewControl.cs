@@ -532,7 +532,7 @@ namespace SharpMap.Presentation.WinForms
 
         protected override void OnMouseWheel(MouseEventArgs e)
         {
-            throw new NotImplementedException();
+            //throw new NotImplementedException();
 
             //MapTool currentTool = SelectedTool;
 
@@ -660,6 +660,17 @@ namespace SharpMap.Presentation.WinForms
                                 //g.Transform = getGdiViewTransform();
                             }
 
+                            if (ro.Image != null)
+                            {
+                                AdjustAndDrawImage(g, ro);
+                                //Bitmap bmp = (Bitmap)ro.Image;
+                                //if (bmp.GetPixel(0, 0) == Color.FromArgb(255,255,250,240))
+                                //{
+                                //    bmp.SetPixel(0, 0, Color.Black);
+                                //    bmp.MakeTransparent(Color.Black);
+                                //}
+                                //g.DrawImageUnscaled(bmp, (int)ro.Bounds.Left, (int)ro.Bounds.Top);
+                            }
                             break;
                         case RenderState.Highlighted:
                             if (ro.GdiPath != null)
@@ -731,7 +742,7 @@ namespace SharpMap.Presentation.WinForms
                     }
                 }
                 catch(OverflowException) {}
-
+                /*
                 if (ro.Image != null)
                 {
                     ImageAttributes imageAttributes = null;
@@ -757,7 +768,8 @@ namespace SharpMap.Presentation.WinForms
                                     getSourceRegion(ro.Image),
                                     GraphicsUnit.Pixel);
                     }
-                }
+                 
+                }*/
             }
 
             g.ResetTransform();
@@ -766,6 +778,27 @@ namespace SharpMap.Presentation.WinForms
             {
                 screenGraphics.DrawImageUnscaled(_bufferedMapImage, 0, 0);
             }
+        }
+
+        private static void AdjustAndDrawImage(Graphics g, GdiRenderObject ro)
+        {
+            GdiMatrix save = null;
+            if (!ro.AffineTransform.IsIdentity)
+            {
+                save = g.Transform.Clone();
+                GdiMatrix transform = g.Transform;
+                RectangleF rectLocation = ro.Bounds;
+                Single offsetX = rectLocation.Left + rectLocation.Width / 2;
+                Single offsetY = rectLocation.Top - rectLocation.Width / 2;
+                transform.Translate(-offsetX, -offsetY);
+                transform.Multiply(ro.AffineTransform, MatrixOrder.Append);
+                transform.Translate(offsetX, offsetY, MatrixOrder.Append);
+                g.Transform = transform;
+            }
+
+            g.DrawImage(ro.Image, ro.Bounds);
+
+            if (save != null) g.Transform = save;
         }
 
         /// <summary>
