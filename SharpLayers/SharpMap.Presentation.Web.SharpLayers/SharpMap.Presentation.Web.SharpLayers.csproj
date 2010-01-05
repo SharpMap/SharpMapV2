@@ -898,7 +898,7 @@
   </Target>
   -->
   <Target Name="BeforeBuild">
-    <Exec Command="&quot;$(ProjectDir)OpenLayers\Build\ipy.exe build.py&quot;" WorkingDirectory="$(ProjectDir)OpenLayers\Build\" />
-    <Exec Command="&quot;$(ProjectDir)OpenLayers\Build\ipy.exe buildUncompressed.py&quot;" WorkingDirectory="$(ProjectDir)OpenLayers\Build\" />
+    <Exec Command="ipy.exe build.py" WorkingDirectory="$(ProjectDir)OpenLayers\Build\" />
+    <Exec Command="ipy.exe buildUncompressed.py" WorkingDirectory="$(ProjectDir)OpenLayers\Build\" />
   </Target>
 </Project>
