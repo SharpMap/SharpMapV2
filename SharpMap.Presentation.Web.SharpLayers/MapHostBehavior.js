@@ -35,6 +35,8 @@ SharpMap.Presentation.Web.SharpLayers.MapHostBehavior.prototype = {
     },
     set_initialExtent: function(value) {
         this._initialExtent = value;
+        if ((this._initialExtent))
+            this.zoomToInitialExtent();
     },
     _mapBuilderDelegate: function() {
         var options = this.get_builderParams();
@@ -54,6 +56,9 @@ SharpMap.Presentation.Web.SharpLayers.MapHostBehavior.prototype = {
         this.get_hostedItem().addControl(cntrl);
     },
     zoomToInitialExtent: function() {
+        SharpMap.Presentation.Web.SharpLayers.InitSync.addPostLoad(Function.createDelegate(this, function() { this._zoomToInitialExtent(); }));
+    },
+    _zoomToInitialExtent: function() {
         if (!(this.get_hostedItem()))
             return;
         var bounds = this.get_initialExtent();
