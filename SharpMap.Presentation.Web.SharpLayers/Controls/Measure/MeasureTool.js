@@ -56,9 +56,28 @@ SharpMap.Presentation.Web.SharpLayers.Controls.Measure.MeasureTool.prototype = {
         var call = options.onClientMeasure;
         delete options.onClientMeasure;
 
+
         options.type = OpenLayers.Control.TYPE_TOOL;
-        options.displayClass = (options.displayClass) || "olControlMeasure";
-        call = (call) ? call : function(e) { alert(Math.round(e.measure) + e.units, "Measurement"); };
+
+        if (options.mode == 'Area') {
+            options.displayClass = (options.displayClass) || "olControlMeasureArea";
+            
+        }
+        else {
+            options.displayClass = (options.displayClass) || "olControlMeasure";
+        }
+        call = (call) ? call : function(e) {
+        
+        
+        if (options.mode == 'Area') {
+            alert("Approx " + Math.round(e.measure,2) + " square " + e.units, "Measurement"); 
+        }
+        else {
+            alert("Approx " + Math.round(e.measure,2) + " " + e.units, "Measurement");
+        }
+        
+        
+        };
 
 
 
@@ -83,7 +102,7 @@ SharpMap.Presentation.Web.SharpLayers.Controls.Measure.MeasureTool.prototype = {
             OpenLayers.Control.Panel.onPanelActivated(this);
             return this._onClick(ctl, evt);
         };
-        
+
         p.addControls([m]);
 
 

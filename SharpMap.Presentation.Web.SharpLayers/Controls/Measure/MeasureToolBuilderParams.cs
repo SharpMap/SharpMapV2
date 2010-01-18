@@ -34,6 +34,9 @@ namespace SharpMap.Presentation.Web.SharpLayers.Controls.Measure
         private MeasureToolMode _mode = MeasureToolMode.Distance;
         private MeasureToolUnits _unit = MeasureToolUnits.Metric;
 
+        [ExtenderControlProperty]
+        [ClientPropertyName("mode")]
+        [ComponentReference]
         public MeasureToolMode Mode
         {
             get { return _mode; }
