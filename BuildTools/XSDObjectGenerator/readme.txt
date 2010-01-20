@@ -1,1 +1,0 @@
-The XSDObjectGen code here is modified from code at http://ivc.codeplex.com/ 
