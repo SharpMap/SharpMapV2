@@ -1,0 +1,117 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="3.5" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.30729</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{9E6FD71C-8B3C-446B-AAE4-1F5C327482CD}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>SharpMap</RootNamespace>
+    <AssemblyName>GdalForSharpMap</AssemblyName>
+    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug_Net20|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release_Net20|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="gdalconst_csharp, Version=1.0.3672.30015, Culture=neutral, PublicKeyToken=db5a52b08dc5b321, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Gdal1.6.3\swig\csharp\gdalconst_csharp.dll</HintPath>
+    </Reference>
+    <Reference Include="gdal_csharp, Version=1.0.3672.30015, Culture=neutral, PublicKeyToken=db5a52b08dc5b321, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Gdal1.6.3\swig\csharp\gdal_csharp.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Data\Providers\GdalPreview\AdvancedPreview.cs" />
+    <Compile Include="Data\Providers\GdalPreview\ColorRampShaderFunction.cs" />
+    <Compile Include="Data\Providers\GdalPreview\FreakOutShaderFunction.cs" />
+    <Compile Include="Data\Providers\GdalPreview\PseudoColorShaderFunction.cs" />
+    <Compile Include="Data\Providers\GdalPreview\SimplePreview.cs" />
+    <Compile Include="Data\Providers\GdalPreview\BaseRasterShaderFunction.cs" />
+    <Compile Include="Data\Providers\GdalPreview\RasterShader.cs" />
+    <Compile Include="Data\Providers\GdalPreview\RasterTransparency.cs" />
+    <Compile Include="Data\Providers\GdalRasterProvider.cs" />
+    <Compile Include="Data\Providers\GdalRasterRecord.cs" />
+    <Compile Include="Data\Providers\GdalPreview\SharpMapV1RasterLayerPreview.cs" />
+    <Compile Include="Data\Providers\GdalPreview\BaseGdalPreview.cs" />
+    <Compile Include="Data\Providers\GeoTransform.cs" />
+    <Compile Include="Layers\GdalRasterLayer.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\NTS\GeoAPI\src\GeoAPI\GeoAPI.Net.csproj">
+      <Project>{FFB69466-79DE-466A-ADA7-5C47C5C5CA3A}</Project>
+      <Name>GeoAPI.Net</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\NTS\NPack\NPack.Matrix\NPack.Matrix.csproj">
+      <Project>{D03CD20F-5081-4974-82E4-291577169B46}</Project>
+      <Name>NPack.Matrix</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\NTS\NPack\NPack\NPack.csproj">
+      <Project>{B139E1D5-091B-40D2-B7A2-7D7D82E13019}</Project>
+      <Name>NPack</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Proj.Net\ProjNet\ProjNet.csproj">
+      <Project>{E028BDD2-55E1-4E5F-BE31-35FAEC8D6428}</Project>
+      <Name>ProjNet</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\SharpMap.Utilities\SharpMap.Utilities.csproj">
+      <Project>{011439C1-A53D-4DA1-AF8E-18D9D61121F4}</Project>
+      <Name>SharpMap.Utilities</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\SharpMap\SharpMap.csproj">
+      <Project>{C83777FC-AABB-47D9-911F-D76255D4D541}</Project>
+      <Name>SharpMap</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+  <PropertyGroup>
+    <PreBuildEvent>echo off
+echo cd "$(DevEnvDir)..\Tools" &gt; buildgdal.bat
+echo call vsvars32.bat &gt;&gt; buildgdal.bat
+REM ECHO %25INCLUDE%25
+echo set path=C:\VENUS\sharpMap\swigwin-1.3.40;%25PATH%25 &gt;&gt; buildgdal.bat
+REM echo set &gt;&gt; buildgdal.bat
+echo cd $(ProjectDir)Gdal1.6.3 &gt;&gt; buildgdal.bat
+echo nmake /f makefile.vc /x gdalbuild.err &gt;&gt; buildgdal.bat
+echo cd swig &gt;&gt; buildgdal.bat
+echo nmake /f makefile.vc /x gdalcsharpbindings.err csharp &gt;&gt; buildgdal.bat
+echo cd $(ProjectDir)Proj4.6.1 &gt;&gt; buildgdal.bat
+echo nmake /f makefile.vc /x projbuild.err &gt;&gt; buildgdal.bat
+call buildgdal.bat</PreBuildEvent>
+  </PropertyGroup>
+</Project>
