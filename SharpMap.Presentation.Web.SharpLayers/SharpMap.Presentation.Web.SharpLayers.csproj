@@ -219,6 +219,7 @@
     <Content Include="OpenLayers\Build\buildUncompressed.py" />
     <Content Include="OpenLayers\Build\license.txt" />
     <Content Include="OpenLayers\Build\README.txt" />
+    <EmbeddedResource Include="OpenLayers\OpenLayers.js" />
     <Content Include="OpenLayers\OpenLayersSource\apidoc_config\Languages.txt" />
     <Content Include="OpenLayers\OpenLayersSource\apidoc_config\Menu.txt" />
     <Content Include="OpenLayers\OpenLayersSource\apidoc_config\OL.css" />
@@ -881,6 +882,7 @@
     <Content Include="OpenLayers\OpenLayersSource\tools\README.txt" />
     <Content Include="OpenLayers\OpenLayersSource\tools\shrinksafe.py" />
     <Content Include="OpenLayers\OpenLayersSource\tools\toposort.py" />
+    <EmbeddedResource Include="OpenLayers\OpenLayers_debug.js" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

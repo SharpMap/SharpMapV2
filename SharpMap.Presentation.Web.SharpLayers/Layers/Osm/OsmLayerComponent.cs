@@ -15,9 +15,7 @@
 
 using System.Web.UI;
 using AjaxControlToolkit;
-
 [assembly: WebResource("SharpMap.Presentation.Web.SharpLayers.Layers.Osm.OsmLayerComponent.js", "text/javascript")]
-
 namespace SharpMap.Presentation.Web.SharpLayers.Layers.Osm
 {
     [ClientScriptResource("SharpMap.Presentation.Web.SharpLayers.Layers.Osm.OsmLayerComponent",
