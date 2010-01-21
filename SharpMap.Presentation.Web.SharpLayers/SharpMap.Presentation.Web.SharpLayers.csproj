@@ -148,6 +148,8 @@
     <Compile Include="Layers\ILayerBuilderParams.cs" />
     <Compile Include="Layers\LayerBuilderParamsBase.cs" />
     <Compile Include="Layers\LayerComponent.cs" />
+    <Compile Include="Layers\Osm\OsmLayerBuilderParams.cs" />
+    <Compile Include="Layers\Osm\OsmLayerComponent.cs" />
     <Compile Include="Layers\Tms\TmsLayerBuilderParams.cs" />
     <Compile Include="Layers\Tms\TmsLayerComponent.cs" />
     <Compile Include="Layers\TransitionEffects.cs" />
@@ -205,7 +207,6 @@
     <EmbeddedResource Include="Controls\Scale\ScaleBar.js" />
     <EmbeddedResource Include="Controls\Containers\ToolPanel.js" />
     <EmbeddedResource Include="Controls\GenericOLControl.js" />
-    <EmbeddedResource Include="OpenLayers\OpenLayers.js" />
     <EmbeddedResource Include="Styles\SldComponent.js" />
     <EmbeddedResource Include="Protocol\Http\HttpProtocolComponent.js" />
     <EmbeddedResource Include="Protocol\ProtocolComponent.js" />
@@ -213,6 +214,7 @@
   <ItemGroup>
     <EmbeddedResource Include="Controls\Measure\MeasureTool.js" />
     <EmbeddedResource Include="Controls\Measure\MeasureToolButton.js" />
+    <EmbeddedResource Include="Layers\Osm\OsmLayerComponent.js" />
     <Content Include="OpenLayers\Build\build.py" />
     <Content Include="OpenLayers\Build\buildUncompressed.py" />
     <Content Include="OpenLayers\Build\license.txt" />
@@ -879,7 +881,6 @@
     <Content Include="OpenLayers\OpenLayersSource\tools\README.txt" />
     <Content Include="OpenLayers\OpenLayersSource\tools\shrinksafe.py" />
     <Content Include="OpenLayers\OpenLayersSource\tools\toposort.py" />
-    <EmbeddedResource Include="OpenLayers\OpenLayers_debug.js" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
