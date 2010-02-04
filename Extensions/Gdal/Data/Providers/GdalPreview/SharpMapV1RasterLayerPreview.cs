@@ -405,7 +405,7 @@ namespace SharpMap.Data.Providers.GdalPreview
             get { return "SharpMapV1"; }
         }
 
-        public Bitmap GetNonRotatedPreview(IExtents viewPort, Matrix2D toViewTransform, out Rectangle2D viewBounds, out Rectangle2D rasterBounds)
+        public virtual Bitmap GetNonRotatedPreview(IExtents viewPort, Matrix2D toViewTransform, out Rectangle2D viewBounds, out Rectangle2D rasterBounds)
         {
             viewBounds = new Rectangle2D();
             rasterBounds = new Rectangle2D();
@@ -447,6 +447,10 @@ namespace SharpMap.Data.Providers.GdalPreview
 
                 unsafe
                 {
+                    byte cr = _provider.NoDataInitColor.R;
+                    byte cg = _provider.NoDataInitColor.G;
+                    byte cb = _provider.NoDataInitColor.B;
+
                     Double[][] buffer = new Double[bands][];
                     GdalBand[] band = new GdalBand[bands];
                     int[] ch = new int[bands];
@@ -454,22 +458,36 @@ namespace SharpMap.Data.Providers.GdalPreview
                     // get data from image
                     Boolean palette = false;
                     Double[] intVal = new Double[bands];
+
+                    Double[] noDataValues = new Double[bands];
+                    Double[] scales = new Double[bands];
                     GdalColorTable gdalColorTable = null;
                     //OSGeo.GDAL.PaletteInterp gdalPi = OSGeo.GDAL.PaletteInterp.GPI_RGB;
 
                     // scale
-                    Double bitScalar = 1.0;
+                    //Double bitScalar = 1.0;
                     Int32 bitDepth = 8;
+
+                    Int32 lBands = bands;
+                    Int32 displayOption = 0;
                     for (Int32 i = 0; i < bands; i++)
                     {
                         buffer[i] = new double[intImginMapW * intImginMapH];
                         band[i] = dataset.GetRasterBand(i + 1);
 
+                        //get nodata value if present
+                        Int32 hasVal = 0;
+                        band[i].GetNoDataValue(out noDataValues[i], out hasVal);
+                        if (hasVal == 0) noDataValues[i] = Double.NaN;
+                        band[i].GetScale(out scales[i], out hasVal);
+                        if (hasVal == 0) scales[i] = 1.0;
+
                         band[i].ReadRaster(x1, y1, imgPixWidth, imgPixHeight,
                                            buffer[i], intImginMapW, intImginMapH,
                                            0, 0);
-                        if (Gdal.GetDataTypeSize(band[i].DataType) > 8)
-                            bitDepth = Gdal.GetDataTypeSize(band[i].DataType);
+                        //if (Gdal.GetDataTypeSize(band[i].DataType) > 8)
+                        //    bitDepth = Gdal.GetDataTypeSize(band[i].DataType);
+
 
                         switch (band[i].GetRasterColorInterpretation())
                         {
@@ -483,16 +501,45 @@ namespace SharpMap.Data.Providers.GdalPreview
                                 ch[i] = 2;
                                 break;
                             case GdalColorInterp.GCI_Undefined:
-                                ch[i] = 3; // infrared
+                                if (bands > 1)
+                                    ch[i] = 3; // infrared
+                                else
+                                {
+                                    lBands = 3;
+                                    displayOption = 1;
+                                    ch = new int[] {0,1,2};
+                                    intVal = new Double[3];
+                                    if (_provider.ColorBlend == null)
+                                    {
+                                        Double dblMin, dblMax;
+                                        band[i].GetMinimum(out dblMin, out hasVal);
+                                        if (hasVal == 0) dblMin = Double.NaN;
+                                        band[i].GetMaximum(out dblMax, out hasVal);
+                                        if (hasVal == 0) dblMax = double.NaN;
+                                        if (Double.IsNaN(dblMin) || Double.IsNaN(dblMax))
+                                        {
+                                            double dblMean, dblStdDev;
+                                            band[i].GetStatistics(0, 1, out dblMin, out dblMax, out dblMean, out dblStdDev);
+                                            //double dblRange = dblMax - dblMin;
+                                            //dblMin -= 0.1*dblRange;
+                                            //dblMax += 0.1*dblRange;
+                                        }
+                                        Single[] minmax = new float[] { Convert.ToSingle(dblMin), 0.5f * Convert.ToSingle(dblMin + dblMax), Convert.ToSingle(dblMax) };
+                                        StyleColor[] colors = new StyleColor[] { StyleColor.Blue, StyleColor.Green, StyleColor.Red };
+                                        _provider.ColorBlend = new StyleColorBlend(colors, minmax);
+                                    }
+                                }
                                 break;
                             case GdalColorInterp.GCI_GrayIndex:
-                                ch[i] = 4;
+                                ch[i] = 0;
                                 break;
                             case GdalColorInterp.GCI_PaletteIndex:
-                                ch = new int[]{0,1,2};
+                                lBands = 3;
+                                displayOption = 2;
+                                ch = new int[] { 0, 1, 2 };
                                 intVal = new double[3];
                                 gdalColorTable = band[i].GetColorTable();
-                                palette = true;
+                                //palette = true;
                                 break;
                             default:
                                 ch[i] = -1;
@@ -500,6 +547,7 @@ namespace SharpMap.Data.Providers.GdalPreview
                         }
                     }
 
+                    /*
                     if (bitDepth == 12)
                         bitScalar = 16.0;
                     else if (bitDepth == 16)
@@ -509,34 +557,68 @@ namespace SharpMap.Data.Providers.GdalPreview
                         bitScalar = 16777216.0;
                         ch = new[] { 0, 1, 2 };
                     }
-
+                    */
                     Int32 p_indx = 0;
+                    for (int i = 0; i < lBands + 1; i++)
+                        _histogram[i] = new int[256];
+
                     for (int y = 0; y < intImginMapH; y++)
                     {
                         byte* row = (byte*) bitmapData.Scan0 + (y*bitmapData.Stride);
                         for (int x = 0; x < intImginMapW; x++, p_indx++)
                         {
-                            Int32 lBands = bands;
-                            if (palette)
+                            Double imageVal;
+                            switch (displayOption)
                             {
-                                Double colorIndex = buffer[0][p_indx]/bitScalar;
-                                GdalColorEntry colorEntry = new GdalColorEntry();
-                                gdalColorTable.GetColorEntryAsRGB((int) colorIndex, colorEntry);
-                                intVal[0] = colorEntry.c1;
-                                intVal[1] = colorEntry.c2;
-                                intVal[2] = colorEntry.c3;
-                                lBands = 3;
-                            }
-                            else
-                            {
-                                for (int i = 0; i < lBands; i++)
-                                    intVal[i] = buffer[i][p_indx]/bitScalar;
+                                case 1:
+                                    imageVal = buffer[0][p_indx]; // /bitScalar;
+                                    if (imageVal != noDataValues[0])
+                                    {
+                                        StyleColor color = _provider.ColorBlend.GetColor(Convert.ToSingle(imageVal));
+                                        intVal[0] = color.B;
+                                        intVal[1] = color.G;
+                                        intVal[2] = color.R;
+                                        //intVal[3] = ce.c4;
+                                    }
+                                    else
+                                    {
+                                        intVal[0] = cb;
+                                        intVal[1] = cg;
+                                        intVal[2] = cr;
+                                    }
+                                    //lBands = 3;
+                                    break;
+                                case 2:
+                                        imageVal = buffer[0][p_indx]; // / bitScalar;
+                                        if (imageVal != noDataValues[0])
+                                        {
+                                            GdalColorEntry ce = gdalColorTable.GetColorEntry(Convert.ToInt32(imageVal));
+                                            intVal[0] = ce.c1;
+                                            intVal[1] = ce.c2;
+                                            intVal[2] = ce.c3;
+                                            //intVal[3] = ce.c4;
+                                        }
+                                        else
+                                        {
+                                            intVal[0] = cb;
+                                            intVal[1] = cg;
+                                            intVal[2] = cr;
+                                        }
+                                    //lBands = 3;
+                                    break;
+                                default:
+                                    for (int i = 0; i < lBands; i++)
+                                        intVal[i] = buffer[i][p_indx]; // / bitScalar;
+                                    break;
                             }
 
                             if (_colorCorrect)
                             {
                                 for (int i = 0; i < lBands; i++)
-                                    intVal[i] = Math.Min( ApplyColorCorrection(intVal[i], 0, ch[i], 0, 0), 255 );
+                                {
+                                    intVal[i] = Math.Min(ApplyColorCorrection(intVal[i], 0, ch[i], 0, 0), 255);
+                                    _histogram[ch[i]][(int)intVal[i]]++;
+                                }
                             }
 
                             if (bands >= 3)
@@ -573,7 +655,7 @@ namespace SharpMap.Data.Providers.GdalPreview
 
         #region WritePixel
 
-        private unsafe void ChooseWritePixel()
+        protected unsafe void ChooseWritePixel()
         {
             Int32 bands = _provider.Bands;
             if (bands == 1)
@@ -617,7 +699,7 @@ namespace SharpMap.Data.Providers.GdalPreview
                 _doWritePixel = WritePixel_Rgb;
         }
 
-        private unsafe void WritePixel_BW_ShowClip
+        protected static unsafe void WritePixel_BW_ShowClip
             (double x, Int32 bands, Double[] intVal, int iPixelSize, int[] ch, byte* row, int maxIndex)
         {
             Int32 index = (int)Math.Round(x) * iPixelSize;
@@ -641,7 +723,7 @@ namespace SharpMap.Data.Providers.GdalPreview
             }
         }
 
-        protected unsafe void WritePixel_BW
+        protected static unsafe void WritePixel_BW
             (double x, Int32 bands, Double[] intVal, int iPixelSize, int[] ch, byte* row, int maxIndex)
         {
             Int32 index = (int)Math.Round(x) * iPixelSize;
@@ -660,7 +742,7 @@ namespace SharpMap.Data.Providers.GdalPreview
         //{
         //}
 
-        protected unsafe void WritePixel_Ir_ShowClip
+        protected static unsafe void WritePixel_Ir_ShowClip
             (double x, Int32 bands, Double[] intVal, int iPixelSize, int[] ch, byte* row, int maxIndex)
         {
             Int32 index = (int)Math.Round(x) * iPixelSize;
@@ -692,7 +774,7 @@ namespace SharpMap.Data.Providers.GdalPreview
             }
         }
 
-        protected unsafe void WritePixel_Ir
+        protected static unsafe void WritePixel_Ir
             (double x, Int32 bands, Double[] intVal, int iPixelSize, int[] ch, byte* row, int maxIndex)
         {
             Int32 index = (int)Math.Round(x) * iPixelSize;
@@ -709,7 +791,7 @@ namespace SharpMap.Data.Providers.GdalPreview
             }
         }
 
-        protected unsafe void WritePixel_Cir_ShowClip
+        protected static unsafe void WritePixel_Cir_ShowClip
             (double x, Int32 bands, double[] intVal, int iPixelSize, int[] ch, byte* row, int maxIndex)
         {
             Int32 index = (int)Math.Round(x) * iPixelSize;
@@ -729,7 +811,7 @@ namespace SharpMap.Data.Providers.GdalPreview
             }
         }
 
-        protected unsafe void WritePixel_Cir
+        protected static unsafe void WritePixel_Cir
             (double x, Int32 bands, double[] intVal, int iPixelSize, int[] ch, byte* row, int maxIndex)
         {
             Int32 index = (int)Math.Round(x) * iPixelSize;
@@ -786,7 +868,7 @@ namespace SharpMap.Data.Providers.GdalPreview
         #endregion
 
         // apply any color correction to pixel
-        private Double ApplyColorCorrection(Double imageVal, Double spotVal, int channel, Double gndX, Double gndY)
+        protected Double ApplyColorCorrection(Double imageVal, Double spotVal, int channel, Double gndX, Double gndY)
         {
             Double finalVal = imageVal;
 
@@ -1185,6 +1267,7 @@ namespace SharpMap.Data.Providers.GdalPreview
         public int[][] Histogram
         {
             get { return _histogram; }
+            protected set { _histogram = value; }
         }
 
         /// <summary>
@@ -1194,6 +1277,7 @@ namespace SharpMap.Data.Providers.GdalPreview
         public double[] HistoMean
         {
             get { return _histoMean; }
+            protected set { _histoMean = value; }
         }
 
         /// <summary>
@@ -1203,15 +1287,17 @@ namespace SharpMap.Data.Providers.GdalPreview
         public double HistoBrightness
         {
             get { return _histoBrightness; }
+            protected set { _histoBrightness = value; }
         }
 
         /// <summary>
         /// Gets the quick histogram contrast
         /// </summary>
-        public double _histoContrast;
+        private double _histoContrast;
         public double HistoContrast
         {
             get { return _histoContrast; }
+            protected set { _histoContrast = value; }
         }
 
 

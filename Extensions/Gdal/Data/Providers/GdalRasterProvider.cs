@@ -28,55 +28,14 @@ namespace SharpMap.Data.Providers
 {
     internal unsafe delegate void WritePixel(double x, Int32 bands, double[] intVal, int iPixelSize, int[] ch, byte* row, int maxIndex);
 
-    public enum GdalRasterType
-    {
-        GrayOrUndefined,
-        Palette,
-        MultiBand
-    }
-
-    internal class GdalBandStatistics
-    {
-        public readonly Int32 BandNumber;
-        public Double Minimum { get; protected set; }
-        public Double Maximum { get; protected set; }
-        public Double Range { get; protected set; }
-        public Double Mean { get; protected set; }
-        public Int32[] HistgramVector { get; protected set; }
-
-        internal GdalBandStatistics(Int32 bandNr)
-        {
-            BandNumber = bandNr;
-        }
-
-        internal static GdalBandStatistics GetGdalBandStatistics(Int32 bandNr, GdalBand band, Boolean approximate, Boolean force)
-        {
-            if (band == null)
-                throw new ArgumentNullException("band");
-
-            Double min, max, range, mean;
-            band.GetStatistics(approximate ? 1 : 0, force ? 1:0, out min, out max, out range, out mean);
-            GdalBandStatistics bs = new GdalBandStatistics(bandNr)
-                                        {Minimum = min, Maximum = max, Range = range, Mean = mean};
-            return bs;
-        }
-
-        public void CalculateHistogram(Double from, Double to, Int32 numBuckets)
-        {
-            
-        }
-    }
-
     public class GdalRasterProvider : ProviderBase, IRasterProvider
     {
+        /// <summary>
+        /// Static constructor to ensure Gdal has been loaded properly
+        /// </summary>
         static GdalRasterProvider()
         {
-            String path = Environment.GetEnvironmentVariable("Path");
-            //NOTE: SET THIS TO SOME APROPTIATE VALUE
-            path = @"C:\VENUS\CodePlex\initialgdalintegration\Extensions\Gdal\Gdal1.6.3\apps;C:\VENUS\CodePlex\initialgdalintegration\Extensions\Gdal\Proj4.6.1\src" + path;
-            Environment.SetEnvironmentVariable("Path", path);
-            Environment.SetEnvironmentVariable("GDAL_DATA", @"C:\VENUS\CodePlex\initialgdalintegration\Extensions\Gdal\Gdal1.6.3\apps;");
-            Gdal.AllRegister();
+            GdalForSharpMap.Configure();
         }
 
         public static GdalResampleAlg ResampleAlgorithm = GdalResampleAlg.GRA_NearestNeighbour;
@@ -432,6 +391,9 @@ namespace SharpMap.Data.Providers
             if ( bm == null )
                 return null;
 
+            //NoDataInitColor
+            bm.MakeTransparent(Color.FromArgb(NoDataInitColor.A, NoDataInitColor.R, NoDataInitColor.G, NoDataInitColor.B));
+
             if (TransparentColor.HasValue)
             {
                 StyleColor c = TransparentColor.Value;
@@ -473,6 +435,22 @@ namespace SharpMap.Data.Providers
             _rasterBounds = rasterBounds;
 
             return ms;
+        }
+
+        private StyleColor _noDataInitColor = StyleColor.Yellow;
+        public StyleColor NoDataInitColor
+        {
+            get { return _noDataInitColor; }
+            set
+            {
+                _noDataInitColor = value;
+            }
+        }
+        private StyleColorBlend _colorBlend;
+        public StyleColorBlend ColorBlend
+        {
+            get { return _colorBlend; }
+            set { _colorBlend = value; }
         }
 
         #region Public static functions

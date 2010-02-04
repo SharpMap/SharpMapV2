@@ -13,39 +13,89 @@
     <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug_Net20|AnyCPU' ">
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug_Net20|x86' ">
     <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
+    <OutputPath>bin\x86\Debug_Net20\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release_Net20|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release_Net20|x86' ">
+    <OutputPath>bin\x86\Release_Net20\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug_Net20|x64' ">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x64\Debug_Net20\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release_Net20|x64' ">
+    <OutputPath>bin\x64\Release_Net20\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <!--<Choose>
+    <When Condition=" '$(Platform)'=='x86' ">-->
   <ItemGroup>
-    <Reference Include="gdalconst_csharp, Version=1.0.3672.30015, Culture=neutral, PublicKeyToken=db5a52b08dc5b321, processorArchitecture=MSIL">
+    <Reference Condition=" '$(Platform)'=='x86' " Include="gdalconst_csharp, Version=1.0.3585.8006, Culture=neutral, PublicKeyToken=db5a52b08dc5b321">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>Gdal1.6.3\swig\csharp\gdalconst_csharp.dll</HintPath>
+      <HintPath>Native\x86\gdal\csharp\gdalconst_csharp.dll</HintPath>
     </Reference>
-    <Reference Include="gdal_csharp, Version=1.0.3672.30015, Culture=neutral, PublicKeyToken=db5a52b08dc5b321, processorArchitecture=MSIL">
+    <Reference Condition=" '$(Platform)'=='x86' " Include="gdal_csharp, Version=1.0.3585.8006, Culture=neutral, PublicKeyToken=db5a52b08dc5b321">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>Gdal1.6.3\swig\csharp\gdal_csharp.dll</HintPath>
+      <HintPath>Native\x86\gdal\csharp\gdal_csharp.dll</HintPath>
+    </Reference>
+    <Reference Condition=" '$(Platform)'=='x64' " Include="gdalconst_csharp, Version=1.0.3585.8006, Culture=neutral, PublicKeyToken=db5a52b08dc5b321">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Native\x64\gdal\csharp\gdalconst_csharp.dll</HintPath>
+    </Reference>
+    <Reference Condition=" '$(Platform)'=='x64' " Include="gdal_csharp, Version=1.0.3585.8006, Culture=neutral, PublicKeyToken=db5a52b08dc5b321">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Native\x64\gdal\csharp\gdal_csharp.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.configuration" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Xml" />
   </ItemGroup>
+  <!--</When>
+    <When Condition=" '$(Platform)'=='x64' ">
+      <ItemGroup>
+        <Reference Include="gdalconst_csharp, Version=1.0.3585.8006, Culture=neutral, PublicKeyToken=db5a52b08dc5b321">
+          <SpecificVersion>False</SpecificVersion>
+          <HintPath>Native\x64\gdal\csharp\gdalconst_csharp.dll</HintPath>
+        </Reference>
+        <Reference Include="gdal_csharp, Version=1.0.3585.8006, Culture=neutral, PublicKeyToken=db5a52b08dc5b321">
+          <SpecificVersion>False</SpecificVersion>
+          <HintPath>Native\x64\gdal\csharp\gdal_csharp.dll</HintPath>
+        </Reference>
+        <Reference Include="System" />
+        <Reference Include="System.configuration" />
+        <Reference Include="System.Data" />
+        <Reference Include="System.Drawing" />
+        <Reference Include="System.Xml" />
+      </ItemGroup>
+    </When>
+  </Choose>-->
   <ItemGroup>
+    <Compile Include="GdalForSharpMap.cs" />
+    <Compile Include="Data\Providers\GdalBandStatistics.cs" />
     <Compile Include="Data\Providers\GdalPreview\AdvancedPreview.cs" />
     <Compile Include="Data\Providers\GdalPreview\ColorRampShaderFunction.cs" />
     <Compile Include="Data\Providers\GdalPreview\FreakOutShaderFunction.cs" />
@@ -58,6 +108,7 @@
     <Compile Include="Data\Providers\GdalRasterRecord.cs" />
     <Compile Include="Data\Providers\GdalPreview\SharpMapV1RasterLayerPreview.cs" />
     <Compile Include="Data\Providers\GdalPreview\BaseGdalPreview.cs" />
+    <Compile Include="Data\Providers\GdalRasterType.cs" />
     <Compile Include="Data\Providers\GeoTransform.cs" />
     <Compile Include="Layers\GdalRasterLayer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -89,7 +140,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
+    <Content Include="ReadMe.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
@@ -101,17 +152,48 @@
   -->
   <PropertyGroup>
     <PreBuildEvent>echo off
-echo cd "$(DevEnvDir)..\Tools" &gt; buildgdal.bat
-echo call vsvars32.bat &gt;&gt; buildgdal.bat
-REM ECHO %25INCLUDE%25
-echo set path=C:\VENUS\sharpMap\swigwin-1.3.40;%25PATH%25 &gt;&gt; buildgdal.bat
-REM echo set &gt;&gt; buildgdal.bat
-echo cd $(ProjectDir)Gdal1.6.3 &gt;&gt; buildgdal.bat
-echo nmake /f makefile.vc /x gdalbuild.err &gt;&gt; buildgdal.bat
-echo cd swig &gt;&gt; buildgdal.bat
-echo nmake /f makefile.vc /x gdalcsharpbindings.err csharp &gt;&gt; buildgdal.bat
+setlocal
+echo cd "$(DevEnvDir)..\..\VC" &gt; buildgdal.bat
+echo set path=$(SolutionDir)BuildTools;%25PATH%25 &gt;&gt; buildgdal.bat
+if $(PlatformName)=="x64" (
+echo call vcvarsall.bat x86_amd64 &gt;&gt; buildgdal.bat 
+) else (
+echo call vcvarsall.bat x86 &gt;&gt; buildgdal.bat 
+)
+echo if "%251"=="GDAL" goto GDAL &gt;&gt; buildgdal.bat
 echo cd $(ProjectDir)Proj4.6.1 &gt;&gt; buildgdal.bat
-echo nmake /f makefile.vc /x projbuild.err &gt;&gt; buildgdal.bat
-call buildgdal.bat</PreBuildEvent>
+rem NMAKE.OPT für Proj4 Kompilierung
+echo INSTDIR=$(TargetDir).. &gt; $(ProjectDir)Proj4.6.1\nmake.opt
+echo PROJ_LIB_DIR=$(TargetDir)..\share &gt;&gt; $(ProjectDir)Proj4.6.1\nmake.opt
+echo OPTFLAGS=/nologo /Ox /Op /MD &gt;&gt; $(ProjectDir)Proj4.6.1\nmake.opt
+echo EXE_PROJ =proj_i.lib &gt;&gt; $(ProjectDir)Proj4.6.1\nmake.opt
+echo VERSION= &gt;&gt; $(ProjectDir)Proj4.6.1\nmake.opt
+echo nmake /f makefile.vc clean &gt;&gt; buildgdal.bat
+echo nmake /f makefile.vc /x projbuild.err install-all &gt;&gt; buildgdal.bat
+rem echo pause &gt;&gt; buildgdal.bat
+echo :GDAL &gt;&gt; buildgdal.bat
+echo cd $(ProjectDir)Gdal1.6.3 &gt;&gt; buildgdal.bat
+
+REM EXT_NMAKE.OPT für GDAL Kompilierung
+echo INSTDIR=$(TargetDir).. &gt; $(ProjectDir)Gdal1.6.3\ext_nmake.opt
+if $(PlatformName)=="x64" echo WIN64=YES &gt;&gt; $(ProjectDir)Gdal1.6.3\ext_nmake.opt
+echo MSVC_VER=1500 &gt;&gt; $(ProjectDir)Gdal1.6.3\ext_nmake.opt
+echo GDAL_HOME = $(TargetDir).. &gt;&gt; $(ProjectDir)Gdal1.6.3\ext_nmake.opt
+
+echo if "%252"=="SWIG" goto SWIG &gt;&gt; buildgdal.bat
+echo nmake /f makefile.vc clean &gt;&gt; buildgdal.bat
+echo nmake /f makefile.vc /x gdalbuild.err EXT_NMAKE_OPT=ext_nmake.opt &gt;&gt; buildgdal.bat
+rem echo nmake /f makefile.vc /x install.err install EXT_NMAKE_OPT=ext_nmake.opt &gt;&gt; buildgdal.bat
+echo nmake /f makefile.vc /x devinstall.err devinstall EXT_NMAKE_OPT=ext_nmake.opt &gt;&gt; buildgdal.bat
+rem echo pause &gt;&gt; buildgdal.bat
+
+echo :SWIG &gt;&gt; buildgdal.bat
+echo cd swig &gt;&gt; buildgdal.bat
+echo nmake /f makefile.vc /x gdalcsharpbindings.err csharp install EXT_NMAKE_OPT=ext_nmake.opt &gt;&gt; buildgdal.bat
+echo cd csharp &gt;&gt; buildgdal.bat
+echo nmake /f makefile.vc /x gdalcsharpinstall.err install EXT_NMAKE_OPT=ext_nmake.opt &gt;&gt; buildgdal.bat
+echo endlocal
+echo cd $(TargetDir) &gt;&gt; buildgdal.bat
+echo on</PreBuildEvent>
   </PropertyGroup>
 </Project>

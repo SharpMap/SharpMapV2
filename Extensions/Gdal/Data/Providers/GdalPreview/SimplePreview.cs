@@ -1,17 +1,55 @@
+#region License
+
+/*
+ *  The attached / following is part of GdalForSharpMap.
+ *  
+ *  GdalForSharpMap is free software © 2009 - 2010 Ingenieurgruppe IVV GmbH & Co. KG, 
+ *  www.ivv-aachen.de; you can redistribute it and/or modify it under the terms 
+ *  of the current GNU Lesser General Public License (LGPL) as published by and 
+ *  available from the Free Software Foundation, Inc., 
+ *  59 Temple Place, Suite 330, Boston, MA 02111-1307 USA: http://fsf.org/.
+ *  This program is distributed without any warranty; 
+ *  without even the implied warranty of merchantability or fitness for purpose.
+ *  See the GNU Lesser General Public License for the full details. 
+ *  
+ *  Author: Felix Obermaier 2009
+ *  
+ *  Acknolegement:
+ *  This code contains sample code from the gdal library by Tamas Serekes
+ *  released with this license:
+ ******************************************************************************
+ * Copyright (c) 2007, Tamas Szekeres
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a
+ * copy of this software and associated documentation files (the "Software"),
+ * to deal in the Software without restriction, including without limitation
+ * the rights to use, copy, modify, merge, publish, distribute, sublicense,
+ * and/or sell copies of the Software, and to permit persons to whom the
+ * Software is furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included
+ * in all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+ * OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+ * THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+ * DEALINGS IN THE SOFTWARE.
+ *****************************************************************************
+ * 
+ */
+
+#endregion
 using System;
 using System.Drawing;
 using System.Drawing.Imaging;
-using GeoAPI.Coordinates;
-using GeoAPI.CoordinateSystems.Transformations;
 using GeoAPI.Geometries;
 using SharpMap.Rendering.Rendering2D;
-using SharpMap.Utilities;
 using Gdal = OSGeo.GDAL.Gdal;
 using GdalDataset = OSGeo.GDAL.Dataset;
 using GdalBand = OSGeo.GDAL.Band;
-using GdalResampleAlg = OSGeo.GDAL.ResampleAlg;
-using GdalAccess = OSGeo.GDAL.Access;
-using GdalCPlErr = OSGeo.GDAL.CPLErr;
 using GdalColorInterp = OSGeo.GDAL.ColorInterp;
 using GdalColorTable = OSGeo.GDAL.ColorTable;
 using GdalColorEntry = OSGeo.GDAL.ColorEntry;

@@ -39,6 +39,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using System.Runtime.InteropServices;
@@ -166,6 +167,118 @@ namespace SharpMap.Styles
         {
             StyleColor c = new StyleColor();
             c.setByHsb(hue, saturation, brightness);
+            return c;
+        }
+
+        /// <summary>
+        /// Creates a color using HLS
+        /// </summary>
+        /// <param name="hue">the hue value</param>
+        /// <param name="luminance">the luminance value</param>
+        /// <param name="saturation">the saturation value</param>
+        /// <returns>structure containing the equivalent RGBA values</returns>
+        public static StyleColor FromHls(Int32 hue, Int32 luminance, Int32 saturation)
+        {
+            return FromHls(hue, luminance, saturation, 255);
+        }
+
+        /// <summary>
+        /// Creates a color using HLS
+        /// </summary>
+        /// <param name="hue">the hue value</param>
+        /// <param name="luminance">the luminance value</param>
+        /// <param name="saturation">the saturation value</param>
+        /// <param name="alpha">the alpha value</param>
+        /// <returns>structure containing the equivalent RGBA values</returns>
+        public static StyleColor FromHls(Int32 hue, Int32 luminance, Int32 saturation, Int32 alpha)
+        {
+            StyleColor c = new StyleColor();
+            c.setByHls(hue, luminance, saturation, alpha);
+            return c;
+        }
+
+        /// <summary>
+        /// Creates a color using HLS
+        /// </summary>
+        /// <param name="hue">the hue value</param>
+        /// <param name="luminance">the luminance value</param>
+        /// <param name="saturation">the saturation value</param>
+        /// <returns>structure containing the equivalent RGBA values</returns>
+        public static StyleColor FromHls(Double hue, Double luminance, Double saturation)
+        {
+            return FromHls(hue, luminance, saturation, 1d);
+        }
+
+        /// <summary>
+        /// Creates a color using HLS
+        /// </summary>
+        /// <param name="hue">the hue value</param>
+        /// <param name="luminance">the luminance value</param>
+        /// <param name="saturation">the saturation value</param>
+        /// <param name="alpha">the alpha value</param>
+        /// <returns>structure containing the equivalent RGBA values</returns>
+        public static StyleColor FromHls(Double hue, Double luminance, Double saturation, Double alpha)
+        {
+            StyleColor c = new StyleColor();
+            c.setByHlsD(hue, luminance, saturation, alpha);
+            return c;
+        }
+
+        /// <summary>
+        /// Creates a color using CMYK color model
+        /// </summary>
+        /// <param name="cyan">the cyan value</param>
+        /// <param name="magenta">the magenta value</param>
+        /// <param name="yellow">the yellow value</param>
+        /// <param name="black">the black value</param>
+        /// <param name="alpha">the alpha value</param>
+        /// <returns>structure containing the equivalent RGBA values</returns>
+        public static StyleColor FromCmyk(Int32 cyan, Int32 magenta, Int32 yellow, Int32 black, Int32 alpha)
+        {
+            StyleColor c = new StyleColor();
+            c.setByCmyk(cyan, magenta, yellow, black, alpha);
+            return c;
+        }
+
+        /// <summary>
+        /// Creates a color using CMYK color model
+        /// </summary>
+        /// <param name="cyan">the cyan value</param>
+        /// <param name="magenta">the magenta value</param>
+        /// <param name="yellow">the yellow value</param>
+        /// <param name="black">the black value</param>
+        /// <returns>structure containing the equivalent RGBA values</returns>
+        public static StyleColor FromCmyk(Int32 cyan, Int32 magenta, Int32 yellow, Int32 black)
+        {
+            return FromCmyk(cyan, magenta, yellow, black, 255);
+        }
+
+        /// <summary>
+        /// Creates a color using CMYK color model
+        /// </summary>
+        /// <param name="cyan">the cyan value</param>
+        /// <param name="magenta">the magenta value</param>
+        /// <param name="yellow">the yellow value</param>
+        /// <param name="black">the black value</param>
+        /// <returns>structure containing the equivalent RGBA values</returns>
+        public static StyleColor FromCmyk(Double cyan, Double magenta, Double yellow, Double black)
+        {
+            return FromCmyk(cyan, magenta, yellow, black, 1d);
+        }
+
+        /// <summary>
+        /// Creates a color using CMYK color model
+        /// </summary>
+        /// <param name="cyan">the cyan value</param>
+        /// <param name="magenta">the magenta value</param>
+        /// <param name="yellow">the yellow value</param>
+        /// <param name="black">the black value</param>
+        /// <param name="alpha">the alpha value</param>
+        /// <returns>structure containing the equivalent RGBA values</returns>
+        public static StyleColor FromCmyk(Double cyan, Double magenta, Double yellow, Double black, Double alpha)
+        {
+            StyleColor c = new StyleColor();
+            c.setByCmykD(cyan, magenta, yellow, black);
             return c;
         }
 
@@ -422,9 +535,9 @@ namespace SharpMap.Styles
         {
             // Clamp values
             if (blendFactor < 0) blendFactor = 0;
-            if (blendFactor > 100) blendFactor = 100;
+            if (blendFactor > 100) blendFactor = 1;
 
-            blendFactor /= 100;
+            //blendFactor /= 100;
 
             // Compute interpolated value based on the linear distance
             // between 0 and 1
@@ -2329,6 +2442,71 @@ namespace SharpMap.Styles
             return value > 255 ? (Byte)255 : value < 0 ? (Byte)0 : (Byte)value;
         }
 
+        private void setByHls(Int32 h, Int32 l, Int32 s)
+        {
+            setByHls(h, l, s, 255);
+        }
+        private void setByHls(Int32 h, Int32 l, Int32 s, Int32 a)
+        {
+            Double dh = 360d/255d*clampToByte(h);
+            Double dl = clampToByte(l)/255d;
+            Double ds = clampToByte(s)/255d;
+            Double da = clampToByte(a)/255d;
+
+            setByHlsD(h,l,s, a);
+        }
+
+        private void setByHlsD(Double h, Double l, Double s)
+        {
+            setByHlsD(h, l, s, 1d);
+        }
+
+        private void setByHlsD(Double h, Double l, Double s, Double a)
+        {
+            while (h > 360d) h -= 360d;
+            Debug.Assert(0d <= h && h < 360d);
+            Debug.Assert(0d <= l && l <= 1d);
+            Debug.Assert(0d <= s && s <= 1d);
+            Debug.Assert(0d <= a && a <= 1d);
+
+            _r = 0;
+            _g = 0;
+            _b = 0;
+            _a = Convert.ToByte(255d * a);
+
+            if (s == 0d)
+                _r = _g = _b = Convert.ToByte(255*l);
+            else
+            {
+                Double rm1, rm2;
+                if (l <= 0.5d)
+                    rm2 = l + l*s;
+                else
+                    rm2 = l + s - l*s;
+                rm1 = 2d*l - rm2;
+                _r = setByHlsSub(rm1, rm2, h + 120d);
+                _g = setByHlsSub(rm1, rm2, h);
+                _b = setByHlsSub(rm1, rm2, h - 120d);
+
+            }
+
+        }
+
+        private byte setByHlsSub(Double rm1, Double rm2, Double h)
+        {
+            while(h >= 360d) h -= 360d;
+            while (h < 0d) h += 360d;
+
+            if(h < 60d)
+                rm1 = rm1 + (rm2 - rm1)*h/60d;
+            else if (h < 180d)
+                rm1 = rm2;
+            else if (h < 240d)
+                rm1 = rm1 + (rm2 - rm1) * (240.0f - h) / 60.0d;
+
+            return Convert.ToByte(rm1*255);
+        }
+
         private void setByHsb(Double h, Double s, Double v)
         {
             _r = 0;
@@ -2397,6 +2575,42 @@ namespace SharpMap.Styles
             _r = (Byte)(255 * r);
         }
 
+        private void setByCmyk(Int32 c, Int32 m, Int32 y, Int32 k)
+        {
+            setByCmyk(c, m, y, k, 255);
+        }
+
+        private void setByCmyk(Int32 c, Int32 m, Int32 y, Int32 k, Int32 a)
+        {
+            Double dc = clampToByte(c) / 255d;
+            Double dm = clampToByte(m) / 255d;
+            Double dy = clampToByte(y) / 255d;
+            Double dk = clampToByte(k) / 255d;
+            Double da = clampToByte(a)/255d;
+            setByCmykD(dc, dm, dy, dk, da);
+        }
+        private void setByCmykD(Double c, Double m, Double y, Double k)
+        {
+            setByCmykD(c, m, y, k, 1d);
+        }
+
+        private void setByCmykD(Double c, Double m, Double y, Double k, Double a)
+        {
+            Debug.Assert(0d <= c && c <= 1);
+            Debug.Assert(0d <= m && m <= 1);
+            Debug.Assert(0d <= y && y <= 1);
+            Debug.Assert(0d <= k && k <= 1);
+
+            Double r, g, b;
+            r = c * (1d - k) + k;
+            g = m * (1d - k) + k;
+            b = y * (1d - k) + k;
+
+            _r = Convert.ToByte((1d - r) * 255d + 0.5d);
+            _g = Convert.ToByte((1d - g) * 255d + 0.5d);
+            _b = Convert.ToByte((1d - b) * 255d + 0.5d);
+            _a = Convert.ToByte(255d*a);
+        }
         #endregion
     }
 }
