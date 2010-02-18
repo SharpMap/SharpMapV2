@@ -231,14 +231,7 @@
     <Compile Include="DataSource\DB2SpatialExtender.Designer.cs">
       <DependentUpon>DB2SpatialExtender.cs</DependentUpon>
     </Compile>
-    <Compile Include="DataSource\Gdal.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="DataSource\Gdal.designer.cs">
-      <DependentUpon>Gdal.cs</DependentUpon>
-    </Compile>
     <Compile Include="DataSource\ICreateDataProvider.cs" />
-    <Compile Include="DataSource\ICreateRasterProvider.cs" />
     <Compile Include="DataSource\MsSqlSpatial.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -292,9 +285,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="DataSource\DB2SpatialExtender.resx">
       <DependentUpon>DB2SpatialExtender.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="DataSource\Gdal.resx">
-      <DependentUpon>Gdal.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="DataSource\MsSqlSpatial.resx">
       <DependentUpon>MsSqlSpatial.cs</DependentUpon>
