@@ -91,31 +91,11 @@
   <Target Name="BeforeBuild">
   </Target>  -->
   <ItemGroup>
-    <mssqlspatial Include="..\SharpMap.Demo.FormatConverter.MsSqlSpatial\bin\Debug\GeoAPI.dll" />
-    <mssqlspatial Include="..\SharpMap.Demo.FormatConverter.MsSqlSpatial\bin\Debug\NetTopologySuite.dll" />
-    <mssqlspatial Include="..\SharpMap.Demo.FormatConverter.MsSqlSpatial\bin\Debug\NPack.dll" />
-    <mssqlspatial Include="..\SharpMap.Demo.FormatConverter.MsSqlSpatial\bin\Debug\Proj4Utility.dll" />
-    <mssqlspatial Include="..\SharpMap.Demo.FormatConverter.MsSqlSpatial\bin\Debug\ProjNet.dll" />
-    <mssqlspatial Include="..\SharpMap.Demo.FormatConverter.MsSqlSpatial\bin\Debug\SharpMap.Data.Providers.Db.dll" />
-    <mssqlspatial Include="..\SharpMap.Demo.FormatConverter.MsSqlSpatial\bin\Debug\SharpMap.Data.Providers.MsSqlSpatial.dll" />
-    <mssqlspatial Include="..\SharpMap.Demo.FormatConverter.MsSqlSpatial\bin\Debug\SharpMap.Demo.FormatConverter.Common.dll" />
-    <mssqlspatial Include="..\SharpMap.Demo.FormatConverter.MsSqlSpatial\bin\Debug\SharpMap.Demo.FormatConverter.MsSqlSpatial.dll" />
-    <mssqlspatial Include="..\SharpMap.Demo.FormatConverter.MsSqlSpatial\bin\Debug\SharpMap.dll" />
-    <mssqlspatial Include="..\SharpMap.Demo.FormatConverter.MsSqlSpatial\bin\Debug\SharpMap.Utilities.dll" />
+    <mssqlspatial Include="..\SharpMap.Demo.FormatConverter.MsSqlSpatial\bin\$(Configuration)\*.dll" />
     <shapefile Include="..\SharpMap.Demo.FormatConverter.Shapefile\bin\$(Configuration)\*.dll" />
     <sqlserver Include="..\SharpMap.Demo.FormatConverter.SqlServer2008\bin\$(Configuration)\*.dll" />
     <spatialite2 Include="..\SharpMap.Demo.FormatConverter.SpatialLite2\bin\$(Configuration)\*.dll" />
-    <mssqlspatialdbg Include="..\SharpMap.Demo.FormatConverter.MsSqlSpatial\bin\Debug\GeoAPI.pdb" />
-    <mssqlspatialdbg Include="..\SharpMap.Demo.FormatConverter.MsSqlSpatial\bin\Debug\NetTopologySuite.pdb" />
-    <mssqlspatialdbg Include="..\SharpMap.Demo.FormatConverter.MsSqlSpatial\bin\Debug\NPack.pdb" />
-    <mssqlspatialdbg Include="..\SharpMap.Demo.FormatConverter.MsSqlSpatial\bin\Debug\Proj4Utility.pdb" />
-    <mssqlspatialdbg Include="..\SharpMap.Demo.FormatConverter.MsSqlSpatial\bin\Debug\ProjNet.pdb" />
-    <mssqlspatialdbg Include="..\SharpMap.Demo.FormatConverter.MsSqlSpatial\bin\Debug\SharpMap.Data.Providers.Db.pdb" />
-    <mssqlspatialdbg Include="..\SharpMap.Demo.FormatConverter.MsSqlSpatial\bin\Debug\SharpMap.Data.Providers.MsSqlSpatial.pdb" />
-    <mssqlspatialdbg Include="..\SharpMap.Demo.FormatConverter.MsSqlSpatial\bin\Debug\SharpMap.Demo.FormatConverter.Common.pdb" />
-    <mssqlspatialdbg Include="..\SharpMap.Demo.FormatConverter.MsSqlSpatial\bin\Debug\SharpMap.Demo.FormatConverter.MsSqlSpatial.pdb" />
-    <mssqlspatialdbg Include="..\SharpMap.Demo.FormatConverter.MsSqlSpatial\bin\Debug\SharpMap.pdb" />
-    <mssqlspatialdbg Include="..\SharpMap.Demo.FormatConverter.MsSqlSpatial\bin\Debug\SharpMap.Utilities.pdb" />
+    <mssqlspatialdbg Include="..\SharpMap.Demo.FormatConverter.MsSqlSpatial\bin\$(Configuration)\*.pdb" />
     <shapefiledbg Include="..\SharpMap.Demo.FormatConverter.Shapefile\bin\$(Configuration)\*.pdb" />
     <sqlserverdbg Include="..\SharpMap.Demo.FormatConverter.SqlServer2008\bin\$(Configuration)\*.pdb" />
     <spatialite2dbg Include="..\SharpMap.Demo.FormatConverter.SpatialLite2\bin\$(Configuration)\*.pdb" />
