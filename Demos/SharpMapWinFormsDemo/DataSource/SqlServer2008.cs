@@ -33,10 +33,10 @@ namespace MapViewer.DataSource
 
         #region ICreateDataProvider Members
 
-        public override IFeatureProvider GetProvider()
+        public override IEnumerable<IFeatureProvider> GetProviders()
         {
             if (!EnsureTables())
-                return null;
+                yield break;
 
             string oidColumn, oidType, geometryColumn, schema, tableName;
 
@@ -52,28 +52,35 @@ namespace MapViewer.DataSource
             string conn = ServerConnectionString;
             conn += string.Format("initial catalog={0};", cbDataBases.SelectedItem);
 
+            IFeatureProvider prov;
             switch (oidType)
             {
                 case "bigint":
-                    return new MsSqlServer2008Provider<long>(f, conn, schema, tableName, oidColumn, geometryColumn);
+                    yield return new MsSqlServer2008Provider<long>(f, conn, schema, tableName, oidColumn, geometryColumn);
+                    break;
                 case "decimal":
-                    return new MsSqlServer2008Provider<decimal>(f, conn, schema, tableName, oidColumn, geometryColumn);
+                    yield return new MsSqlServer2008Provider<decimal>(f, conn, schema, tableName, oidColumn, geometryColumn);
+                    break;
                 case "int":
                 case "smallint":
-                    return new MsSqlServer2008Provider<int>(f, conn, schema, tableName, oidColumn, geometryColumn);
+                    yield return new MsSqlServer2008Provider<int>(f, conn, schema, tableName, oidColumn, geometryColumn);
+                    break;
                 case "float":
                 case "numeric":
                 case "real":
-                    return new MsSqlServer2008Provider<double>(f, conn, schema, tableName, oidColumn, geometryColumn);
+                    yield return new MsSqlServer2008Provider<double>(f, conn, schema, tableName, oidColumn, geometryColumn);
+                    break;
                 case "tinyint":
-                    return new MsSqlServer2008Provider<byte>(f, conn, schema, tableName, oidColumn, geometryColumn);
+                    yield return new MsSqlServer2008Provider<byte>(f, conn, schema, tableName, oidColumn, geometryColumn);
+                    break;
                 case "uniqueidentifier":
-                    return new MsSqlServer2008Provider<Guid>(f, conn, schema, tableName, oidColumn, geometryColumn);
+                    yield return new MsSqlServer2008Provider<Guid>(f, conn, schema, tableName, oidColumn, geometryColumn);
+                    break;
                 case "nvarchar":
                 case "varchar":
-                    return new MsSqlServer2008Provider<string>(f, conn, schema, tableName, oidColumn, geometryColumn);
+                    yield return new MsSqlServer2008Provider<string>(f, conn, schema, tableName, oidColumn, geometryColumn);
+                    break;
             }
-            return null;
         }
 
         #endregion

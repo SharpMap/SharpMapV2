@@ -164,7 +164,7 @@ namespace MapViewer
 
         private static Size2D RandomSymbolSize()
         {
-            int d = random.Next(10, 25);
+            int d = random.Next(5, 15);
             return new Size2D(d, d);
         }
 

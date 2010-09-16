@@ -52,21 +52,21 @@
   <!--<Choose>
     <When Condition=" '$(Platform)'=='x86' ">-->
   <ItemGroup>
-    <Reference Condition=" '$(Platform)'=='x86' " Include="gdalconst_csharp, Version=1.0.3585.8006, Culture=neutral, PublicKeyToken=db5a52b08dc5b321">
+    <Reference Include="gdalconst_csharp, Version=1.0.3585.8006, Culture=neutral, PublicKeyToken=db5a52b08dc5b321">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>Native\x86\gdal\csharp\gdalconst_csharp.dll</HintPath>
+      <HintPath>D:\Gdal\x86\gdal\csharp\gdalconst_csharp.dll</HintPath>
     </Reference>
-    <Reference Condition=" '$(Platform)'=='x86' " Include="gdal_csharp, Version=1.0.3585.8006, Culture=neutral, PublicKeyToken=db5a52b08dc5b321">
+    <Reference Include="gdal_csharp, Version=1.0.3585.8006, Culture=neutral, PublicKeyToken=db5a52b08dc5b321">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>Native\x86\gdal\csharp\gdal_csharp.dll</HintPath>
+      <HintPath>D:\Gdal\x86\gdal\csharp\gdal_csharp.dll</HintPath>
     </Reference>
-    <Reference Condition=" '$(Platform)'=='x64' " Include="gdalconst_csharp, Version=1.0.3585.8006, Culture=neutral, PublicKeyToken=db5a52b08dc5b321">
+    <Reference Include="ogr_csharp, Version=1.0.3585.8006, Culture=neutral, PublicKeyToken=db5a52b08dc5b321">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>Native\x64\gdal\csharp\gdalconst_csharp.dll</HintPath>
+      <HintPath>D:\Gdal\x86\gdal\csharp\ogr_csharp.dll</HintPath>
     </Reference>
-    <Reference Condition=" '$(Platform)'=='x64' " Include="gdal_csharp, Version=1.0.3585.8006, Culture=neutral, PublicKeyToken=db5a52b08dc5b321">
+    <Reference Include="osr_csharp, Version=1.0.3585.8005, Culture=neutral, PublicKeyToken=db5a52b08dc5b321">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>Native\x64\gdal\csharp\gdal_csharp.dll</HintPath>
+      <HintPath>D:\Gdal\x86\gdal\csharp\osr_csharp.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.configuration" />

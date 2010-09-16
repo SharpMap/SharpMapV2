@@ -74,9 +74,10 @@ namespace MapViewer
                     else
                         w.SuccessCallbackAction();
                 }
+
+                OnProcessingItem("Finished Loading Data");
             }
 
-            OnProcessingItem("Finished Loading Data");
         }
 
         private void OnProcessingItem(string p)

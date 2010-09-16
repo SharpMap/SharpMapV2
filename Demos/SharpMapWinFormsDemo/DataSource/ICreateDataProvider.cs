@@ -12,13 +12,18 @@
  *  Author: John Diss 2008
  * 
  */
+using System.Collections.Generic;
 using SharpMap.Data;
 
 namespace MapViewer.DataSource
 {
     internal interface ICreateDataProvider
     {
+        /*
         IFeatureProvider GetProvider();
         string ProviderName { get; }
+        */
+        IEnumerable<IFeatureProvider> GetProviders();
+        IEnumerable<string> ProviderNames { get; }
     }
 }

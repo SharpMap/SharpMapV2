@@ -2,6 +2,8 @@
 using System.Data.SqlClient;
 using System.Collections.Generic;
 
+using System.Data;
+
 namespace SharpMap.Expressions
 {
 

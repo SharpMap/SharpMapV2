@@ -353,6 +353,7 @@ namespace SharpMap.Tests.Presentation
 
             #region Properties
 
+            public bool RequeryDatasources { get; set; }
             public StyleColor BackgroundColor
             {
                 get { return _presenter.BackgroundColor; }

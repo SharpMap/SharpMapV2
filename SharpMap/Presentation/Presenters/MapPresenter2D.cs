@@ -140,6 +140,7 @@ namespace SharpMap.Presentation.Presenters
             : base(map, mapView)
         {
             createRenderers();
+            RequeryDatasources = true;
 
             _selection = new ViewSelection2D();
 
@@ -160,11 +161,12 @@ namespace SharpMap.Presentation.Presenters
             View.ZoomToViewBoundsRequested += handleViewZoomToViewBoundsRequested;
             View.ZoomToWorldBoundsRequested += handleViewZoomToWorldBoundsRequested;
             View.ZoomToWorldWidthRequested += handleViewZoomToWorldWidthRequested;
-
             _selection.SelectionChanged += handleSelectionChanged;
 
             initializeViewMatrixes();
         }
+
+
         #endregion
 
         #region Abstract methods
@@ -195,6 +197,11 @@ namespace SharpMap.Presentation.Presenters
                 }
             }
         }
+
+        /// <summary>
+        /// Gets or sets wheter datasources are to be requeried when view matrix has changed
+        /// </summary>
+        public Boolean RequeryDatasources { get; set; }
 
         /// <summary>
         /// Gets or sets center of map in world coordinates.
@@ -1051,11 +1058,18 @@ namespace SharpMap.Presentation.Presenters
             switch (phase)
             {
                 case RenderPhase.Normal:
-                    FeatureQueryExpression query =
-                        FeatureQueryExpression.Intersects(ViewEnvelopeInternal);
-                    IEnumerable<FeatureDataRow> features = layer.Select(query);
 
-                    foreach (FeatureDataRow feature in features)
+                    IEnumerable<FeatureDataRow> features;
+                    if (RequeryDatasources)
+                    {
+                        FeatureQueryExpression query =
+                            FeatureQueryExpression.Intersects(ViewEnvelopeInternal);
+                        features = layer.Select(query);
+                    }
+                    else
+                        features = layer.Features;
+
+                        foreach (FeatureDataRow feature in features)
                     {
                         FeatureStyle style = getStyleForFeature(layer, feature, layerStyle);
 
@@ -1151,6 +1165,9 @@ namespace SharpMap.Presentation.Presenters
         private void handleIdentifyLocationRequested(Object sender, LocationEventArgs e)
         {
             // TODO: if map units are in latitude / longitude, terms easting and northing aren't used... are they?
+            if (e.Point == null)
+                SetViewLocationInformation("");
+            else
             SetViewLocationInformation(String.Format("Easting: {0:N4}; Northing: {1:N4}",
                                                      e.Point[Ordinates.X],
                                                      e.Point[Ordinates.Y]));
@@ -1207,7 +1224,7 @@ namespace SharpMap.Presentation.Presenters
                                                          _previousActionPoint,
                                                          e.ActionPoint);
             Map.GetActiveTool<IMapView2D, Point2D>().ExtendAction(context);
-            _previousActionPoint = e.ActionPoint;
+            if (context.Consumed) _previousActionPoint = e.ActionPoint;
         }
 
         // Handles the end action request from the view

@@ -184,7 +184,7 @@ namespace SharpMap.Data.Providers
         {
             DataTable schemaTable = new DataTable();
             // all of common, non "base-table" fields implemented
-            schemaTable.Columns.Add(ColumnNameColumn, typeof(String));
+            DataColumn unique = schemaTable.Columns.Add(ColumnNameColumn, typeof(String));
             schemaTable.Columns.Add(ColumnSizeColumn, typeof(Int32));
             schemaTable.Columns.Add(ColumnOrdinalColumn, typeof(Int32));
             schemaTable.Columns.Add(NumericPrecisionColumn, typeof(Int16));
@@ -197,7 +197,7 @@ namespace SharpMap.Data.Providers
             schemaTable.Columns.Add(IsKeyColumn, typeof(Boolean));
             schemaTable.Columns.Add(IsAutoIncrementColumn, typeof(Boolean));
             schemaTable.Columns.Add(IsLongColumn, typeof(Boolean));
-
+            schemaTable.Constraints.Add(new UniqueConstraint(unique));
             return schemaTable;
         }
 

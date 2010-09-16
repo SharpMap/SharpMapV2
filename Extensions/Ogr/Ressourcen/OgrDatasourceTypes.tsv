@@ -1,0 +1,37 @@
+﻿AVCBin|1|Arc/Info Binary Coverage|AVCBin
+AVCE00|0|Arc/Info ASCII Coverage|*.e00
+BNA|0|Atlas BNA|*.bna
+CSV|0|Comma Separated Value|*.csv
+DODS|3|DODS/OPeNDAP|DODS
+PGeo|0|ESRI Personal GeoDatabase|*.mdb
+SDE|2|ESRI ArcSDE|SDE
+ESRI Shapefiles|0|ESRI Shapefiles|*.shp
+FMEObjects Gateway|0|FMEObjects Gateway|*.fdd
+GeoJSON|0|GeoJSON|*.geojson
+GeoJSON|3|GeoJSON|GeoJSON
+GeoRSS|0|GeoRSS|*.xml
+GML|0|Geography Markup Language|*.gml
+GMT|0|GMT|*.gmt
+GPX|0|GPX|*.gpx
+GRASS|1|Grass Vector|GRASS
+IDB|2|Informix DataBlade|IDB
+Interlis 1|0|INTERLIS 1|*.itf;*.xml;*.ili
+Interlis 2|0|INTERLIS 2|*.itf;*.xml;*.ili
+INGRES|2|INGRES|INGRES
+KML|0|Keyhole Markup Language|*.kml
+MapInfo File|0|Mapinfo File|*.mif;*.tab
+DGN|0|Microstation DGN|*.dgn
+MySQL|2|MySQL|MySQL
+OCI|2|OCI|Oracle Spatial
+ODBC|2|ODBC|ODBC
+OGDI|2|OGDI|OGDI Vectors
+PostgreSQL|2|PostgreSQL|PostgreSQL
+S57|0|S-57 Base file|*.000
+SDTS|0|Spatial Data Transfer Standard|*catd.ddf
+SQLite|0|SQLite|*.sqlite;*.db
+UK .NTF|1|UK. NTF|UK. NTF
+TIGER|1|U.S. Census TIGER/Line|TIGER
+VRT|0|VRT - Virtual Datasource|*.vrt
+XPlane|0|X-Plane/Flightgear|apt.dat;nav.dat;fix.dat;awy.dat
+Geoconcept|0|Geoconcept|*.gxt;*.txt
+DXF|0|AutoCAD DXF|*.dxf

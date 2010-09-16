@@ -13,6 +13,7 @@
  * 
  */
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Windows.Forms;
 using SharpMap.Data;
@@ -32,19 +33,23 @@ namespace MapViewer.DataSource
 
         #region ICreateDataProvider Members
 
-        public IFeatureProvider GetProvider()
+        public IEnumerable<IFeatureProvider> GetProviders()
         {
             IGeometryServices svc = new GeometryServices();
             if (File.Exists(tbPath.Text))
             {
-                return new ShapeFileProvider(tbPath.Text, svc.DefaultGeometryFactory, svc.CoordinateSystemFactory, false)
+                yield return new ShapeFileProvider(tbPath.Text, svc.DefaultGeometryFactory, svc.CoordinateSystemFactory, false)
                            {
                                IsSpatiallyIndexed = false,
                                ForceCoordinateOptions = (ForceCoordinateOptions)cbForceCoordinate.SelectedItem,
                                ReadStrictness = (ShapeFileReadStrictness)cbStrictness.SelectedItem
                            };
             }
-            return null;
+        }
+
+        public IEnumerable<string> ProviderNames
+        {
+            get { yield return Path.GetFileNameWithoutExtension(tbPath.Text); }
         }
 
         #endregion
@@ -54,15 +59,5 @@ namespace MapViewer.DataSource
             if (openFileDialog1.ShowDialog() == DialogResult.OK)
                 tbPath.Text = openFileDialog1.FileName;
         }
-
-        #region ICreateDataProvider Members
-
-
-        public string ProviderName
-        {
-            get { return Path.GetFileNameWithoutExtension(tbPath.Text); }
-        }
-
-        #endregion
     }
 }

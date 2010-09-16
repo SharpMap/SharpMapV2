@@ -359,6 +359,12 @@ namespace SharpMap.Presentation.WinForms
             onRequestOffset(offsetVector);
         }
 
+        public bool RequeryDatasources
+        {
+            get { return _presenter.RequeryDatasources; }
+            set { _presenter.RequeryDatasources = value; }
+        }
+
         /// <summary>
         /// Draws the rendered object to the view.
         /// </summary>
@@ -1014,7 +1020,6 @@ namespace SharpMap.Presentation.WinForms
         private void onRequestOffset(Point2D offset)
         {
             EventHandler<MapViewPropertyChangeEventArgs<Point2D>> e = OffsetChangeRequested;
-
             if (e != null)
             {
                 MapViewPropertyChangeEventArgs<Point2D> args =

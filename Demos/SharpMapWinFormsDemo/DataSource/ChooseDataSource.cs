@@ -15,6 +15,7 @@
 using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
+using GeoAPI.DataStructures;
 using SharpMap.Data;
 
 namespace MapViewer.DataSource
@@ -59,18 +60,36 @@ namespace MapViewer.DataSource
             }
         }
 
-        public IFeatureProvider Provider { get; protected set; }
+        public IEnumerable<IFeatureProvider> Providers { get; protected set; }
         public IEnumerable<IRasterProvider> RasterProviders { get; protected set; }
 
         #region ICreateDataProvider Members
 
-        public IFeatureProvider GetProvider()
+        public IEnumerable<IFeatureProvider> GetProviders()
         {
             if (DataBuilder != null)
-                return DataBuilder.GetProvider();
+                return DataBuilder.GetProviders();
             return null;
         }
+        public IEnumerable<string> ProviderNames
+        {
+            get
+            {
+                if (DataBuilder != null)
+                    return DataBuilder.ProviderNames;
+                return null;// as IEnumerable<string>;
 
+                //return RasterBuilder.ProviderNames;
+            }
+        }
+
+        public string ProviderName
+        {
+            get
+            {
+                 return RasterBuilder.ProviderName;
+            }
+        }
         #endregion
 
         private void cbDataSource_SelectedIndexChanged(object sender, EventArgs e)
@@ -98,7 +117,15 @@ namespace MapViewer.DataSource
                 case "gdal for sharpmap":
                     LoadGdalForSharpMap();
                     return;
+                case "ogr for sharpmap":
+                    LoadOgrForSharpMap();
+                    return;
             }
+        }
+
+        private void LoadOgrForSharpMap()
+        {
+            LoadBuilder(new OgrMask());
         }
 
         private void LoadGdalForSharpMap()
@@ -161,10 +188,10 @@ namespace MapViewer.DataSource
 
         private void bReturnDataSource_Click(object sender, EventArgs e)
         {
-            IFeatureProvider prov = GetProvider();
-            if (prov != null)
+            IEnumerable<IFeatureProvider> prov = GetProviders();
+            if (prov != null && Slice.GetLength(prov)>0)
             {
-                Provider = prov;
+                Providers = prov;
                 DialogResult = DialogResult.OK;
                 _lastProviderPick = cbDataSource.SelectedIndex;
                 Close();
@@ -188,17 +215,11 @@ namespace MapViewer.DataSource
             return null;
         }
 
-        public string ProviderName
-        {
-            get
-            {
-                if (DataBuilder != null)
-                    return DataBuilder.ProviderName;
-
-                return RasterBuilder.ProviderName;
-            }
-        }
-
         #endregion
+
+        private void ChooseDataSource_Load(object sender, EventArgs e)
+        {
+
+        }
     }
 }

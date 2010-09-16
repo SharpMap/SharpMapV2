@@ -20,40 +20,53 @@ using NPack.Interfaces;
 
 namespace SharpMap.Tools
 {
-	public struct ActionContext<TMapView, TPoint>
-		where TPoint : IVector<DoubleComponent>
-	{
-		private readonly Map _map;
+    public class ActionContext<TMapView, TPoint>
+        where TPoint : IVector<DoubleComponent>
+    {
+        private readonly Map _map;
         private readonly TMapView _view;
         private readonly TPoint _previousPoint;
-	    private readonly TPoint _currentPoint;
+        private readonly TPoint _currentPoint;
 
-		public ActionContext(Map map, TMapView view, TPoint previousPoint, TPoint currentPoint)
-		{
-			_map = map;
-			_view = view;
-		    _previousPoint = previousPoint;
-		    _currentPoint = currentPoint;
-		}
+        private bool _consumed;
+        public ActionContext(Map map, TMapView view, TPoint previousPoint, TPoint currentPoint)
+        {
+            _map = map;
+            _view = view;
+            _previousPoint = previousPoint;
+            _currentPoint = currentPoint;
+        }
 
-		public Map Map
-		{
-			get { return _map; }
-		}
+        public Map Map
+        {
+            get { return _map; }
+        }
 
-		public TMapView MapView
-		{
-			get { return _view; }
-		}
+        public TMapView MapView
+        {
+            get { return _view; }
+        }
 
-	    public TPoint PreviousPoint
-	    {
-	        get { return _previousPoint; }
-	    }
+        public TPoint PreviousPoint
+        {
+            get { return _previousPoint; }
+        }
 
-	    public TPoint CurrentPoint
-	    {
-	        get { return _currentPoint; }
-	    }
-	}
+        public TPoint CurrentPoint
+        {
+            get
+            {
+                _consumed = true;
+                return _currentPoint;
+            }
+        }
+
+        /// <summary>
+        /// Gets whether <see cref="CurrentPoint"/> was consumed during Action
+        /// </summary>
+        public bool Consumed 
+        {
+            get { return _consumed; }
+        }
+    }
 }

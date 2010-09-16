@@ -494,19 +494,19 @@ namespace MapViewer.Controls
             public static TreeNode CreateLayerNode<TLayer>(TLayer layer)
                 where TLayer : ILayer
             {
-                if (IsAssignbleFrom(typeof (IFeatureLayer), layer.GetType()))
+                if (IsAssignableFrom(typeof (IFeatureLayer), layer.GetType()))
                 {
                     return new FeatureLayerNode((IFeatureLayer) layer);
                 }
-                if (IsAssignbleFrom(typeof (LayerGroup), layer.GetType()))
+                if (IsAssignableFrom(typeof (LayerGroup), layer.GetType()))
                 {
                     return new LayerGroupNode((LayerGroup) (object) layer);
                 }
-                if (IsAssignbleFrom(typeof (LabelLayer), layer.GetType()))
+                if (IsAssignableFrom(typeof (LabelLayer), layer.GetType()))
                 {
                     return new LabelLayerNode((LabelLayer) (object) layer);
                 }
-                if (IsAssignbleFrom(typeof(IRasterLayer), layer.GetType()))
+                if (IsAssignableFrom(typeof(IRasterLayer), layer.GetType()))
                 {
                     return new RasterLayerNode((IRasterLayer)layer);
                 }
@@ -535,9 +535,9 @@ namespace MapViewer.Controls
             public static TreeNode CreateCoordinateSystemNode<TCoordinateSystem>(TCoordinateSystem cs)
                 where TCoordinateSystem : ICoordinateSystem
             {
-                if (IsAssignbleFrom(typeof (IGeographicCoordinateSystem), cs.GetType()))
+                if (IsAssignableFrom(typeof (IGeographicCoordinateSystem), cs.GetType()))
                     return new GeographicCoordinateSystemNode((IGeographicCoordinateSystem) cs);
-                if (IsAssignbleFrom(typeof (IProjectedCoordinateSystem), cs.GetType()))
+                if (IsAssignableFrom(typeof (IProjectedCoordinateSystem), cs.GetType()))
                     return new ProjectedCoordinateSystemNode((IProjectedCoordinateSystem) cs);
                 return new CoordinateSystemNode(cs);
             }
@@ -555,17 +555,20 @@ namespace MapViewer.Controls
 
             public static TreeNode CreateProviderNode<TProvider>(TProvider provider) where TProvider : IProvider
             {
-                if (IsAssignbleFrom(typeof (AsyncFeatureProviderAdapter), provider.GetType()))
+                if (IsAssignableFrom(typeof (AsyncFeatureProviderAdapter), provider.GetType()))
                     return CreateProviderNode(((AsyncFeatureProviderAdapter) (object) provider).InnerFeatureProvider);
 
-                if (IsAssignbleFrom(typeof (ShapeFileProvider), provider.GetType()))
+                if (IsAssignableFrom(typeof (ShapeFileProvider), provider.GetType()))
                     return new ShapeFileProviderNode((ShapeFileProvider) (object) provider);
 
-                if (IsAssignbleFrom(typeof (ISpatialDbProvider), provider.GetType()))
+                if (IsAssignableFrom(typeof (ISpatialDbProvider), provider.GetType()))
                     return new DbProviderNode((ISpatialDbProvider) provider);
 
-                if (IsAssignbleFrom(typeof(IRasterProvider), provider.GetType()))
+                if (IsAssignableFrom(typeof(IRasterProvider), provider.GetType()))
                     return new RasterProviderNode((IRasterProvider)provider);
+
+                if (IsAssignableFrom(typeof(OgrProvider), provider.GetType()))
+                    return new OgrProviderNode((OgrProvider)(object)provider);
 
                 throw new NotImplementedException();
             }
@@ -576,15 +579,15 @@ namespace MapViewer.Controls
                     return CreateProviderNode(((AsyncFeatureProviderAdapter) provider).InnerFeatureProvider);
                 if (provider is ShapeFileProvider)
                     return CreateProviderNode((ShapeFileProvider) provider);
-                if (provider is ISpatialDbProvider)
-                    return CreateProviderNode((ISpatialDbProvider) provider);
+                if (provider is OgrProvider)
+                    return CreateProviderNode((OgrProvider) provider);
                 if (provider is IRasterProvider)
                     return CreateProviderNode((IRasterProvider)provider);
 
                 throw new NotImplementedException();
             }
 
-            private static bool IsAssignbleFrom(Type baseType, Type other)
+            private static bool IsAssignableFrom(Type baseType, Type other)
             {
                 if (Equals(baseType, other))
                     return true;
@@ -719,6 +722,27 @@ namespace MapViewer.Controls
 
         #endregion
 
+        #region OgrProviderNode
+        protected class OgrProviderNode : ProviderNode<OgrProvider>
+        {
+            public OgrProviderNode(OgrProvider ogr)
+                : base(ogr)
+            {
+            }
+
+            protected override void BuildChildNodes()
+            {
+                base.BuildChildNodes();
+
+                TreeNode n = new TreeNode("ConnectionId");
+                Nodes.Add(n);
+                n.Nodes.Add(new TreeNode(Provider.ConnectionId));
+
+                Nodes.Add(new CoordinateTransformNode(Provider.CoordinateTransformation));
+            }
+        }
+
+        #endregion
         #region Nested type: RasterProviderNode
 
         protected class RasterProviderNode : ProviderNode<IRasterProvider>

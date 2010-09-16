@@ -57,7 +57,8 @@
             "SpatialLite",
             "PostGIS",
             "IBM DB2 SpatialExtender",
-            "Gdal for SharpMap"});
+            "Gdal for SharpMap",
+            "Ogr for SharpMap"});
             this.cbDataSource.Location = new System.Drawing.Point(16, 30);
             this.cbDataSource.Name = "cbDataSource";
             this.cbDataSource.Size = new System.Drawing.Size(508, 21);
@@ -110,6 +111,7 @@
             this.Name = "ChooseDataSource";
             this.ShowInTaskbar = false;
             this.Text = "Choose Data Source";
+            this.Load += new System.EventHandler(this.ChooseDataSource_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 

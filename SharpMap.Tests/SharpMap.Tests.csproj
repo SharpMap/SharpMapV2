@@ -156,6 +156,7 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Reference Include="nunit.framework, Version=2.4.8.0, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL" />
     <Reference Include="Rhino.Mocks, Version=3.1.0.584, Culture=neutral, PublicKeyToken=0b3305902db7183f, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\ExternalReferences\Rhino.Mocks.dll</HintPath>
@@ -188,6 +189,10 @@
       <Project>{E028BDD2-55E1-4E5F-BE31-35FAEC8D6428}</Project>
       <Name>ProjNet</Name>
     </ProjectReference>
+    <ProjectReference Include="..\SharpMap.Utilities\SharpMap.Utilities.csproj">
+      <Project>{011439C1-A53D-4DA1-AF8E-18D9D61121F4}</Project>
+      <Name>SharpMap.Utilities</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SharpMap\SharpMap.csproj">
       <Project>{C83777FC-AABB-47D9-911F-D76255D4D541}</Project>
       <Name>SharpMap</Name>
@@ -207,6 +212,7 @@
     <Compile Include="Data\Providers\FeatureProvider\FeatureProviderTests.cs" />
     <Compile Include="Data\FeatureDataViewTests.cs" />
     <Compile Include="FixtureFactories.cs" />
+    <Compile Include="GeometryServices.cs" />
     <Compile Include="Indexing\BinaryTreeTests.cs" />
     <Compile Include="Indexing\DynamicStrTreeTests.cs" />
     <Compile Include="Indexing\QuadTreeTests.cs" />

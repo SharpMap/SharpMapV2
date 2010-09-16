@@ -235,7 +235,7 @@ FROM    {0}.st_geometry_columns AS x
 
         #region ICreateDataProvider Member
 
-        public IFeatureProvider GetProvider()
+        public IEnumerable<IFeatureProvider> GetProviders()
         {
             if (EnsureTables())
             {
@@ -292,7 +292,7 @@ FROM    {0}.st_geometry_columns AS x
                                                                       geomColumn);
                         break;
                     default:
-                        return null;
+                        yield break;
                 }
 
                 //prov.CoordinateTransformation = gserv.CoordinateTransformationFactory.CreateFromCoordinateSystems(
@@ -303,14 +303,13 @@ FROM    {0}.st_geometry_columns AS x
                 //((ISpatialDbProvider)prov).DefinitionQuery =
                 //    new ProviderQueryExpression(ppe, ape, null);
 
-                return prov;
+                yield return prov;
             }
-            return null;
         }
 
-        public string ProviderName
+        public IEnumerable<string> ProviderNames
         {
-            get { return "IBM DB2 SpatialExtender"; }
+            get { yield return "IBM DB2 SpatialExtender"; }
         }
 
         #endregion

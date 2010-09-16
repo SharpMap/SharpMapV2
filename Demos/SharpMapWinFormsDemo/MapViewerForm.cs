@@ -545,37 +545,53 @@ namespace MapViewer
         {
             using (ChooseDataSource choose = new ChooseDataSource())
             {
+                bool bDone = false;
                 if (choose.ShowDialog() == DialogResult.OK)
                 {
-                    IFeatureProvider prov = choose.Provider;
-                    if (prov != null)
+                    //IEnumerator<string> providerName = choose.ProviderNames.GetEnumerator();
+                    //foreach (IFeatureProvider prov in choose.GetProviders())
+                    IEnumerator<IFeatureProvider> itProvider = choose.GetProviders().GetEnumerator();
+                    IEnumerator<string> itName = choose.ProviderNames.GetEnumerator();
+                    foreach (string name in choose.ProviderNames)
                     {
-                        string name = choose.ProviderName;
+                        bDone = true;
+                        //providerName.MoveNext();
+                        //if (prov == null) continue;
+                        //string name = providerName.Current;
 
+                        #region wq
                         workQueue.AddWorkItem(
                             string.Format("Loading Datasource {0}", name),
                             delegate
                                 {
-                                    GeometryLayer lyr =
-                                        new GeometryLayer(
-                                            name,
-                                            prov);
-                                    lyr.Features.IsSpatiallyIndexed = false;
-                                    prov.Open();
+                                    //GeometryLayer lyr =
+                                    //    new GeometryLayer(
+                                    //        name,
+                                    //        prov);
+                                    //lyr.Features.IsSpatiallyIndexed = false;
+                                    //prov.Open();
 
 
                                     InvokeIfRequired(new Action(delegate
                                                                     {
+                                                                        itProvider.MoveNext();
+                                                                        if (itProvider.Current == null) return;
+                                                                        itName.MoveNext();
+                                                                        if (string.IsNullOrEmpty(itName.Current)) return;
+                                                                        
+                                                                        GeometryLayer layer = new GeometryLayer(itName.Current, itProvider.Current);
+                                                                        layer.Features.IsSpatiallyIndexed = false;
+
                                                                         if (Map.Layers.Count == 0)
                                                                         {
-                                                                            if (lyr.SpatialReference != null)
+                                                                            if (layer.SpatialReference != null)
                                                                                 Map.SpatialReference =
-                                                                                    lyr.SpatialReference;
+                                                                                    layer.SpatialReference;
                                                                         }
 
-                                                                        Map.Layers.Insert(0, lyr);
+                                                                        Map.Layers.Insert(0, layer);
 
-                                                                        lyr.Style = RandomStyle.RandomGeometryStyle();
+                                                                        layer.Style = RandomStyle.RandomGeometryStyle();
                                                                         //lyr.Style = setGeometryStyle(lyr);
 
                                                                         if (Map.Layers.Count == 1)
@@ -593,8 +609,10 @@ namespace MapViewer
                                     MessageBox.Show(string.Format("An error occured\n{0}\n{1}", ex.Message,
                                                                   ex.StackTrace));
                                 });
-                        return;
+#endregion
                     }
+                    if (bDone) return;
+
                     IEnumerable<IRasterProvider> providers = choose.RasterProviders;
                     if (providers != null)
                     {

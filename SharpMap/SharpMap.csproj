@@ -12,7 +12,9 @@
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>SharpMap.snk</AssemblyOriginatorKeyFile>
     <OldToolsVersion>2.0</OldToolsVersion>
-    <TargetFrameworkVersion>2.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
+    <TargetFrameworkSubset>
+    </TargetFrameworkSubset>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug_Net20|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -470,6 +472,7 @@
     <EmbeddedResource Include="Styles\DefaultSymbol.png" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="app.config" />
     <None Include="SharpMap.cd" />
     <None Include="Map Model.cd" />
     <None Include="Rendering\RenderingClasses.cd" />

@@ -31,10 +31,10 @@ according to your needs.
 
 Then compile GdalForSharpMap.
 
-If you succeed add reference for GdalForSharpMap to your project and
+If you succeed, add reference for GdalForSharpMap to your project and
 add a app|web.config file containing to following entries:
 %<--
-<add key="GdalBinPath" value="D:\Gdal\Native\x86;E:\Gdal\Native\x86\gdal\csharp;E:\Gdal\Native\x86\gdal\apps" />
+<add key="GdalBinPath" value="D:\Gdal\Native\x86;D:\Gdal\Native\x86\gdal\csharp;D:\Gdal\Native\x86\gdal\apps" />
 <add key="GdalDataPath" value="D:\Gdal\Native\x86\gdal-data" />
 <add key="GdalDriverPath" value="D:\Gdal\Native\x86\gdal\plugins;" />
 <add key="ProjLibPath" value="D:\Gdal\Native\x86\proj\SHARE" />

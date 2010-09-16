@@ -79,34 +79,34 @@ namespace SharpMap.Tools
 
         static StandardMapView2DMapTools()
         {
-            None = new MapTool<IMapView2D, Point2D>(String.Empty, DoNothing, DoNothing, DoNothing, DoNothing);
+            None = new MapTool<IMapView2D, Point2D>(String.Empty, QueryQuery, QueryQuery, QueryQuery, QueryQuery);
             Pan = new MapTool<IMapView2D, Point2D>("Pan", QueryPan, BeginPan, ContinuePan, EndPan);
             ZoomIn = new MapTool<IMapView2D, Point2D>("ZoomIn", QueryZoomIn, BeginZoomIn, ContinueZoomIn, EndZoomIn);
-            ZoomOut = new MapTool<IMapView2D, Point2D>("ZoomOut", 
-                                                       QueryZoomOut, 
-                                                       BeginZoomOut, 
-                                                       ContinueZoomOut, 
+            ZoomOut = new MapTool<IMapView2D, Point2D>("ZoomOut",
+                                                       QueryZoomOut,
+                                                       BeginZoomOut,
+                                                       ContinueZoomOut,
                                                        EndZoomOut);
             Query = new MapTool<IMapView2D, Point2D>("Query", QueryQuery, BeginQuery, ContinueQuery, EndQuery);
-            QueryAdd = new MapTool<IMapView2D, Point2D>("QueryAdd", 
-                                                        QueryQueryAdd, 
-                                                        BeginQueryAdd, 
-                                                        ContinueQueryAdd, 
+            QueryAdd = new MapTool<IMapView2D, Point2D>("QueryAdd",
+                                                        QueryQueryAdd,
+                                                        BeginQueryAdd,
+                                                        ContinueQueryAdd,
                                                         EndQueryAdd);
-            QueryRemove = new MapTool<IMapView2D, Point2D>("QueryRemove", 
-                                                           QueryQueryRemove, 
-                                                           BeginQueryRemove, 
+            QueryRemove = new MapTool<IMapView2D, Point2D>("QueryRemove",
+                                                           QueryQueryRemove,
+                                                           BeginQueryRemove,
                                                            ContinueQueryRemove,
                                                            EndQueryRemove);
-            FeatureAdd = new MapTool<IMapView2D, Point2D>("FeatureAdd", 
-                                                          QueryFeatureAdd, 
-                                                          BeginFeatureAdd, 
+            FeatureAdd = new MapTool<IMapView2D, Point2D>("FeatureAdd",
+                                                          QueryFeatureAdd,
+                                                          BeginFeatureAdd,
                                                           ContinueFeatureAdd,
                                                           EndFeatureAdd);
-            FeatureRemove = new MapTool<IMapView2D, Point2D>("FeatureRemove", 
-                                                             QueryFeatureRemove, 
+            FeatureRemove = new MapTool<IMapView2D, Point2D>("FeatureRemove",
+                                                             QueryFeatureRemove,
                                                              BeginFeatureRemove,
-                                                             ContinueFeatureRemove, 
+                                                             ContinueFeatureRemove,
                                                              EndFeatureRemove);
         }
 
@@ -114,7 +114,10 @@ namespace SharpMap.Tools
 
         #region Panning
 
-        private static void QueryPan(ActionContext<IMapView2D, Point2D> context) { }
+        private static void QueryPan(ActionContext<IMapView2D, Point2D> context)
+        {
+            QueryQuery(context);
+        }
 
         private static void BeginPan(ActionContext<IMapView2D, Point2D> context)
         {
@@ -131,11 +134,21 @@ namespace SharpMap.Tools
             Point2D previousPoint = context.PreviousPoint;
             Point2D currentPoint = context.CurrentPoint;
             Point2D difference = previousPoint - currentPoint;
+
+            view.RequeryDatasources = false;
             view.Offset(difference);
+            view.RequeryDatasources = true;
+
+            QueryQuery(context);
         }
 
         private static void EndPan(ActionContext<IMapView2D, Point2D> context)
         {
+            IMapView2D view = context.MapView;
+            Point2D previousPoint = context.PreviousPoint;
+            Point2D currentPoint = context.CurrentPoint;
+            Point2D difference = previousPoint - currentPoint;
+            view.Offset(difference);
         }
 
         #endregion
@@ -224,6 +237,7 @@ namespace SharpMap.Tools
         /// </param>
         private static void ContinueQuery(ActionContext<IMapView2D, Point2D> context)
         {
+            QueryQuery(context);
             continueSelection(context);
         }
 
@@ -242,50 +256,51 @@ namespace SharpMap.Tools
 
             // Create a BoundingBox for the view's selection using the map's world space
             IExtents worldBounds = context.Map.GeometryFactory.CreateExtents(
-                                        view.ToWorld(viewBounds.LowerLeft), 
+                                        view.ToWorld(viewBounds.LowerLeft),
                                         view.ToWorld(viewBounds.UpperRight));
 
             // Apply the GeometryFilter derived from the view's selection
             for (Int32 i = context.Map.Layers.Count - 1; i >= 0; i--)
             {
-				filterSelected(context.Map.Layers[i], view, worldBounds);
+                filterSelected(context.Map.Layers[i], view, worldBounds);
             }
+            view.IdentifyLocation(null);
         }
 
-		private static void filterSelected(ILayer layer, IMapView2D view, IExtents worldBounds)
-		{
-			if (layer == null)
-			{
-				return;
-			}
+        private static void filterSelected(ILayer layer, IMapView2D view, IExtents worldBounds)
+        {
+            if (layer == null)
+            {
+                return;
+            }
 
             FeatureLayer filterLayer = layer as FeatureLayer;
 
-			if (filterLayer != null)
-			{
-				if (layer.Enabled && 
-                    filterLayer.AreFeaturesSelectable && 
+            if (filterLayer != null)
+            {
+                if (layer.Enabled &&
+                    filterLayer.AreFeaturesSelectable &&
                     layer.IsVisibleWhen(isInView(view.WorldWidth)))
-				{
-                    SpatialBinaryExpression spatialExpression 
+                {
+                    SpatialBinaryExpression spatialExpression
                         = SpatialBinaryExpression.Intersects(new FeaturesCollectionExpression(filterLayer.Features),
-				                                             new ExtentsExpression(worldBounds));
-					filterLayer.SelectedFilter = filterLayer.SelectedFilter == null 
+                                                             new ExtentsExpression(worldBounds));
+                    filterLayer.SelectedFilter = filterLayer.SelectedFilter == null
                         ? new FeatureQueryExpression(new AllAttributesExpression(), spatialExpression, null)
                         : new FeatureQueryExpression(filterLayer.SelectedFilter, spatialExpression);
-				}
-			}
+                }
+            }
 
-		    IEnumerable<ILayer> layers = layer as IEnumerable<ILayer>;
+            IEnumerable<ILayer> layers = layer as IEnumerable<ILayer>;
 
             if (layers != null)
-			{
-				foreach (ILayer child in layers)
-				{
-					filterSelected(child, view, worldBounds);
-				}
-			}
-		}
+            {
+                foreach (ILayer child in layers)
+                {
+                    filterSelected(child, view, worldBounds);
+                }
+            }
+        }
 
         #endregion
 

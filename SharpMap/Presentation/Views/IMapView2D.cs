@@ -64,6 +64,10 @@ namespace SharpMap.Presentation.Views
         /// </summary>
         ICoordinate GeoCenter { get; set; }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="worldPoint"></param>
         void IdentifyLocation(ICoordinate worldPoint);
 
         /// <summary>
@@ -81,6 +85,11 @@ namespace SharpMap.Presentation.Views
         /// </summary>
         /// <param name="offsetVector">Amount and direction of the offset.</param>
         void Offset(Point2D offsetVector);
+
+        /// <summary>
+        /// Gets or sets whether datasources are to be requeried upon rendering layers.
+        /// </summary>
+        Boolean RequeryDatasources { get; set; }
 
         /// <summary>
         /// Gets the height of a pixel in world coordinate units.

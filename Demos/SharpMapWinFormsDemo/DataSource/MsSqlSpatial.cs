@@ -46,12 +46,12 @@ namespace MapViewer.DataSource
 
         #region ICreateDataProvider Members
 
-        public string ProviderName
+        public IEnumerable<string> ProviderNames
         {
-            get { return ((string) cbTable.SelectedItem).Split('|')[0]; }
+            get { yield return ((string) cbTable.SelectedItem).Split('|')[0]; }
         }
 
-        public virtual IFeatureProvider GetProvider()
+        public virtual IEnumerable<IFeatureProvider> GetProviders()
         {
             if (EnsureTables())
             {
@@ -68,10 +68,9 @@ namespace MapViewer.DataSource
                 string tableName = prts[1];
 
 
-                return new MsSqlSpatialProvider(new GeometryServices().DefaultGeometryFactory, conn, "ST", schema,
+                yield return new MsSqlSpatialProvider(new GeometryServices().DefaultGeometryFactory, conn, "ST", schema,
                                                 tableName, "oid", geomColumn);
             }
-            return null;
         }
 
         #endregion

@@ -54,7 +54,7 @@ namespace MapViewer.DataSource
 
         #region ICreateDataProvider Members
 
-        public IFeatureProvider GetProvider()
+        public IEnumerable<IFeatureProvider> GetProviders()
         {
             if (EnsureTables())
             {
@@ -122,14 +122,13 @@ namespace MapViewer.DataSource
                 //((ISpatialDbProvider)prov).DefinitionQuery =
                 //    new ProviderQueryExpression(ppe, ape, null);
 
-                return prov;
+                yield return prov;
             }
-            return null;
         }
 
-        public string ProviderName
+        public IEnumerable<string> ProviderNames
         {
-            get { return (string) ((DataRowView) cbTables.SelectedItem)["Label"]; }
+            get { yield return (string) ((DataRowView) cbTables.SelectedItem)["Label"]; }
         }
 
         #endregion

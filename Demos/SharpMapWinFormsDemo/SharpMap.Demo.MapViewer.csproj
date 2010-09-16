@@ -219,6 +219,9 @@
     <Compile Include="Controls\StylesTree.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Controls\ToolsTree.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="DataSource\ChooseDataSource.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -239,6 +242,12 @@
     </Compile>
     <Compile Include="DataSource\ICreateDataProvider.cs" />
     <Compile Include="DataSource\ICreateRasterProvider.cs" />
+    <Compile Include="DataSource\Ogr.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="DataSource\Ogr.Designer.cs">
+      <DependentUpon>Ogr.cs</DependentUpon>
+    </Compile>
     <Compile Include="DataSource\MsSqlSpatial.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -279,6 +288,8 @@
     <Compile Include="MapViewerForm.Designer.cs">
       <DependentUpon>MapViewerForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Operations\IGeometryOperation.cs" />
+    <Compile Include="Operations\IScalarOperation.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Controls\QueryResults.resx">
@@ -295,6 +306,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="DataSource\Gdal.resx">
       <DependentUpon>Gdal.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DataSource\Ogr.resx">
+      <DependentUpon>Ogr.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="DataSource\MsSqlSpatial.resx">
       <DependentUpon>MsSqlSpatial.cs</DependentUpon>
@@ -377,6 +391,10 @@
     <ProjectReference Include="..\..\Extensions\Gdal\GdalForSharpMap.csproj">
       <Project>{9E6FD71C-8B3C-446B-AAE4-1F5C327482CD}</Project>
       <Name>GdalForSharpMap</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Extensions\Ogr\OgrForSharpMap.csproj">
+      <Project>{B01C7A66-8BA3-49E2-85E0-5EAE493F70D1}</Project>
+      <Name>OgrForSharpMap</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\NTS\GeoAPI\src\GeoAPI\GeoAPI.Net.csproj">
       <Project>{FFB69466-79DE-466A-ADA7-5C47C5C5CA3A}</Project>
