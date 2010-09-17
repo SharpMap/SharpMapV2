@@ -219,9 +219,6 @@
     <Compile Include="Controls\StylesTree.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Controls\ToolsTree.cs">
-      <SubType>Component</SubType>
-    </Compile>
     <Compile Include="DataSource\ChooseDataSource.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -288,8 +285,6 @@
     <Compile Include="MapViewerForm.Designer.cs">
       <DependentUpon>MapViewerForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Operations\IGeometryOperation.cs" />
-    <Compile Include="Operations\IScalarOperation.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Controls\QueryResults.resx">

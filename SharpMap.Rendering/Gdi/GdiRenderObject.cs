@@ -26,10 +26,14 @@ namespace SharpMap.Rendering.Gdi
     /// <summary>
     /// Holds Gdi objects together for later drawing on an image surface.
     /// </summary>
-    public struct GdiRenderObject
+    public class GdiRenderObject
     {
         private RenderState _state;
 
+        public GdiRenderObject()
+        {
+            
+        }
         /// <summary>
         /// Creates a new GdiRenderObject instance.
         /// </summary>
@@ -256,5 +260,6 @@ namespace SharpMap.Rendering.Gdi
 			get { return _state; }
 			set { _state = value; }
 		}
-	}
+
+    }
 }

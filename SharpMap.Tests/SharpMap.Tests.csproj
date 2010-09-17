@@ -212,7 +212,6 @@
     <Compile Include="Data\Providers\FeatureProvider\FeatureProviderTests.cs" />
     <Compile Include="Data\FeatureDataViewTests.cs" />
     <Compile Include="FixtureFactories.cs" />
-    <Compile Include="GeometryServices.cs" />
     <Compile Include="Indexing\BinaryTreeTests.cs" />
     <Compile Include="Indexing\DynamicStrTreeTests.cs" />
     <Compile Include="Indexing\QuadTreeTests.cs" />

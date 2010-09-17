@@ -26,6 +26,7 @@ namespace SharpMap.Styles
         Italic = 2,
         Regular = 0,
         Strikeout = 8,
-        Underline = 4
+        Underline = 4,
+        Oblique = 16
     }
 }

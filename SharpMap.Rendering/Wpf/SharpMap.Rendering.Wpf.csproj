@@ -2,7 +2,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.21022</ProductVersion>
+    <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{087DA4FD-AC7E-4F42-B6E2-2859FDA07BCA}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -16,7 +16,7 @@
     <OldToolsVersion>2.0</OldToolsVersion>
     <UpgradeBackupLocation>
     </UpgradeBackupLocation>
-    <TargetFrameworkVersion>v3.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug_Net20|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -60,9 +60,8 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\ExternalReferences\$(Configuration)\NPack.dll</HintPath>
     </Reference>
-    <Reference Include="GeoAPI, Version=2.0.0.0, Culture=neutral, PublicKeyToken=a1a0da7def465678, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\ExternalReferences\$(Configuration)\GeoAPI.dll</HintPath>
+    <Reference Include="PresentationCore">
+      <RequiredTargetFramework>3.0</RequiredTargetFramework>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -70,11 +69,12 @@
     <Reference Include="WindowsBase">
       <RequiredTargetFramework>3.0</RequiredTargetFramework>
     </Reference>
-    <Reference Include="System.Core"
-               Condition="'$(Configuration)' == 'Release_Net35' Or '$(Configuration)' == 'Debug_Net35'" />
+    <Reference Include="System.Core" Condition="'$(Configuration)' == 'Release_Net35' Or '$(Configuration)' == 'Debug_Net35'" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="WpfRenderObject.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ViewConverter.cs" />
     <Compile Include="WpfRasterRenderer.cs" />
     <Compile Include="WpfTextRenderer.cs" />
     <Compile Include="WpfVectorRenderer.cs" />
@@ -83,7 +83,15 @@
     <None Include="SharpMap.snk" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\SharpMap\SharpMap.csproj">
+    <ProjectReference Include="..\..\NTS\GeoAPI\src\GeoAPI\GeoAPI.Net.csproj">
+      <Project>{FFB69466-79DE-466A-ADA7-5C47C5C5CA3A}</Project>
+      <Name>GeoAPI.Net</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\NTS\NPack\NPack\NPack.csproj">
+      <Project>{B139E1D5-091B-40D2-B7A2-7D7D82E13019}</Project>
+      <Name>NPack</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\SharpMap\SharpMap.csproj">
       <Project>{C83777FC-AABB-47D9-911F-D76255D4D541}</Project>
       <Name>SharpMap</Name>
     </ProjectReference>
