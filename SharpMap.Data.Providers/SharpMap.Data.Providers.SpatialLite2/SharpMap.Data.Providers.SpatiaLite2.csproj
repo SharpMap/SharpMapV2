@@ -256,6 +256,6 @@
     <Copy ContinueOnError="false" DestinationFolder="$(TargetDir)" SourceFiles="SQLite\libgeos-3-0-0.dll;SQLite\libgeos_c-1.dll;SQLite\libiconv2.dll;SQLite\libproj-0.dll;SQLite\libspatialite-2.dll;SQLite\libsqlite3-1.dll;SQLite\PROJ4.tsv" />
   </Target>
   <PropertyGroup>
-    <PostBuildEvent>xcopy /Y "$(ProjectDir)SQLite\lib*.dll" $(TargetDir)</PostBuildEvent>
+    <PostBuildEvent>xcopy /Y "$(ProjectDir)SQLite\lib*.dll" "$(TargetDir)"</PostBuildEvent>
   </PropertyGroup>
 </Project>
