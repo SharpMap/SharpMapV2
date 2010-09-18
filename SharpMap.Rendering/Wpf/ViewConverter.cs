@@ -17,6 +17,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Windows;
 using System.Windows.Media;
 using SharpMap.Rendering.Rendering2D;
 using SharpMap.Styles;
@@ -32,13 +33,16 @@ using WpfFontStyle = System.Windows.FontStyle;
 using WpfColor = System.Windows.Media.Color;
 using WpfPath = System.Windows.Media.StreamGeometry;
 using WpfMatrix = System.Windows.Media.Matrix;
+using WpfFontStretch = System.Windows.FontStretch;
+using WpfFontWeight = System.Windows.FontWeight;
+
 //using WpfColorMatrix = System.Windows.Media.Imaging.ColorMatrix;
 //using WpfSmoothingMode = System.Drawing SmoothingMode;
 //using WpfTextRenderingHint = System.Drawing.Text.TextRenderingHint;
 
 namespace SharpMap.Rendering.Wpf
 {
-    internal static class ViewConverter
+    public static class ViewConverter
     {
 
         private static readonly Dictionary<FontLookupKey, WpfFont> FontCache = new Dictionary<FontLookupKey, WpfFont>();
@@ -207,8 +211,9 @@ namespace SharpMap.Rendering.Wpf
 
             if (font == null)
             {
-                font = new WpfFont(styleFont.FontFamily.Name,
-                         (Single)styleFont.Size.Width, Convert(styleFont.Style));
+                StyleFontStyle sfs = styleFont.Style;
+                font = new WpfFont(new FontFamily(styleFont.FontFamily.Name),
+                         Convert(sfs), GetFontWeight(sfs),GetFontStretch(sfs));
 
                 SaveFont(styleFont, font);
             }
@@ -226,6 +231,23 @@ namespace SharpMap.Rendering.Wpf
                     return System.Windows.FontStyles.Oblique;
                 default:
                     return System.Windows.FontStyles.Normal;
+            }
+        }
+
+        internal static WpfFontStretch GetFontStretch(StyleFontStyle fontStyle)
+        {
+            return FontStretches.Normal;
+        }
+
+        internal static WpfFontWeight GetFontWeight(StyleFontStyle fontStyle)
+        {
+            switch ((int)fontStyle & (4 | 8))
+            {
+                case 4:
+                case 8:
+                    return FontWeights.Bold;
+                default:
+                    return FontWeights.Regular;
             }
         }
 

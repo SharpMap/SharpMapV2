@@ -26,13 +26,18 @@ namespace SharpMap.Data.Providers
         private ITileCache<Byte[]> _tileCache;
 
         private Int32 _pixelSize;
-
+        private Boolean _showErrorInTile;
 
         #endregion
 
-        public static SQLiteConnection MakeSqLiteConnection(String datasource)
+        public static SQLiteConnection MakeSqLiteConnection(String sqliteDbFile, Boolean createNew)
         {
-            SQLiteConnection cn = new SQLiteConnection(string.Format("Data Source={0}", datasource));
+            if (String.Compare(sqliteDbFile, ":MEMORY:", true) != 0)
+            {
+                if (createNew && File.Exists(sqliteDbFile)) File.Delete(sqliteDbFile);
+            }
+
+            SQLiteConnection cn = new SQLiteConnection(string.Format("Data Source={0}", sqliteDbFile));
             cn.Open();
             SQLiteCommand cmd = cn.CreateCommand();
             cmd.CommandText =
@@ -46,7 +51,7 @@ namespace SharpMap.Data.Providers
 
 
         public BrutileProvider(IGeometryFactory geometryFactory, ITileSource tileSource)
-            : this(geometryFactory, tileSource, new DbCache<SQLiteConnection>(MakeSqLiteConnection("test.db"), (p, c) => c, "main", "Tiles"))
+            : this(geometryFactory, tileSource, new DbCache<SQLiteConnection>(MakeSqLiteConnection("test.db", false), (p, c) => c, "main", "Tiles"))
         {
             
         }
@@ -58,8 +63,6 @@ namespace SharpMap.Data.Providers
             _coordinateFactory = geometryFactory.CoordinateFactory;
             _tileSource = tileSource;
             _tileCache = tileCache;
-
-            //System.Diagnostics.Debug.Assert(tileSource.Schema.Srs == geometryFactory.Srid);
         }
 
 
@@ -95,7 +98,8 @@ namespace SharpMap.Data.Providers
         {
             BrutileRasterQueryExpression bquery = query as BrutileRasterQueryExpression;
             if (bquery == null) yield break;
-            
+            if (bquery.Resolution.Value == 0d) yield break;
+
             //Extent extent = new Extent(map.Envelope.Min.X, map.Envelope.Min.Y, map.Envelope.Max.X, map.Envelope.Max.Y);
             IExtents mapExtens = query.SpatialPredicate.SpatialExpression.Extents;
 
@@ -126,24 +130,10 @@ namespace SharpMap.Data.Providers
                                                                     info.Extent.MaxX, info.Extent.MaxY);
 
                 yield return new BrutileRasterRecord(new MemoryStream(bitmap), extents);
-
-                /*
-                PointF min = map.WorldToImage(new SharpMap.Geometries.Point(info.Extent.MinX, info.Extent.MinY));
-                PointF max = map.WorldToImage(new SharpMap.Geometries.Point(info.Extent.MaxX, info.Extent.MaxY));
-
-                min = new PointF((float)Math.Round(min.X), (float)Math.Round(min.Y));
-                max = new PointF((float)Math.Round(max.X), (float)Math.Round(max.Y));
-
-                graphics.DrawImage(bitmap,
-                    new Rectangle((int)min.X, (int)max.Y, (int)(max.X - min.X), (int)(min.Y - max.Y)),
-                    0, 0, source.Schema.Width, source.Schema.Height,
-                    GraphicsUnit.Pixel,
-                    imageAttributes);
-                 */
             }
         }
 
-        private static void GetTileOnThread(object parameter)
+        private void GetTileOnThread(object parameter)
         {
             object[] parameters = (object[])parameter;
             if (parameters.Length != 4) throw new ArgumentException("Four parameters expected");
@@ -160,24 +150,18 @@ namespace SharpMap.Data.Providers
                 bitmaps.Add(tileInfo.Index, bytes);
             }
 
-                /*
-            catch (System.WebException ex)
+            catch (System.Exception ex)
             {
-                if (showErrorInTile)
+                if (ShowErrorInTile)
                 {
-                    //an issue with this method is that one an error tile is in the memory cache it will stay even
-                    //if the error is resolved. PDD.
-                    Bitmap bitmap = new Bitmap(this.source.Schema.Width, this.source.Schema.Height);
-                    Graphics graphics = Graphics.FromImage(bitmap);
-                    graphics.DrawString(ex.Message, new Font(FontFamily.GenericSansSerif, 12), new SolidBrush(Color.Black),
-                        new RectangleF(0, 0, this.source.Schema.Width, this.source.Schema.Height));
-                    bitmaps.Add(tileInfo.Index, bytes);
+                    ////an issue with this method is that one an error tile is in the memory cache it will stay even
+                    ////if the error is resolved. PDD.
+                    //Bitmap bitmap = new Bitmap(this.source.Schema.Width, this.source.Schema.Height);
+                    //Graphics graphics = Graphics.FromImage(bitmap);
+                    //graphics.DrawString(ex.Message, new Font(FontFamily.GenericSansSerif, 12), new SolidBrush(Color.Black),
+                    //    new RectangleF(0, 0, this.source.Schema.Width, this.source.Schema.Height));
+                    //bitmaps.Add(tileInfo.Index, bytes);
                 }
-            }
-                 */
-            catch (Exception ex)
-            {
-                //todo: log and use other ways to report to user.
             }
             finally
             {
@@ -187,11 +171,8 @@ namespace SharpMap.Data.Providers
 
         #region properties
 
-        public Int32 PixelSize
-        {
-            get { return _pixelSize; }
-            set { _pixelSize = value; }
-        }
+        public bool ShowErrorInTile { get { return _showErrorInTile; } set { _showErrorInTile = value; } }
+
         #endregion
     }
 }

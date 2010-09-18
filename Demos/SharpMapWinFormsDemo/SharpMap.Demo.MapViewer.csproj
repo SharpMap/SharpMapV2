@@ -166,6 +166,10 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Reference Include="BruTile, Version=0.4.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\brutile\trunk\bin\Debug\BruTile.dll</HintPath>
+    </Reference>
     <Reference Include="IBM.Data.DB2, Version=9.0.0.2, Culture=neutral, PublicKeyToken=7c307b91aa13d208, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\SharpMap.Data.Providers\SharpMap.Data.Providers.Db.DB2SpatialExtender\Lib\IBM.Data.DB2.dll</HintPath>
@@ -174,7 +178,10 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\SharpMap.Data.Providers\SharpMap.Data.Providers.PostGis\Externals\Npgsql.dll</HintPath>
     </Reference>
-    <Reference Include="System.Data.SQLite, Version=1.0.59.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=x86" />
+    <Reference Include="System.Data.SQLite, Version=1.0.60.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\ExternalReferences\Debug_Common\System.Data.SQLite.DLL</HintPath>
+    </Reference>
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
   </ItemGroup>
@@ -383,6 +390,10 @@
     <Compile Include="WorkQueue.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Extensions\BrutileForSharpMap\BrutileForSharpMap.csproj">
+      <Project>{272229A4-3F3C-4539-8672-FD25E47D7D07}</Project>
+      <Name>BrutileForSharpMap</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Extensions\Gdal\GdalForSharpMap.csproj">
       <Project>{9E6FD71C-8B3C-446B-AAE4-1F5C327482CD}</Project>
       <Name>GdalForSharpMap</Name>
