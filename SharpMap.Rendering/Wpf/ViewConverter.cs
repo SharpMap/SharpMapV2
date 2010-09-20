@@ -221,16 +221,29 @@ namespace SharpMap.Rendering.Wpf
             return font;
         }
 
+        public static TextDecoration ConvertTextDecoration(StyleFontStyle fontStyle)
+        {
+            switch ((StyleFontStyle)((int)fontStyle & (4 | 8)))
+            {
+                case StyleFontStyle.Underline:
+                    return TextDecorations.Underline[0];
+                case StyleFontStyle.Strikeout:
+                    return TextDecorations.Baseline[0];
+                default:
+                    return null;
+            }
+        }
+
         public static WpfFontStyle Convert(StyleFontStyle fontStyle)
         {
-            switch (fontStyle)
+            switch ((StyleFontStyle)((int)fontStyle & (1 | 16)))
             {
                 case StyleFontStyle.Italic:
-                    return System.Windows.FontStyles.Italic;
+                    return FontStyles.Italic;
                 case StyleFontStyle.Oblique:
-                    return System.Windows.FontStyles.Oblique;
+                    return FontStyles.Oblique;
                 default:
-                    return System.Windows.FontStyles.Normal;
+                    return FontStyles.Normal;
             }
         }
 
@@ -241,10 +254,9 @@ namespace SharpMap.Rendering.Wpf
 
         internal static WpfFontWeight GetFontWeight(StyleFontStyle fontStyle)
         {
-            switch ((int)fontStyle & (4 | 8))
+            switch ((int)fontStyle & 1)
             {
-                case 4:
-                case 8:
+                case 1:
                     return FontWeights.Bold;
                 default:
                     return FontWeights.Regular;
@@ -258,12 +270,12 @@ namespace SharpMap.Rendering.Wpf
                 return WpfMatrix.Identity;
             }
 
-            WpfMatrix WpfMatrix = new WpfMatrix(
+            WpfMatrix wpfMatrix = new WpfMatrix(
                 (double)viewMatrix[0, 0],(double)viewMatrix[0, 1],
                 (double)viewMatrix[1, 0], (double)viewMatrix[1, 1],
                 (double)viewMatrix[2, 0], (double)viewMatrix[2, 1]);
 
-            return WpfMatrix;
+            return wpfMatrix;
         }
 
         /*
@@ -346,16 +358,46 @@ namespace SharpMap.Rendering.Wpf
                 //wpfPen.DashOffset = pen.DashOffset;
                 //if (pen.DashPattern != null) wpfPen.DashPattern = pen.DashPattern;
                 wpfPen.DashStyle = ConvertLineDashStyle(pen);
-                wpfPen.EndLineCap = (PenLineCap)(Int32)pen.EndCap;
-                wpfPen.LineJoin = (PenLineJoin)(Int32)pen.LineJoin;
+                wpfPen.EndLineCap = ConvertLineCap(pen.EndCap);
+                wpfPen.LineJoin = ConvertLineJoin(pen.LineJoin);
                 wpfPen.MiterLimit = pen.MiterLimit;
                 //wpfPen.PenType = System.Drawing.Drawing2D.PenType...
-                wpfPen.StartLineCap = (PenLineCap)(Int32)pen.StartCap;
+                wpfPen.StartLineCap = ConvertLineCap(pen.StartCap);
+
+                wpfPen.Freeze();
                 SavePen(pen, wpfPen);
             }
 
             return wpfPen;
         }
+
+        private static PenLineJoin ConvertLineJoin(StyleLineJoin lineJoin)
+        {
+            switch (lineJoin)
+            {
+                case StyleLineJoin.Miter:
+                    return PenLineJoin.Miter;
+                case StyleLineJoin.Bevel:
+                    return PenLineJoin.Bevel;
+                default:
+                    return PenLineJoin.Round;
+            }
+        }
+
+        private static PenLineCap ConvertLineCap(StyleLineCap lineCap)
+        {
+            switch (lineCap ^ StyleLineCap.AnchorMask)
+            {
+                case StyleLineCap.Round:
+                    return PenLineCap.Round;
+                case StyleLineCap.Triangle:
+                    return PenLineCap.Triangle;
+                case StyleLineCap.Square:
+                    return PenLineCap.Square;
+            }
+            return PenLineCap.Flat;
+        }
+
 
         public static WpfBrush Convert(StyleBrush brush)
         {
@@ -372,16 +414,21 @@ namespace SharpMap.Rendering.Wpf
                 if (brush is SolidStyleBrush)
                 {
                     SolidStyleBrush ssb = (SolidStyleBrush) brush;
-                    wpfBrush = new System.Windows.Media.SolidColorBrush(Convert(ssb.Color));
+                    wpfBrush = new SolidColorBrush(Convert(ssb.Color));
                 }
                     //else if (brush is HatchStyleBrush)
-                //
+                    //
                 else if (brush is LinearGradientStyleBrush)
                 {
                     LinearGradientStyleBrush lgsb = (LinearGradientStyleBrush) brush;
-                    wpfBrush = new System.Windows.Media.LinearGradientBrush(Convert(lgsb.ColorBlend));
+                    wpfBrush = new LinearGradientBrush(Convert(lgsb.ColorBlend));
                 }
-                SaveBrush(brush, wpfBrush);
+
+                if (wpfBrush != null)
+                {
+                    wpfBrush.Freeze();
+                    SaveBrush(brush, wpfBrush);
+                }
             }
 
             return wpfBrush;
@@ -396,6 +443,7 @@ namespace SharpMap.Rendering.Wpf
             for (int i = 0; i < colorBlend.Colors.Length; i++ )
                 gsc.Add(new GradientStop(Convert(colorBlend.Colors[i]), colorBlend.Positions[i]));
 
+            gsc.Freeze();
             return gsc;
         }
 
@@ -439,6 +487,7 @@ namespace SharpMap.Rendering.Wpf
                         sgc.LineTo(Convert(figure.Points[i]), true, true);
                 }
             }
+            wpfPath.Freeze();
             return wpfPath;
         }
     }

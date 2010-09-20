@@ -40,8 +40,12 @@ using SharpMap.Data.Providers.Db;
 
 namespace SharpMap.Data.Providers.SpatiaLite2
 {
+
+
+
     public class SpatiaLite2DbUtility : IDbUtility<DbType>
     {
+        public string SpatiaLiteNativeDll { get; set; }
         #region IDbUtility<DbType> Members
 
         public IDbConnection CreateConnection(string connectionString)
@@ -49,7 +53,7 @@ namespace SharpMap.Data.Providers.SpatiaLite2
             //load spatialite-extension
             SQLiteConnection cn = new SQLiteConnection(connectionString);
             cn.Open();
-            object ret = new SQLiteCommand("SELECT load_extension('libspatialite-2.dll');", cn).ExecuteScalar();
+            object ret = new SQLiteCommand("SELECT load_extension('" + SpatiaLiteNativeDll + "');", cn).ExecuteScalar();
             //cn.Close();
 
             return cn;

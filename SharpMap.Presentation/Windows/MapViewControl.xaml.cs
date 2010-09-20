@@ -15,6 +15,7 @@ using System.Windows.Shapes;
 using GeoAPI.Coordinates;
 using GeoAPI.Geometries;
 using SharpMap.Presentation.Views;
+using SharpMap.Rendering;
 using SharpMap.Rendering.Rendering2D;
 using SharpMap.Rendering.Wpf;
 using SharpMap.Styles;
@@ -41,7 +42,7 @@ namespace SharpMap.Presentation.Windows
         private MapToolSet _tools;
         private MapPresenter _presenter;
         private WpfMatrix _gdiViewMatrix;
-        private readonly StringFormat _format;
+        //private readonly StringFormat _format;
         private readonly WpfPoint[] _symbolTargetPointsTransfer = new WpfPoint[3];
         private Boolean _backgroundBeingSet;
         private readonly Label _infoLabel = new Label();
@@ -1194,4 +1195,4 @@ namespace SharpMap.Presentation.Windows
 
     #endregion
     }
-}
+

@@ -30,10 +30,12 @@ namespace SharpMap.Presentation.AspNet.Demo.Common
         /// <summary>
         /// little util wich just adds one vector layer to the map and assigns it a random theme.
         /// </summary>
+        
         public static void SetupMap(HttpContext context, Map m)
         {
-            setupMsSqlSpatial(m);
+            //setupMsSqlSpatial(context, m);
             //setupShapefile(context, m);
+            setupSpatiaLite(context, m);
         }
 
         private static void setupShapefile(HttpContext context, Map m)
@@ -72,7 +74,7 @@ namespace SharpMap.Presentation.AspNet.Demo.Common
 
         }
 
-        private static void setupMsSqlSpatial(Map m)
+        private static void setupMsSqlSpatial(HttpContext context, Map m)
         {
             string[] layernames = new[]
                                       {"Rivers",
@@ -154,5 +156,78 @@ namespace SharpMap.Presentation.AspNet.Demo.Common
                 m.AddLayer(layer);
             }
         }
+
+        private static void setupSpatiaLite(HttpContext context, Map m)
+        {
+            string[] layernames = new[]
+                                      {"Rivers",
+                                          "Countries"
+                                          /*,
+                                          "Cities"*/
+                                      };
+
+            string sridstr = SridMap.DefaultInstance.Process(4326, "");
+            string absoluteFilename =
+                context.Server.MapPath(
+                    @ConfigurationManager.ConnectionStrings["spatialite"].ConnectionString);
+            foreach (string lyrname in layernames)
+            {
+                string tbl = lyrname;
+
+
+                AppStateMonitoringFeatureProvider provider = new AppStateMonitoringFeatureProvider(
+                    new SpatiaLite2Provider(
+                        new GeometryServices()[sridstr], "Data Source=" + absoluteFilename,
+                        "", tbl, "PK_UID", "geom")
+                );
+
+                GeoJsonGeometryStyle style = new GeoJsonGeometryStyle();
+
+                switch (tbl)
+                {
+                    case "Rivers":
+                        {
+                            StyleBrush brush = new SolidStyleBrush(StyleColor.Blue);
+                            StylePen pen = new StylePen(brush, 1);
+                            style.Enabled = true;
+                            style.EnableOutline = true;
+                            style.Line = pen;
+                            style.Fill = brush;
+                            break;
+                        }
+
+                    case "Countries":
+                        {
+                            StyleBrush brush = new SolidStyleBrush(new StyleColor(0, 0, 0, 255));
+                            StylePen pen = new StylePen(brush, 2);
+                            style.Enabled = true;
+                            style.EnableOutline = true;
+                            style.Line = pen;
+                            style.Fill = new SolidStyleBrush(StyleColor.Green);
+
+                            break;
+                        }
+
+                    default:
+                        {
+                            style = RandomStyle.RandomGeometryStyle();
+                            style.MaxVisible = 100000;
+                            break;
+                        }
+                }
+
+
+                /* include GeoJson styles */
+                style.IncludeAttributes = false;
+                style.IncludeBBox = true;
+                style.PreProcessGeometries = false;
+                style.CoordinateNumberFormatString = "{0:F}";
+                GeometryLayer layer = new GeometryLayer(tbl, style, provider);
+                layer.Features.IsSpatiallyIndexed = false;
+                layer.AddProperty(AppStateMonitoringFeatureLayerProperties.AppStateMonitor, provider.Monitor);
+                m.AddLayer(layer);
+            }
+        }
+    
     }
 }

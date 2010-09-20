@@ -8,19 +8,19 @@ using SharpMap.Rendering.Rendering2D;
 
 namespace SharpMap.Rendering.Wpf
 {
-    public class WpfRasterRenderer : RasterRenderer2D<DependencyObject>
+    public class WpfRasterRenderer : RasterRenderer2D<WpfRenderObject>
     {
-        public override IEnumerable<DependencyObject> RenderRaster(Stream rasterData, Rectangle2D viewBounds,
+        public override IEnumerable<WpfRenderObject> RenderRaster(Stream rasterData, Rectangle2D viewBounds,
                                                                    Rectangle2D rasterBounds)
         {
-            throw new NotImplementedException();
+            yield return null;
         }
 
-        public override IEnumerable<DependencyObject> RenderRaster(Stream rasterData, Rectangle2D viewBounds,
+        public override IEnumerable<WpfRenderObject> RenderRaster(Stream rasterData, Rectangle2D viewBounds,
                                                                    Rectangle2D rasterBounds,
                                                                    IMatrix<DoubleComponent> rasterTransform)
         {
-            throw new NotImplementedException();
+            yield return null;
         }
     }
 }

@@ -17,7 +17,6 @@ namespace SharpMap.Rendering.Wpf
     {
         private readonly RenderState _renderState;
 
-
         protected WpfRenderObject(RenderState renderState)
         {
             _renderState = renderState;

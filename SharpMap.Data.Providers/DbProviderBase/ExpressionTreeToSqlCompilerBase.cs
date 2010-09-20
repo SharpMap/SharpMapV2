@@ -701,7 +701,7 @@ namespace SharpMap.Data.Providers.Db
 
         protected IGeometry TransformGeometry(IGeometry geom)
         {
-            if (geom.SpatialReference == null && Provider.SpatialReference == null)
+            if (geom.SpatialReference == null || Provider.SpatialReference == null)
                 return geom;
 
             if (!Provider.SpatialReference.EqualParams(geom.SpatialReference))

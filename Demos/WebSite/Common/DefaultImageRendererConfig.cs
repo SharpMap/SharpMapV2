@@ -35,8 +35,8 @@ namespace SharpMap.Presentation.AspNet.Demo.Common
 
             renderer.ImageCodec = codecInfo;
 
-            ///as more properties get added to the BasicMapRequestConfig we can start creating encoder params
-            ///to allow different image compression settings etc
+            //as more properties get added to the BasicMapRequestConfig we can start creating encoder params
+            //to allow different image compression settings etc
         }
 
         public void ConfigureRenderer(IMapRequestConfig requestConfig, IWebMapRenderer renderer)
@@ -46,4 +46,6 @@ namespace SharpMap.Presentation.AspNet.Demo.Common
 
         #endregion
     }
+
+
 }

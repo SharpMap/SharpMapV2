@@ -1,31 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Text;
 using System.Windows;
 using System.Windows.Media;
 using SharpMap.Rendering.Rendering2D;
 using SharpMap.Styles;
 
 using WpfFont = System.Windows.Media.Typeface;
-using WpfRectangle = System.Windows.Rect;
-using WpfPath = System.Windows.Media.StreamGeometry;
 using WpfPoint = System.Windows.Point;
 
 namespace SharpMap.Rendering.Wpf
 {
     public class WpfTextRenderer : TextRenderer2D<WpfRenderObject>
     {
-        public WpfTextRenderer()
-        {
-            
-        }
-        
         public override IEnumerable<WpfRenderObject> RenderText(string text, StyleFont font,
                                                                  Rectangle2D layoutRectangle, Path2D flowPath,
                                                                  StyleBrush fontBrush, Matrix2D transform)
         {
-            if (layoutRectangle != null)
+            if (!layoutRectangle.IsEmpty)
             {
                 FormattedText ft = new FormattedText(text, CultureInfo.CurrentCulture, FlowDirection.LeftToRight, ViewConverter.Convert(font), font.Size.Height, ViewConverter.Convert(fontBrush));
                 WpfTextRenderObject<WpfPoint> renderedText =

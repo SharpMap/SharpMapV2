@@ -32,22 +32,21 @@ using WpfMatrix = System.Windows.Media.Matrix;
 
 namespace SharpMap.Rendering.Web
 {
-    public class GdiImageRenderer
+    public class WpfImageRenderer
         : IWebMapRenderer<BitmapSource>
     {
-        private static BitmapEncoder _defaultEncoder;
+        private static Type _defaultEncoder;
         private readonly PixelFormat _pixelFormat;
         private readonly RenderQueue _renderQ = new RenderQueue();
 
-        private BitmapEncoder _imageEncoder;
-        private bool _disposed;
+        private Type _imageEncoder;
 
-        public GdiImageRenderer(PixelFormat pxfrmt)
+        public WpfImageRenderer(PixelFormat pxfrmt)
         {
             _pixelFormat = pxfrmt;
         }
 
-        public GdiImageRenderer()
+        public WpfImageRenderer()
             : this(PixelFormats.Pbgra32)
         {
         }
@@ -57,15 +56,9 @@ namespace SharpMap.Rendering.Web
             get { return _pixelFormat; }
         }
 
-        public BitmapEncoder ImageEncoder
+        public Type ImageEncoder
         {
-            get
-            {
-                if (_imageEncoder == null)
-                    _imageEncoder = GetDefaultEncoder();
-
-                return _imageEncoder;
-            }
+            get { return _imageEncoder ?? (_imageEncoder = GetDefaultEncoder()); }
             set { _imageEncoder = value; }
         }
 
@@ -88,20 +81,24 @@ namespace SharpMap.Rendering.Web
             DrawingVisual dv = new DrawingVisual();
             using (DrawingContext dvc = dv.RenderOpen())
             {
-
                 while (_renderQ.Count > 0)
                 {
                     RenderObject(_renderQ.Dequeue(), dvc);
                 }
             }
-
             RenderTargetBitmap bmp = new RenderTargetBitmap(Width, Height, Dpi, Dpi, PixelFormat);
+            bmp.Clear();
             bmp.Render(dv);
+            bmp.Freeze();
 
-            mimeType = ImageEncoder.CodecInfo.MimeTypes;
+            mimeType = "";
             return bmp;
         }
 
+        public static void WorkRenderQueue()
+        {
+            
+        }
 
         public IRasterRenderer2D CreateRasterRenderer()
         {
@@ -174,15 +171,17 @@ namespace SharpMap.Rendering.Web
                 return null;
 
             MemoryStream ms = new MemoryStream();
-            ImageEncoder.Frames.Add(BitmapFrame.Create(im));
-            ImageEncoder.Save(ms);
+            BitmapEncoder bm = (BitmapEncoder) Activator.CreateInstance(ImageEncoder);
+            bm.Frames.Add(BitmapFrame.Create(im));
+            bm.Save(ms);
 
             ms.Position = 0;
-            mimeType = ImageEncoder.CodecInfo.MimeTypes.ToString();
+            mimeType = bm.CodecInfo.MimeTypes;
             return ms;
+
         }
 
-        private void RenderObject(WpfRenderObject ro, DrawingContext g)
+        private static void RenderObject(WpfRenderObject ro, DrawingContext g)
         {
             if (ro == null)
                 return;
@@ -220,10 +219,18 @@ namespace SharpMap.Rendering.Web
             }
         }
 
-        private static BitmapEncoder GetDefaultEncoder()
+        public static Type FindEncoder(string mimeType)
+        {
+            var encoders = new Reflector().AllSubclassesOf(typeof (BitmapEncoder));
+            return (from encoder in encoders
+                    select (BitmapEncoder) Activator.CreateInstance(encoder)
+                    into bme where bme.CodecInfo.MimeTypes.Contains(mimeType) select bme.GetType()).FirstOrDefault();
+        }
+
+        private static Type GetDefaultEncoder()
         {
             if (_defaultEncoder == null)
-                _defaultEncoder = new JpegBitmapEncoder();
+                _defaultEncoder = typeof(PngBitmapEncoder);
             return _defaultEncoder;
         }
 

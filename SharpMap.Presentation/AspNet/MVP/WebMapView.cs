@@ -165,6 +165,12 @@ namespace SharpMap.Presentation.AspNet.MVP
             onRequestOffset(offsetVector);
         }
 
+        public bool RequeryDatasources
+        {
+            get { return _presenter.RequeryDatasources; }
+            set { _presenter.RequeryDatasources = value; }
+        }
+
         public Double PixelWorldHeight
         {
             get { return _presenter.PixelWorldHeight; }
@@ -443,6 +449,7 @@ namespace SharpMap.Presentation.AspNet.MVP
                 e(this, args);
             }
         }
+
 
 
         public Stream Render(out String mimeType)

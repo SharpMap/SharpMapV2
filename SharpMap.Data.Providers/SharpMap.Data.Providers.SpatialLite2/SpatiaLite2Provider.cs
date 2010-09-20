@@ -41,6 +41,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Configuration;
 using System.Data;
 using System.Data.SQLite;
 using System.Diagnostics;
@@ -166,7 +167,44 @@ namespace SharpMap.Data.Providers
         {
             //AddDerivedProperties(typeof(SpatialDbProviderBase<Int64>));
             AddDerivedProperties(typeof (SpatiaLite2Provider));
+            Configure(out SpatiaLiteNativeDll, out SpatiaLitePath);
         }
+
+        private static void Configure( out string spatiaLiteNativeDll, out string spatiaLitePath)
+        {
+            spatiaLiteNativeDll = "libspatialite-2.dll";
+            AppSettingsReader asr = new AppSettingsReader();
+            try
+            {
+                String slBin = (String)asr.GetValue("SpatiaLiteNativeDll", typeof(String));
+                if (!String.IsNullOrEmpty(slBin))
+                     spatiaLiteNativeDll = slBin;
+            }
+            catch
+            {
+                System.Diagnostics.Trace.WriteLine("Path to native SpatiaLite binaries not configured, assuming they are in applications directory");
+            }
+
+            try
+            {
+                String slPath = (String)asr.GetValue("SpatiaLitePath", typeof(String));
+                spatiaLitePath = slPath;
+                String path = Environment.GetEnvironmentVariable("path");
+                if (path == null) path = "";
+                if (!path.ToLowerInvariant().Contains(slPath.ToLowerInvariant()))
+                    Environment.SetEnvironmentVariable("path", slPath + ";" + path);
+            }
+            catch
+            {
+                spatiaLitePath = "";
+            }
+
+            if (!System.IO.File.Exists(System.IO.Path.Combine(SpatiaLitePath, spatiaLiteNativeDll)))
+                throw new System.IO.FileNotFoundException("SpatiaLite binaries not found under given path and filename");
+        }
+
+        private static readonly string SpatiaLitePath;
+        private static readonly string SpatiaLiteNativeDll;
 
         /// <summary>
         /// Gets a <see cref="PropertyDescriptor"/> for 
@@ -257,7 +295,7 @@ namespace SharpMap.Data.Providers
                                    string tableSchema, string tableName, string oidColumn, string geometryColumn,
                                    ICoordinateTransformationFactory coordinateTransformationFactory)
             : base(
-                new SpatiaLite2DbUtility(), geometryFactory, connectionString, tableSchema, tableName, oidColumn,
+                new SpatiaLite2DbUtility {SpatiaLiteNativeDll = SpatiaLiteNativeDll}, geometryFactory, connectionString, tableSchema, tableName, oidColumn,
                 geometryColumn, coordinateTransformationFactory)
         {
             using (SQLiteConnection cn = new SQLiteConnection(connectionString))
@@ -708,7 +746,7 @@ WHERE type='table' AND NOT( name like 'cache_%' ) AND NOT( name like 'sqlite%' )
             SQLiteConnection conn = new SQLiteConnection(connectionString);
             conn.Open();
 
-            Object retVal = new SQLiteCommand("SELECT load_extension('libspatialite-2.dll');", conn).ExecuteScalar();
+            Object retVal = new SQLiteCommand("SELECT load_extension('" + SpatiaLiteNativeDll + "');", conn).ExecuteScalar();
             if (spatiallyEnabled) return conn;
 
             SQLiteTransaction tran = conn.BeginTransaction();
