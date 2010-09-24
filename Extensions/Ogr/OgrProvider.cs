@@ -630,7 +630,7 @@ namespace SharpMap.Data.Providers
                             string layerName = lyr.GetName();
                             string geometryColumn = lyr.GetGeometryColumn();
                             OgrGeometryType geometryType = featureDefn.GetGeomType();
-                            if (geometryType == OgrGeometryType.wkbNone || geometryType == OgrGeometryType.wkbUnknown) continue;
+                            if (geometryType == OgrGeometryType.wkbNone) continue;// || geometryType == OgrGeometryType.wkbUnknown) continue;
                             yield return new OgrLayerDescriptor(i, layerName, lyr.GetFIDColumn(), geometryColumn, OgrGeometryTypeToOgc(geometryType));
                         }
                     }
