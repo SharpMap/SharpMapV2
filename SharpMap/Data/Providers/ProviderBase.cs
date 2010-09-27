@@ -106,7 +106,7 @@ namespace SharpMap.Data.Providers
         public Boolean IsDisposed
         {
             get { return _isDisposed; }
-            private set { _isDisposed = value; }
+            protected set { _isDisposed = value; }
         }
 
         protected abstract void Dispose(Boolean disposing);

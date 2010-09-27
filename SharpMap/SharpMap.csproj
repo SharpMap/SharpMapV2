@@ -472,7 +472,6 @@
     <EmbeddedResource Include="Styles\DefaultSymbol.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="app.config" />
     <None Include="SharpMap.cd" />
     <None Include="Map Model.cd" />
     <None Include="Rendering\RenderingClasses.cd" />
