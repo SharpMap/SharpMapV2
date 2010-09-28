@@ -26,6 +26,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Diagnostics;
 using System.Globalization;
+using System.Threading;
 using GeoAPI.CoordinateSystems;
 using GeoAPI.CoordinateSystems.Transformations;
 using GeoAPI.Geometries;
@@ -614,12 +615,13 @@ namespace SharpMap.Data.Providers.Db
 
         protected override IFeatureDataReader InternalExecuteFeatureQuery(FeatureQueryExpression query)
         {
-            return ExecuteFeatureQuery(query, FeatureQueryExecutionOptions.FullFeature);
+            return InternalExecuteFeatureQuery(query, FeatureQueryExecutionOptions.FullFeature);
         }
 
         protected override IFeatureDataReader InternalExecuteFeatureQuery(FeatureQueryExpression query,
                                                                           FeatureQueryExecutionOptions options)
         {
+            System.Diagnostics.Debug.WriteLine(string.Format("Thread {0}: {1}", Thread.CurrentThread.ManagedThreadId, query.SpatialPredicate));
             return ExecuteFeatureDataReader(PrepareSelectCommand(query));
         }
 
@@ -779,7 +781,7 @@ namespace SharpMap.Data.Providers.Db
 
         protected virtual IFeatureDataReader ExecuteFeatureDataReader(IDbCommand cmd)
         {
-            Debug.WriteLine(String.Format("executing sql : {0}", cmd.CommandText));
+            Debug.WriteLine(String.Format("Thread {1}: Executing Sql : {0}", cmd.CommandText, Thread.CurrentThread.ManagedThreadId));
             IDbConnection conn = DbUtility.CreateConnection(ConnectionString);
             cmd.Connection = conn;
             if (conn.State == ConnectionState.Closed) conn.Open();

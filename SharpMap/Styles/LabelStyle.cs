@@ -26,10 +26,10 @@ namespace SharpMap.Styles
     /// Defines a style used for rendering labels.
     /// </summary>
     public class LabelStyle : FeatureStyle
-	{
-		#region Private instance fields
+    {
+        #region Private instance fields
 
-		private HorizontalAlignment _horizontalAlignment;
+        private HorizontalAlignment _horizontalAlignment;
         private VerticalAlignment _verticalAlignment;
         private StyleTextRenderingHint _textRenderingHint;
         private Size2D _collisionBuffer;
@@ -42,35 +42,35 @@ namespace SharpMap.Styles
         private Expression _labelExpression;
         private Expression _geometryExpression;
 
-		#endregion
+        #endregion
 
-		/// <summary>
+        /// <summary>
         /// Initializes a new <see cref="LabelStyle"/>.
         /// </summary>
         public LabelStyle()
-            : this(new StyleFont(new StyleFontFamily("Arial"), 
-                                 new Size2D(12, 12), 
-                                 StyleFontStyle.Regular), 
+            : this(new StyleFont(new StyleFontFamily("Arial"),
+                                 new Size2D(12, 12),
+                                 StyleFontStyle.Regular),
                                  new SolidStyleBrush(StyleColor.Black))
         {
         }
 
         public LabelStyle(StyleFont font, StyleBrush foreground)
-            : this(font, 
-                   foreground, 
-                   new SolidStyleBrush(StyleColor.Transparent), 
-                   Point2D.Empty, 
-                   Size2D.Empty, 
-                   HorizontalAlignment.Left, 
+            : this(font,
+                   foreground,
+                   new SolidStyleBrush(StyleColor.Transparent),
+                   Point2D.Empty,
+                   Size2D.Empty,
+                   HorizontalAlignment.Left,
                    VerticalAlignment.Middle) { }
 
         public LabelStyle(StyleFont font,
-						  StyleBrush foreground,
-						  StyleBrush background,
-						  Point2D offset,
-						  Size2D collisionBuffer,
-						  HorizontalAlignment horizontalAlignment,
-						  VerticalAlignment verticalAlignment)
+                          StyleBrush foreground,
+                          StyleBrush background,
+                          Point2D offset,
+                          Size2D collisionBuffer,
+                          HorizontalAlignment horizontalAlignment,
+                          VerticalAlignment verticalAlignment)
         {
             _font = font;
             _foreground = foreground;
@@ -150,8 +150,8 @@ namespace SharpMap.Styles
         {
             get
             {
-				return _collisionTestType != CollisionDetectionType.None;
-			}
+                return _collisionTestType != CollisionDetectionType.None;
+            }
         }
 
         /// <summary>
@@ -188,10 +188,10 @@ namespace SharpMap.Styles
         /// <summary>
         /// Gets or sets the type of collision test performed.
         /// </summary>
-    	public CollisionDetectionType CollisionDetectionType
-    	{
-    		get { return _collisionTestType; }
-    		set { _collisionTestType = value; }
+        public CollisionDetectionType CollisionDetectionType
+        {
+            get { return _collisionTestType; }
+            set { _collisionTestType = value; }
         }
 
         public Expression LabelExpression
@@ -205,5 +205,5 @@ namespace SharpMap.Styles
             get { return _labelExpression; }
             set { _labelExpression = value; }
         }
-	}
+    }
 }

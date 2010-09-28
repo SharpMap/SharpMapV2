@@ -482,7 +482,7 @@ namespace SharpMap.Rendering.Wpf
             {
                 foreach (Figure2D figure in path.Figures)
                 {
-                    sgc.BeginFigure(Convert(figure.Points[0]), false, figure.IsClosed);
+                    sgc.BeginFigure(Convert(figure.Points[0]), figure.IsClosed, figure.IsClosed);
                     for (int i = 1; i < figure.Points.Count; i++)
                         sgc.LineTo(Convert(figure.Points[i]), true, true);
                 }

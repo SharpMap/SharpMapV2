@@ -36,7 +36,7 @@ namespace SharpMap.Expressions
 
         public override string ToString()
         {
-            return Geometry.ToString();
+            return _geometry != null ? _geometry.ToString() : "<null>";
         }
 
         public override IExtents Extents

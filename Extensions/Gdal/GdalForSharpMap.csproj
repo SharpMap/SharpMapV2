@@ -54,19 +54,19 @@
   <ItemGroup>
     <Reference Include="gdalconst_csharp, Version=1.0.3585.8006, Culture=neutral, PublicKeyToken=db5a52b08dc5b321">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>D:\Gdal\x86\gdal\csharp\gdalconst_csharp.dll</HintPath>
+      <HintPath>$(ProjectDir)..\ExternalReferences\Native\$(Platform)\bin\gdal\csharp\gdalconst_csharp.dll</HintPath>
     </Reference>
     <Reference Include="gdal_csharp, Version=1.0.3585.8006, Culture=neutral, PublicKeyToken=db5a52b08dc5b321">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>D:\Gdal\x86\gdal\csharp\gdal_csharp.dll</HintPath>
+      <HintPath>$(ProjectDir)..\ExternalReferences\Native\$(Platform)\bin\gdal\csharp\gdal_csharp.dll</HintPath>
     </Reference>
     <Reference Include="ogr_csharp, Version=1.0.3585.8006, Culture=neutral, PublicKeyToken=db5a52b08dc5b321">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>D:\Gdal\x86\gdal\csharp\ogr_csharp.dll</HintPath>
+      <HintPath>$(ProjectDir)..\ExternalReferences\Native\$(Platform)\bin\gdal\csharp\ogr_csharp.dll</HintPath>
     </Reference>
     <Reference Include="osr_csharp, Version=1.0.3585.8005, Culture=neutral, PublicKeyToken=db5a52b08dc5b321">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>D:\Gdal\x86\gdal\csharp\osr_csharp.dll</HintPath>
+      <HintPath>$(ProjectDir)..\ExternalReferences\Native\$(Platform)\bin\gdal\csharp\osr_csharp.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.configuration" />
@@ -151,49 +151,21 @@
   </Target>
   -->
   <PropertyGroup>
-    <PreBuildEvent>echo off
-setlocal
-echo cd "$(DevEnvDir)..\..\VC" &gt; buildgdal.bat
-echo set path=$(SolutionDir)BuildTools;%25PATH%25 &gt;&gt; buildgdal.bat
-if $(PlatformName)=="x64" (
-echo call vcvarsall.bat x86_amd64 &gt;&gt; buildgdal.bat 
-) else (
-echo call vcvarsall.bat x86 &gt;&gt; buildgdal.bat 
+    <PreBuildEvent>@ECHO OFF
+SET nativeDir=$(ProjectDir)..\ExternalReferences\Native
+echo IF NOT EXIST "%25nativeDir%25\." GOTO END
+IF NOT EXIST "%25nativeDir%25\." GOTO END
+ECHO IF EXIST "%25nativeDir%25\$(PlatformName)\." GOTO END
+IF EXIST "%25nativeDir%25\$(PlatformName)\." GOTO END
+PUSHD "%25nativeDir%25"
+IF "$(PlatformName)"=="x86" (
+SET zipArchive=release-1500-gdal-1-7-mapserver-5-6.zip
+) ELSE (
+SET zipArchive=release-1500-x64-gdal-1-7-mapserver-5-6.zip
 )
-echo if "%251"=="GDAL" goto GDAL &gt;&gt; buildgdal.bat
-echo cd $(ProjectDir)Proj4.6.1 &gt;&gt; buildgdal.bat
-rem NMAKE.OPT für Proj4 Kompilierung
-echo INSTDIR=$(TargetDir).. &gt; $(ProjectDir)Proj4.6.1\nmake.opt
-echo PROJ_LIB_DIR=$(TargetDir)..\share &gt;&gt; $(ProjectDir)Proj4.6.1\nmake.opt
-echo OPTFLAGS=/nologo /Ox /Op /MD &gt;&gt; $(ProjectDir)Proj4.6.1\nmake.opt
-echo EXE_PROJ =proj_i.lib &gt;&gt; $(ProjectDir)Proj4.6.1\nmake.opt
-echo VERSION= &gt;&gt; $(ProjectDir)Proj4.6.1\nmake.opt
-echo nmake /f makefile.vc clean &gt;&gt; buildgdal.bat
-echo nmake /f makefile.vc /x projbuild.err install-all &gt;&gt; buildgdal.bat
-rem echo pause &gt;&gt; buildgdal.bat
-echo :GDAL &gt;&gt; buildgdal.bat
-echo cd $(ProjectDir)Gdal1.6.3 &gt;&gt; buildgdal.bat
-
-REM EXT_NMAKE.OPT für GDAL Kompilierung
-echo INSTDIR=$(TargetDir).. &gt; $(ProjectDir)Gdal1.6.3\ext_nmake.opt
-if $(PlatformName)=="x64" echo WIN64=YES &gt;&gt; $(ProjectDir)Gdal1.6.3\ext_nmake.opt
-echo MSVC_VER=1500 &gt;&gt; $(ProjectDir)Gdal1.6.3\ext_nmake.opt
-echo GDAL_HOME = $(TargetDir).. &gt;&gt; $(ProjectDir)Gdal1.6.3\ext_nmake.opt
-
-echo if "%252"=="SWIG" goto SWIG &gt;&gt; buildgdal.bat
-echo nmake /f makefile.vc clean &gt;&gt; buildgdal.bat
-echo nmake /f makefile.vc /x gdalbuild.err EXT_NMAKE_OPT=ext_nmake.opt &gt;&gt; buildgdal.bat
-rem echo nmake /f makefile.vc /x install.err install EXT_NMAKE_OPT=ext_nmake.opt &gt;&gt; buildgdal.bat
-echo nmake /f makefile.vc /x devinstall.err devinstall EXT_NMAKE_OPT=ext_nmake.opt &gt;&gt; buildgdal.bat
-rem echo pause &gt;&gt; buildgdal.bat
-
-echo :SWIG &gt;&gt; buildgdal.bat
-echo cd swig &gt;&gt; buildgdal.bat
-echo nmake /f makefile.vc /x gdalcsharpbindings.err csharp install EXT_NMAKE_OPT=ext_nmake.opt &gt;&gt; buildgdal.bat
-echo cd csharp &gt;&gt; buildgdal.bat
-echo nmake /f makefile.vc /x gdalcsharpinstall.err install EXT_NMAKE_OPT=ext_nmake.opt &gt;&gt; buildgdal.bat
-echo endlocal
-echo cd $(TargetDir) &gt;&gt; buildgdal.bat
-echo on</PreBuildEvent>
+IF EXIST %25zipArchive%25 unzip %25zipArchive%25 -x bin/ms/* bin/gdal/apps/* bin/gdal/java/* bin/gdal/python/* -d $(PlatformName)
+POPD
+:END
+ECHO ON</PreBuildEvent>
   </PropertyGroup>
 </Project>

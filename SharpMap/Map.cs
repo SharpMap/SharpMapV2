@@ -99,6 +99,11 @@ namespace SharpMap
 
         #region Fields
 
+        /// <summary>
+        /// Unique identifier for to track map object in multi-threading environment
+        /// </summary>
+        public readonly Guid Guid = Guid.NewGuid();
+
         private IGeometryFactory _geoFactory;
         private readonly LayerCollection _layers;
         private readonly FeatureDataSet _featureDataSet;

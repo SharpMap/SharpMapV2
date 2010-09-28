@@ -148,7 +148,7 @@ namespace SharpMap.Rendering.Rendering2D
         /// <param name="y">Scale to apply to the Y dimension.</param>
         public void Scale(Double x, Double y)
         {
-            Scale(new Vector(x, y));
+            Scale(new Vector(new DoubleComponent(x), new DoubleComponent(y)));
         }
 
         /// <summary>
@@ -208,7 +208,7 @@ namespace SharpMap.Rendering.Rendering2D
         /// <returns>A Point2D describing the transformed input.</returns>
         public Point2D TransformVector(Double x, Double y)
         {
-            DoubleComponent[] transferPoints = new DoubleComponent[] { x, y, 1 };
+            DoubleComponent[] transferPoints = new DoubleComponent[] { new DoubleComponent(x), new DoubleComponent(y), new DoubleComponent(1) };
 
             MatrixProcessor.Multiply(transferPoints, this);
             return new Point2D((Double)transferPoints[0], (Double)transferPoints[1]);
@@ -291,7 +291,7 @@ namespace SharpMap.Rendering.Rendering2D
         public Double M11
         {
             get { return (Double)this[0, 0]; }
-            set { this[0, 0] = value; }
+            set { this[0, 0] = new DoubleComponent(value); }
         }
 
         /// <summary>
@@ -300,7 +300,7 @@ namespace SharpMap.Rendering.Rendering2D
         public Double M21
         {
             get { return (Double)this[1, 0]; }
-            set { this[1, 0] = value; }
+            set { this[1, 0] = new DoubleComponent(value); }
         }
 
         /// <summary>
@@ -309,7 +309,7 @@ namespace SharpMap.Rendering.Rendering2D
         public Double OffsetX
         {
             get { return (Double)this[2, 0]; }
-            set { this[2, 0] = value; }
+            set { this[2, 0] = new DoubleComponent(value); }
         }
 
         /// <summary>
@@ -318,7 +318,7 @@ namespace SharpMap.Rendering.Rendering2D
         public Double M12
         {
             get { return (Double)this[0, 1]; }
-            set { this[0, 1] = value; }
+            set { this[0, 1] = new DoubleComponent(value); }
         }
 
         /// <summary>
@@ -327,7 +327,7 @@ namespace SharpMap.Rendering.Rendering2D
         public Double M22
         {
             get { return (Double)this[1, 1]; }
-            set { this[1, 1] = value; }
+            set { this[1, 1] = new DoubleComponent(value); }
         }
 
         /// <summary>
@@ -336,7 +336,7 @@ namespace SharpMap.Rendering.Rendering2D
         public Double OffsetY
         {
             get { return (Double)this[2, 1]; }
-            set { this[2, 1] = value; }
+            set { this[2, 1] = new DoubleComponent(value); }
         }
 
         #endregion

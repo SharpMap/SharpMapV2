@@ -35,7 +35,8 @@ namespace SharpMap.Presentation.AspNet.Demo.Common
         {
             //setupMsSqlSpatial(context, m);
             //setupShapefile(context, m);
-            setupSpatiaLite(context, m);
+            //setupSpatiaLite(context, m);
+            setupPostgis(context, m);
         }
 
         private static void setupShapefile(HttpContext context, Map m)
@@ -178,7 +179,7 @@ namespace SharpMap.Presentation.AspNet.Demo.Common
                 AppStateMonitoringFeatureProvider provider = new AppStateMonitoringFeatureProvider(
                     new SpatiaLite2Provider(
                         new GeometryServices()[sridstr], "Data Source=" + absoluteFilename,
-                        "", tbl, "PK_UID", "geom")
+                        "main", tbl, "PK_UID", "geom")
                 );
 
                 GeoJsonGeometryStyle style = new GeoJsonGeometryStyle();
@@ -228,6 +229,75 @@ namespace SharpMap.Presentation.AspNet.Demo.Common
                 m.AddLayer(layer);
             }
         }
-    
+
+        private static void setupPostgis(HttpContext context, Map m)
+        {
+            string[] layernames = new[]
+                                      {"rivers",
+                                          "countries",
+                                          "cities"
+                                      };
+
+            string sridstr = SridMap.DefaultInstance.Process(4326, "");
+            string connectionString = ConfigurationManager.ConnectionStrings["postgis"].ConnectionString;
+            foreach (string lyrname in layernames)
+            {
+                string tbl = lyrname;
+
+
+                AppStateMonitoringFeatureProvider provider = new AppStateMonitoringFeatureProvider(
+                    new PostGisProvider<int>(
+                        new GeometryServices()[sridstr], connectionString,
+                        "public", tbl, "ogc_fid", "wkb_geometry", new GeometryServices().CoordinateTransformationFactory)
+                );
+
+                GeoJsonGeometryStyle style = new GeoJsonGeometryStyle();
+
+                switch (tbl)
+                {
+                    case "rivers":
+                        {
+                            StyleBrush brush = new SolidStyleBrush(StyleColor.Blue);
+                            StylePen pen = new StylePen(brush, 1);
+                            style.Enabled = true;
+                            style.EnableOutline = true;
+                            style.Line = pen;
+                            style.Fill = brush;
+                            break;
+                        }
+
+                    case "countries":
+                        {
+                            StyleBrush brush = new SolidStyleBrush(new StyleColor(0, 0, 0, 255));
+                            StylePen pen = new StylePen(brush, 2);
+                            style.Enabled = true;
+                            style.EnableOutline = true;
+                            style.Line = pen;
+                            style.Fill = new SolidStyleBrush(StyleColor.Green);
+
+                            break;
+                        }
+
+                    default:
+                        {
+                            style = RandomStyle.RandomGeometryStyle();
+                            style.MaxVisible = 15;
+                            break;
+                        }
+                }
+
+
+                /* include GeoJson styles */
+                style.IncludeAttributes = false;
+                style.IncludeBBox = true;
+                style.PreProcessGeometries = false;
+                style.CoordinateNumberFormatString = "{0:F}";
+                GeometryLayer layer = new GeometryLayer(tbl, style, provider);
+                layer.Features.IsSpatiallyIndexed = false;
+                layer.AddProperty(AppStateMonitoringFeatureLayerProperties.AppStateMonitor, provider.Monitor);
+                m.AddLayer(layer);
+            }
+        }
+
     }
 }

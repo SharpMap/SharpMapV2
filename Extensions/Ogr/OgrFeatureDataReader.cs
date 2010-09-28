@@ -7,6 +7,7 @@ using GeoAPI.Coordinates;
 using GeoAPI.CoordinateSystems.Transformations;
 using GeoAPI.Geometries;
 using SharpMap.Expressions;
+using SharpMap.Styles;
 using OgrLayer = OSGeo.OGR.Layer;
 using OgrFeature = OSGeo.OGR.Feature;
 using OgrFeatureDefn = OSGeo.OGR.FeatureDefn;
@@ -67,7 +68,7 @@ namespace SharpMap.Data.Providers
                 return "";
 
             StringBuilder sb = new StringBuilder();
-            sb.AppendFormat("{0} ", ((PropertyNameExpression) singleAttributePredicate.Left).PropertyName);
+            sb.AppendFormat("{0} ", ((PropertyNameExpression)singleAttributePredicate.Left).PropertyName);
 
             BinaryOperatorToOgrSql(sb, singleAttributePredicate.Op, (LiteralExpression)singleAttributePredicate.Right);
             return sb.ToString();
@@ -111,7 +112,7 @@ namespace SharpMap.Data.Providers
 
         private static string LiteralExpressionToOgrSql(LiteralExpression literalExpression)
         {
-            string format = literalExpression.Value.GetType() == typeof (String)
+            string format = literalExpression.Value.GetType() == typeof(String)
                                 ? "'{0}'"
                                 : "{0}";
             return string.Format(format, literalExpression.Value);
@@ -324,7 +325,7 @@ namespace SharpMap.Data.Providers
         ///             </exception><filterpriority>2</filterpriority>
         public long GetChars(int i, long fieldoffset, char[] buffer, int bufferoffset, int length)
         {
-            return _current.GetChars(i, fieldoffset, buffer, bufferoffset,length);
+            return _current.GetChars(i, fieldoffset, buffer, bufferoffset, length);
         }
 
         /// <summary>
@@ -490,7 +491,7 @@ namespace SharpMap.Data.Providers
         /// <filterpriority>2</filterpriority>
         public int FieldCount
         {
-            get{return _current.FieldCount;}
+            get { return _current.FieldCount; }
         }
 
         /// <summary>

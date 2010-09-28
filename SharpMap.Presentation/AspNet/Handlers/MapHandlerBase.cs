@@ -236,6 +236,8 @@ namespace SharpMap.Presentation.AspNet.Handlers
             {
                 RaiseBeforeInitializeMap();
                 InitMap();
+                Debug.WriteLine(string.Format("Thread {0}: Begin rendering, Map {1})",
+                                              System.Threading.Thread.CurrentThread.ManagedThreadId, Map.Guid));
                 RaiseMapInitialized();
 
                 RaiseBeforeLoadLayers();
@@ -253,6 +255,9 @@ namespace SharpMap.Presentation.AspNet.Handlers
                 RaiseMapStateLoaded();
 
                 ConfigureMapView();
+                Debug.WriteLine(string.Format("Thread {0}: MapViewConfigured, Map {1}, MapView {2}",
+                                              System.Threading.Thread.CurrentThread.ManagedThreadId, Map.Guid,
+                                              MapView.Presenter.Guid));
 
                 RaiseBeforeMapRender();
 

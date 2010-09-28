@@ -16,6 +16,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System;
+using System.ComponentModel;
 using GeoAPI.Coordinates;
 using SharpMap.Layers;
 using SharpMap.Presentation.Presenters;
@@ -118,21 +119,32 @@ namespace SharpMap.Presentation.Windows
         internal StyleColor BackgroundColor
         {
             get { return BackgroundColorInternal; }
+            set
+            {
+                BackgroundColorInternal = value;
+                RaisePropertyChanged("BackgroundColor");
+            }
         }
 
         internal ICoordinate GeoCenter
         {
             get { return GeoCenterInternal; }
+            set
+            {
+                GeoCenterInternal = value;
+            }
         }
 
         internal Double MaximumWorldWidth
         {
             get { return MaximumWorldWidthInternal; }
+            set { MaximumWorldWidthInternal = value; }
         }
 
         internal Double MinimumWorldWidth
         {
             get { return MinimumWorldWidthInternal; }
+            set { MinimumWorldWidthInternal = value; }
         }
 
         internal Double PixelWorldWidth
@@ -188,11 +200,13 @@ namespace SharpMap.Presentation.Windows
         internal IExtents2D ViewEnvelope
         {
             get { return ViewEnvelopeInternal; }
+            set { ViewEnvelopeInternal = value; }
         }
 
         internal Double WorldAspectRatio
         {
             get { return WorldAspectRatioInternal; }
+            set { WorldAspectRatioInternal = value; }
         }
 
         internal Double WorldHeight
@@ -244,9 +258,40 @@ namespace SharpMap.Presentation.Windows
 
         protected override void SetViewBackgroundColor(StyleColor fromColor, StyleColor toColor)
         {
-            ViewControl.Background = ViewConverter.Convert(new SolidStyleBrush(toColor));
+            if (fromColor != toColor)
+                ViewControl.Background = ViewConverter.Convert(new SolidStyleBrush(toColor));
         }
 
         #endregion
+
+        internal void ZoomByFactor(Double zoomFactor)
+        {
+
+            Double newWorldWidth = ViewEnvelope.Width*zoomFactor;
+
+            ZoomToWorldWidthInternal(newWorldWidth);
+            //GeoCenter = oldCenter;
+        }
+        //-----------------------------------------------------
+        //
+        //  INotifyPropertyChanged Members
+        //
+        //-----------------------------------------------------
+
+        #region INotifyPropertyChanged Members
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        protected void RaisePropertyChanged(String propertyName)
+        {
+            PropertyChangedEventHandler handler = PropertyChanged;
+            if (handler != null)
+            {
+                PropertyChangedEventArgs args =
+                    new PropertyChangedEventArgs(propertyName);
+                handler(this, args);
+            }
+        }
+        #endregion
+
     }
 }

@@ -5,6 +5,7 @@ using System.IO;
 using System.Text;
 using GeoAPI.CoordinateSystems.Transformations;
 using GeoAPI.Geometries;
+using SharpMap.Styles;
 using OgrFeature = OSGeo.OGR.Feature;
 using OgrFeatureDefn = OSGeo.OGR.FeatureDefn;
 using OgrFieldType = OSGeo.OGR.FieldType;
@@ -651,6 +652,32 @@ namespace SharpMap.Data.Providers
                 //    _ogrFeatureDefn.Dispose();
                 //}
             }
+        }
+
+        public GeometryStyle GeometryStyle
+        {
+            get
+            {
+                return ParseGeometryStyle(_ogrFeature.GetStyleString());
+            }
+        }
+
+        private GeometryStyle ParseGeometryStyle(string ogrStyleString)
+        {
+            return null;
+        }
+
+        public LabelStyle LabelStyle
+        {
+            get
+            {
+                return ParseLabelString(_ogrFeature.GetStyleString());
+            }
+        }
+
+        private LabelStyle ParseLabelString(string ogrStyleString)
+        {
+            throw new NotImplementedException();
         }
     }
 }

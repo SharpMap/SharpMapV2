@@ -42,9 +42,9 @@ namespace SharpMap.Rendering.Rendering2D
         #region Constructors
         public Size2D(Double width, Double height)
         {
-            _width = width;
-            _height = height;
-            _hasValue = true;
+            _width = new DoubleComponent(width);
+            _height = new DoubleComponent(height);
+            _hasValue = !(Double.IsNaN(width) | Double.IsNaN(height));// true;
         }
         #endregion
 

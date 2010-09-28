@@ -196,10 +196,14 @@ namespace SharpMap.Data.Providers
             }
             catch
             {
-                spatiaLitePath = "";
+                spatiaLitePath = @"D:\GIS\SpatiaLite\2.4.0\x86";
+                String path = Environment.GetEnvironmentVariable("path");
+                if (path == null) path = "";
+                if (!path.ToLowerInvariant().Contains(spatiaLitePath.ToLowerInvariant()))
+                    Environment.SetEnvironmentVariable("path", spatiaLitePath + ";" + path);
             }
 
-            if (!System.IO.File.Exists(System.IO.Path.Combine(SpatiaLitePath, spatiaLiteNativeDll)))
+            if (!System.IO.File.Exists(System.IO.Path.Combine(spatiaLitePath, spatiaLiteNativeDll)))
                 throw new System.IO.FileNotFoundException("SpatiaLite binaries not found under given path and filename");
         }
 
@@ -756,7 +760,7 @@ WHERE type='table' AND NOT( name like 'cache_%' ) AND NOT( name like 'sqlite%' )
             new SQLiteCommand("ALTER TABLE spatial_ref_sys ADD COLUMN srtext text;", conn).ExecuteNonQuery();
 
             SQLiteCommand cmd = new SQLiteCommand(
-                "INSERT OR REPLACE INTO spatial_ref_sys (srid, auth_name, auth_srid, ref_sys_name, proj4text, srtext) VALUES (@P1, @P2, @P3, @P4, @P5, @P6);",
+                "INSERT OR REPLACE INTO spatial_ref_sys (srid, auth_name, auth_srid, ref_sys_name, proj4text, sr_wkt) VALUES (@P1, @P2, @P3, @P4, @P5, @P6);",
                 conn);
             cmd.Parameters.Add(new SQLiteParameter("@P1", DbType.Int64));
             cmd.Parameters.Add(new SQLiteParameter("@P2", DbType.String));

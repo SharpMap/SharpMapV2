@@ -39,15 +39,15 @@ namespace SharpMap.Rendering
 			Double redShift, Double greenShift, Double blueShift, Double alphaShift)
             : base(MatrixFormat.RowMajor, 5)
         {
-            this[0, 0] = redLevel;
-            this[1, 1] = greenLevel;
-            this[2, 2] = blueLevel;
-            this[3, 3] = alphaLevel;
+            this[0, 0] = new DoubleComponent(redLevel);
+            this[1, 1] = new DoubleComponent(greenLevel);
+            this[2, 2] = new DoubleComponent(blueLevel);
+            this[3, 3] = new DoubleComponent(alphaLevel);
 
-            this[4, 0] = redShift;
-            this[4, 1] = greenShift;
-            this[4, 2] = blueShift;
-			this[4, 3] = alphaShift;
+            this[4, 0] = new DoubleComponent(redShift);
+            this[4, 1] = new DoubleComponent(greenShift);
+            this[4, 2] = new DoubleComponent(blueShift);
+			this[4, 3] = new DoubleComponent(alphaShift);
 		}
 
         public ColorMatrix(IMatrixD matrixToCopy)

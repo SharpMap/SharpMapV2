@@ -31,8 +31,8 @@ namespace SharpMap.Rendering.Wpf
             :base(renderState)
         {
             Path = path;
-            Line = line;
-            Outline = outline;
+            Line = line ?? outline;
+            Outline = Line == outline ? null : outline;
             Fill = fill;
         }
 

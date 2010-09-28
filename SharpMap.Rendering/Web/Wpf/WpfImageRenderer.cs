@@ -18,10 +18,13 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Net.Mime;
 using System.Reflection;
+using System.Threading;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Threading;
 using GeoAPI.IO;
 using SharpMap.Presentation.AspNet;
 using SharpMap.Presentation.AspNet.MVP;
@@ -38,6 +41,7 @@ namespace SharpMap.Rendering.Web
         private static Type _defaultEncoder;
         private readonly PixelFormat _pixelFormat;
         private readonly RenderQueue _renderQ = new RenderQueue();
+        private readonly Dictionary<int, RenderQueue> _renderQs = new Dictionary<int, RenderQueue>();
 
         private Type _imageEncoder;
 
@@ -78,26 +82,58 @@ namespace SharpMap.Rendering.Web
 
         public BitmapSource Render(WebMapView mapView, out string mimeType)
         {
-            DrawingVisual dv = new DrawingVisual();
-            using (DrawingContext dvc = dv.RenderOpen())
+            /*
+            DrawingImage di = new DrawingImage();
+            while (_renderQ.Count > 0)
             {
-                while (_renderQ.Count > 0)
-                {
-                    RenderObject(_renderQ.Dequeue(), dvc);
-                }
+                RenderObject(_renderQ.Dequeue(), di);
             }
+            di.Freeze();
+            */
+            mimeType = "";
+
+            RenderQueue rq;
+            _renderQs.TryGetValue(Thread.CurrentThread.ManagedThreadId, out rq);
+            if (rq == null)
+                return null;
+
+            DrawingVisual dv = new DrawingVisual();
+            DrawingContext dvc = dv.RenderOpen();
+            dvc.PushClip(new RectangleGeometry(new Rect(0d, 0d, Width, Height)));
+            while (rq.Count > 0)
+            {
+                RenderObject(rq.Dequeue(), dvc);
+            }
+            dvc.Pop();
+            if (dvc.Dispatcher.Thread != Thread.CurrentThread)
+            {
+                dvc.Dispatcher.Invoke(new CommitVisualEventHandler(CommitVisual), dvc);
+                //dvc.Dispatcher.InvokeShutdown();
+            }else CommitVisual(dvc);
+
+            //if (Dispatcher.CurrentDispatcher.Thread != Thread.CurrentThread)
+            //    //push the reuest to commit to the UI thread
+            //    Dispatcher.CurrentDispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Background,
+            //        new CommitVisualEventHandler(CommitVisual), dvc);
+            //else
+            //    CommitVisual(dvc);
+
+            //using (DrawingContext dvc = dv.RenderOpen())
+            //{
+            //    while (_renderQ.Count > 0)
+            //    {
+            //        RenderObject(_renderQ.Dequeue(), dvc);
+            //    }
+            //}
             RenderTargetBitmap bmp = new RenderTargetBitmap(Width, Height, Dpi, Dpi, PixelFormat);
             bmp.Clear();
             bmp.Render(dv);
             bmp.Freeze();
 
-            mimeType = "";
-            return bmp;
-        }
+            if (dv.Dispatcher.Thread.IsAlive)
+                dv.Dispatcher.InvokeShutdown();
 
-        public static void WorkRenderQueue()
-        {
-            
+            return bmp;
         }
 
         public IRasterRenderer2D CreateRasterRenderer()
@@ -124,12 +160,24 @@ namespace SharpMap.Rendering.Web
 
         public void ClearRenderQueue()
         {
-            _renderQ.Clear();
+            Debug.WriteLine(string.Format("Thread {0}: Clear RenderQueue", Thread.CurrentThread.ManagedThreadId));
+            RenderQueue rq;
+            _renderQs.TryGetValue(Thread.CurrentThread.ManagedThreadId, out rq);
+            if (rq != null) rq.Clear();
+            //_renderQ.Clear();
         }
 
         public void EnqueueRenderObject(object o)
         {
-            _renderQ.Enqueue((WpfRenderObject)o);
+            RenderQueue q;
+            int threadId = Thread.CurrentThread.ManagedThreadId;
+            if (!_renderQs.ContainsKey(threadId))
+            {
+                _renderQs.Add(threadId, new RenderQueue());
+            }
+            q = _renderQs[threadId];
+            q.Enqueue((WpfRenderObject)o);
+            //_renderQ.Enqueue((WpfRenderObject)o);
         }
 
         public event EventHandler RenderDone;
@@ -165,20 +213,45 @@ namespace SharpMap.Rendering.Web
 
         protected virtual Stream RenderStreamInternal(WebMapView map, out string mimeType)
         {
-            BitmapSource im = Render(map, out mimeType);
+            Debug.WriteLine(string.Format("Thread {0}: {1}, Objects {2}", Thread.CurrentThread.ManagedThreadId, map.ViewEnvelope, _renderQ.Count));
+
+            RenderTargetBitmap im = null;
+            BitmapEncoder bm = (BitmapEncoder)Activator.CreateInstance(ImageEncoder);
+            try
+            {
+                im = (RenderTargetBitmap)Render(map, out mimeType);
+            }
+            catch (Exception)
+            {
+                mimeType = bm.CodecInfo.MimeTypes;
+                Debug.WriteLine(string.Format("Thread {0}: {1}", Thread.CurrentThread.ManagedThreadId, "Render(map, out mimeType) failed!"));
+            }
 
             if (im == null)
                 return null;
 
+            if (im.Dispatcher != null && im.Dispatcher.Thread.IsAlive)
+                im.Dispatcher.InvokeShutdown();
+
             MemoryStream ms = new MemoryStream();
-            BitmapEncoder bm = (BitmapEncoder) Activator.CreateInstance(ImageEncoder);
             bm.Frames.Add(BitmapFrame.Create(im));
             bm.Save(ms);
 
+            if (bm.Dispatcher != null && bm.Dispatcher.Thread.IsAlive)
+                bm.Dispatcher.InvokeShutdown();
+
             ms.Position = 0;
             mimeType = bm.CodecInfo.MimeTypes;
+            Debug.WriteLine(string.Format("Thread {0}: Length {1}", Thread.CurrentThread.ManagedThreadId, ms.Length));
+
             return ms;
 
+        }
+
+        private delegate void CommitVisualEventHandler(DrawingContext context);
+        private static void  CommitVisual(DrawingContext context)
+        {
+            context.Close();
         }
 
         private static void RenderObject(WpfRenderObject ro, DrawingContext g)
@@ -189,12 +262,59 @@ namespace SharpMap.Rendering.Web
             if (ro.RenderState == RenderState.Unknown)
                 return;
 
+            WpfVectorRenderObject vro = ro as WpfVectorRenderObject;
+            if (vro != null)
+            {
+                g.DrawGeometry(vro.Fill, vro.Line, vro.Path);
+                if (vro.Outline != null)
+                    g.DrawGeometry(null, vro.Outline, vro.Path);
+                return;
+            }
+
+            WpfPointRenderObject pro = ro as WpfPointRenderObject;
+            if (pro != null)
+            {
+                g.DrawImage(pro.Symbol, pro.Bounds);
+                return;
+            }
+
+            WpfTextRenderObject<Point> trro = ro as WpfTextRenderObject<Point>;
+            if (trro != null)
+            {
+                g.DrawText(trro.Text, trro.Location);
+                return;
+            }
+
+            WpfTextRenderObject<StreamGeometry> tsro = ro as WpfTextRenderObject<StreamGeometry>;
+            if (tsro != null)
+            {
+                return;
+            }
+
+            if (ro is WpfRasterRenderObject)
+            {
+                WpfRasterRenderObject rro = (WpfRasterRenderObject) ro;
+                g.DrawImage(rro.Raster, rro.Bounds);
+            }
+        }
+
+        private static void RenderObject(WpfRenderObject ro, DrawingImage g)
+        {
+            /*GeometryGroup gg = new GeometryGroup();
+
+            if (ro == null)
+                return;
+
+            if (ro.RenderState == RenderState.Unknown)
+                return;
+
             if (ro is WpfVectorRenderObject)
             {
                 WpfVectorRenderObject vro = (WpfVectorRenderObject) ro;
                 if (vro.Outline != null)
-                    g.DrawGeometry(null, vro.Outline, vro.Path);
+                    gg.Children.Add(new GeometryDrawing(null, vro.Outline, (Geometry)vro.Path));
                 g.DrawGeometry(vro.Fill, vro.Line, vro.Path);
+                
             }
 
             if (ro is WpfPointRenderObject)
@@ -217,6 +337,7 @@ namespace SharpMap.Rendering.Web
                 WpfRasterRenderObject rro = (WpfRasterRenderObject) ro;
                 g.DrawImage(rro.Raster, rro.Bounds);
             }
+             */
         }
 
         public static Type FindEncoder(string mimeType)

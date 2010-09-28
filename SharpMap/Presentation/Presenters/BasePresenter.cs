@@ -28,6 +28,11 @@ namespace SharpMap.Presentation.Presenters
     public abstract class BasePresenter<TView> : IDisposable
         where TView : class
     {
+        /// <summary>
+        /// Unique identifier for debugging purposes in multi-threading environment
+        /// </summary>
+        public readonly Guid Guid = Guid.NewGuid();
+        
         private readonly Map _map;
         private readonly TView _view;
         private Boolean _disposed;

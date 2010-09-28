@@ -68,19 +68,19 @@
   <ItemGroup>
     <Reference Include="gdalconst_csharp, Version=1.0.3585.8006, Culture=neutral, PublicKeyToken=db5a52b08dc5b321">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\Gdal\x86\gdal\csharp\gdalconst_csharp.dll</HintPath>
+      <HintPath>$(ProjectDir)..\ExternalReferences\Native\$(Platform)\bin\gdal\csharp\gdalconst_csharp.dll</HintPath>
     </Reference>
     <Reference Include="gdal_csharp, Version=1.0.3585.8006, Culture=neutral, PublicKeyToken=db5a52b08dc5b321">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\Gdal\x86\gdal\csharp\gdal_csharp.dll</HintPath>
+      <HintPath>$(ProjectDir)..\ExternalReferences\Native\$(Platform)\bin\gdal\csharp\gdal_csharp.dll</HintPath>
     </Reference>
     <Reference Include="ogr_csharp, Version=1.0.3585.8006, Culture=neutral, PublicKeyToken=db5a52b08dc5b321">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>D:\Gdal\x86\gdal\csharp\ogr_csharp.dll</HintPath>
+      <HintPath>$(ProjectDir)..\ExternalReferences\Native\$(Platform)\bin\gdal\csharp\ogr_csharp.dll</HintPath>
     </Reference>
     <Reference Include="osr_csharp, Version=1.0.3585.8005, Culture=neutral, PublicKeyToken=db5a52b08dc5b321">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>D:\Gdal\x86\gdal\csharp\osr_csharp.dll</HintPath>
+      <HintPath>$(ProjectDir)..\ExternalReferences\Native\$(Platform)\bin\gdal\csharp\osr_csharp.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.configuration" />
@@ -94,6 +94,7 @@
     <Compile Include="OgrForSharpMap.cs" />
     <Compile Include="OgrProvider.cs" />
     <Compile Include="OgrProviderException.cs" />
+    <Compile Include="OgrStyleParser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -122,4 +123,22 @@
   <Target Name="AfterBuild">
   </Target>
   -->
+  <PropertyGroup>
+    <PreBuildEvent>@ECHO OFF
+SET nativeDir=$(ProjectDir)..\ExternalReferences\Native
+echo IF NOT EXIST "%25nativeDir%25\." GOTO END
+IF NOT EXIST "%25nativeDir%25\." GOTO END
+ECHO IF EXIST "%25nativeDir%25\$(PlatformName)\." GOTO END
+IF EXIST "%25nativeDir%25\$(PlatformName)\." GOTO END
+PUSHD "%25nativeDir%25"
+IF "$(PlatformName)"=="x86" (
+SET zipArchive=release-1500-gdal-1-7-mapserver-5-6.zip
+) ELSE (
+SET zipArchive=release-1500-x64-gdal-1-7-mapserver-5-6.zip
+)
+IF EXIST %25zipArchive%25 unzip %25zipArchive%25 -x bin/ms/* bin/gdal/apps/* bin/gdal/java/* bin/gdal/python/* -d $(PlatformName)
+POPD
+:END
+ECHO ON</PreBuildEvent>
+  </PropertyGroup>
 </Project>

@@ -30,7 +30,8 @@ namespace SharpMap.Presentation.AspNet.Demo.Wms
 
         protected override IWebMapRenderer CreateMapRenderer()
         {
-            return new CairoImageRenderer();
+            return new WpfImageRenderer();
+            //return new CairoImageRenderer();
             //return new GdiImageRenderer();
         }
 

@@ -52,8 +52,8 @@ namespace SharpMap.Rendering.Rendering2D
         #region Constructors
         public Point2D(Double x, Double y)
         {
-            _x = x;
-            _y = y;
+            _x = new DoubleComponent(x);
+            _y = new DoubleComponent(y);
             _hasValue = true;
         }
 
@@ -66,8 +66,8 @@ namespace SharpMap.Rendering.Rendering2D
                 throw new ArgumentException("Elements array must have only 2 components.");
             }
 
-            _x = elements[0];
-            _y = elements[1];
+            _x = new DoubleComponent(elements[0]);
+            _y = new DoubleComponent(elements[1]);
             _hasValue = true;
         }
 
@@ -457,7 +457,9 @@ namespace SharpMap.Rendering.Rendering2D
             get
             {
                 checkIndex(index);
-                return this[index];
+                return index == 0 ? _x : _y;
+
+                //return this[index];
             }
             set
             {

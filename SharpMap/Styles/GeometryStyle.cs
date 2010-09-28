@@ -21,11 +21,11 @@ using SharpMap.Rendering.Rendering2D;
 
 namespace SharpMap.Styles
 {
-	/// <summary>
-	/// Defines a style used for rendering a geometry.
-	/// </summary>
-	public class GeometryStyle : FeatureStyle
-	{
+    /// <summary>
+    /// Defines a style used for rendering a geometry.
+    /// </summary>
+    public class GeometryStyle : FeatureStyle
+    {
         #region Private fields
         private StylePen _lineStyle;
         private StylePen _highlightLineStyle;
@@ -38,47 +38,47 @@ namespace SharpMap.Styles
         private StyleBrush _highlightFillStyle;
         private StyleBrush _selectionFillStyle;
 
-		private Symbol2D _symbol;
-		private Symbol2D _highlightSymbol;
-		private Symbol2D _selectSymbol;
+        private Symbol2D _symbol;
+        private Symbol2D _highlightSymbol;
+        private Symbol2D _selectSymbol;
 
-		#endregion
+        #endregion
 
-		/// <summary>
-		/// Initializes a new VectorStyle with default values.
-		/// </summary>
-		/// <remarks>
-		/// Default style values when initialized:<br/>
-		/// <list type="table">
-		/// <item>
-		/// <term>AreFeaturesSelectable</term>
-		/// <description>True</description>
-		/// </item>
-		/// <item>
-		/// <term>LineStyle</term>
-		/// <description>1px solid black</description>
-		/// </item>
-		/// <item>
-		/// <term>FillStyle</term>
-		/// <description>Solid black</description>
-		/// </item>
-		/// <item>
-		/// <term>Outline</term>
-		/// <description>No Outline</description>
-		/// </item>
-		/// <item>
-		/// <term>Symbol</term>
-		/// <description>Null reference (uses the geometry renderer default)</description>
-		/// </item>
-		/// </list>
-		/// </remarks>
+        /// <summary>
+        /// Initializes a new VectorStyle with default values.
+        /// </summary>
+        /// <remarks>
+        /// Default style values when initialized:<br/>
+        /// <list type="table">
+        /// <item>
+        /// <term>AreFeaturesSelectable</term>
+        /// <description>True</description>
+        /// </item>
+        /// <item>
+        /// <term>LineStyle</term>
+        /// <description>1px solid black</description>
+        /// </item>
+        /// <item>
+        /// <term>FillStyle</term>
+        /// <description>Solid black</description>
+        /// </item>
+        /// <item>
+        /// <term>Outline</term>
+        /// <description>No Outline</description>
+        /// </item>
+        /// <item>
+        /// <term>Symbol</term>
+        /// <description>Null reference (uses the geometry renderer default)</description>
+        /// </item>
+        /// </list>
+        /// </remarks>
         public GeometryStyle()
-		{
-			Outline = new StylePen(StyleColor.Black, 1);
-			Line = new StylePen(StyleColor.Black, 1);
-			Fill = new SolidStyleBrush(StyleColor.Black);
-			EnableOutline = false;
-		}
+        {
+            Outline = new StylePen(StyleColor.Black, 1);
+            Line = new StylePen(StyleColor.Black, 1);
+            Fill = new SolidStyleBrush(StyleColor.Black);
+            EnableOutline = false;
+        }
 
         #region Properties
 
@@ -172,33 +172,33 @@ namespace SharpMap.Styles
             set { _highlightFillStyle = value; }
         }
 
-		/// <summary>
+        /// <summary>
         /// Gets or sets a symbol used for rendering point features.
-		/// </summary>
-		public Symbol2D Symbol
-		{
-			get { return _symbol; }
-			set { _symbol = value; }
-		}
+        /// </summary>
+        public Symbol2D Symbol
+        {
+            get { return _symbol; }
+            set { _symbol = value; }
+        }
 
-		/// <summary>
+        /// <summary>
         /// Gets or sets a symbol used for rendering highlighted point features.
-		/// </summary>
-		public Symbol2D HighlightSymbol
-		{
-			get { return _highlightSymbol; }
-			set { _highlightSymbol = value; }
-		}
+        /// </summary>
+        public Symbol2D HighlightSymbol
+        {
+            get { return _highlightSymbol; }
+            set { _highlightSymbol = value; }
+        }
 
-		/// <summary>
+        /// <summary>
         /// Gets or sets a symbol used for rendering selected point features.
-		/// </summary>
-		public Symbol2D SelectSymbol
-		{
-			get { return _selectSymbol; }
-			set { _selectSymbol = value; }
-		}
+        /// </summary>
+        public Symbol2D SelectSymbol
+        {
+            get { return _selectSymbol; }
+            set { _selectSymbol = value; }
+        }
 
-		#endregion
-	}
+        #endregion
+    }
 }

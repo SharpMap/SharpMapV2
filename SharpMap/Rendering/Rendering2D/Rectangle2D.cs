@@ -62,10 +62,10 @@ namespace SharpMap.Rendering.Rendering2D
 		/// <param name="bottom">The Y value of the bottom side.</param>
         public Rectangle2D(Double left, Double top, Double right, Double bottom)
         {
-            _left = left;
-            _right = right;
-            _top = top;
-            _bottom = bottom;
+            _left = new DoubleComponent(left);
+            _right = new DoubleComponent(right);
+            _top = new DoubleComponent(top);
+            _bottom = new DoubleComponent(bottom);
             _hasValue = true;
         }
 

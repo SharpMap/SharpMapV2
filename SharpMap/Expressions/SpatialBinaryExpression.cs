@@ -185,6 +185,10 @@ namespace SharpMap.Expressions
             }
         }
 
+        public override string ToString()
+        {
+            return string.Format("{0} {1} {2}", Left, Op, Right);
+        }
         protected override BinaryExpressionBase<SpatialOperation> Create(Expression left,
                                                                          SpatialOperation op,
                                                                          Expression right)
