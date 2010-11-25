@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="3.5" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug_Net20</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -13,9 +13,13 @@
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>
     </AssemblyOriginatorKeyFile>
-    <OldToolsVersion>2.0</OldToolsVersion>
+    <OldToolsVersion>3.5</OldToolsVersion>
     <StartupObject>
     </StartupObject>
+    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <UpgradeBackupLocation />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug_Net20|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -264,6 +268,11 @@
     <Compile Include="DataSource\PostGis.Designer.cs">
       <DependentUpon>PostGis.cs</DependentUpon>
     </Compile>
+    <Compile Include="DataSource\PostGis1.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PostGis.resx</DependentUpon>
+    </Compile>
     <Compile Include="DataSource\Shapefile.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -281,6 +290,11 @@
     </Compile>
     <Compile Include="DataSource\SqlServer2008.Designer.cs">
       <DependentUpon>SqlServer2008.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DataSource\SqlServer20081.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>SqlServer2008.resx</DependentUpon>
     </Compile>
     <Compile Include="ExitCommand.cs" />
     <Compile Include="MapActionHandler\IMapActionHandler.cs" />
@@ -346,6 +360,7 @@
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
     </Compile>
     <None Include="App.config" />
     <None Include="Properties\Settings.settings">

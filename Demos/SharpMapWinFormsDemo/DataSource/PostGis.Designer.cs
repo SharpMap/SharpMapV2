@@ -58,8 +58,9 @@
             this.cbDataBases.Name = "cbDataBases";
             this.cbDataBases.Size = new System.Drawing.Size(224, 21);
             this.cbDataBases.TabIndex = 4;
-            this.cbDataBases.DataSourceChanged += new System.EventHandler(this.cbDataBases_DataSourceChanged);
             this.cbDataBases.SelectedIndexChanged += new System.EventHandler(this.cbDataBases_SelectedIndexChanged);
+            this.cbDataBases.DataSourceChanged += new System.EventHandler(this.cbDataBases_DataSourceChanged);
+            this.cbDataBases.MouseDown += new System.Windows.Forms.MouseEventHandler(this.cbDataBases_MouseDown);
             // 
             // grpLogin
             // 
@@ -166,8 +167,8 @@
             this.cbTables.Name = "cbTables";
             this.cbTables.Size = new System.Drawing.Size(224, 21);
             this.cbTables.TabIndex = 6;
-            this.cbTables.DataSourceChanged += new System.EventHandler(this.cbTables_DataSourceChanged);
             this.cbTables.SelectedIndexChanged += new System.EventHandler(this.cbTables_SelectedIndexChanged);
+            this.cbTables.DataSourceChanged += new System.EventHandler(this.cbTables_DataSourceChanged);
             // 
             // dgvColumns
             // 

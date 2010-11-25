@@ -24,12 +24,14 @@ using SharpMap.Utilities;
 
 namespace MapViewer.DataSource
 {
-    public partial class SqlServer2008 : MsSqlSpatial, ICreateDataProvider
+    internal partial class SqlServer2008 : MsSqlSpatial //, ICreateDataProvider
     {
+        /*
         public SqlServer2008()
         {
             InitializeComponent();
         }
+         */
 
         #region ICreateDataProvider Members
 

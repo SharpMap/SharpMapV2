@@ -5,7 +5,7 @@ CSV|0|Comma Separated Value|*.csv
 DODS|3|DODS/OPeNDAP|DODS
 PGeo|0|ESRI Personal GeoDatabase|*.mdb
 SDE|2|ESRI ArcSDE|SDE
-ESRI Shapefiles|0|ESRI Shapefiles|*.shp
+ESRI Shapefile|0|ESRI Shapefile|*.shp
 FMEObjects Gateway|0|FMEObjects Gateway|*.fdd
 GeoJSON|0|GeoJSON|*.geojson
 GeoJSON|3|GeoJSON|GeoJSON

@@ -39,13 +39,15 @@ namespace MapViewer.DataSource
         private string lastDbQueried = "";
         private int oidcolumn = -1;
 
-        public PostGis()
+        /*
+        internal PostGis()
         {
             InitializeComponent();
 
             cbDataBases.MouseDown += cbDataBases_MouseDown;
             chkUsername.Checked = false;
         }
+         */
 
         protected string ServerConnectionString
         {
