@@ -209,6 +209,10 @@
       <Project>{B139E1D5-091B-40D2-B7A2-7D7D82E13019}</Project>
       <Name>NPack</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Proj4Utility\Proj4Utility.csproj">
+      <Project>{4AAC52D4-D27B-4A3A-9660-73A4E796207C}</Project>
+      <Name>Proj4Utility</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\SharpMap.Data.Providers\DbProviderBase\SharpMap.Data.Providers.Db.csproj">
       <Project>{FEE2753F-DCC2-4DC6-9651-FA2CED8A2974}</Project>
       <Name>SharpMap.Data.Providers.Db</Name>
