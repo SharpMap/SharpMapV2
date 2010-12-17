@@ -24,7 +24,7 @@ using SharpMap.Utilities;
 
 namespace MapViewer.DataSource
 {
-    public partial class SqlServer2008 : MsSqlSpatial, ICreateDataProvider
+    internal partial class SqlServer2008 : MsSqlSpatial
     {
         public SqlServer2008()
         {
