@@ -1,0 +1,212 @@
+﻿<Project ToolsVersion="3.5" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.30729</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{7EF67DF8-D868-4177-8817-4CC2E94ABD66}</ProjectGuid>
+    <ProjectTypeGuids>{F85E285D-A4E0-4152-9332-AB1D724D3325};{349c5851-65df-11da-9384-00065b846f21};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>SharpMap.Demo.Wms</RootNamespace>
+    <AssemblyName>SharpMap.Demo.Wms</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <MvcBuildViews>false</MvcBuildViews>
+    <TargetFrameworkSubset>
+    </TargetFrameworkSubset>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;DEBUG_STEPINTO</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core, Version=3.5.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data" />
+    <Reference Include="System.Data.DataSetExtensions, Version=3.5.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Web.Extensions.Design, Version=3.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Extensions, Version=3.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
+    <Reference Include="System.Web.Abstractions" />
+    <Reference Include="System.Web.Mvc, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
+    <Reference Include="System.Web.Routing">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Web.Services" />
+    <Reference Include="System.EnterpriseServices" />
+    <Reference Include="System.Web.Mobile" />
+    <Reference Include="System.Xml.Linq, Version=3.5.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Global.asax.cs">
+      <DependentUpon>Global.asax</DependentUpon>
+    </Compile>
+    <Compile Include="Helpers\RandomStyle.cs" />
+    <Compile Include="Helpers\MapHelper.cs" />
+    <Compile Include="Handlers\StdWmsMapConfigFactory.cs" />
+    <Compile Include="Handlers\StdWmsMapHandler.cs" />
+    <Compile Include="Helpers\ExtensionMethods.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Global.asax" />
+    <Content Include="Views\Web.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Home\Index.aspx" />
+    <Content Include="Wms.ashx" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\NTS\GeoAPI\src\GeoAPI\GeoAPI.Net.csproj">
+      <Project>{FFB69466-79DE-466A-ADA7-5C47C5C5CA3A}</Project>
+      <Name>GeoAPI.Net</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\NTS\NPack\NPack\NPack.csproj">
+      <Project>{B139E1D5-091B-40D2-B7A2-7D7D82E13019}</Project>
+      <Name>NPack</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\SharpMap.Data.Providers\ShapeFileProvider\SharpMap.Data.Providers.ShapeFile.csproj">
+      <Project>{4D5343CE-7E0E-46B5-9F80-A31BDA78D609}</Project>
+      <Name>SharpMap.Data.Providers.ShapeFile</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\SharpMap.Presentation\AspNet\SharpMap.Presentation.AspNet.csproj">
+      <Project>{1677C565-FA87-419F-B925-02A5CAA97E8D}</Project>
+      <Name>SharpMap.Presentation.AspNet</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\SharpMap.Presentation\AspNet\WmsServer\SharpMap.Presentation.AspNet.WmsServer.csproj">
+      <Project>{952DAB9D-38D8-45E6-A089-84AB5A3D8A62}</Project>
+      <Name>SharpMap.Presentation.AspNet.WmsServer</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\SharpMap.Rendering\Gdi\SharpMap.Rendering.Gdi.csproj">
+      <Project>{EC29E6E4-CE31-4989-BAA7-0125F1F8910A}</Project>
+      <Name>SharpMap.Rendering.Gdi</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\SharpMap.Rendering\GeoJSON\SharpMap.Rendering.GeoJson.csproj">
+      <Project>{019FE8B5-5822-4272-B75C-8BDDAB479284}</Project>
+      <Name>SharpMap.Rendering.GeoJson</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\SharpMap.Rendering\Web.GdiTransGif\SharpMap.Rendering.Web.GdiTransGif.csproj">
+      <Project>{91509592-D1B9-4DDB-9D2C-F13FAB7E6FD1}</Project>
+      <Name>SharpMap.Rendering.Web.GdiTransGif</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\SharpMap.Rendering\Web.Gdi\SharpMap.Rendering.Web.Gdi.csproj">
+      <Project>{E49D450A-86DA-4CDE-8FC7-5A645165B615}</Project>
+      <Name>SharpMap.Rendering.Web.Gdi</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\SharpMap.Utilities\SharpMap.Utilities.csproj">
+      <Project>{011439C1-A53D-4DA1-AF8E-18D9D61121F4}</Project>
+      <Name>SharpMap.Utilities</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\SharpMap\SharpMap.csproj">
+      <Project>{C83777FC-AABB-47D9-911F-D76255D4D541}</Project>
+      <Name>SharpMap</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Content\handheld.css" />
+    <Content Include="Content\polymaps.css" />
+    <Content Include="Content\style.css" />
+    <Content Include="crossdomain.xml" />
+    <Content Include="Images\sorry.jpg" />
+    <Content Include="robots.txt" />
+    <Content Include="Scripts\dd_belatedpng.js" />
+    <Content Include="Scripts\globalmaptiles.js" />
+    <Content Include="Scripts\jquery-1.4.4-vsdoc.js" />
+    <Content Include="Scripts\jquery-1.4.4.js" />
+    <Content Include="Scripts\jquery-1.4.4.min.js" />
+    <Content Include="Scripts\modernizr-1.5.min.js" />
+    <Content Include="Scripts\plugins.js" />
+    <Content Include="Scripts\polymaps.js" />
+    <Content Include="Scripts\profiling\charts.swf" />
+    <Content Include="Scripts\profiling\config.js" />
+    <Content Include="Scripts\profiling\yahoo-profiling.css" />
+    <Content Include="Scripts\profiling\yahoo-profiling.min.js" />
+    <Content Include="Scripts\script.js" />
+    <Content Include="Views\Shared\Site.Master" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Web.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App_Data\nyc\giant_polygon.dbf" />
+    <None Include="App_Data\nyc\giant_polygon.fix" />
+    <None Include="App_Data\nyc\giant_polygon.prj" />
+    <None Include="App_Data\nyc\giant_polygon.qix" />
+    <None Include="App_Data\nyc\giant_polygon.shp" />
+    <None Include="App_Data\nyc\giant_polygon.shx" />
+    <None Include="App_Data\nyc\poi.dbf" />
+    <None Include="App_Data\nyc\poi.fix" />
+    <None Include="App_Data\nyc\poi.prj" />
+    <None Include="App_Data\nyc\poi.qix" />
+    <None Include="App_Data\nyc\poi.shp" />
+    <None Include="App_Data\nyc\poi.shx" />
+    <None Include="App_Data\nyc\poly_landmarks.dbf" />
+    <None Include="App_Data\nyc\poly_landmarks.fix" />
+    <None Include="App_Data\nyc\poly_landmarks.prj" />
+    <None Include="App_Data\nyc\poly_landmarks.qix" />
+    <None Include="App_Data\nyc\poly_landmarks.shp" />
+    <None Include="App_Data\nyc\poly_landmarks.shx" />
+    <None Include="App_Data\nyc\tiger_roads.dbf" />
+    <None Include="App_Data\nyc\tiger_roads.fix" />
+    <None Include="App_Data\nyc\tiger_roads.prj" />
+    <None Include="App_Data\nyc\tiger_roads.qix" />
+    <None Include="App_Data\nyc\tiger_roads.shp" />
+    <None Include="App_Data\nyc\tiger_roads.shx" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Models\" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v9.0\WebApplications\Microsoft.WebApplication.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target> -->
+  <Target Name="AfterBuild" Condition="'$(MvcBuildViews)'=='true'">
+    <AspNetCompiler VirtualPath="temp" PhysicalPath="$(ProjectDir)" />
+  </Target>
+  <ProjectExtensions>
+    <VisualStudio>
+      <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
+        <WebProjectProperties>
+          <UseIIS>False</UseIIS>
+          <AutoAssignPort>True</AutoAssignPort>
+          <DevelopmentServerPort>53449</DevelopmentServerPort>
+          <DevelopmentServerVPath>/</DevelopmentServerVPath>
+          <IISUrl>
+          </IISUrl>
+          <NTLMAuthentication>False</NTLMAuthentication>
+          <UseCustomServer>False</UseCustomServer>
+          <CustomServerUrl>
+          </CustomServerUrl>
+          <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
+        </WebProjectProperties>
+      </FlavorProperties>
+    </VisualStudio>
+  </ProjectExtensions>
+</Project>
