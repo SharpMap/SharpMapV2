@@ -28,7 +28,7 @@ namespace SharpMap.Presentation.AspNet.Handlers
 
         public IAsyncResult BeginProcessRequest(HttpContext context, AsyncCallback cb, object extraData)
         {
-            Debug.WriteLine(string.Format("Request recieved on thread {0}", Thread.CurrentThread.ManagedThreadId));
+            Debug.WriteLine(string.Format("Request received on thread {0}", Thread.CurrentThread.ManagedThreadId));
 
             AsyncResult result = new AsyncResult(cb, context);
             ThreadingUtility.QueueWorkItem(ProcessRequestAsync, result);

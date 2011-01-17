@@ -13,20 +13,20 @@
  * 
  */
 
-using System.Configuration;
-using SharpMap.Demo.Wms.Helpers;
-using SharpMap.Presentation.AspNet;
-using SharpMap.Presentation.AspNet.WmsServer;
-using SharpMap.Presentation.AspNet.WmsServer.Caching;
-using SharpMap.Rendering.Web;
-
 namespace SharpMap.Demo.Wms.Handlers
 {
+    using System.Configuration;
+    using Helpers;
+    using Presentation.AspNet;
+    using Presentation.AspNet.WmsServer;
+    using Presentation.AspNet.WmsServer.Caching;
+    using Rendering.Web;
+
     public class StdWmsMapHandler : AsyncWmsHandlerBase
     {
         public override void LoadLayers()
         {
-            MapHelper.SetupMap(Context, Map);
+            MapHelper.SetupMap(this.Context, this.Map);
         }
 
         protected override IWebMapRenderer CreateMapRenderer()

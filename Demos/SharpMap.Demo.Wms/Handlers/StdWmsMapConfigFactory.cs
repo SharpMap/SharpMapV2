@@ -45,8 +45,8 @@ namespace SharpMap.Demo.Wms.Handlers
                     },
                     VoiceTelephone = "1-800-WE DO MAPS"
                 },
-                MaxWidth = 1000,
-                MaxHeight = 500
+                MaxWidth = 2000,
+                MaxHeight = 2000
             };
 
 
