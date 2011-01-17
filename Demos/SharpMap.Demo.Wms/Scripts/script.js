@@ -1,9 +1,9 @@
-
 $(document).ready(function() {
-    var po = org.polymaps;
-    
-    var mercator = new GlobalMercator();
-    var layerUrl = function(name, data) {
+    var po, mercator, layerUrl, container, map;
+
+    po = org.polymaps;
+    mercator = new GlobalMercator();
+    layerUrl = function(name, data) {
         var bounds = mercator.TileLatLonBounds(data.column, data.row, data.zoom)
         log(bounds);
         return [
@@ -15,8 +15,8 @@ $(document).ready(function() {
         ].join('');
     };
 
-    var container = $("#map").get(0).appendChild(po.svg("svg"));
-    var map = po.map()
+    container = $("#map").get(0).appendChild(po.svg("svg"));
+    map = po.map()
         .container(container)
         .center({ lon: -73.9529, lat: 40.7723 })
         .zoom(10)
@@ -24,7 +24,7 @@ $(document).ready(function() {
         .add(po.hash());
 
     map.add(po.image().url(function(data) {
-        return layerUrl('giant_polygon,poly_landmarks,tiger_roads,poi', data);
+        return layerUrl('poly_landmarks,tiger_roads,poi', data);
     }));
     map.add(po.grid());
     map.add(po.compass());

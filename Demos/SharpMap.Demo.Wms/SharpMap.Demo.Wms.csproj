@@ -153,12 +153,6 @@
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App_Data\nyc\giant_polygon.dbf" />
-    <None Include="App_Data\nyc\giant_polygon.fix" />
-    <None Include="App_Data\nyc\giant_polygon.prj" />
-    <None Include="App_Data\nyc\giant_polygon.qix" />
-    <None Include="App_Data\nyc\giant_polygon.shp" />
-    <None Include="App_Data\nyc\giant_polygon.shx" />
     <None Include="App_Data\nyc\poi.dbf" />
     <None Include="App_Data\nyc\poi.fix" />
     <None Include="App_Data\nyc\poi.prj" />

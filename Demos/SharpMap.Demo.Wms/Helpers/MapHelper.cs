@@ -35,12 +35,12 @@ namespace SharpMap.Demo.Wms.Helpers
             var gfactory = geometryServices.DefaultGeometryFactory;
             var csfactory = geometryServices.CoordinateSystemFactory;
 
-            var layers = new[] { "giant_polygon", "poly_landmarks", "tiger_roads", "poi" };
-            foreach (var s in layers)
+            var layers = new[] { "poly_landmarks", "tiger_roads", "poi" };
+            foreach (var layer in layers)
             {
-                var format = String.Format("~/App_Data/nyc/{0}.shp", s);
+                var format = String.Format("~/App_Data/nyc/{0}.shp", layer);
                 var path = context.Server.MapPath(format);                
-                var shapeFile = new ShapeFileProvider(path, gfactory, csfactory, false) { IsSpatiallyIndexed = false };
+                var shapeFile = new ShapeFileProvider(path, gfactory, csfactory, false) { IsSpatiallyIndexed = true };
                 var provider = new AppStateMonitoringFeatureProvider(shapeFile);
 
                 var style = RandomStyle.RandomGeometryStyle();
@@ -49,9 +49,9 @@ namespace SharpMap.Demo.Wms.Helpers
                 style.PreProcessGeometries = false;
                 style.CoordinateNumberFormatString = "{0:F}";
 
-                var layer = new GeometryLayer(s, style, provider);
-                layer.Features.IsSpatiallyIndexed = false;
-                map.AddLayer(layer);
+                var item = new GeometryLayer(layer, style, provider);
+                item.Features.IsSpatiallyIndexed = true;
+                map.AddLayer(item);
                 provider.Open();
             }
         }
