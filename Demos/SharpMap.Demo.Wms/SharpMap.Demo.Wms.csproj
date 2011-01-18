@@ -132,7 +132,6 @@
     <Content Include="Content\polymaps.css" />
     <Content Include="Content\style.css" />
     <Content Include="crossdomain.xml" />
-    <Content Include="Images\sorry.jpg" />
     <Content Include="robots.txt" />
     <Content Include="Scripts\dd_belatedpng.js" />
     <Content Include="Scripts\globalmaptiles.js" />
@@ -146,10 +145,12 @@
     <Content Include="Scripts\profiling\config.js" />
     <Content Include="Scripts\profiling\yahoo-profiling.css" />
     <Content Include="Scripts\profiling\yahoo-profiling.min.js" />
-    <Content Include="Scripts\script.js" />
+    <Content Include="Scripts\poly_script.js" />
     <Content Include="Views\Shared\Site.Master" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Content\Images\sorry.jpg" />
+    <Content Include="Scripts\ol_script.js" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>

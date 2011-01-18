@@ -1,4 +1,8 @@
 $(document).ready(function() {
+    var lon = -73.9529;
+    var lat = 40.7723;
+    var zoom = 10;
+    
     var po, mercator, layerUrl, container, map;
 
     po = org.polymaps;
@@ -18,8 +22,8 @@ $(document).ready(function() {
     container = $("#map").get(0).appendChild(po.svg("svg"));
     map = po.map()
         .container(container)
-        .center({ lon: -73.9529, lat: 40.7723 })
-        .zoom(10)
+        .center({ lon: lon, lat: lat })
+        .zoom(zoom)
         .add(po.interact())
         .add(po.hash());
 
@@ -29,25 +33,3 @@ $(document).ready(function() {
     map.add(po.grid());
     map.add(po.compass());
 });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

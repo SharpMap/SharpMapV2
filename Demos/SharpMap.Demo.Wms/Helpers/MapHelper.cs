@@ -41,7 +41,7 @@ namespace SharpMap.Demo.Wms.Helpers
                 var format = String.Format("~/App_Data/nyc/{0}.shp", layer);
                 var path = context.Server.MapPath(format);                
                 var shapeFile = new ShapeFileProvider(path, gfactory, csfactory, false) { IsSpatiallyIndexed = true };
-                var provider = new AppStateMonitoringFeatureProvider(shapeFile);
+                var provider = shapeFile; // new AppStateMonitoringFeatureProvider(shapeFile);
 
                 var style = RandomStyle.RandomGeometryStyle();
                 style.IncludeAttributes = false;

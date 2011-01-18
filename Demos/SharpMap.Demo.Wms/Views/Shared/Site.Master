@@ -26,16 +26,17 @@
 
 
   <!-- Place favicon.ico and apple-touch-icon.png in the root of your domain and delete these references -->
-  <link rel="shortcut icon" href="../../Content/favicon.ico">
-  <link rel="apple-touch-icon" href="../../Content/apple-touch-icon.png">
+  <link rel="shortcut icon" href="~/Content/favicon.ico">
+  <link rel="apple-touch-icon" href="~/Content/apple-touch-icon.png">
 
 
   <!-- CSS : implied media="all" -->
-  <link rel="stylesheet"  href="../../Content/style.css?v=1">
-  <link rel="stylesheet"  href="../../Content/polymaps.css?v=1">
+  <link rel="stylesheet"  href="~/Content/style.css?v=1">
+  <asp:ContentPlaceHolder ID="CustomCssContent" runat="server" />
+  
 
   <!-- For the less-enabled mobile browsers like Opera Mini -->
-  <link rel="stylesheet" media="handheld" href="../../Content/handheld.css?v=1">
+  <link rel="stylesheet" media="handheld" href="~/Content/handheld.css?v=1">
  
  
   <!-- All JavaScript at the bottom, except for Modernizr which enables HTML5 elements & feature detects -->
@@ -70,13 +71,11 @@
 
   <!-- Grab Google CDN's jQuery. fall back to local if necessary -->
   <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"></script>
-  <script>!window.jQuery && document.write('<script src="../../Scripts/jquery-1.4.4.min.js?v=1"><\/script>')</script>
+  <script>!window.jQuery && document.write('<script src="~/Scripts/jquery-1.4.4.min.js?v=1"><\/script>')</script>
 
 
-  <script type="text/javascript" src="<%=Url.Content("~/Scripts/plugins.js?v=1")%>"></script>
-  <script type="text/javascript" src="<%=Url.Content("~/Scripts/polymaps.js?v=1")%>"></script>
-  <script type="text/javascript" src="<%=Url.Content("~/Scripts/globalmaptiles.js?v=1")%>"></script>
-  <script type="text/javascript" src="<%=Url.Content("~/Scripts/script.js?v=1")%>"></script>  
+  <script type="text/javascript" src="<%=Url.Content("~/Scripts/plugins.js?v=1")%>"></script>  
+  <asp:ContentPlaceHolder ID="CustomJsContent" runat="server" />
   <!--[if lt IE 7 ]>
     <script src="js/dd_belatedpng.js?v=1"></script>
   <![endif]-->
