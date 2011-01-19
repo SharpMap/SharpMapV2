@@ -18,6 +18,7 @@ namespace SharpMap.Demo.Wms.Helpers
     using System;
     using System.Collections.Generic;
     using System.Web;
+    using Data.Providers;
     using Data.Providers.ShapeFile;
     using GeoAPI.CoordinateSystems;
     using GeoAPI.Geometries;
@@ -34,6 +35,8 @@ namespace SharpMap.Demo.Wms.Helpers
             if (map == null) 
                 throw new ArgumentNullException("map");
 
+            const bool indexed = true;
+
             var services = new GeometryServices();
             var geoFactory = services.DefaultGeometryFactory;
             var csFactory = services.CoordinateSystemFactory;
@@ -42,9 +45,9 @@ namespace SharpMap.Demo.Wms.Helpers
             foreach (var layer in layers)
             {
                 var format = String.Format("~/App_Data/nyc/{0}.shp", layer);
-                var path = context.Server.MapPath(format);                
-                var shapefile = new ShapeFileProvider(path, geoFactory, csFactory, false) { IsSpatiallyIndexed = false };                
-                var provider = shapefile; // new AppStateMonitoringFeatureProvider(shapeFile);                
+                var path = context.Server.MapPath(format);
+                var provider = new ShapeFileProvider(path, geoFactory, csFactory, indexed, WriteAccess.ReadOnly) { IsSpatiallyIndexed = indexed };
+                var async = new AppStateMonitoringFeatureProvider(provider);                
 
                 var style = RandomStyle.RandomGeometryStyle();
                 style.IncludeAttributes = false;
@@ -52,10 +55,10 @@ namespace SharpMap.Demo.Wms.Helpers
                 style.PreProcessGeometries = false;
                 style.CoordinateNumberFormatString = "{0:F}";
 
-                var item = new GeometryLayer(layer, style, provider);
-                item.Features.IsSpatiallyIndexed = false;
+                var item = new GeometryLayer(layer, style, async);
+                item.Features.IsSpatiallyIndexed = indexed;
                 map.AddLayer(item);
-                provider.Open();
+                async.Open();
             }
         }
 

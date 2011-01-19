@@ -51,6 +51,30 @@ using Caster = GeoAPI.DataStructures.Caster;
 
 namespace SharpMap.Data.Providers.ShapeFile
 {
+    public struct FilePermissions
+    {
+        private FileMode fileMode;
+        private FileAccess fileAccess;
+        private FileShare fileShare;
+
+        public FilePermissions(FileMode fileMode, FileAccess fileAccess, FileShare fileShare)
+        {
+            this.fileMode = fileMode;
+            this.fileAccess = fileAccess;
+            this.fileShare = fileShare;
+        }
+
+        public FileMode FileMode { get { return this.fileMode; } set { this.fileMode = value; } }
+        public FileAccess FileAccess { get { return this.fileAccess; } set { this.fileAccess = value; } }
+        public FileShare FileShare { get { return this.fileShare; } set { this.fileShare = value; } }
+    }
+
+    public enum WriteAccess
+    {
+        Default,
+        Exclusive,
+        ReadOnly
+    }
     public enum ForceCoordinateOptions
     {
         ForceNone = 0,
@@ -64,7 +88,7 @@ namespace SharpMap.Data.Providers.ShapeFile
     {
         Strict,
         Lenient
-    }
+    }    
 
     /// <summary>
     /// A data provider for the ESRI ShapeFile spatial data format.
@@ -172,8 +196,9 @@ namespace SharpMap.Data.Providers.ShapeFile
         private BinaryReader _shapeFileReader;
         private FileStream _shapeFileStream;
         private BinaryWriter _shapeFileWriter;
+        private WriteAccess _writeAccess;
         private ISpatialIndex<IExtents, IdBounds> _spatialIndex;
-        private Int32? _srid;
+        private Int32? _srid;        
 
         #endregion
 
@@ -189,7 +214,7 @@ namespace SharpMap.Data.Providers.ShapeFile
         /// with an in-memory spatial index.
         /// </remarks>
         public ShapeFileProvider(String filename, IGeometryFactory geoFactory)
-            : this(filename, geoFactory, null, false)
+            : this(filename, geoFactory, null, false, WriteAccess.Default)
         {
         }
 
@@ -208,7 +233,7 @@ namespace SharpMap.Data.Providers.ShapeFile
         public ShapeFileProvider(String filename,
                                  IGeometryFactory geoFactory,
                                  ICoordinateSystemFactory coordSysFactory)
-            : this(filename, geoFactory, coordSysFactory, false)
+            : this(filename, geoFactory, coordSysFactory, false, WriteAccess.Default)
         {
         }
 
@@ -228,12 +253,16 @@ namespace SharpMap.Data.Providers.ShapeFile
         /// The coordinate system factory to use to create spatial reference system objects.
         /// </param>
         /// <param name="fileBasedIndex">True to create a file-based spatial index.</param>
+        /// <param name="writeAccess">Specify the kind of access when managing files.</param>
         public ShapeFileProvider(String filename,
                                  IGeometryFactory geoFactory,
                                  ICoordinateSystemFactory coordSysFactory,
-                                 Boolean fileBasedIndex)
+                                 Boolean fileBasedIndex,
+                                 WriteAccess writeAccess)
         {
             _filename = filename;
+            _writeAccess = writeAccess;
+
             IGeometryFactory geoFactoryClone = base.GeometryFactory = geoFactory.Clone();
             OriginalSpatialReference = geoFactoryClone.SpatialReference;
             OriginalSrid = geoFactoryClone.Srid;
@@ -260,7 +289,7 @@ namespace SharpMap.Data.Providers.ShapeFile
             if (HasDbf)
             {
                 _dbaseFile = new DbaseFile(DbfFilename, geoFactory);
-            }
+            }            
         }
 
         #region Dispose pattern
@@ -681,15 +710,8 @@ namespace SharpMap.Data.Providers.ShapeFile
         #endregion
 
         #region ShapeFile specific methods
-
-        /// <summary>
-        /// Opens the shapefile with optional exclusive access for
-        /// faster write performance during bulk updates.
-        /// </summary>
-        /// <param name="exclusive">
-        /// True if exclusive access is desired, false otherwise.
-        /// </param>
-        public void Open(Boolean exclusive)
+        
+        private void InternalOpen()
         {
             _coordsysReadFromFile = false; // jd setting to false to stop error on second and subsequent open
 
@@ -698,18 +720,24 @@ namespace SharpMap.Data.Providers.ShapeFile
                 return;
             }
 
+            FilePermissions @params = GetPermissions(_writeAccess);
+
             try
             {
                 //enableReading();
-                _shapeFileStream = new FileStream(Filename,
-                                                  FileMode.OpenOrCreate,
-                                                  FileAccess.ReadWrite,
-                                                  exclusive ? FileShare.None : FileShare.Read,
+
+
+                _shapeFileStream = new FileStream(Filename, 
+                                                  @params.FileMode,
+                                                  @params.FileAccess,
+                                                  @params.FileShare,
                                                   4096,
                                                   FileOptions.None);
 
                 _shapeFileReader = new BinaryReader(_shapeFileStream);
-                _shapeFileWriter = new BinaryWriter(_shapeFileStream);
+                if (_writeAccess != WriteAccess.ReadOnly)
+                    _shapeFileWriter = new BinaryWriter(_shapeFileStream);
+                // TODO: NullBinaryWriter
 
                 base.Open();
 
@@ -722,7 +750,7 @@ namespace SharpMap.Data.Providers.ShapeFile
                 if (HasDbf)
                 {
                     _dbaseFile = new DbaseFile(DbfFilename, GeometryFactory);
-                    _dbaseFile.Open(exclusive);
+                    _dbaseFile.Open(_writeAccess);
                 }
             }
             catch (Exception)
@@ -730,6 +758,35 @@ namespace SharpMap.Data.Providers.ShapeFile
                 base.Close();
                 throw;
             }
+        }
+
+        internal static FilePermissions GetPermissions(WriteAccess writeAccess)
+        {
+            FilePermissions @params = new FilePermissions();
+            switch (writeAccess)
+            {
+                case WriteAccess.Default:
+                    @params.FileMode = FileMode.OpenOrCreate;
+                    @params.FileAccess = FileAccess.ReadWrite;
+                    @params.FileShare = FileShare.ReadWrite;
+                    break;
+
+                case WriteAccess.Exclusive:
+                    @params.FileMode = FileMode.OpenOrCreate;
+                    @params.FileAccess = FileAccess.ReadWrite;
+                    @params.FileShare = FileShare.None;
+                    break;
+
+                case WriteAccess.ReadOnly:
+                    @params.FileMode = FileMode.Open;
+                    @params.FileAccess = FileAccess.Read;
+                    @params.FileShare = FileShare.Read;
+                    break;
+                
+                default:
+                    throw new ArgumentOutOfRangeException("writeAccess");
+            }
+            return @params;
         }
 
         /// <summary>
@@ -1572,7 +1629,7 @@ namespace SharpMap.Data.Providers.ShapeFile
         /// </summary>
         public override void Open()
         {
-            Open(false);
+            this.InternalOpen();
         }
 
         #endregion
