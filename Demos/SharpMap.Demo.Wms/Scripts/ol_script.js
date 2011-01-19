@@ -42,8 +42,10 @@ $(document).ready(function() {
 
         map = new OpenLayers.Map('map', options);
         map.addControl(new OpenLayers.Control.LayerSwitcher());
-        map.addControl(new OpenLayers.Control.Navigation());
-        map.addControl(new OpenLayers.Control.PanZoomBar());
+        map.addControl(new OpenLayers.Control.NavToolbar());
+        map.addControl(new OpenLayers.Control.PanZoom({
+            position: new OpenLayers.Pixel(2, 10)
+        }));
         map.addControl(new OpenLayers.Control.MousePosition());
 
         osm = new OpenLayers.Layer.WMS('OpenStreetMap', options.osm.url, {
