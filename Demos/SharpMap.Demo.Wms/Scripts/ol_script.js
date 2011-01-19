@@ -72,7 +72,7 @@ $(document).ready(function() {
             isBaseLayer: false,
             transparent: true,
             buffer: 0,
-            singleTile: false,
+            singleTile: true,
             ratio: 1,
             yx: []
         });

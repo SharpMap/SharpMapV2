@@ -28,7 +28,7 @@ namespace SharpMap.Presentation.AspNet.Handlers
 
         public IAsyncResult BeginProcessRequest(HttpContext context, AsyncCallback cb, object extraData)
         {
-            Debug.WriteLine(string.Format("Request received on thread {0}", Thread.CurrentThread.ManagedThreadId));
+            Debug.WriteLine(string.Format("Request starting on thread {0}", Thread.CurrentThread.ManagedThreadId));
 
             AsyncResult result = new AsyncResult(cb, context);
             ThreadingUtility.QueueWorkItem(ProcessRequestAsync, result);
@@ -37,6 +37,8 @@ namespace SharpMap.Presentation.AspNet.Handlers
 
         public void EndProcessRequest(IAsyncResult result)
         {
+            Debug.WriteLine(string.Format("Request ending on thread {0}", Thread.CurrentThread.ManagedThreadId));
+
             if (result != null)
                 ((AsyncResult) result).EndInvoke();
         }
@@ -44,9 +46,11 @@ namespace SharpMap.Presentation.AspNet.Handlers
 
         public override void ProcessRequest(HttpContext context)
         {
-            Debug.WriteLine(string.Format("Request processed on thread {0}", Thread.CurrentThread.ManagedThreadId));
-
-            base.ProcessRequest(context);
+            var watch = new Stopwatch();
+            watch.Start();
+            base.ProcessRequest(context);             
+            watch.Stop();
+            Debug.WriteLine(String.Format("Elapsed time: {0}", watch.Elapsed));
         }
 
         #endregion

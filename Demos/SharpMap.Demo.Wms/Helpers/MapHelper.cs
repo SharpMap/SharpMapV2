@@ -50,9 +50,9 @@ namespace SharpMap.Demo.Wms.Helpers
                 var async = new AppStateMonitoringFeatureProvider(provider);                
 
                 var style = RandomStyle.RandomGeometryStyle();
-                style.IncludeAttributes = false;
+                style.IncludeAttributes = true;
                 style.IncludeBBox = true;
-                style.PreProcessGeometries = false;
+                style.PreProcessGeometries = true;
                 style.CoordinateNumberFormatString = "{0:F}";
 
                 var item = new GeometryLayer(layer, style, async);

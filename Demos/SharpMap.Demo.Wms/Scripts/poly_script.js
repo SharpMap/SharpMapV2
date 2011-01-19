@@ -27,6 +27,9 @@ $(document).ready(function() {
         .add(po.interact())
         .add(po.hash());
 
+    map.add(po.image().url(
+        po.url(["http://{S}tile.cloudmade.com", "/1a1b06b230af4efdbb989ea99e9841af", "/998/256/{Z}/{X}/{Y}.png"].join(''))
+        .hosts(["a.", "b.", "c.", ""])));
     map.add(po.image().url(function(data) {
         return layerUrl('poly_landmarks,tiger_roads,poi', data);
     }));
