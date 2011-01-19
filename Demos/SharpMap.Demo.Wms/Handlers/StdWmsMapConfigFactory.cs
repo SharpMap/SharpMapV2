@@ -58,6 +58,6 @@ namespace SharpMap.Demo.Wms.Handlers
         public override string CreateCacheKey(HttpContext context)
         {
             return "MyWmsServer";
-        }
+        }        
     }
 }

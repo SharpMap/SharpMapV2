@@ -90,6 +90,10 @@
       <Project>{B139E1D5-091B-40D2-B7A2-7D7D82E13019}</Project>
       <Name>NPack</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Proj.Net\ProjNet\ProjNet.csproj">
+      <Project>{E028BDD2-55E1-4E5F-BE31-35FAEC8D6428}</Project>
+      <Name>ProjNet</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\SharpMap.Data.Providers\ShapeFileProvider\SharpMap.Data.Providers.ShapeFile.csproj">
       <Project>{4D5343CE-7E0E-46B5-9F80-A31BDA78D609}</Project>
       <Name>SharpMap.Data.Providers.ShapeFile</Name>
@@ -155,21 +159,15 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App_Data\nyc\poi.dbf" />
-    <None Include="App_Data\nyc\poi.fix" />
     <None Include="App_Data\nyc\poi.prj" />
-    <None Include="App_Data\nyc\poi.qix" />
     <None Include="App_Data\nyc\poi.shp" />
     <None Include="App_Data\nyc\poi.shx" />
     <None Include="App_Data\nyc\poly_landmarks.dbf" />
-    <None Include="App_Data\nyc\poly_landmarks.fix" />
     <None Include="App_Data\nyc\poly_landmarks.prj" />
-    <None Include="App_Data\nyc\poly_landmarks.qix" />
     <None Include="App_Data\nyc\poly_landmarks.shp" />
     <None Include="App_Data\nyc\poly_landmarks.shx" />
     <None Include="App_Data\nyc\tiger_roads.dbf" />
-    <None Include="App_Data\nyc\tiger_roads.fix" />
     <None Include="App_Data\nyc\tiger_roads.prj" />
-    <None Include="App_Data\nyc\tiger_roads.qix" />
     <None Include="App_Data\nyc\tiger_roads.shp" />
     <None Include="App_Data\nyc\tiger_roads.shx" />
   </ItemGroup>

@@ -85,12 +85,11 @@ namespace SharpMap.Presentation.AspNet.Handlers
                 Debug.WriteLine("Client Disconnected");
             }
             catch (XmlFormatableExceptionBase ex)
-            {
-                Debug.WriteLine(String.Format("{0}\n{1}",
-                                              ex.InnerException == null
-                                                  ? ex.Message
-                                                  : ex.InnerException.Message,
-                                              ex.StackTrace));
+            {                
+                Debug.WriteLine(String.Format("EX: {0}{1}{2}", ex.Message, Environment.NewLine, ex.StackTrace));
+                var inner = ex.InnerException;                
+                if (inner != null)
+                Debug.WriteLine(String.Format("INNER: {0}{1}{2}", inner.Message, Environment.NewLine, inner.StackTrace));
 
                 if (context.Response.IsClientConnected)
                 {
