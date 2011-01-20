@@ -24,10 +24,13 @@ namespace SharpMap.Demo.Wms.Helpers
     using GeoAPI.Geometries;
     using Layers;
     using ProjNet.CoordinateSystems;
+    using Styles;
     using Utilities;
 
     public static class MapHelper
     {
+        private static readonly IDictionary<string, GeometryStyle> styles = new Dictionary<string, GeometryStyle>();
+
         public static void SetupMap(HttpContext context, Map map)
         {
             if (context == null)
@@ -35,7 +38,7 @@ namespace SharpMap.Demo.Wms.Helpers
             if (map == null) 
                 throw new ArgumentNullException("map");
 
-            const bool indexed = true;
+            const bool indexed = false;
 
             var services = new GeometryServices();
             var geoFactory = services.DefaultGeometryFactory;
@@ -49,13 +52,23 @@ namespace SharpMap.Demo.Wms.Helpers
                 var provider = new ShapeFileProvider(path, geoFactory, csFactory, indexed, WriteAccess.ReadOnly) { IsSpatiallyIndexed = indexed };
                 var async = new AppStateMonitoringFeatureProvider(provider);                
 
-                var style = RandomStyle.RandomGeometryStyle();
-                style.IncludeAttributes = true;
-                style.IncludeBBox = true;
-                style.PreProcessGeometries = true;
-                style.CoordinateNumberFormatString = "{0:F}";
-
-                var item = new GeometryLayer(layer, style, async);
+                if (!styles.ContainsKey(layer))
+                {
+                    lock (styles)
+                    {
+                        if (!styles.ContainsKey(layer))
+                        {
+                            var style = RandomStyle.RandomGeometryStyle();
+                            style.IncludeAttributes = true;
+                            style.IncludeBBox = true;
+                            style.PreProcessGeometries = true;
+                            style.CoordinateNumberFormatString = "{0:F}";
+                            styles.Add(layer, style);
+                        }
+                    }
+                }
+                
+                var item = new GeometryLayer(layer, styles[layer], async);
                 item.Features.IsSpatiallyIndexed = indexed;
                 map.AddLayer(item);
                 async.Open();

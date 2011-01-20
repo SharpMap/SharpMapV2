@@ -53,20 +53,11 @@ namespace SharpMap.Data.Providers.ShapeFile
 {
     public struct FilePermissions
     {
-        private FileMode fileMode;
-        private FileAccess fileAccess;
-        private FileShare fileShare;
+        public FileMode FileMode { get; set; }
 
-        public FilePermissions(FileMode fileMode, FileAccess fileAccess, FileShare fileShare)
-        {
-            this.fileMode = fileMode;
-            this.fileAccess = fileAccess;
-            this.fileShare = fileShare;
-        }
+        public FileAccess FileAccess { get; set; }
 
-        public FileMode FileMode { get { return this.fileMode; } set { this.fileMode = value; } }
-        public FileAccess FileAccess { get { return this.fileAccess; } set { this.fileAccess = value; } }
-        public FileShare FileShare { get { return this.fileShare; } set { this.fileShare = value; } }
+        public FileShare FileShare { get; set; }
     }
 
     public enum WriteAccess

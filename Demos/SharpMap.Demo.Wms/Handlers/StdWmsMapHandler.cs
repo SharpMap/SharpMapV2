@@ -15,11 +15,10 @@
 
 namespace SharpMap.Demo.Wms.Handlers
 {
-    using System.Configuration;
     using Helpers;
     using Presentation.AspNet;
+    using Presentation.AspNet.Caching;
     using Presentation.AspNet.WmsServer;
-    using Presentation.AspNet.WmsServer.Caching;
     using Rendering.Web;
 
     public class StdWmsMapHandler : AsyncWmsHandlerBase
@@ -41,8 +40,11 @@ namespace SharpMap.Demo.Wms.Handlers
 
         protected override IMapCacheProvider CreateCacheProvider()
         {
+            return new NoCacheProvider();
+/*
             var dir = ConfigurationManager.AppSettings["CacheDirectory"];
             return new WmsAwareFileSystemCacheProvider { BaseCacheDir = dir };
+*/
         }
     }
 }
