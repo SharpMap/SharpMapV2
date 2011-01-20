@@ -39,7 +39,7 @@ namespace MapViewer.DataSource
             {
                 return string.Format("server={0};{1}", tbServer.Text,
                                      rbSqlServer.Checked
-                                         ? string.Format("uid={0};pwd={1}", tbUName.Text, tbPassword.Text)
+                                         ? string.Format("uid={0};pwd={1};", tbUName.Text, tbPassword.Text)
                                          : "trusted_connection=true;");
             }
         }

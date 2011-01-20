@@ -94,6 +94,14 @@
       <Project>{E028BDD2-55E1-4E5F-BE31-35FAEC8D6428}</Project>
       <Name>ProjNet</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\SharpMap.Data.Providers\DbProviderBase\SharpMap.Data.Providers.Db.csproj">
+      <Project>{FEE2753F-DCC2-4DC6-9651-FA2CED8A2974}</Project>
+      <Name>SharpMap.Data.Providers.Db</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\SharpMap.Data.Providers\MsSqlServer2008\SharpMap.Data.Providers.MsSqlServer2008.csproj">
+      <Project>{184C9D40-7999-46E4-8407-AD6480F75D87}</Project>
+      <Name>SharpMap.Data.Providers.MsSqlServer2008</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\SharpMap.Data.Providers\ShapeFileProvider\SharpMap.Data.Providers.ShapeFile.csproj">
       <Project>{4D5343CE-7E0E-46B5-9F80-A31BDA78D609}</Project>
       <Name>SharpMap.Data.Providers.ShapeFile</Name>

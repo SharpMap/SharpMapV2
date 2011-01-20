@@ -53,7 +53,7 @@ namespace SharpMap.Presentation.AspNet.Demo.Common
                 ShapeFileProvider shapeFile =
                new ShapeFileProvider(context.Server.MapPath(string.Format("~/App_Data/Shapefiles/{0}.shp", s)),
                                      geometryServices.DefaultGeometryFactory,
-                                     geometryServices.CoordinateSystemFactory, false);
+                                     geometryServices.CoordinateSystemFactory, false, WriteAccess.Default);
                 shapeFile.IsSpatiallyIndexed = false;
 
                 AppStateMonitoringFeatureProvider provider = new AppStateMonitoringFeatureProvider(shapeFile);

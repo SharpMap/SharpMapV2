@@ -95,8 +95,10 @@ namespace SharpMap.Layers
 
             // We need to get the schema of the feature table.
             DataSource.Open();
-            _features = DataSource.CreateNewTable()
-                        ?? new FeatureDataTable(dataSource.GeometryFactory);
+
+            FeatureDataTable dataTable = this.DataSource.CreateNewTable();
+            _features = dataTable;
+
             GeometryFactory = dataSource.GeometryFactory;
             DataSource.Close();
 

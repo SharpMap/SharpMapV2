@@ -17,6 +17,7 @@ namespace SharpMap.Demo.Wms.Helpers
 {
     using System;
     using System.Collections.Generic;
+    using System.Configuration;
     using System.Web;
     using Data.Providers;
     using Data.Providers.ShapeFile;
@@ -26,6 +27,7 @@ namespace SharpMap.Demo.Wms.Helpers
     using ProjNet.CoordinateSystems;
     using Styles;
     using Utilities;
+    using Utilities.SridUtility;
 
     public static class MapHelper
     {
@@ -42,15 +44,21 @@ namespace SharpMap.Demo.Wms.Helpers
 
             var services = new GeometryServices();
             var geoFactory = services.DefaultGeometryFactory;
-            var csFactory = services.CoordinateSystemFactory;
+            // var csFactory = services.CoordinateSystemFactory;
+
+            var settings = ConfigurationManager.ConnectionStrings["db"];
+            if (settings == null)
+                throw new ArgumentException("db connstring not found");
+            var connstring = settings.ConnectionString;
 
             var layers = new[] { "poly_landmarks", "tiger_roads", "poi" };
             foreach (var layer in layers)
             {
-                var format = String.Format("~/App_Data/nyc/{0}.shp", layer);
-                var path = context.Server.MapPath(format);
-                var provider = new ShapeFileProvider(path, geoFactory, csFactory, indexed, WriteAccess.ReadOnly) { IsSpatiallyIndexed = indexed };
-                var async = new AppStateMonitoringFeatureProvider(provider);                
+                // var format = String.Format("~/App_Data/nyc/{0}.shp", layer);
+                // var path = context.Server.MapPath(format);
+                // var provider = new ShapeFileProvider(path, geoFactory, csFactory, indexed, WriteAccess.ReadOnly) { IsSpatiallyIndexed = indexed };
+                var provider = new MsSqlServer2008Provider<int>(geoFactory, connstring, "dbo", layer, "UID", "geom");
+                var async =  new AppStateMonitoringFeatureProvider(provider);                
 
                 if (!styles.ContainsKey(layer))
                 {

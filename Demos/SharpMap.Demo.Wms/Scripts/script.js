@@ -1,5 +1,5 @@
 $(document).ready(function() {
-    var options, toMercator, toWgs84, init;
+    var options, init;
 
     OpenLayers.DOTS_PER_INCH = 25.4 / 0.28;
     OpenLayers.IMAGE_RELOAD_ATTEMPTS = 5;
@@ -35,21 +35,11 @@ $(document).ready(function() {
         format: 'image/png'
     };
 
-    toMercator = function(lonlat) {
-        lonlat.transform(options.displayProjection, options.projection);
-        return lonlat;
-    };
-
-    toWgs84 = function(lonlat) {
-        lonlat.transform(options.projection, options.displayProjection);
-        return lonlat;
-    };
-
     init = function() {
         var lon = -73.9529;
         var lat = 40.7723;
         var zoom = 10;
-        var map, osm, layer;
+        var map, osm, layer, center;
 
         map = new OpenLayers.Map('map', options);
         map.addControl(new OpenLayers.Control.LayerSwitcher());
@@ -88,7 +78,8 @@ $(document).ready(function() {
             yx: []
         });
         map.addLayers([osm, layer]);
-        map.setCenter(toMercator(new OpenLayers.LonLat(lon, lat)), zoom);
+        center = new OpenLayers.LonLat(lon, lat);
+        map.setCenter(center, zoom);
     };
     init();
 });
