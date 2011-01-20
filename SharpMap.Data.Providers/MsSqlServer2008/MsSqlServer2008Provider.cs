@@ -80,9 +80,17 @@ namespace SharpMap.Data.Providers
                    connectionString,
                    tableSchema,
                    tableName,
-                   oidColumn,
+                   EnsureCase(oidColumn),
                    geometryColumn)
         {
+        }
+
+        /// <summary>
+        /// See "DataTable Merge NullReferenceException when primary key column differs in case": http://goo.gl/dms98
+        /// </summary>
+        private static string EnsureCase(string s)
+        {
+            return (s ?? String.Empty).ToUpper();
         }
 
         public override String GeometryColumnConversionFormatString
