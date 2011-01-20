@@ -138,7 +138,7 @@ namespace SharpMap.Demo.FormatConverter.ShapeFile
                                                            geometryFactory,
                                                            csFactory);
 
-            _targetProvider.Open(); // TODO: exclusive opening needed!
+            _targetProvider.Open(WriteAccess.Exclusive);
             return _targetProvider;
         }
 

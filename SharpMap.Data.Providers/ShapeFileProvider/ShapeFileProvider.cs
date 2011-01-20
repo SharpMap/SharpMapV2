@@ -62,9 +62,9 @@ namespace SharpMap.Data.Providers.ShapeFile
 
     public enum WriteAccess
     {
-        Default,
-        Exclusive,
-        ReadOnly
+        ReadOnly,
+        ReadWrite,
+        Exclusive
     }
     public enum ForceCoordinateOptions
     {
@@ -187,7 +187,6 @@ namespace SharpMap.Data.Providers.ShapeFile
         private BinaryReader _shapeFileReader;
         private FileStream _shapeFileStream;
         private BinaryWriter _shapeFileWriter;
-        private WriteAccess _writeAccess;
         private ISpatialIndex<IExtents, IdBounds> _spatialIndex;
         private Int32? _srid;        
 
@@ -205,7 +204,7 @@ namespace SharpMap.Data.Providers.ShapeFile
         /// with an in-memory spatial index.
         /// </remarks>
         public ShapeFileProvider(String filename, IGeometryFactory geoFactory)
-            : this(filename, geoFactory, null, false, WriteAccess.Default)
+            : this(filename, geoFactory, null, false)
         {
         }
 
@@ -224,7 +223,7 @@ namespace SharpMap.Data.Providers.ShapeFile
         public ShapeFileProvider(String filename,
                                  IGeometryFactory geoFactory,
                                  ICoordinateSystemFactory coordSysFactory)
-            : this(filename, geoFactory, coordSysFactory, false, WriteAccess.Default)
+            : this(filename, geoFactory, coordSysFactory, false)
         {
         }
 
@@ -249,36 +248,9 @@ namespace SharpMap.Data.Providers.ShapeFile
                                  IGeometryFactory geoFactory,
                                  ICoordinateSystemFactory coordSysFactory,
                                  Boolean fileBasedIndex)
-            : this(filename, geoFactory, coordSysFactory, fileBasedIndex, WriteAccess.Default)
-        {
-        }
-
-        /// <summary>
-        /// Initializes a ShapeFile data provider.
-        /// </summary>
-        /// <remarks>
-        /// <para>
-        /// If <paramref name="fileBasedIndex"/> is true, the spatial index 
-        /// will be read from a local copy. If it doesn't exist,
-        /// it will be generated and saved to [filename] + '.sidx'.
-        /// </para>
-        /// </remarks>
-        /// <param name="filename">Path to shapefile (.shp file).</param>
-        /// <param name="geoFactory">The geometry factory to use to create geometries.</param>
-        /// <param name="coordSysFactory">
-        /// The coordinate system factory to use to create spatial reference system objects.
-        /// </param>
-        /// <param name="fileBasedIndex">True to create a file-based spatial index.</param>
-        /// <param name="writeAccess">Specify the kind of access when managing files.</param>
-        public ShapeFileProvider(String filename,
-                                 IGeometryFactory geoFactory,
-                                 ICoordinateSystemFactory coordSysFactory,
-                                 Boolean fileBasedIndex,
-                                 WriteAccess writeAccess)
         {
             _filename = filename;
-            _writeAccess = writeAccess;
-
+            
             IGeometryFactory geoFactoryClone = base.GeometryFactory = geoFactory.Clone();
             OriginalSpatialReference = geoFactoryClone.SpatialReference;
             OriginalSrid = geoFactoryClone.Srid;
@@ -727,7 +699,7 @@ namespace SharpMap.Data.Providers.ShapeFile
 
         #region ShapeFile specific methods
         
-        private void InternalOpen()
+        public void Open(WriteAccess writeAccess)
         {
             _coordsysReadFromFile = false; // jd setting to false to stop error on second and subsequent open
 
@@ -736,7 +708,7 @@ namespace SharpMap.Data.Providers.ShapeFile
                 return;
             }
 
-            FilePermissions @params = GetPermissions(_writeAccess);
+            FilePermissions @params = GetPermissions(writeAccess);
 
             try
             {
@@ -751,7 +723,7 @@ namespace SharpMap.Data.Providers.ShapeFile
                                                   FileOptions.None);
 
                 _shapeFileReader = new BinaryReader(_shapeFileStream);
-                if (_writeAccess != WriteAccess.ReadOnly)
+                if (writeAccess != WriteAccess.ReadOnly)
                     _shapeFileWriter = new BinaryWriter(_shapeFileStream);
                 // TODO: NullBinaryWriter
 
@@ -766,7 +738,7 @@ namespace SharpMap.Data.Providers.ShapeFile
                 if (HasDbf)
                 {
                     _dbaseFile = new DbaseFile(DbfFilename, GeometryFactory);
-                    _dbaseFile.Open(_writeAccess);
+                    _dbaseFile.Open(writeAccess);
                 }
             }
             catch (Exception)
@@ -781,7 +753,13 @@ namespace SharpMap.Data.Providers.ShapeFile
             FilePermissions @params = new FilePermissions();
             switch (writeAccess)
             {
-                case WriteAccess.Default:
+                case WriteAccess.ReadOnly:
+                    @params.FileMode = FileMode.Open;
+                    @params.FileAccess = FileAccess.Read;
+                    @params.FileShare = FileShare.Read;
+                    break;
+
+                case WriteAccess.ReadWrite:
                     @params.FileMode = FileMode.OpenOrCreate;
                     @params.FileAccess = FileAccess.ReadWrite;
                     @params.FileShare = FileShare.ReadWrite;
@@ -791,12 +769,6 @@ namespace SharpMap.Data.Providers.ShapeFile
                     @params.FileMode = FileMode.OpenOrCreate;
                     @params.FileAccess = FileAccess.ReadWrite;
                     @params.FileShare = FileShare.None;
-                    break;
-
-                case WriteAccess.ReadOnly:
-                    @params.FileMode = FileMode.Open;
-                    @params.FileAccess = FileAccess.Read;
-                    @params.FileShare = FileShare.Read;
                     break;
                 
                 default:
@@ -1645,7 +1617,7 @@ namespace SharpMap.Data.Providers.ShapeFile
         /// </summary>
         public override void Open()
         {
-            this.InternalOpen();
+            this.Open(WriteAccess.ReadWrite);
         }
 
         #endregion
