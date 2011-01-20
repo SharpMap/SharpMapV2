@@ -23,7 +23,9 @@ $(document).ready(function() {
             type: 'WMS',
             version: '1.3.0',
             format: 'image/png',
-            layers: 'poly_landmarks,tiger_roads,poi',
+            layers: ['poly_landmarks',
+                     'tiger_roads',
+                     'poi'].join(''),
             srs: '4326'
         },
         controls: [],

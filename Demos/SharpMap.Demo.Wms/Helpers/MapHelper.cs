@@ -50,7 +50,12 @@ namespace SharpMap.Demo.Wms.Helpers
             var connstring = settings.ConnectionString;
             */
 
-            var layers = new[] { "poly_landmarks", "tiger_roads", "poi" };
+            var layers = new[]
+            {
+                "poly_landmarks", 
+                "tiger_roads", 
+                "poi",
+            };
             foreach (var layer in layers)
             {
                 var format = String.Format("~/App_Data/nyc/{0}.shp", layer);
