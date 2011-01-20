@@ -699,6 +699,10 @@ namespace SharpMap.Data.Providers.ShapeFile
 
         #region ShapeFile specific methods
         
+		/// <summary>
+        /// Opens the data source.
+        /// </summary>
+        /// <param name="writeAccess">Specify the access rights to the files.</param>
         public void Open(WriteAccess writeAccess)
         {
             _coordsysReadFromFile = false; // jd setting to false to stop error on second and subsequent open
@@ -1613,11 +1617,12 @@ namespace SharpMap.Data.Providers.ShapeFile
 
 
         /// <summary>
-        /// Opens the data source
+        /// Opens the data source.
         /// </summary>
         public override void Open()
         {
-            this.Open(WriteAccess.ReadWrite);
+			// Diego Guidi: defaults to ReadOnly, to avoid any kind of lock.
+            this.Open(WriteAccess.ReadOnly);
         }
 
         #endregion
