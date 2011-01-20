@@ -1,5 +1,5 @@
 $(document).ready(function() {
-    var options, init;
+    var options, create, osm, init;
 
     OpenLayers.DOTS_PER_INCH = 25.4 / 0.28;
     OpenLayers.IMAGE_RELOAD_ATTEMPTS = 5;
@@ -35,34 +35,8 @@ $(document).ready(function() {
         format: 'image/png'
     };
 
-    init = function() {
-        var lon = -73.9529;
-        var lat = 40.7723;
-        var zoom = 10;
-        var map, osm, layer, center;
-
-        map = new OpenLayers.Map('map', options);
-        map.addControl(new OpenLayers.Control.LayerSwitcher());
-        map.addControl(new OpenLayers.Control.NavToolbar());
-        map.addControl(new OpenLayers.Control.PanZoom({
-            position: new OpenLayers.Pixel(2, 10)
-        }));
-        map.addControl(new OpenLayers.Control.MousePosition());
-
-        osm = new OpenLayers.Layer.WMS('OpenStreetMap', options.osm.url, {
-            layers: options.osm.layers,
-            srs: options.osm.srs,
-            service: options.osm.type,
-            version: options.osm.version,
-            format: options.osm.format,
-            transparent: false
-        }, {
-            isBaseLayer: true,
-            transparent: false,
-            singleTile: false,
-            ratio: 1
-        });
-        layer = new OpenLayers.Layer.WMS('SampleWMS', options.wms.url, {
+    create = function(name, tiled) {
+        return new OpenLayers.Layer.WMS(name, options.wms.url, {
             layers: options.wms.layers,
             srs: options.wms.srs,
             service: options.wms.type,
@@ -73,11 +47,47 @@ $(document).ready(function() {
             isBaseLayer: false,
             transparent: true,
             buffer: 0,
-            singleTile: true,
+            singleTile: !tiled,
             ratio: 1,
             yx: []
         });
-        map.addLayers([osm, layer]);
+    };
+
+    osm = function() {
+        return new OpenLayers.Layer.WMS('OpenStreetMap', options.osm.url, {
+            layers: options.osm.layers,
+            srs: options.osm.srs,
+            service: options.osm.type,
+            version: options.osm.version,
+            format: options.osm.format,
+            transparent: false
+        }, {
+            isBaseLayer: true,
+            transparent: false,
+            singleTile: false,
+            ratio: 1.3
+        })
+    };
+
+    init = function() {
+        var lon = -73.9529;
+        var lat = 40.7723;
+        var zoom = 10;
+        var map, tiled, untiled, center;
+
+        map = new OpenLayers.Map('map', options);
+        map.addControl(new OpenLayers.Control.LayerSwitcher());
+        map.addControl(new OpenLayers.Control.NavToolbar());
+        map.addControl(new OpenLayers.Control.PanZoom({
+            position: new OpenLayers.Pixel(2, 10)
+        }));
+        map.addControl(new OpenLayers.Control.MousePosition());
+
+        tiled = create('TiledWMS', true);
+        untiled = create('UntiledWMS', false);
+        untiled.setVisibility(false);
+        map.addLayers([osm(), tiled, untiled]);
+        
         center = new OpenLayers.LonLat(lon, lat);
         map.setCenter(center, zoom);
     };

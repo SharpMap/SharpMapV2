@@ -148,7 +148,7 @@ namespace SharpMap.Presentation.AspNet.Handlers
             }
         }
 
-        public Boolean IsReusable
+        public virtual Boolean IsReusable
         {
             get { return true; }
         }
