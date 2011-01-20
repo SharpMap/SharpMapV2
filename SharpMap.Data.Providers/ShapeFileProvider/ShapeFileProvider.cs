@@ -248,6 +248,31 @@ namespace SharpMap.Data.Providers.ShapeFile
         public ShapeFileProvider(String filename,
                                  IGeometryFactory geoFactory,
                                  ICoordinateSystemFactory coordSysFactory,
+                                 Boolean fileBasedIndex)
+            : this(filename, geoFactory, coordSysFactory, fileBasedIndex, WriteAccess.Default)
+        {
+        }
+
+        /// <summary>
+        /// Initializes a ShapeFile data provider.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// If <paramref name="fileBasedIndex"/> is true, the spatial index 
+        /// will be read from a local copy. If it doesn't exist,
+        /// it will be generated and saved to [filename] + '.sidx'.
+        /// </para>
+        /// </remarks>
+        /// <param name="filename">Path to shapefile (.shp file).</param>
+        /// <param name="geoFactory">The geometry factory to use to create geometries.</param>
+        /// <param name="coordSysFactory">
+        /// The coordinate system factory to use to create spatial reference system objects.
+        /// </param>
+        /// <param name="fileBasedIndex">True to create a file-based spatial index.</param>
+        /// <param name="writeAccess">Specify the kind of access when managing files.</param>
+        public ShapeFileProvider(String filename,
+                                 IGeometryFactory geoFactory,
+                                 ICoordinateSystemFactory coordSysFactory,
                                  Boolean fileBasedIndex,
                                  WriteAccess writeAccess)
         {
