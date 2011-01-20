@@ -60,10 +60,9 @@ namespace SharpMap.Demo.Wms.Helpers
             {
                 var format = String.Format("~/App_Data/nyc/{0}.shp", layer);
                 var path = context.Server.MapPath(format);
-                var provider = new ShapeFileProvider(path, geoFactory, csFactory, indexed, WriteAccess.ReadOnly) { IsSpatiallyIndexed = indexed };
-                // var provider = new MsSqlServer2008Provider<int>(geoFactory, connstring, "dbo", layer, "UID", "geom");
-                var async =  new AppStateMonitoringFeatureProvider(provider);                
-
+                var provider = new ShapeFileProvider(path, geoFactory, csFactory, indexed) { IsSpatiallyIndexed = indexed };
+                // var provider = new MsSqlServer2008Provider<int>(geoFactory, connstring, "dbo", layer, "uid", "geom");
+                
                 if (!styles.ContainsKey(layer))
                 {
                     lock (styles)
@@ -80,10 +79,10 @@ namespace SharpMap.Demo.Wms.Helpers
                     }
                 }
                 
-                var item = new GeometryLayer(layer, styles[layer], async);
+                var item = new GeometryLayer(layer, styles[layer], new AppStateMonitoringFeatureProvider(provider));
                 item.Features.IsSpatiallyIndexed = indexed;
                 map.AddLayer(item);
-                async.Open();
+                provider.Open(WriteAccess.ReadOnly);
             }
         }
     }

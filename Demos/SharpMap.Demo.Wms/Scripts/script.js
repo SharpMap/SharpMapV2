@@ -25,7 +25,7 @@ $(document).ready(function() {
             format: 'image/png',
             layers: ['poly_landmarks',
                      'tiger_roads',
-                     'poi'].join(''),
+                     'poi'].join(),
             srs: '4326'
         },
         controls: [],
