@@ -24,7 +24,7 @@ $(document).ready(function() {
             version: '1.3.0',
             format: 'image/png',
             layers: ['poly_landmarks',
-                     'tiger_roads',
+                     'tiger_roads', 
                      'poi'].join(),
             srs: '4326'
         },
@@ -33,8 +33,7 @@ $(document).ready(function() {
         numZoomLevels: 24,
         projection: new OpenLayers.Projection('EPSG:4326'),
         displayProjection: new OpenLayers.Projection('EPSG:4326'),
-        units: 'meters',
-        format: 'image/png'
+        units: 'meters'
     };
 
     create = function(name, tiled) {

@@ -46,9 +46,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpMap.Data.Providers.Db", "..\SharpMap.Data.Providers\DbProviderBase\SharpMap.Data.Providers.Db.csproj", "{FEE2753F-DCC2-4DC6-9651-FA2CED8A2974}"
 EndProject
 Global
-	GlobalSection(TestCaseManagementSettings) = postSolution
-		CategoryFile = SharpMap_v2_vs20081.vsmdi
-	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug_Net20|Any CPU = Debug_Net20|Any CPU
 		Debug_Net20|x64 = Debug_Net20|x64

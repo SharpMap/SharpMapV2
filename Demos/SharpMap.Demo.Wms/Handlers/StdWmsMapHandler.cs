@@ -20,21 +20,16 @@ namespace SharpMap.Demo.Wms.Handlers
     using Presentation.AspNet.Caching;
     using Presentation.AspNet.WmsServer;
     using Rendering.Web;
-
+    
     public class StdWmsMapHandler : AsyncWmsHandlerBase
     {
-        public override bool IsReusable
-        {
-            get { return false; }
-        }
-
         public override void LoadLayers()
         {
             MapHelper.SetupMap(this.Context, this.Map);
         }
 
         protected override IWebMapRenderer CreateMapRenderer()
-        {
+        {            
             return new GdiImageRenderer();
         }
 

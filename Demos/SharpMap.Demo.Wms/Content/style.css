@@ -365,8 +365,9 @@ button
 
 #map
 {
-	width: 100%;
-	height: 600px;
+	width: 512px;
+	height: 512px;
+	border-width: 1px;
 }
 
 

@@ -17,14 +17,12 @@ namespace SharpMap.Demo.Wms.Helpers
 {
     using System;
     using System.Collections.Generic;
-    using System.Configuration;
     using System.Web;
     using Data.Providers;
     using Data.Providers.ShapeFile;
     using Layers;
     using Styles;
     using Utilities;
-    using Utilities.SridUtility;
 
     public static class MapHelper
     {
@@ -43,19 +41,7 @@ namespace SharpMap.Demo.Wms.Helpers
             var geoFactory = services.DefaultGeometryFactory;
             var csFactory = services.CoordinateSystemFactory;
 
-            /*
-            var settings = ConfigurationManager.ConnectionStrings["db"];
-            if (settings == null)
-                throw new ArgumentException("db connstring not found");
-            var connstring = settings.ConnectionString;
-            */
-
-            var layers = new[]
-            {
-                "poly_landmarks", 
-                "tiger_roads", 
-                "poi",
-            };
+            var layers = new[] { "poly_landmarks",  "tiger_roads",  "poi" };
             foreach (var layer in layers)
             {
                 var format = String.Format("~/App_Data/nyc/{0}.shp", layer);
