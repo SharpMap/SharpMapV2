@@ -22,22 +22,9 @@ using System.IO;
 using GeoAPI.IO;
 using SharpMap.Rendering.Rendering2D;
 using SharpMap.Styles;
-using SharpMap.Utilities;
-using GdiPoint = System.Drawing.Point;
-using GdiSize = System.Drawing.Size;
-using GdiRectangle = System.Drawing.Rectangle;
-using GdiPen = System.Drawing.Pen;
-using GdiBrush = System.Drawing.Brush;
-using GdiBrushes = System.Drawing.Brushes;
-using GdiFont = System.Drawing.Font;
-using GdiFontFamily = System.Drawing.FontFamily;
-using GdiFontStyle = System.Drawing.FontStyle;
-using GdiColor = System.Drawing.Color;
 using GdiPath = System.Drawing.Drawing2D.GraphicsPath;
 using GdiMatrix = System.Drawing.Drawing2D.Matrix;
 using GdiColorMatrix = System.Drawing.Imaging.ColorMatrix;
-using GdiSmoothingMode = System.Drawing.Drawing2D.SmoothingMode;
-using GdiTextRenderingHint = System.Drawing.Text.TextRenderingHint;
 using StyleColorMatrix = SharpMap.Rendering.ColorMatrix;
 
 namespace SharpMap.Rendering.Gdi
@@ -83,22 +70,35 @@ namespace SharpMap.Rendering.Gdi
             StyleBrush selectFill, StylePen outline, StylePen highlightOutline, StylePen selectOutline,
             RenderState renderState)
         {
+            //List<GdiRenderObject> retval = new List<GdiRenderObject>();
+            Pen gdiLine = null;
+            Pen gdiOutline;
+            Brush gdiFill;
+
+            switch (renderState)
+            {
+                case RenderState.Selected:
+                    gdiOutline = ViewConverter.Convert(selectOutline);
+                    gdiFill = ViewConverter.Convert(selectFill);
+                    break;
+                case RenderState.Highlighted:
+                    gdiOutline = ViewConverter.Convert(selectOutline);
+                    gdiFill = ViewConverter.Convert(selectFill);
+                    break;
+                default:
+                    gdiOutline = ViewConverter.Convert(outline);
+                    gdiFill = ViewConverter.Convert(fill);
+                    break;
+            }
+
             foreach (Path2D path in paths)
             {
                 GdiPath gdiPath = ViewConverter.Convert(path);
 
-                GdiRenderObject holder = new GdiRenderObject(gdiPath, ViewConverter.Convert(fill),
-                                                             ViewConverter.Convert(highlightFill),
-                                                             ViewConverter.Convert(selectFill),
-                                                             null, null, null,
-                                                             ViewConverter.Convert(outline),
-                                                             ViewConverter.Convert(highlightOutline),
-                                                             ViewConverter.Convert(selectOutline));
-
-                holder.State = renderState;
-
-                yield return holder;
+                yield return new GdiVectorRenderObject(renderState, gdiPath, gdiLine, gdiOutline, gdiFill);
+                //retval.Add(new GdiVectorRenderObject(renderState, gdiPath, gdiLine, gdiOutline, gdiFill));
             }
+            //return retval;
         }
 
         public override IEnumerable<GdiRenderObject> RenderPaths(IEnumerable<Path2D> paths,
@@ -107,20 +107,35 @@ namespace SharpMap.Rendering.Gdi
                                                                  StylePen outline, StylePen highlightOutline,
                                                                  StylePen selectOutline, RenderState renderState)
         {
+            Pen gdiLine;
+            Pen gdiOutline;
+            Brush gdiFill = null;
+
+            switch (renderState)
+            {
+                case RenderState.Selected:
+                    gdiLine = ViewConverter.Convert(selectLine);
+                    gdiOutline = ViewConverter.Convert(selectOutline);
+                    break;
+                case RenderState.Highlighted:
+                    gdiLine = ViewConverter.Convert(highlightLine);
+                    gdiOutline = ViewConverter.Convert(highlightOutline);
+                    break;
+                default:
+                    gdiLine = ViewConverter.Convert(line);
+                    gdiOutline = ViewConverter.Convert(outline);
+                    break;
+            }
+
+            //List<GdiRenderObject> retval = new List<GdiRenderObject>();
             foreach (Path2D path in paths)
             {
                 GdiPath gdiPath = ViewConverter.Convert(path);
 
-                GdiRenderObject holder =
-                    new GdiRenderObject(gdiPath, null, null, null, ViewConverter.Convert(line),
-                                        ViewConverter.Convert(highlightLine), ViewConverter.Convert(selectLine),
-                                        ViewConverter.Convert(outline), ViewConverter.Convert(highlightOutline),
-                                        ViewConverter.Convert(selectOutline));
-
-                holder.State = renderState;
-
-                yield return holder;
+                yield return new GdiVectorRenderObject(renderState, gdiPath, gdiLine, gdiOutline, gdiFill);
+                //retval.Add(new GdiVectorRenderObject(renderState, gdiPath, gdiLine, gdiOutline, gdiFill));
             }
+            //return retval;
         }
 
         public override IEnumerable<GdiRenderObject> RenderPaths(
@@ -159,16 +174,18 @@ namespace SharpMap.Rendering.Gdi
             if (renderState == RenderState.Selected) symbol = selectSymbol;
             if (renderState == RenderState.Highlighted) symbol = highlightSymbol;
 
+            List<GdiRenderObject> retval = new List<GdiRenderObject>();
+            Bitmap bitmapSymbol = getSymbol(symbol);
             foreach (Point2D location in locations)
             {
-                Bitmap bitmapSymbol = getSymbol(symbol);
                 GdiMatrix transform = ViewConverter.Convert(symbol.AffineTransform);
                 GdiColorMatrix colorTransform = ViewConverter.Convert(symbol.ColorTransform);
                 RectangleF bounds = new RectangleF(ViewConverter.Convert(location), bitmapSymbol.Size);
-                GdiRenderObject holder = new GdiRenderObject(bitmapSymbol, bounds, transform, colorTransform);
-                holder.State = renderState;
-                yield return holder;
+
+                //yield return new GdiPointRenderObject(renderState, bounds, transform, colorTransform, bitmapSymbol);
+                retval.Add(new GdiPointRenderObject(renderState, bounds, transform, colorTransform, bitmapSymbol));
             }
+            return retval;
         }
         #endregion
 

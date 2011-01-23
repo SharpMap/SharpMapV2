@@ -69,9 +69,8 @@ namespace SharpMap.Rendering.Gdi
         public override IEnumerable<GdiRenderObject> RenderText(String text, StyleFont font, Rectangle2D layoutRectangle, 
             Path2D flowPath, StyleBrush fontBrush, Matrix2D transform)
         {
-            GdiRenderObject renderedText = new GdiRenderObject(
-                text, ViewConverter.Convert(font), ViewConverter.Convert(layoutRectangle),
-                ViewConverter.Convert(fontBrush), null, null, null, null, null);
+            GdiRenderObject renderedText = new GdiTextRenderObjectRect(RenderState.Normal,
+                text, ViewConverter.Convert(font), ViewConverter.Convert(fontBrush) , ViewConverter.Convert(layoutRectangle));
 
             yield return renderedText;
         }

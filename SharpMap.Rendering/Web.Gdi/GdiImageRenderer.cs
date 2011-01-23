@@ -201,7 +201,9 @@ namespace SharpMap.Rendering.Web
         {
             if (ro.State == RenderState.Unknown)
                 return;
+            ro.ToGraphicsDevice(g);
 
+            /*
             switch (ro.State)
             {
                 case RenderState.Normal:
@@ -316,6 +318,7 @@ namespace SharpMap.Rendering.Web
                             GetSourceRegion(ro.Image.Size),
                             GraphicsUnit.Pixel);
             }
+             */
         }
 
 
@@ -402,6 +405,7 @@ namespace SharpMap.Rendering.Web
             return symbolTargetPointsTransfer;
         }
 
+        /*
         protected static RectangleF AdjustForLabel(Graphics g, GdiRenderObject ro)
         {
             // this transform goes from the underlying coordinates to 
@@ -432,27 +436,27 @@ namespace SharpMap.Rendering.Web
 
             Boolean scaleText = true;
 
-            /*
-                        if (ro.Layer != null)
-                        {
-                            Double min = ro.Layer.Style.MinVisible;
-                            Double max = ro.Layer.Style.MaxVisible;
-                            float scaleMult = Double.IsInfinity(max) ? 2.0f : 1.0f;
+            //
+            //            if (ro.Layer != null)
+            //            {
+            //                Double min = ro.Layer.Style.MinVisible;
+            //                Double max = ro.Layer.Style.MaxVisible;
+            //                float scaleMult = Double.IsInfinity(max) ? 2.0f : 1.0f;
 
-                            //max = Math.Min(max, _presenter.MaximumWorldWidth);
-                            max = Math.Min(max, Map.Extents.Width);
-                            //Double pct = (max - _presenter.WorldWidth) / (max - min);
-                            Double pct = 1 - (Math.Min(_presenter.WorldWidth, Map.Extents.Width) - min) / (max - min);
+            //                //max = Math.Min(max, _presenter.MaximumWorldWidth);
+            //                max = Math.Min(max, Map.Extents.Width);
+            //                //Double pct = (max - _presenter.WorldWidth) / (max - min);
+            //                Double pct = 1 - (Math.Min(_presenter.WorldWidth, Map.Extents.Width) - min) / (max - min);
 
-                            if (scaleMult > 1)
-                            {
-                                pct = Math.Max(.5, pct * 2);
-                            }
+            //                if (scaleMult > 1)
+            //                {
+            //                    pct = Math.Max(.5, pct * 2);
+            //                }
 
-                            scale = (float)pct*scaleMult;
-                            labelScale = scale;
-                        }
-            */
+            //                scale = (float)pct*scaleMult;
+            //                labelScale = scale;
+            //            }
+            //
 
             // ok, I lied, if we're scaling labels we need to scale our new matrix, but still no offsets
             if (scaleText)
@@ -476,6 +480,7 @@ namespace SharpMap.Rendering.Web
 
             return newBounds;
         }
+         */
 
         ~GdiImageRenderer()
         {
@@ -518,6 +523,7 @@ namespace SharpMap.Rendering.Web
             if (renderState == RenderState.Selected) symbol = selectSymbol;
             if (renderState == RenderState.Highlighted) symbol = highlightSymbol;
 
+            /*
             foreach (Point2D location in locations)
             {
                 Bitmap bitmapSymbol = getSymbol(symbol);
@@ -533,6 +539,20 @@ namespace SharpMap.Rendering.Web
                 else
                     Debug.WriteLine("Unkbown pixel format");
             }
+             */
+            List<GdiRenderObject> retval = new List<GdiRenderObject>();
+            Bitmap bitmapSymbol = getSymbol(symbol);
+            foreach (Point2D location in locations)
+            {
+                GdiMatrix transform = ViewConverter.Convert(symbol.AffineTransform);
+                GdiColorMatrix colorTransform = ViewConverter.Convert(symbol.ColorTransform);
+                RectangleF bounds = new RectangleF(ViewConverter.Convert(location), bitmapSymbol.Size);
+
+                //yield return new GdiPointRenderObject(renderState, bounds, transform, colorTransform, bitmapSymbol);
+                retval.Add(new GdiPointRenderObject(renderState, bounds, transform, colorTransform, bitmapSymbol));
+            }
+            return retval;
+
         }
 
         private Bitmap getSymbol(Symbol2D symbol2D)

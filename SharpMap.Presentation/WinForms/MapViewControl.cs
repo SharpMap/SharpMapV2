@@ -626,10 +626,25 @@ namespace SharpMap.Presentation.WinForms
                 GdiRenderObject ro = _renderObjectQueue.Dequeue();
 
                 if (ro.State == RenderState.Unknown)
-                {
                     continue;
-                }
+                ro.ToGraphicsDevice(g);
 
+                /*
+                //Vector
+                if (ToGraphicsDevice(g, ro as GdiVectorRenderObject))
+                    continue;
+                //Point
+                if (ToGraphicsDevice(g, ro as GdiPointRenderObject))
+                    continue;
+                //Raster
+                if (ToGraphicsDevice(g, ro as GdiRasterRenderObject))
+                    continue;
+                //Text
+                if (ToGraphicsDevice(g, ro as GdiTextRenderObject<RectangleF>))
+                    continue;
+                 */
+
+                /*
                 try
                 {
                     switch (ro.State)
@@ -748,6 +763,7 @@ namespace SharpMap.Presentation.WinForms
                     }
                 }
                 catch(OverflowException) {}
+                 */
                 /*
                 if (ro.Image != null)
                 {
@@ -786,111 +802,51 @@ namespace SharpMap.Presentation.WinForms
             }
         }
 
-        private static void AdjustAndDrawImage(Graphics g, GdiRenderObject ro)
+        /*
+        private static bool ToGraphicsDevice(Graphics p0, GdiVectorRenderObject p1)
         {
-            GdiMatrix save = null;
-            if (!ro.AffineTransform.IsIdentity)
+            if (p1 == null)
+                return false;
+
+            if (p1.Fill != null)
             {
-                save = g.Transform.Clone();
-                GdiMatrix transform = g.Transform;
-                RectangleF rectLocation = ro.Bounds;
-                Single offsetX = rectLocation.Left + rectLocation.Width / 2;
-                Single offsetY = rectLocation.Top - rectLocation.Width / 2;
-                transform.Translate(-offsetX, -offsetY);
-                transform.Multiply(ro.AffineTransform, MatrixOrder.Append);
-                transform.Translate(offsetX, offsetY, MatrixOrder.Append);
-                g.Transform = transform;
+                p0.FillPath(p1.Fill, p1.Path);
+                if (p1.Outline != null)
+                    p0.DrawPath(p1.Outline, p1.Path);
+                return true;
             }
 
-            g.DrawImage(ro.Image, ro.Bounds);
-
-            if (save != null) g.Transform = save;
+            if (p1.Outline != null)
+                p0.DrawPath(p1.Outline, p1.Path);
+            p0.DrawPath(p1.Line, p1.Path);
+            return true;
         }
 
-        /// <summary>
-        /// Without this change, labels render upside down and don't all scale readably.
-        /// </summary>
-        /// <param name="g"></param>
-        /// <param name="ro"></param>
-        /// <returns></returns>
-        protected RectangleF AdjustForLabel(Graphics g, GdiRenderObject ro)
+        private static bool ToGraphicsDevice(Graphics p0, GdiPointRenderObject p1)
         {
-            // this transform goes from the underlying coordinates to 
-            // screen coordinates, but for some reason renders text upside down
-            // we cannot just scale by 1, -1 because offsets are affected also
-            GdiMatrix m = g.Transform;
-            // used to scale text size for the current zoom level
-            float scale = Math.Abs(m.Elements[0]);
-
-            // get the bounds of the label in the underlying coordinate space
-            Point ll = new Point((Int32)ro.Bounds.X, (Int32)ro.Bounds.Y);
-            Point ur = new Point((Int32)(ro.Bounds.X + ro.Bounds.Width),
-                                 (Int32)(ro.Bounds.Y + ro.Bounds.Height));
-
-            Point[] transformedPoints1 =
-                {
-                    new Point((Int32) ro.Bounds.X, (Int32) ro.Bounds.Y),
-                    new Point((Int32) (ro.Bounds.X + ro.Bounds.Width),
-                              (Int32) (ro.Bounds.Y + ro.Bounds.Height))
-                };
-
-            // get the label bounds transformed into screen coordinates
-            // note that if we just render this as-is the label is upside down
-            m.TransformPoints(transformedPoints1);
-
-            // for labels, we're going to use an identity matrix and screen coordinates
-            GdiMatrix newM = new GdiMatrix();
-
-            Boolean scaleText = true;
-
-            /*
-                        if (ro.Layer != null)
-                        {
-                            Double min = ro.Layer.Style.MinVisible;
-                            Double max = ro.Layer.Style.MaxVisible;
-                            float scaleMult = Double.IsInfinity(max) ? 2.0f : 1.0f;
-
-                            //max = Math.Min(max, _presenter.MaximumWorldWidth);
-                            max = Math.Min(max, Map.Extents.Width);
-                            //Double pct = (max - _presenter.WorldWidth) / (max - min);
-                            Double pct = 1 - (Math.Min(_presenter.WorldWidth, Map.Extents.Width) - min) / (max - min);
-
-                            if (scaleMult > 1)
-                            {
-                                pct = Math.Max(.5, pct * 2);
-                            }
-
-                            scale = (float)pct*scaleMult;
-                            labelScale = scale;
-                        }
-            */
-
-            // ok, I lied, if we're scaling labels we need to scale our new matrix, but still no offsets
-            if (scaleText)
-            {
-                newM.Scale(scale, scale);
-            }
-            else
-            {
-                scale = 1.0f;
-            }
-
-            g.Transform = newM;
-
-            Int32 pixelWidth = ur.X - ll.X;
-            Int32 pixelHeight = ur.Y - ll.Y;
-
-            // if we're scaling text, then x,y position will get multiplied by our 
-            // scale, so adjust for it here so that we can use actual pixel x,y
-            // Also center our label on the coordinate instead of putting the label origin on the coordinate
-            RectangleF newBounds = new RectangleF(transformedPoints1[0].X / scale,
-                                                  (transformedPoints1[0].Y / scale) - pixelHeight,
-                                                  pixelWidth,
-                                                  pixelHeight);
-            //RectangleF newBounds = new RectangleF(transformedPoints1[0].X / scale - (pixelWidth / 2), transformedPoints1[0].Y / scale - (pixelHeight / 2), pixelWidth, pixelHeight);
-
-            return newBounds;
+            if (p1 == null)
+                return false;
+            AdjustAndDrawImage(p0, p1.Transform, p1.Bounds, p1.ColorMatrix, p1.Symbol);
+            return true;
         }
+
+        private static bool ToGraphicsDevice(Graphics p0, GdiTextRenderObject<RectangleF> p1)
+        {
+            if (p1 == null)
+                return false;
+            RectangleF newBounds = AdjustForLabel(p0, p1);
+            p0.DrawString(p1.Text, p1.Font, p1.FontBrush, newBounds.Location);
+            return true;
+        }
+
+        private static bool ToGraphicsDevice(Graphics p0, GdiRasterRenderObject p1)
+        {
+            if (p1 == null)
+                return false;
+            AdjustAndDrawImage(p0, p1.Transform, p1.Bounds, p1.ColorMatrix, p1.Raster);
+            return true;
+        }
+        */
 
         protected override void OnSizeChanged(EventArgs args)
         {

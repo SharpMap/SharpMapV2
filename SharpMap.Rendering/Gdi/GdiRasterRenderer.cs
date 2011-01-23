@@ -25,17 +25,34 @@ using SharpMap.Rendering.Rendering2D;
 
 namespace SharpMap.Rendering.Gdi
 {
+    /// <summary>
+    /// GdiRasterRenderer class
+    /// </summary>
     public class GdiRasterRenderer : RasterRenderer2D<GdiRenderObject>
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="rasterData"></param>
+        /// <param name="viewBounds"></param>
+        /// <param name="rasterBounds"></param>
+        /// <returns></returns>
         public override IEnumerable<GdiRenderObject> RenderRaster(Stream rasterData, Rectangle2D viewBounds, Rectangle2D rasterBounds)
         {
             return RenderRaster(rasterData, viewBounds, rasterBounds, Matrix2D.Identity);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="rasterData"></param>
+        /// <param name="viewBounds"></param>
+        /// <param name="rasterBounds"></param>
+        /// <param name="rasterTransform"></param>
+        /// <returns></returns>
         public override IEnumerable<GdiRenderObject> RenderRaster(Stream rasterData, Rectangle2D viewBounds, Rectangle2D rasterBounds, IMatrix<DoubleComponent> rasterTransform)
         {
-            GdiRenderObject renderedRaster = new GdiRenderObject();
-
+            GdiRenderObject renderedRaster = null;
             try
             {
                 if (rasterData != null)
@@ -47,11 +64,10 @@ namespace SharpMap.Rendering.Gdi
                     if (rasterData.CanRead)
                     {
                         Bitmap raster = (Bitmap)Image.FromStream(rasterData);
-                        renderedRaster = new GdiRenderObject(raster, 
+                        renderedRaster = new GdiRasterRenderObject(RenderState.Normal, raster, 
                             ViewConverter.Convert(viewBounds),
                             ViewConverter.Convert((Matrix2D)rasterTransform), 
                             ViewConverter.Convert(ColorMatrix.Identity));
-                        renderedRaster.State = RenderState.Normal;
                     }
                 }
 
