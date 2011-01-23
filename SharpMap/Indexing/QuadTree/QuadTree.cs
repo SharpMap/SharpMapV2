@@ -28,6 +28,7 @@ namespace SharpMap.Indexing.QuadTree
         private readonly IGeometryFactory _geoFactory;
 
         public QuadTree(IGeometryFactory geoFactory)
+            :base(0)
         {
             _geoFactory = geoFactory;
         }

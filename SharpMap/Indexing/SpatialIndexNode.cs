@@ -37,6 +37,12 @@ namespace SharpMap.Indexing
         private IExtents _bounds;
         private IList<TItem> _items;
         private ISpatialIndex<IExtents, TItem> _index;
+        private Int32 _level;
+
+        public SpatialIndexNode(Int32 level)
+        {
+            _level = level;
+        }
 
         //protected SpatialIndexNode(IExtents emptyBounds)
         //{
@@ -255,7 +261,9 @@ namespace SharpMap.Indexing
                 return;
             }
 
-            _items.Clear();
+            if (_items != null)
+                _items.Clear();
+
             Bounds = null;
             OnCleared();
         }
@@ -510,7 +518,7 @@ namespace SharpMap.Indexing
         {
             get
             {
-                throw new NotImplementedException();
+                return _level;
             }
         }
     }

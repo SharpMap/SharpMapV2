@@ -21,7 +21,7 @@ using GeoAPI.Geometries;
 
 namespace SharpMap.Indexing.RTree
 {
-    struct ComputationExtents
+    class ComputationExtents
     {
         private readonly Int32 _hasValue;
         public readonly Double XMin;
@@ -44,13 +44,18 @@ namespace SharpMap.Indexing.RTree
             _hasValue = 1;
         }
 
-        private ComputationExtents(Double xMin, Double yMin, Double xMax, Double yMax)
+        public ComputationExtents(Double xMin, Double yMin, Double xMax, Double yMax)
         {
             XMin = xMin;
             XMax = xMax;
             YMin = yMin;
             YMax = yMax;
             _hasValue = 1;
+        }
+
+        public ComputationExtents()
+        {
+            //throw new NotImplementedException();
         }
 
         public Boolean IsEmpty

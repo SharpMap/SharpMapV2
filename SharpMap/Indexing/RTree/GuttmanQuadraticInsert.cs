@@ -109,7 +109,7 @@ namespace SharpMap.Indexing.RTree
 
                     // Split the current node, since the child count is too high, 
                     // and return the split to the caller
-                    if (node.ItemCount > heuristic.NodeItemMaximumCount)
+                    if (node.SubNodeCount > heuristic.NodeItemMaximumCount)
                     {
                         newSiblingFromSplit = nodeSplitStrategy.SplitNode(node, heuristic);
                     }
