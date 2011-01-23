@@ -1,6 +1,5 @@
 using System;
 using System.Data;
-using System.Globalization;
 using System.IO;
 using System.Text;
 using GeoAPI.CoordinateSystems.Transformations;
@@ -13,21 +12,38 @@ using OgrGeometry = OSGeo.OGR.Geometry;
 
 namespace SharpMap.Data.Providers
 {
+
     public class OgrFeatureDataRecord : IFeatureDataRecord, IDisposable
     {
         private readonly Encoding _ogrEncoding;
         private readonly IGeometryFactory _geometryFactory;
         private ICoordinateTransformation _coordinateTransformation;
-        private readonly OgrFeature _ogrFeature;
+        private OgrFeature _ogrFeature;
         private readonly OgrFeatureDefn _ogrFeatureDefn;
 
-        internal OgrFeatureDataRecord(IGeometryFactory geomFactory, ICoordinateTransformation coordinateTransformation, Encoding ogrEncoding, OgrFeature ogrFeature, OgrFeatureDefn ogrFeatureDefn)
+        internal OgrFeatureDataRecord(IGeometryFactory geomFactory, ICoordinateTransformation coordinateTransformation, Encoding ogrEncoding, OgrFeatureDefn ogrFeatureDefn)
+            :this(geomFactory, coordinateTransformation, ogrEncoding, ogrFeatureDefn, null)
+        {
+            
+        }
+        internal OgrFeatureDataRecord(IGeometryFactory geomFactory, ICoordinateTransformation coordinateTransformation, Encoding ogrEncoding, OgrFeatureDefn ogrFeatureDefn, OgrFeature feature)
         {
             _ogrEncoding = ogrEncoding;
             _geometryFactory = geomFactory;
             _coordinateTransformation = coordinateTransformation;
-            _ogrFeature = ogrFeature;
             _ogrFeatureDefn = ogrFeatureDefn;
+            _ogrFeature = feature;
+        }
+
+        protected OgrFeature Feature
+        {
+            get { return _ogrFeature; }
+            set
+            {
+                if (_ogrFeature != null)
+                    _ogrFeature.Dispose();
+                _ogrFeature = value;
+            }
         }
 
         public void SetColumnValue(Int32 ordinal, Object value)

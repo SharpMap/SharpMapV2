@@ -266,7 +266,7 @@ namespace SharpMap.Data.Providers
             OgrFeatureDataReader reader = new OgrFeatureDataReader(this, query, options);
             //reader.Disposed += readerDisposed;
             reader.CoordinateTransformation = CoordinateTransformation;
-            return reader;
+            return (IFeatureDataReader)reader;
         }
 
         protected override IFeatureDataReader InternalExecuteFeatureQuery(FeatureQueryExpression query)
@@ -449,7 +449,7 @@ namespace SharpMap.Data.Providers
             if (feature != null)
             {
                 return new OgrFeatureDataRecord(GeometryFactory, CoordinateTransformation, Encoding.Default,
-                                                feature, _ogrFeatureDefn);
+                                                _ogrFeatureDefn, feature);
             }
             return null;
         }
@@ -486,7 +486,7 @@ namespace SharpMap.Data.Providers
             OgrFeature ogrFeature = new OgrFeature(_ogrFeatureDefn);
             OgrFeatureDataRecord ogrFeatureDataRecord = new OgrFeatureDataRecord(
                 GeometryFactory, CoordinateTransformation, System.Text.Encoding.Default,
-                ogrFeature, _ogrFeatureDefn);
+                _ogrFeatureDefn, ogrFeature);
             object[] values = null;
             int count = feature.GetValues(values);
             ogrFeatureDataRecord.SetColumnValues(0, count - 1, values);
@@ -516,7 +516,7 @@ namespace SharpMap.Data.Providers
             OgrFeature ogrFeature = _ogrLayer.GetFeature((int) feature.GetOid());
             OgrFeatureDataRecord ogrFeatureDataRecord = new OgrFeatureDataRecord(
                 GeometryFactory, CoordinateTransformation, System.Text.Encoding.Default,
-                ogrFeature, _ogrFeatureDefn);
+                _ogrFeatureDefn, ogrFeature);
             object[] values = null;
             int count = feature.GetValues(values);
             ogrFeatureDataRecord.SetColumnValues(0, count - 1, values);
@@ -543,7 +543,7 @@ namespace SharpMap.Data.Providers
         {
             if (!_isUpdateable) return;
 
-            _ogrLayer.DeleteFeature(feature.GetOid<int>());
+            _ogrLayer.DeleteFeature((int)feature.GetOid());
             feature.AcceptChanges();
         }
 
