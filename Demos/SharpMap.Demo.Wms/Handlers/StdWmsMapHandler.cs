@@ -20,14 +20,9 @@ namespace SharpMap.Demo.Wms.Handlers
     using Presentation.AspNet.Caching;
     using Presentation.AspNet.WmsServer;
     using Rendering.Web;
-    
+
     public class StdWmsMapHandler : AsyncWmsHandlerBase
     {
-        public override bool IsReusable
-        {
-            get { return false; }
-        }
-
         public override void LoadLayers()
         {
             MapHelper.SetupMap(this.Context, this.Map);
@@ -50,14 +45,6 @@ namespace SharpMap.Demo.Wms.Handlers
             var dir = ConfigurationManager.AppSettings["CacheDirectory"];
             return new WmsAwareFileSystemCacheProvider { BaseCacheDir = dir };
 */
-        }
-
-        private static readonly object lockobj = new object(); 
-
-        public override void ProcessRequest(System.Web.HttpContext context)
-        {
-            lock (lockobj)
-                base.ProcessRequest(context);
-        }
+        }        
     }
 }

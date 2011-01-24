@@ -39,9 +39,6 @@ namespace SharpMap.Presentation.AspNet.WmsServer
         /// <returns></returns>
         protected abstract override IMapRequestConfigFactory CreateConfigFactory();
 
-
-
-
         public override Stream Render(out string mimeType)
         {
             Stream s = null;
@@ -52,6 +49,7 @@ namespace SharpMap.Presentation.AspNet.WmsServer
                 s.Position = 0;
                 return s;
             }
+
             try
             {
                 RaiseBeforeInitializeMap();
@@ -63,7 +61,6 @@ namespace SharpMap.Presentation.AspNet.WmsServer
                 RaiseLayersLoaded();
 
                 ConfigureMap();
-
 
                 if (MapRequestConfig.WmsMode == WmsMode.Capabilites)
                 {

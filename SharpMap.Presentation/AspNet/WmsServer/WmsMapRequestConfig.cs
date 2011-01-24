@@ -69,11 +69,13 @@ namespace SharpMap.Presentation.AspNet.WmsServer
             }
         }
 
+        private static readonly object lockobj = new object();
+
         public void ConfigureMapView(IMapView2D mapView)
         {
             mapView.ViewSize = OutputSize;
             mapView.BackgroundColor = BackgroundColor;
-            mapView.ZoomToWorldBounds(RealWorldBounds);
+            mapView.ZoomToWorldBounds(RealWorldBounds);            
         }
 
         #endregion

@@ -32,7 +32,7 @@ namespace SharpMap.Demo.Wms.Helpers
         {
             if (context == null)
                 throw new ArgumentNullException("context");
-            if (map == null) 
+            if (map == null)
                 throw new ArgumentNullException("map");
 
             const bool indexed = false;
@@ -44,8 +44,8 @@ namespace SharpMap.Demo.Wms.Helpers
             var layers = new[] 
             {
                 "poly_landmarks",
-                // "tiger_roads", 
-                // "poi" ,
+                "tiger_roads", 
+                "poi"
             };
             foreach (var layer in layers)
             {
@@ -53,7 +53,7 @@ namespace SharpMap.Demo.Wms.Helpers
                 var path = context.Server.MapPath(format);
                 var provider = new ShapeFileProvider(path, geoFactory, csFactory, indexed) { IsSpatiallyIndexed = indexed };
                 // var provider = new MsSqlServer2008Provider<int>(geoFactory, connstring, "dbo", layer, "uid", "geom");
-                
+
                 if (!styles.ContainsKey(layer))
                 {
                     lock (styles)
@@ -69,7 +69,7 @@ namespace SharpMap.Demo.Wms.Helpers
                         }
                     }
                 }
-                
+
                 var item = new GeometryLayer(layer, styles[layer], new AppStateMonitoringFeatureProvider(provider));
                 item.Features.IsSpatiallyIndexed = indexed;
                 map.AddLayer(item);

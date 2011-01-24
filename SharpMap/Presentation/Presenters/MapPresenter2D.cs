@@ -916,27 +916,35 @@ namespace SharpMap.Presentation.Presenters
             LayerRendererRegistry.Instance.Register(layerType, renderer);
         }
 
+        private static readonly object lockobj = new object();
+
         /// <summary>
         /// Renders all layers and displays the result on the view.
         /// </summary>
         protected void RenderAllLayers()
         {
-            OnRenderingAllLayers();
-            RenderAllLayers(RenderPhase.Normal);
-            RenderAllLayers(RenderPhase.Selected);
-            RenderAllLayers(RenderPhase.Highlighted);
-            _currentRenderPhase = RenderPhase.None;
-            OnRenderedAllLayers();
+            lock (lockobj)
+            {
+                OnRenderingAllLayers();
+                RenderAllLayers(RenderPhase.Normal);
+                RenderAllLayers(RenderPhase.Selected);
+                RenderAllLayers(RenderPhase.Highlighted);
+                _currentRenderPhase = RenderPhase.None;
+                OnRenderedAllLayers();
+            }
         }
 
         protected void RenderLayer(ILayer layer)
         {
-            OnRenderingLayer();
-            RenderLayer(layer, RenderPhase.Normal);
-            RenderLayer(layer, RenderPhase.Selected);
-            RenderLayer(layer, RenderPhase.Highlighted);
-            _currentRenderPhase = RenderPhase.None;
-            OnRenderedLayer();
+            lock (lockobj)
+            {
+                OnRenderingLayer();
+                RenderLayer(layer, RenderPhase.Normal);
+                RenderLayer(layer, RenderPhase.Selected);
+                RenderLayer(layer, RenderPhase.Highlighted);
+                _currentRenderPhase = RenderPhase.None;
+                OnRenderedLayer();
+            }
         }
 
         protected void RenderAllLayers(RenderPhase phase)
@@ -951,14 +959,14 @@ namespace SharpMap.Presentation.Presenters
             OnRenderedAllLayersPhase(phase);
         }
 
+        
+
         protected void RenderLayer(ILayer layer, RenderPhase phase)
         {
             _currentRenderPhase = phase;
-
             OnRenderingLayerPhase(layer, phase);
 
-            if (!layer.Enabled ||
-                layer.Style.MinVisible > WorldWidthInternal ||
+            if (!layer.Enabled || layer.Style.MinVisible > WorldWidthInternal ||
                 layer.Style.MaxVisible < WorldWidthInternal)
             {
                 return;
@@ -1391,7 +1399,8 @@ namespace SharpMap.Presentation.Presenters
 
             Double oldWidth, oldHeight;
 
-            if (oldEnvelope == null || oldEnvelope.IsEmpty)
+            if (oldEnvelope == null ||
+                oldEnvelope.IsEmpty)
             {
                 oldWidth = 1;
                 oldHeight = View.ViewSize.Height / View.ViewSize.Width * WorldAspectRatioInternal;
@@ -1412,7 +1421,6 @@ namespace SharpMap.Presentation.Presenters
             Double newWorldWidth = widthZoomRatio > heightZoomRatio
                                        ? normalizedWidth
                                        : normalizedWidth * heightZoomRatio / widthZoomRatio;
-
             setViewMetricsInternal(View.ViewSize, newEnvelope.Center, newWorldWidth);
         }
 
@@ -1423,13 +1431,15 @@ namespace SharpMap.Presentation.Presenters
                                             ICoordinate newCenter,
                                             Double newWorldWidth)
         {
+
             ICoordinate oldCenter = getGeoCenter();
 
             // Flag to indicate world matrix needs to be recomputed
             Boolean viewMatrixChanged = false;
 
             // Change geographic center of the view by translating pan matrix
-            if (oldCenter != null && !oldCenter.Equals(newCenter))
+            if (oldCenter != null &&
+                !oldCenter.Equals(newCenter))
             {
                 ICoordinate mapCenter = Map.Center;
                 _translationTransform.OffsetX = (mapCenter[Ordinates.X] - newCenter[Ordinates.X]);
@@ -1495,7 +1505,6 @@ namespace SharpMap.Presentation.Presenters
                 {
                     OnViewMatrixInitialized();
                 }
-
                 RenderAllLayers();
             }
         }
