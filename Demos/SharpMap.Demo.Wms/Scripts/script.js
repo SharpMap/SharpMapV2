@@ -23,9 +23,7 @@ $(document).ready(function() {
             type: 'WMS',
             version: '1.3.0',
             format: 'image/png',
-            layers: ['poly_landmarks',
-                     'tiger_roads', 
-                     'poi'].join(),
+            layers: ['poly_landmarks'].join(),
             srs: '4326'
         },
         controls: [],
@@ -87,8 +85,9 @@ $(document).ready(function() {
         tiled = create('TiledWMS', true);
         untiled = create('UntiledWMS', false);
         untiled.setVisibility(false);
-        map.addLayers([osm(), tiled, untiled]);
-        
+        map.addLayers([/*osm(), */tiled, untiled]);
+        map.setBaseLayer(tiled);
+
         center = new OpenLayers.LonLat(lon, lat);
         map.setCenter(center, zoom);
     };

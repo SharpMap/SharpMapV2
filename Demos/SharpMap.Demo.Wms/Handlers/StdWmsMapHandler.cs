@@ -51,5 +51,13 @@ namespace SharpMap.Demo.Wms.Handlers
             return new WmsAwareFileSystemCacheProvider { BaseCacheDir = dir };
 */
         }
+
+        private static readonly object lockobj = new object(); 
+
+        public override void ProcessRequest(System.Web.HttpContext context)
+        {
+            lock (lockobj)
+                base.ProcessRequest(context);
+        }
     }
 }

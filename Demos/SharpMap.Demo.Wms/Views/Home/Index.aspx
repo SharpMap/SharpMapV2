@@ -5,7 +5,7 @@
 </asp:Content>
 <asp:Content ID="jsContent" ContentPlaceHolderID="CustomJsContent" runat="server">
 
-    <script type="text/javascript" src="<%=Url.Content("~/lib/OpenLayers.js?v=1")%>"></script>
+    <script type="text/javascript" src="<%=Url.Content("~/lib/OpenLayers.js")%>"></script>
 
     <script type="text/javascript" src="<%=Url.Content("~/Scripts/script.js?v=1")%>"></script>
 
