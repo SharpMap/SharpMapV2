@@ -916,35 +916,28 @@ namespace SharpMap.Presentation.Presenters
             LayerRendererRegistry.Instance.Register(layerType, renderer);
         }
 
-        private static readonly object lockobj = new object();
 
         /// <summary>
         /// Renders all layers and displays the result on the view.
         /// </summary>
         protected void RenderAllLayers()
         {
-            lock (lockobj)
-            {
-                OnRenderingAllLayers();
-                RenderAllLayers(RenderPhase.Normal);
-                RenderAllLayers(RenderPhase.Selected);
-                RenderAllLayers(RenderPhase.Highlighted);
-                _currentRenderPhase = RenderPhase.None;
-                OnRenderedAllLayers();
-            }
+            OnRenderingAllLayers();
+            RenderAllLayers(RenderPhase.Normal);
+            RenderAllLayers(RenderPhase.Selected);
+            RenderAllLayers(RenderPhase.Highlighted);
+            _currentRenderPhase = RenderPhase.None;
+            OnRenderedAllLayers();
         }
 
         protected void RenderLayer(ILayer layer)
         {
-            lock (lockobj)
-            {
-                OnRenderingLayer();
-                RenderLayer(layer, RenderPhase.Normal);
-                RenderLayer(layer, RenderPhase.Selected);
-                RenderLayer(layer, RenderPhase.Highlighted);
-                _currentRenderPhase = RenderPhase.None;
-                OnRenderedLayer();
-            }
+            OnRenderingLayer();
+            RenderLayer(layer, RenderPhase.Normal);
+            RenderLayer(layer, RenderPhase.Selected);
+            RenderLayer(layer, RenderPhase.Highlighted);
+            _currentRenderPhase = RenderPhase.None;
+            OnRenderedLayer();
         }
 
         protected void RenderAllLayers(RenderPhase phase)
@@ -958,8 +951,6 @@ namespace SharpMap.Presentation.Presenters
 
             OnRenderedAllLayersPhase(phase);
         }
-
-        
 
         protected void RenderLayer(ILayer layer, RenderPhase phase)
         {
@@ -1043,18 +1034,14 @@ namespace SharpMap.Presentation.Presenters
             switch (phase)
             {
                 case RenderPhase.Normal:
-                    FeatureQueryExpression query =
-                        FeatureQueryExpression.Intersects(ViewEnvelopeInternal);
+                    FeatureQueryExpression query = FeatureQueryExpression.Intersects(ViewEnvelopeInternal);
                     IEnumerable<FeatureDataRow> features = layer.Select(query);
 
                     foreach (FeatureDataRow feature in features)
                     {
                         FeatureStyle style = getStyleForFeature(layer, feature, layerStyle);
 
-                        IEnumerable renderedFeature = renderer.RenderFeature(feature,
-                                                                             style,
-                                                                             RenderState.Normal,
-                                                                             layer);
+                        IEnumerable renderedFeature = renderer.RenderFeature(feature, style, RenderState.Normal, layer);
                         View.ShowRenderedObjects(renderedFeature);
                     }
                     break;
@@ -1064,10 +1051,8 @@ namespace SharpMap.Presentation.Presenters
                     foreach (FeatureDataRow selectedFeature in selectedRows)
                     {
                         FeatureStyle style = getStyleForFeature(layer, selectedFeature, layerStyle);
-                        IEnumerable renderedFeature = renderer.RenderFeature(selectedFeature,
-                                                                             style,
-                                                                             RenderState.Selected,
-                                                                             layer);
+                        IEnumerable renderedFeature = renderer.RenderFeature(
+                            selectedFeature, style, RenderState.Selected, layer);
                         View.ShowRenderedObjects(renderedFeature);
                     }
                     break;
@@ -1077,10 +1062,8 @@ namespace SharpMap.Presentation.Presenters
                     foreach (FeatureDataRow highlightedFeature in highlightedRows)
                     {
                         FeatureStyle style = getStyleForFeature(layer, highlightedFeature, layerStyle);
-                        IEnumerable renderedFeature = renderer.RenderFeature(highlightedFeature,
-                                                                             style,
-                                                                             RenderState.Highlighted,
-                                                                             layer);
+                        IEnumerable renderedFeature = renderer.RenderFeature(
+                            highlightedFeature, style, RenderState.Highlighted, layer);
                         View.ShowRenderedObjects(renderedFeature);
                     }
                     break;

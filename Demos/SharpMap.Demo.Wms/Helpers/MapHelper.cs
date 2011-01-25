@@ -45,7 +45,7 @@ namespace SharpMap.Demo.Wms.Helpers
             {
                 "poly_landmarks",
                 "tiger_roads", 
-                "poi"
+                "poi",
             };
             foreach (var layer in layers)
             {

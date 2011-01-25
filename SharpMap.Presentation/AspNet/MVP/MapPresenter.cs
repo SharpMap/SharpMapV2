@@ -174,70 +174,49 @@ namespace SharpMap.Presentation.AspNet.MVP
                 yield return t;
             }
         }
-
+        
         protected override void RenderFeatureLayer(IFeatureLayer layer, RenderPhase phase)
         {
             IFeatureRenderer renderer = GetRenderer<IFeatureRenderer>(layer);
-            renderer.RenderTransform = ToViewTransform;
-
-            Debug.Assert(renderer != null);
-
-            Debug.Assert(layer.Style is FeatureStyle);
-            FeatureStyle layerStyle = layer.Style as FeatureStyle;
-
-            switch (phase)
+            lock (renderer)
             {
-                case RenderPhase.Normal:
-                    IEnumerable<FeatureDataRow> features
-                        =
-                        EnumerateWhileMonitoringClientConnection(layer.Features.Select(ViewEnvelopeInternal.ToGeometry()));
+                renderer.RenderTransform = ToViewTransform;
+                Debug.Assert(renderer != null);
+                Debug.Assert(layer.Style is FeatureStyle);
+                FeatureStyle layerStyle = layer.Style as FeatureStyle;
 
-                    foreach (FeatureDataRow feature in features)
-                    {
-                        FeatureStyle style = getStyleForFeature(layer, feature, layerStyle);
-
-                        IEnumerable renderedFeature = renderer.RenderFeature(feature,
-                                                                             style,
-                                                                             RenderState.Normal,
-                                                                             layer);
-                        View.ShowRenderedObjects(renderedFeature);
-                    }
-                    break;
-                case RenderPhase.Selected:
-                    IEnumerable<FeatureDataRow> selectedRows =
-                        EnumerateWhileMonitoringClientConnection(layer.SelectedFeatures);
-
-                    foreach (FeatureDataRow selectedFeature in selectedRows)
-                    {
-                        FeatureStyle style = getStyleForFeature(layer, selectedFeature, layerStyle);
-
-                        IEnumerable renderedFeature = renderer.RenderFeature(selectedFeature,
-                                                                             style,
-                                                                             RenderState.Selected,
-                                                                             layer);
-                        View.ShowRenderedObjects(renderedFeature);
-                    }
-                    break;
-                case RenderPhase.Highlighted:
-                    IEnumerable<FeatureDataRow> highlightedRows =
-                        EnumerateWhileMonitoringClientConnection(layer.HighlightedFeatures);
-
-                    foreach (FeatureDataRow highlightedFeature in highlightedRows)
-                    {
-                        FeatureStyle style = getStyleForFeature(layer, highlightedFeature, layerStyle);
-
-                        IEnumerable renderedFeature = renderer.RenderFeature(highlightedFeature,
-                                                                             style,
-                                                                             RenderState.Highlighted,
-                                                                             layer);
-                        View.ShowRenderedObjects(renderedFeature);
-                    }
-                    break;
-                default:
-                    break;
+                switch (phase)
+                {
+                    case RenderPhase.Normal:
+                        var features = layer.Features.Select(this.ViewEnvelopeInternal.ToGeometry());
+                        this.InternalRenderFeatures(layer, features, layerStyle, renderer, RenderState.Normal);
+                        break;
+                    case RenderPhase.Selected:
+                        this.InternalRenderFeatures(
+                            layer, layer.SelectedFeatures, layerStyle, renderer, RenderState.Selected);
+                        break;
+                    case RenderPhase.Highlighted:
+                        this.InternalRenderFeatures(
+                            layer, layer.HighlightedFeatures, layerStyle, renderer, RenderState.Highlighted);
+                        break;
+                    default:
+                        break;
+                }
+                renderer.CleanUp();
             }
+        }
 
-            renderer.CleanUp();
+        private void InternalRenderFeatures(IFeatureLayer layer,
+            IEnumerable<FeatureDataRow> features, FeatureStyle layerStyle,
+            IFeatureRenderer renderer, RenderState state)
+        {
+            var enumerable = EnumerateWhileMonitoringClientConnection(features);
+            foreach (FeatureDataRow feature in enumerable)
+            {
+                FeatureStyle style = getStyleForFeature(layer, feature, layerStyle);
+                IEnumerable renderedFeature = renderer.RenderFeature(feature, style, state, layer);
+                View.ShowRenderedObjects(renderedFeature);
+            }
         }
 
         #region MapViewControl accessible members

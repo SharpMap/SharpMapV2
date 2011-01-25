@@ -182,7 +182,6 @@ namespace SharpMap.Presentation.AspNet.MVP
 
         public void ShowRenderedObjects(IEnumerable renderedObjects)
         {
-            //WebMapRenderer.ClearRenderQueue();
             foreach (Object o in renderedObjects)
             {
                 WebMapRenderer.EnqueueRenderObject(o);

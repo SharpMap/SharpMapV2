@@ -140,7 +140,8 @@ namespace SharpMap.Rendering
 	    public TRenderer Get<TRenderer>(ILayer layer)
             where TRenderer : class, IRenderer
         {
-	        if (layer == null) throw new ArgumentNullException("layer");
+	        if (layer == null) 
+                throw new ArgumentNullException("layer");
 
 	        LayerRendererRegistryKey key = new LayerRendererRegistryKey(null, layer.LayerName);
             IRenderer renderer;

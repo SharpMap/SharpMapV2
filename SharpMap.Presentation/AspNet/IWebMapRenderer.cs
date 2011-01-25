@@ -39,6 +39,6 @@ namespace SharpMap.Presentation.AspNet
 
     public interface IWebMapRenderer<TOutputFormat> : IWebMapRenderer
     {
-        new TOutputFormat Render(WebMapView mapView, out string mimeType);
+        new TOutputFormat Render(out string mimeType);
     }
 }

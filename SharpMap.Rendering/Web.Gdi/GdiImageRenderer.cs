@@ -88,40 +88,35 @@ namespace SharpMap.Rendering.Web
 
         public int Width
         {
-            get { return (int) MapView.ViewSize.Width; }
+            get { return (int)MapView.ViewSize.Width; }
         }
 
         public int Height
         {
-            get { return (int) MapView.ViewSize.Height; }
+            get { return (int)MapView.ViewSize.Height; }
         }
 
         #region IWebMapRenderer<Image> Members
 
         public WebMapView MapView { get; set; }
 
-        public Image Render(WebMapView mapView, out string mimeType)
+        public Image Render(out string mimeType)
         {
             Bitmap bmp = new Bitmap(Width, Height, PixelFormat);
-            Graphics g = Graphics.FromImage(bmp);
-            g.SmoothingMode = SmoothingMode.AntiAlias;
-
-            //g.Transform = GetGdiViewTransform();
-            if (!MapView.Presenter.IsRenderingSelection)
-                g.Clear(ViewConverter.Convert(MapView.BackgroundColor));
-
-
-            while (_renderQ.Count > 0)
+            using (Graphics g = Graphics.FromImage(bmp))
             {
-                RenderObject(_renderQ.Dequeue(), g);
+                g.SmoothingMode = SmoothingMode.AntiAlias;
+                if (!MapView.Presenter.IsRenderingSelection)
+                    g.Clear(ViewConverter.Convert(MapView.BackgroundColor));
+                while (_renderQ.Count > 0)
+                {
+                    GdiRenderObject ro = this._renderQ.Dequeue();
+                    RenderObject(ro, g);
+                }
             }
-
-            g.Dispose();
-
             mimeType = "image/bmp";
             return bmp;
         }
-
 
         public IRasterRenderer2D CreateRasterRenderer()
         {
@@ -142,7 +137,7 @@ namespace SharpMap.Rendering.Web
 
         public Type GetRenderObjectType()
         {
-            return typeof (GdiRenderObject);
+            return typeof(GdiRenderObject);
         }
 
         public void ClearRenderQueue()
@@ -152,7 +147,7 @@ namespace SharpMap.Rendering.Web
 
         public void EnqueueRenderObject(object o)
         {
-            _renderQ.Enqueue((GdiRenderObject) o);
+            _renderQ.Enqueue((GdiRenderObject)o);
         }
 
         public event EventHandler RenderDone;
@@ -162,7 +157,6 @@ namespace SharpMap.Rendering.Web
             return RenderStreamInternal(map, out mimeType);
         }
 
-
         public void Dispose()
         {
             Dispose(true);
@@ -171,130 +165,56 @@ namespace SharpMap.Rendering.Web
 
         public Type GeometryRendererType
         {
-            get { return typeof (BasicGeometryRenderer2D<>); }
+            get { return typeof(BasicGeometryRenderer2D<>); }
         }
 
         public Type LabelRendererType
         {
-            get { return typeof (BasicLabelRenderer2D<>); }
+            get { return typeof(BasicLabelRenderer2D<>); }
         }
 
         #endregion
 
         protected virtual Stream RenderStreamInternal(WebMapView map, out string mimeType)
         {
-            Image im = Render(map, out mimeType);
-
+            Image im = this.Render(out mimeType);
             if (im == null)
                 return null;
 
             MemoryStream ms = new MemoryStream();
-
             im.Save(ms, ImageCodec, EncoderParams);
             im.Dispose();
             ms.Position = 0;
             mimeType = ImageCodec.MimeType;
             return ms;
+
         }
 
-        private void RenderObject(GdiRenderObject ro, Graphics g)
+        private static void RenderObject(GdiRenderObject ro, Graphics g)
         {
-            if (ro.State == RenderState.Unknown)
+            RenderState state = ro.State;
+            if (state == RenderState.Unknown)
                 return;
 
-            switch (ro.State)
+            switch (state)
             {
                 case RenderState.Normal:
-                    if (ro.GdiPath != null)
-                    {
-                        if (ro.Line != null)
-                        {
-                            if (ro.Outline != null)
-                                g.DrawPath(ro.Outline, ro.GdiPath);
-
-                            g.DrawPath(ro.Line, ro.GdiPath);
-                        }
-                        else if (ro.Fill != null)
-                        {
-                            g.FillPath(ro.Fill, ro.GdiPath);
-
-                            if (ro.Outline != null)
-                                g.DrawPath(ro.Outline, ro.GdiPath);
-                        }
-                    }
-
-                    if (ro.Text != null)
-                    {
-                        RectangleF newBounds = AdjustForLabel(g, ro);
-                        g.DrawString(ro.Text, ro.Font, ro.Fill, newBounds.Location);
-                        //g.Transform = GetGdiViewTransform();
-                    }
-
+                    DrawPath(ro, g, new DrawPathParams(ro.GdiPath, ro.Line, ro.Outline, ro.Fill));
                     break;
                 case RenderState.Highlighted:
-                    if (ro.GdiPath != null)
-                    {
-                        if (ro.HighlightLine != null)
-                        {
-                            if (ro.HighlightOutline != null)
-                                g.DrawPath(ro.HighlightOutline, ro.GdiPath);
-
-                            g.DrawPath(ro.HighlightLine, ro.GdiPath);
-                        }
-                        else if (ro.HighlightFill != null)
-                        {
-                            g.FillPath(ro.HighlightFill, ro.GdiPath);
-
-                            if (ro.HighlightOutline != null)
-                                g.DrawPath(ro.HighlightOutline, ro.GdiPath);
-                        }
-                    }
-
-                    if (ro.Text != null)
-                    {
-                        RectangleF newBounds = AdjustForLabel(g, ro);
-                        g.DrawString(ro.Text, ro.Font, ro.HighlightFill, newBounds);
-                        //g.Transform = GetGdiViewTransform();
-                    }
-
+                    DrawPath(ro, g, new DrawPathParams(ro.GdiPath, ro.HighlightLine, ro.HighlightOutline, ro.HighlightFill));
                     break;
                 case RenderState.Selected:
-                    if (ro.GdiPath != null)
-                    {
-                        if (ro.SelectLine != null)
-                        {
-                            if (ro.SelectOutline != null)
-                                g.DrawPath(ro.SelectOutline, ro.GdiPath);
-
-                            g.DrawPath(ro.SelectLine, ro.GdiPath);
-                        }
-                        else if (ro.SelectFill != null)
-                        {
-                            g.FillPath(ro.SelectFill, ro.GdiPath);
-
-                            if (ro.SelectOutline != null)
-                                g.DrawPath(ro.SelectOutline, ro.GdiPath);
-                        }
-                    }
-
-                    if (ro.Text != null)
-                    {
-                        RectangleF newBounds = AdjustForLabel(g, ro);
-                        g.DrawString(ro.Text, ro.Font, ro.SelectFill, newBounds);
-                        //g.Transform = GetGdiViewTransform();
-                    }
+                    DrawPath(ro, g, new DrawPathParams(ro.GdiPath, ro.SelectLine, ro.SelectOutline, ro.SelectFill));
                     break;
                 default:
                     break;
             }
 
             if (ro.Image == null)
-            {
                 return;
-            }
 
             ImageAttributes imageAttributes = null;
-
             if (ro.ColorTransform != null)
             {
                 imageAttributes = new ImageAttributes();
@@ -303,21 +223,55 @@ namespace SharpMap.Rendering.Web
 
             if (imageAttributes != null)
             {
-                g.DrawImage(ro.Image,
-                            GetPoints(ro.Bounds),
-                            GetSourceRegion(ro.Image.Size),
-                            GraphicsUnit.Pixel,
-                            imageAttributes);
+                g.DrawImage(
+                    ro.Image, GetPoints(ro.Bounds), GetSourceRegion(ro.Image.Size), GraphicsUnit.Pixel, imageAttributes);
             }
             else
             {
-                g.DrawImage(ro.Image,
-                            GetPoints(ro.Bounds),
-                            GetSourceRegion(ro.Image.Size),
-                            GraphicsUnit.Pixel);
+                g.DrawImage(ro.Image, GetPoints(ro.Bounds), GetSourceRegion(ro.Image.Size), GraphicsUnit.Pixel);
             }
         }
 
+        public class DrawPathParams
+        {
+            public DrawPathParams(GraphicsPath path, Pen line, Pen outline, Brush fill)
+            {
+                this.Path = path;
+                this.Line = line;
+                this.Outline = outline;
+                this.Fill = fill;
+            }
+
+            public GraphicsPath Path { get; private set; }
+            public Pen Line { get; private set; }
+            public Pen Outline { get; private set; }
+            public Brush Fill { get; private set; }
+        }
+
+        private static void DrawPath(GdiRenderObject ro, Graphics g, DrawPathParams dpp)
+        {
+            if (dpp.Path != null)
+            {                
+                if (dpp.Line != null)
+                {
+                    if (dpp.Outline != null)
+                        g.DrawPath(dpp.Outline, dpp.Path);
+                    g.DrawPath(dpp.Line, dpp.Path);
+                }
+                else if (dpp.Fill != null)
+                {
+                    g.FillPath(dpp.Fill, dpp.Path);
+                    if (dpp.Outline != null)
+                        g.DrawPath(dpp.Outline, dpp.Path);
+                }
+            }
+
+            if (ro.Text != null && dpp.Fill != null)
+            {
+                RectangleF newBounds = AdjustForLabel(g, ro);
+                g.DrawString(ro.Text, ro.Font, dpp.Fill, newBounds);
+            }
+        }
 
         private static ImageCodecInfo GetDefaultCodec()
         {
@@ -357,28 +311,28 @@ namespace SharpMap.Rendering.Web
             Matrix2D viewMatrix = MapView.ToViewTransform ?? new Matrix2D();
             Single[] gdiElements = _gdiViewMatrix.Elements;
 
-            if (gdiElements[0] != (Single) viewMatrix.M11
-                || gdiElements[1] != (Single) viewMatrix.M12
-                || gdiElements[2] != (Single) viewMatrix.M21
-                || gdiElements[3] != (Single) viewMatrix.M22
-                || gdiElements[4] != (Single) viewMatrix.OffsetX
-                || gdiElements[5] != (Single) viewMatrix.OffsetY)
+            if (gdiElements[0] != (Single)viewMatrix.M11
+                || gdiElements[1] != (Single)viewMatrix.M12
+                || gdiElements[2] != (Single)viewMatrix.M21
+                || gdiElements[3] != (Single)viewMatrix.M22
+                || gdiElements[4] != (Single)viewMatrix.OffsetX
+                || gdiElements[5] != (Single)viewMatrix.OffsetY)
             {
                 Debug.WriteLine(
                     String.Format(
                         "Disposing GDI matrix on values: {0} : {1}; {2} : {3}; {4} : {5}; {6} : {7}; {8} : {9}; {10} : {11}",
                         gdiElements[0],
-                        (Single) viewMatrix.M11,
+                        (Single)viewMatrix.M11,
                         gdiElements[1],
-                        (Single) viewMatrix.M12,
+                        (Single)viewMatrix.M12,
                         gdiElements[2],
-                        (Single) viewMatrix.M21,
+                        (Single)viewMatrix.M21,
                         gdiElements[3],
-                        (Single) viewMatrix.M22,
+                        (Single)viewMatrix.M22,
                         gdiElements[4],
-                        (Single) viewMatrix.OffsetX,
+                        (Single)viewMatrix.OffsetX,
                         gdiElements[5],
-                        (Single) viewMatrix.OffsetY));
+                        (Single)viewMatrix.OffsetY));
 
                 _gdiViewMatrix.Dispose();
                 _gdiViewMatrix = ViewConverter.Convert(MapView.ToViewTransform);
@@ -412,9 +366,9 @@ namespace SharpMap.Rendering.Web
             float scale = Math.Abs(m.Elements[0]);
 
             // get the bounds of the label in the underlying coordinate space
-            Point ll = new Point((Int32) ro.Bounds.X, (Int32) ro.Bounds.Y);
-            Point ur = new Point((Int32) (ro.Bounds.X + ro.Bounds.Width),
-                                 (Int32) (ro.Bounds.Y + ro.Bounds.Height));
+            Point ll = new Point((Int32)ro.Bounds.X, (Int32)ro.Bounds.Y);
+            Point ur = new Point((Int32)(ro.Bounds.X + ro.Bounds.Width),
+                                 (Int32)(ro.Bounds.Y + ro.Bounds.Height));
 
             Point[] transformedPoints1 =
                 {
@@ -468,8 +422,8 @@ namespace SharpMap.Rendering.Web
             // if we're scaling text, then x,y position will get multiplied by our 
             // scale, so adjust for it here so that we can use actual pixel x,y
             // Also center our label on the coordinate instead of putting the label origin on the coordinate
-            RectangleF newBounds = new RectangleF(transformedPoints1[0].X/scale,
-                                                  (transformedPoints1[0].Y/scale) - pixelHeight,
+            RectangleF newBounds = new RectangleF(transformedPoints1[0].X / scale,
+                                                  (transformedPoints1[0].Y / scale) - pixelHeight,
                                                   pixelWidth,
                                                   pixelHeight);
             //RectangleF newBounds = new RectangleF(transformedPoints1[0].X / scale - (pixelWidth / 2), transformedPoints1[0].Y / scale - (pixelHeight / 2), pixelWidth, pixelHeight);
@@ -555,8 +509,8 @@ namespace SharpMap.Rendering.Web
 
                     using (BinaryReader reader = new BinaryReader(new NondisposingStream(symbol2D.SymbolData)))
                     {
-                        data.Write(reader.ReadBytes((Int32) symbol2D.SymbolData.Length), 0,
-                                   (Int32) symbol2D.SymbolData.Length);
+                        data.Write(reader.ReadBytes((Int32)symbol2D.SymbolData.Length), 0,
+                                   (Int32)symbol2D.SymbolData.Length);
                     }
 
                     symbol = new Bitmap(data);
