@@ -9,5 +9,9 @@ namespace SharpMap.Demo.Wms.Controllers
             return View();
         }
 
+        public ActionResult Poly()
+        {
+            return View();
+        }
     }
 }

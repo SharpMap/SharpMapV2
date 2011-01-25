@@ -158,6 +158,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\Images\sorry.jpg" />
+    <Content Include="Content\polymaps.css" />
     <Content Include="img\blank.gif" />
     <Content Include="img\cloud-popup-relative.png" />
     <Content Include="img\drag-rectangle-off.png" />
@@ -473,7 +474,10 @@
     <Content Include="lib\OpenLayers\Util.js" />
     <Content Include="lib\Rico\Color.js" />
     <Content Include="lib\Rico\Corner.js" />
-    <Content Include="Scripts\script.js" />
+    <Content Include="Scripts\globalmaptiles.js" />
+    <Content Include="Scripts\polymaps.js" />
+    <Content Include="Scripts\script_ol.js" />
+    <Content Include="Scripts\script_poly.js" />
     <Content Include="theme\default\framedCloud.css" />
     <Content Include="theme\default\google.css" />
     <Content Include="theme\default\ie6-style.css" />
@@ -512,6 +516,7 @@
     <Content Include="theme\default\img\zoom-panel-NOALPHA.png" />
     <Content Include="theme\default\img\zoom-panel.png" />
     <Content Include="theme\default\style.css" />
+    <Content Include="Views\Home\Poly.aspx" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
