@@ -199,13 +199,13 @@ namespace SharpMap.Rendering.Web
             switch (state)
             {
                 case RenderState.Normal:
-                    DrawPath(ro, g, new DrawPathParams(ro.GdiPath, ro.Line, ro.Outline, ro.Fill));
+                    DrawPath(ro, g, new PathParams(ro.GdiPath, ro.Line, ro.Outline, ro.Fill));
                     break;
                 case RenderState.Highlighted:
-                    DrawPath(ro, g, new DrawPathParams(ro.GdiPath, ro.HighlightLine, ro.HighlightOutline, ro.HighlightFill));
+                    DrawPath(ro, g, new PathParams(ro.GdiPath, ro.HighlightLine, ro.HighlightOutline, ro.HighlightFill));
                     break;
                 case RenderState.Selected:
-                    DrawPath(ro, g, new DrawPathParams(ro.GdiPath, ro.SelectLine, ro.SelectOutline, ro.SelectFill));
+                    DrawPath(ro, g, new PathParams(ro.GdiPath, ro.SelectLine, ro.SelectOutline, ro.SelectFill));
                     break;
                 default:
                     break;
@@ -232,9 +232,9 @@ namespace SharpMap.Rendering.Web
             }
         }
 
-        public class DrawPathParams
+        public class PathParams
         {
-            public DrawPathParams(GraphicsPath path, Pen line, Pen outline, Brush fill)
+            public PathParams(GraphicsPath path, Pen line, Pen outline, Brush fill)
             {
                 this.Path = path;
                 this.Line = line;
@@ -242,13 +242,15 @@ namespace SharpMap.Rendering.Web
                 this.Fill = fill;
             }
 
+            // TODO: maybe here's the problem?
             public GraphicsPath Path { get; private set; }
+
             public Pen Line { get; private set; }
             public Pen Outline { get; private set; }
             public Brush Fill { get; private set; }
         }
 
-        private static void DrawPath(GdiRenderObject ro, Graphics g, DrawPathParams dpp)
+        private static void DrawPath(GdiRenderObject ro, Graphics g, PathParams dpp)
         {
             if (dpp.Path != null)
             {                
