@@ -30,6 +30,8 @@ using GdiColorMatrix = System.Drawing.Imaging.ColorMatrix;
 
 namespace SharpMap.Rendering.Web
 {
+    using Gdi;
+
     public class GdiImageRenderer
         : IWebMapRenderer<Image>
     {
@@ -199,15 +201,15 @@ namespace SharpMap.Rendering.Web
             switch (state)
             {
                 case RenderState.Normal:
-                    using (PathParams pn = new PathParams(ro.GdiPath, ro.Line, ro.Fill, ro.Outline, ro.Font))
+                    using (DrawParams pn = new DrawParams(ro.GdiPath, ro.Line, ro.Fill, ro.Outline, ro.Font))
                         DrawPath(g, ro, pn);
                     break;
                 case RenderState.Highlighted:
-                    using (PathParams ph = new PathParams(ro.GdiPath, ro.HighlightLine, ro.HighlightFill, ro.HighlightOutline, ro.Font))
+                    using (DrawParams ph = new DrawParams(ro.GdiPath, ro.HighlightLine, ro.HighlightFill, ro.HighlightOutline, ro.Font))
                         DrawPath(g, ro, ph);
                     break;
                 case RenderState.Selected:
-                    using (PathParams ps = new PathParams(ro.GdiPath, ro.SelectLine, ro.SelectFill, ro.SelectOutline, ro.Font))
+                    using (DrawParams ps = new DrawParams(ro.GdiPath, ro.SelectLine, ro.SelectFill, ro.SelectOutline, ro.Font))
                         DrawPath(g, ro, ps);
                     break;
                 default:
@@ -217,6 +219,7 @@ namespace SharpMap.Rendering.Web
             if (ro.Image == null)
                 return;
 
+            // TODO: same management (i.e: DrawParams.Dispose) for pahts and for images?
             ImageAttributes imageAttributes = null;
             if (ro.ColorTransform != null)
             {
@@ -234,63 +237,7 @@ namespace SharpMap.Rendering.Web
             }
         }
 
-        public class PathParams : IDisposable
-        {
-            public PathParams(GraphicsPath path, Pen line, Brush fill, Pen outline, Font font)
-            {
-                this.Path = path;
-                this.Line = CloneOf(line);                
-                this.Fill = CloneOf(fill);
-                this.Outline = CloneOf(outline);
-                this.Font = CloneOf(font);
-            }            
-
-            public GraphicsPath Path { get; private set; }
-
-            public Pen Line { get; private set; }            
-            public Brush Fill { get; private set; }
-            public Pen Outline { get; private set; }
-            public Font Font { get; private set; }
-
-            private static T CloneOf<T>(T item) where T : class, ICloneable 
-            {
-                if (item == null)
-                    return null;
-                lock (item)
-                    return (T)item.Clone();
-            }
-
-            public void Dispose()
-            {
-                if (Path != null)
-                {
-                    Path.Dispose();
-                    Path = null;
-                }
-                if (Line != null)
-                {
-                    Line.Dispose();
-                    Line = null;
-                }
-                if (Outline != null)
-                {
-                    Outline.Dispose();
-                    Outline = null;
-                }
-                if (Fill != null)
-                {
-                    Fill.Dispose();
-                    Fill = null;
-                }
-                if (Font != null)
-                {
-                    Font.Dispose();
-                    Font = null;
-                }
-            }
-        }
-
-        private static void DrawPath(Graphics g, GdiRenderObject ro, PathParams dpp)
+        private static void DrawPath(Graphics g, GdiRenderObject ro, DrawParams dpp)
         {
             if (dpp.Path != null)
             {
