@@ -199,13 +199,16 @@ namespace SharpMap.Rendering.Web
             switch (state)
             {
                 case RenderState.Normal:
-                    DrawPath(ro, g, new PathParams(ro.GdiPath, ro.Line, ro.Outline, ro.Fill));
+                    using (PathParams pn = new PathParams(ro.GdiPath, ro.Line, ro.Fill, ro.Outline, ro.Font))
+                        DrawPath(g, ro, pn);
                     break;
                 case RenderState.Highlighted:
-                    DrawPath(ro, g, new PathParams(ro.GdiPath, ro.HighlightLine, ro.HighlightOutline, ro.HighlightFill));
+                    using (PathParams ph = new PathParams(ro.GdiPath, ro.HighlightLine, ro.HighlightFill, ro.HighlightOutline, ro.Font))
+                        DrawPath(g, ro, ph);
                     break;
                 case RenderState.Selected:
-                    DrawPath(ro, g, new PathParams(ro.GdiPath, ro.SelectLine, ro.SelectOutline, ro.SelectFill));
+                    using (PathParams ps = new PathParams(ro.GdiPath, ro.SelectLine, ro.SelectFill, ro.SelectOutline, ro.Font))
+                        DrawPath(g, ro, ps);
                     break;
                 default:
                     break;
@@ -223,8 +226,7 @@ namespace SharpMap.Rendering.Web
 
             if (imageAttributes != null)
             {
-                g.DrawImage(
-                    ro.Image, GetPoints(ro.Bounds), GetSourceRegion(ro.Image.Size), GraphicsUnit.Pixel, imageAttributes);
+                g.DrawImage(ro.Image, GetPoints(ro.Bounds), GetSourceRegion(ro.Image.Size), GraphicsUnit.Pixel, imageAttributes);
             }
             else
             {
@@ -232,28 +234,66 @@ namespace SharpMap.Rendering.Web
             }
         }
 
-        public class PathParams
+        public class PathParams : IDisposable
         {
-            public PathParams(GraphicsPath path, Pen line, Pen outline, Brush fill)
+            public PathParams(GraphicsPath path, Pen line, Brush fill, Pen outline, Font font)
             {
                 this.Path = path;
-                this.Line = line;
-                this.Outline = outline;
-                this.Fill = fill;
-            }
+                this.Line = CloneOf(line);                
+                this.Fill = CloneOf(fill);
+                this.Outline = CloneOf(outline);
+                this.Font = CloneOf(font);
+            }            
 
-            // TODO: maybe here's the problem?
             public GraphicsPath Path { get; private set; }
 
-            public Pen Line { get; private set; }
-            public Pen Outline { get; private set; }
+            public Pen Line { get; private set; }            
             public Brush Fill { get; private set; }
+            public Pen Outline { get; private set; }
+            public Font Font { get; private set; }
+
+            private static T CloneOf<T>(T item) where T : class, ICloneable 
+            {
+                if (item == null)
+                    return null;
+                lock (item)
+                    return (T)item.Clone();
+            }
+
+            public void Dispose()
+            {
+                if (Path != null)
+                {
+                    Path.Dispose();
+                    Path = null;
+                }
+                if (Line != null)
+                {
+                    Line.Dispose();
+                    Line = null;
+                }
+                if (Outline != null)
+                {
+                    Outline.Dispose();
+                    Outline = null;
+                }
+                if (Fill != null)
+                {
+                    Fill.Dispose();
+                    Fill = null;
+                }
+                if (Font != null)
+                {
+                    Font.Dispose();
+                    Font = null;
+                }
+            }
         }
 
-        private static void DrawPath(GdiRenderObject ro, Graphics g, PathParams dpp)
+        private static void DrawPath(Graphics g, GdiRenderObject ro, PathParams dpp)
         {
             if (dpp.Path != null)
-            {                
+            {
                 if (dpp.Line != null)
                 {
                     if (dpp.Outline != null)
@@ -271,7 +311,7 @@ namespace SharpMap.Rendering.Web
             if (ro.Text != null && dpp.Fill != null)
             {
                 RectangleF newBounds = AdjustForLabel(g, ro);
-                g.DrawString(ro.Text, ro.Font, dpp.Fill, newBounds);
+                g.DrawString(ro.Text, dpp.Font, dpp.Fill, newBounds);
             }
         }
 
