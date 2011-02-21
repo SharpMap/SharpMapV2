@@ -138,7 +138,7 @@ namespace SharpMap.Data.Providers
         @envelope.STPointN(4).STX as MaxX, 
         @envelope.STPointN(4).STY as MaxY",
                                     GeometryColumn, TableSchema, Table,
-                                    withNoLock ? "WITH(NOLOCK)" : "");
+                                    withNoLock ? "WITH(NOLOCK)" : String.Empty);
                             break;
                         }
                     case SqlServer2008ExtentsMode.UseEnvelopeColumns:
@@ -146,7 +146,7 @@ namespace SharpMap.Data.Providers
                             cmd.CommandText = string.Format(
                                 "SELECT MIN({0}_Envelope_MinX), MIN({0}_Envelope_MinY), MAX({0}_Envelope_MaxX), MAX({0}_Envelope_MaxY) FROM {1}.{2} {3}",
                                 GeometryColumn, TableSchema, Table,
-                                withNoLock ? "WITH(NOLOCK)" : "");
+                                withNoLock ? "WITH(NOLOCK)" : String.Empty);
                             break;
                         }
                     default:
@@ -155,11 +155,11 @@ namespace SharpMap.Data.Providers
                                 string.Format(
                                     @"
     select 
-	    Min(Geom.STEnvelope().STPointN(1).STX)as MinX, 
-	    Min(Geom.STEnvelope().STPointN(1).STY) as MinY,  
-	    Max(Geom.STEnvelope().STPointN(3).STX) as MaxX, 
-	    Max(Geom.STEnvelope().STPointN(3).STY) as MaxY FROM {0}.{1} {2}",
-                                    TableSchema, Table, withNoLock ? "WITH(NOLOCK)" : "");
+	    Min({0}.STEnvelope().STPointN(1).STX)as MinX, 
+	    Min({0}.STEnvelope().STPointN(1).STY) as MinY,  
+	    Max({0}.STEnvelope().STPointN(3).STX) as MaxX, 
+	    Max({0}.STEnvelope().STPointN(3).STY) as MaxY FROM {1}.{2} {3}",
+                                    this.GeometryColumn, TableSchema, Table, withNoLock ? "WITH(NOLOCK)" : String.Empty);
                             break;
                         }
                 }
@@ -240,7 +240,7 @@ namespace SharpMap.Data.Providers
             //                                                        })));
 
 
-            string orderByClause = string.IsNullOrEmpty(compiler.OrderByClause) ? "" : " ORDER BY " + compiler.OrderByClause;
+            string orderByClause = string.IsNullOrEmpty(compiler.OrderByClause) ? String.Empty : " ORDER BY " + compiler.OrderByClause;
 
             string mainQueryColumns = string.Join(",", Enumerable.ToArray(
                                                            FormatColumnNames(true, true,
@@ -254,7 +254,7 @@ namespace SharpMap.Data.Providers
                                  mainQueryColumns,
                                  QualifiedTableName,
                                  compiler.SqlJoinClauses,
-                                 string.IsNullOrEmpty(compiler.SqlWhereClause) ? "" : " WHERE ",
+                                 string.IsNullOrEmpty(compiler.SqlWhereClause) ? String.Empty : " WHERE ",
                                  compiler.SqlWhereClause,
                                  GetWithClause(properties),
                                  orderByClause);
@@ -318,7 +318,7 @@ WHERE rownumber BETWEEN {9} AND {10} ",
                 mainQueryColumns,
                 QualifiedTableName,
                 compiler.SqlJoinClauses,
-                string.IsNullOrEmpty(compiler.SqlWhereClause) ? "" : " WHERE ",
+                string.IsNullOrEmpty(compiler.SqlWhereClause) ? String.Empty : " WHERE ",
                 compiler.SqlWhereClause,
                 GetWithClause(properties),
                 orderByCols,
@@ -339,7 +339,7 @@ WHERE rownumber BETWEEN {9} AND {10} ",
                               GetProviderPropertyValue<ForceIndexExpression, bool>(properties, false);
 
             if (!withNoLock && !forceIndex)
-                return "";
+                return String.Empty;
 
             if (withNoLock && !forceIndex)
                 return " WITH(NOLOCK) ";
@@ -680,8 +680,8 @@ IF @found = 0
                                 int isrid = (int)v;
                                 cs = SridMap.DefaultInstance.Process(isrid, default(ICoordinateSystem));
                                 srid = !Equals(cs, default(ICoordinateSystem))
-                                           ? SridMap.DefaultInstance.Process(cs, "")
-                                           : "";
+                                           ? SridMap.DefaultInstance.Process(cs, String.Empty)
+                                           : String.Empty;
 
                                 return;
                             }
@@ -690,7 +690,7 @@ IF @found = 0
                 }
             }
             cs = default(ICoordinateSystem);
-            srid = "";
+            srid = String.Empty;
         }
 
         #region Nested type: SchemaTableBuildException
