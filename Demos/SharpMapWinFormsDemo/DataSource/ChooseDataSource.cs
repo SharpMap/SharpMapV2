@@ -56,32 +56,10 @@ namespace MapViewer.DataSource
                 case "shapefile":
                     LoadShapefileBuilder();
                     return;
-                case "mssqlspatial":
-                    LoadMsSqlSpatialBuilder();
-                    return;
                 case "mssqlserver2008":
                     LoadMsSqlServerBuilder();
-                    return;
-                case "spatiallite":
-                    LoadSpatialLiteBuilder();
-                    return;
-                case "postgis":
-                    LoadPostGisBuilder();
-                    return;
-                case "ibm db2 spatialextender":
-                    LoadDB2SpatialExtender();
-                    return;
+                    return;               
             }
-        }
-
-        private void LoadDB2SpatialExtender()
-        {
-            LoadBuilder(new DB2SpatialExtender());
-        }
-
-        private void LoadPostGisBuilder()
-        {
-            LoadBuilder(new PostGis());
         }
 
         private void LoadBuilder(ICreateDataProvider builder)
@@ -97,19 +75,9 @@ namespace MapViewer.DataSource
             ((Control)builder).Dock = DockStyle.Fill;
         }
 
-        private void LoadSpatialLiteBuilder()
-        {
-            LoadBuilder(new SpatialLite());
-        }
-
         private void LoadMsSqlServerBuilder()
         {
             LoadBuilder(new SqlServer2008());
-        }
-
-        private void LoadMsSqlSpatialBuilder()
-        {
-            LoadBuilder(new MsSqlSpatial());
         }
 
         private void LoadShapefileBuilder()

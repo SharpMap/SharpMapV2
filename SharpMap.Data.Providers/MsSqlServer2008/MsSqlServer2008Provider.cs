@@ -155,11 +155,11 @@ namespace SharpMap.Data.Providers
                                 string.Format(
                                     @"
     select 
-	    Min(Geom.STEnvelope().STPointN(1).STX)as MinX, 
-	    Min(Geom.STEnvelope().STPointN(1).STY) as MinY,  
-	    Max(Geom.STEnvelope().STPointN(3).STX) as MaxX, 
-	    Max(Geom.STEnvelope().STPointN(3).STY) as MaxY FROM {0}.{1} {2}",
-                                    TableSchema, Table, withNoLock ? "WITH(NOLOCK)" : "");
+	    Min({0}.STEnvelope().STPointN(1).STX)as MinX, 
+	    Min({0}.STEnvelope().STPointN(1).STY) as MinY,  
+	    Max({0}.STEnvelope().STPointN(3).STX) as MaxX, 
+	    Max({0}.STEnvelope().STPointN(3).STY) as MaxY FROM {1}.{2} {3}",
+                                    this.GeometryColumn, TableSchema, Table, withNoLock ? "WITH(NOLOCK)" : "");
                             break;
                         }
                 }
