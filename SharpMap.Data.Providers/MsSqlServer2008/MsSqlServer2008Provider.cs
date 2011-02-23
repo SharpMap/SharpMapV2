@@ -93,6 +93,14 @@ namespace SharpMap.Data.Providers
             return (s ?? String.Empty).ToUpper();
         }
 
+        private bool validatesGeometry = true;
+
+        public bool ValidatesGeometry
+        {
+            get { return this.validatesGeometry; } 
+            set { this.validatesGeometry = value; }
+        }
+
         public override String GeometryColumnConversionFormatString
         {
             get { return "{0}.STAsBinary()"; }
@@ -102,8 +110,7 @@ namespace SharpMap.Data.Providers
         {
             get
             {
-                return String.Format("geometry::STGeomFromWKB({0}, {1}).MakeValid()", "{0}",
-                                     SridInt.HasValue ? SridInt : 0);
+                return String.Format("geometry::STGeomFromWKB({0}, {1}).MakeValid()", "{0}", SridInt.HasValue ? SridInt : 0);
             }
         }
 
@@ -119,10 +126,12 @@ namespace SharpMap.Data.Providers
                     DefaultProviderProperties == null ? null : DefaultProviderProperties.ProviderProperties.Collection,
                     SqlServer2008ExtentsMode.QueryIndividualFeatures);
 
+            var geometryColumn = ValidatesGeometry ? String.Format("{0}.MakeValid()", GeometryColumn) : GeometryColumn;
+
             using (IDbConnection conn = DbUtility.CreateConnection(ConnectionString))
             using (IDbCommand cmd = DbUtility.CreateCommand())
             {
-                cmd.Connection = conn;
+                cmd.Connection = conn;                
                 switch (server2008ExtentsCalculationMode)
                 {
                     case SqlServer2008ExtentsMode.UseSqlSpatialTools:
@@ -137,7 +146,7 @@ namespace SharpMap.Data.Providers
         @envelope.STPointN(2).STY as MinY, 
         @envelope.STPointN(4).STX as MaxX, 
         @envelope.STPointN(4).STY as MaxY",
-                                    GeometryColumn, TableSchema, Table,
+                                    geometryColumn, TableSchema, Table,
                                     withNoLock ? "WITH(NOLOCK)" : "");
                             break;
                         }
@@ -145,7 +154,7 @@ namespace SharpMap.Data.Providers
                         {
                             cmd.CommandText = string.Format(
                                 "SELECT MIN({0}_Envelope_MinX), MIN({0}_Envelope_MinY), MAX({0}_Envelope_MaxX), MAX({0}_Envelope_MaxY) FROM {1}.{2} {3}",
-                                GeometryColumn, TableSchema, Table,
+                                geometryColumn, TableSchema, Table,
                                 withNoLock ? "WITH(NOLOCK)" : "");
                             break;
                         }
@@ -159,7 +168,7 @@ namespace SharpMap.Data.Providers
 	    Min({0}.STEnvelope().STPointN(1).STY) as MinY,  
 	    Max({0}.STEnvelope().STPointN(3).STX) as MaxX, 
 	    Max({0}.STEnvelope().STPointN(3).STY) as MaxY FROM {1}.{2} {3}",
-                                    this.GeometryColumn, TableSchema, Table, withNoLock ? "WITH(NOLOCK)" : "");
+                                    geometryColumn, TableSchema, Table, withNoLock ? "WITH(NOLOCK)" : "");
                             break;
                         }
                 }
