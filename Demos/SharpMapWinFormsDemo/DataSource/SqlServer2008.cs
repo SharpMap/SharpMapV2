@@ -55,23 +55,23 @@ namespace MapViewer.DataSource
             switch (oidType)
             {
                 case "bigint":
-                    return new MsSqlServer2008Provider<long>(f, conn, schema, tableName, oidColumn, geometryColumn);
+                    return new MsSqlServer2008Provider<long>(f, conn, schema, tableName, oidColumn, geometryColumn) { ValidatesGeometry = true };
                 case "decimal":
-                    return new MsSqlServer2008Provider<decimal>(f, conn, schema, tableName, oidColumn, geometryColumn);
+                    return new MsSqlServer2008Provider<decimal>(f, conn, schema, tableName, oidColumn, geometryColumn) { ValidatesGeometry = true };
                 case "int":
                 case "smallint":
-                    return new MsSqlServer2008Provider<int>(f, conn, schema, tableName, oidColumn, geometryColumn);
+                    return new MsSqlServer2008Provider<int>(f, conn, schema, tableName, oidColumn, geometryColumn) { ValidatesGeometry = true };
                 case "float":
                 case "numeric":
                 case "real":
-                    return new MsSqlServer2008Provider<double>(f, conn, schema, tableName, oidColumn, geometryColumn);
+                    return new MsSqlServer2008Provider<double>(f, conn, schema, tableName, oidColumn, geometryColumn) { ValidatesGeometry = true };
                 case "tinyint":
-                    return new MsSqlServer2008Provider<byte>(f, conn, schema, tableName, oidColumn, geometryColumn);
+                    return new MsSqlServer2008Provider<byte>(f, conn, schema, tableName, oidColumn, geometryColumn) { ValidatesGeometry = true };
                 case "uniqueidentifier":
-                    return new MsSqlServer2008Provider<Guid>(f, conn, schema, tableName, oidColumn, geometryColumn);
+                    return new MsSqlServer2008Provider<Guid>(f, conn, schema, tableName, oidColumn, geometryColumn) { ValidatesGeometry = true };
                 case "nvarchar":
                 case "varchar":
-                    return new MsSqlServer2008Provider<string>(f, conn, schema, tableName, oidColumn, geometryColumn);
+                    return new MsSqlServer2008Provider<string>(f, conn, schema, tableName, oidColumn, geometryColumn) { ValidatesGeometry = true };
             }
             return null;
         }

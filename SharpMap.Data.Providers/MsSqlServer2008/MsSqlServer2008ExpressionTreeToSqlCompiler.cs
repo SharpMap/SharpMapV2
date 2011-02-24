@@ -53,11 +53,9 @@ namespace SharpMap.Data.Providers.MsSqlServer2008
                                                                   SpatialOperation op,
                                                                   IGeometry geom)
         {
-            MsSqlServer2008Provider<TOId> provider = (MsSqlServer2008Provider<TOId>)Provider;
-            string geometryColumn = provider.ValidatesGeometry ? String.Format("{0}.MakeValid()", provider.GeometryColumn) : provider.GeometryColumn;
             builder.AppendFormat(" {0}.{1}.{2}({3}) = 1 ",
                                  Provider.Table,
-                                 geometryColumn,
+                                 GetGeometryColumn(),
                                  GetSpatialMethodName(op),
                                  DeclareSqlGeometry(geom));
         }
@@ -85,13 +83,17 @@ namespace SharpMap.Data.Providers.MsSqlServer2008
                                                  ((LiteralExpression)expression.RightExpression).Value).ParameterName
                                            : string.Empty;
 
-            MsSqlServer2008Provider<TOId> provider = (MsSqlServer2008Provider<TOId>)Provider;
-            string geometryColumn = provider.ValidatesGeometry ? String.Format("{0}.MakeValid()", provider.GeometryColumn) : provider.GeometryColumn;
             builder.AppendFormat(" {0}.{1}.{2}({3}) ",
-                      provider.Table,
-                       geometryColumn,
+                      Provider.Table,
+                      GetGeometryColumn(),
                       GetSpatialMethodName(expression.SpatialAnalysisOperator),
                       paramName);
+        }
+
+        private string GetGeometryColumn() 
+        {
+            MsSqlServer2008Provider<TOId> provider = (MsSqlServer2008Provider<TOId>)Provider;
+            return provider.ValidatesGeometry ? String.Format("{0}.MakeValid()", provider.GeometryColumn) : provider.GeometryColumn;
         }
     }
 }

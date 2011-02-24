@@ -427,7 +427,7 @@ namespace SharpMap.Data.Providers.Db
                         new FeatureQueryExpression(new AttributesProjectionExpression(new[] { OidColumn }),
                                                    (AttributeBinaryExpression)null, query))))
             {
-                yield return (TOid)fdr.GetOid();
+                yield return Execute(() => (TOid)fdr.GetOid());
             }
         }
 
@@ -529,7 +529,7 @@ namespace SharpMap.Data.Providers.Db
                 {
                     cmd.Connection = conn;
                     conn.Open();
-                    return (Int32)cmd.ExecuteScalar();
+                    return Execute(() => (Int32)cmd.ExecuteScalar());
                 }
             }
         }
@@ -559,7 +559,7 @@ namespace SharpMap.Data.Providers.Db
 
         public override Object ExecuteQuery(Expression query)
         {
-            return ExecuteFeatureDataReader(PrepareSelectCommand(query));
+            return Execute(() => ExecuteFeatureDataReader(PrepareSelectCommand(query)));
         }
 
       
@@ -620,7 +620,7 @@ namespace SharpMap.Data.Providers.Db
         protected override IFeatureDataReader InternalExecuteFeatureQuery(FeatureQueryExpression query,
                                                                           FeatureQueryExecutionOptions options)
         {
-            return ExecuteFeatureDataReader(PrepareSelectCommand(query));
+            return Execute(() => ExecuteFeatureDataReader(PrepareSelectCommand(query)));
         }
 
         protected virtual string QualifyTableName(string schema, string table)
@@ -812,7 +812,8 @@ namespace SharpMap.Data.Providers.Db
                             : DefaultProviderProperties.ProviderProperties.Collection));
 
             IDbCommand cmd = DbUtility.CreateCommand();
-            cmd.CommandText = GenerateSelectSql(props, compiler);
+            var text = GenerateSelectSql(props, compiler);
+            cmd.CommandText = text;
             cmd.CommandType = CommandType.Text;
 
             foreach (IDataParameter p in compiler.ParameterCache.Values)
@@ -820,6 +821,7 @@ namespace SharpMap.Data.Providers.Db
                 cmd.Parameters.Add(p);
             }
 
+            Trace.WriteLine(String.Format("CommandText: {0}", text));
             return cmd;
         }
 
@@ -904,6 +906,20 @@ namespace SharpMap.Data.Providers.Db
                 FeatureDataRow<TOid> fdrTOid = fdr as FeatureDataRow<TOid>;
                 if (fdrTOid != null) yield return fdrTOid;
             }
+        }
+
+        private static T Execute<T>(Func<T> func)
+        {
+            if (func == null)
+                throw new ArgumentNullException("func");
+
+            Stopwatch watch = new Stopwatch();
+            watch.Start();
+            T result = func();
+            watch.Stop();
+            string format = String.Format("query executed in {0} milliseconds", watch.ElapsedMilliseconds);
+            Trace.WriteLine(format);
+            return result;
         }
 
         #region Private helpers for Insert and Update

@@ -93,7 +93,7 @@ namespace SharpMap.Data.Providers
             return (s ?? String.Empty).ToUpper();
         }
 
-        private bool validatesGeometry = true;
+        private bool validatesGeometry;
 
         public bool ValidatesGeometry
         {
