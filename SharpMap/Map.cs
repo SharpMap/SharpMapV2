@@ -1055,7 +1055,9 @@ namespace SharpMap
 
             foreach (ILayer layer in _layers)
             {
-                if (!layer.SpatialReference.EqualParams(SpatialReference))
+                ICoordinateSystem source = layer.SpatialReference;
+                ICoordinateSystem target = this.SpatialReference;
+                if (!source.EqualParams(target))
                 {
                     if (layer.CoordinateTransformation != null)
                     {
@@ -1063,9 +1065,11 @@ namespace SharpMap
                         throw new InvalidOperationException("The layer already has a coordinate transform.");
                     }
 
+                    
                     layer.CoordinateTransformation
-                        = CoordinateTransformFactory.CreateFromCoordinateSystems(layer.SpatialReference,
-                                                                                 SpatialReference);
+                        = CoordinateTransformFactory.CreateFromCoordinateSystems(source, target);
+                    layer.InverseCoordinateTransformation
+                        = CoordinateTransformFactory.CreateFromCoordinateSystems(target, source);
                 }
             }
 

@@ -314,6 +314,18 @@ namespace SharpMap.Layers
             }
         }
 
+        public override ICoordinateTransformation InverseCoordinateTransformation
+        {
+            get
+            {
+                return base.InverseCoordinateTransformation ?? MasterLayer.InverseCoordinateTransformation;
+            }
+            set
+            {
+                base.InverseCoordinateTransformation = value;
+            }
+        }
+
         public override Boolean Enabled
         {
             get

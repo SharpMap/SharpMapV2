@@ -159,6 +159,12 @@ namespace SharpMap.Data.Providers
             set { _innerProvider.CoordinateTransformation = value; }
         }
 
+        public ICoordinateTransformation InverseCoordinateTransformation
+        {
+            get { return _innerProvider.InverseCoordinateTransformation; }
+            set { _innerProvider.InverseCoordinateTransformation = value; }
+        }
+
         public Object ExecuteQuery(Expression query)
         {
             return _innerProvider.ExecuteQuery(query);

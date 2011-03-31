@@ -10,14 +10,6 @@ $(document).ready(function() {
     };
 
     options = {
-        osm: {
-            url: 'http://full.wms.geofabrik.de/std/demo_key?',
-            type: 'WMS',
-            version: '1.1.1',
-            format: 'image/jpeg',
-            layers: '',
-            srs: '4326'
-        },
         wms: {
             url: '/Wms.ashx',
             type: 'WMS',
@@ -27,11 +19,40 @@ $(document).ready(function() {
             srs: '4326'
         },
         controls: [],
-        maxExtent: new OpenLayers.Bounds(-180, -90, 180, 90),
+        maxExtent: new OpenLayers.Bounds(-2.003750834E7, -2.003750834E7, 2.003750834E7, 2.003750834E7),
+        resolutions: [
+            156543.03390625,
+            78271.516953125,
+            39135.7584765625,
+            19567.87923828125,
+            9783.939619140625,
+            4891.9698095703125,
+            2445.9849047851562,
+            1222.9924523925781,
+            611.4962261962891,
+            305.74811309814453,
+            152.87405654907226,
+            76.43702827453613,
+            38.218514137268066,
+            19.109257068634033,
+            9.554628534317017,
+            4.777314267158508,
+            2.388657133579254,
+            1.194328566789627,
+            0.5971642833948135,
+            0.29858214169740677,
+            0.14929107084870338,
+            0.07464553542435169,
+            0.037322767712175846,
+            0.018661383856087923,
+            0.009330691928043961,
+            0.004665345964021981
+        ],
         numZoomLevels: 24,
-        projection: new OpenLayers.Projection('EPSG:4326'),
-        displayProjection: new OpenLayers.Projection('EPSG:4326'),
-        units: 'meters'
+        projection: new OpenLayers.Projection("EPSG:900913"),
+        displayProjection: new OpenLayers.Projection("EPSG:4326"),
+        units: "meters",
+        format: "image/png"
     };
 
     create = function(name, tiled) {
@@ -53,19 +74,7 @@ $(document).ready(function() {
     };
 
     osm = function() {
-        return new OpenLayers.Layer.WMS('OpenStreetMap', options.osm.url, {
-            layers: options.osm.layers,
-            srs: options.osm.srs,
-            service: options.osm.type,
-            version: options.osm.version,
-            format: options.osm.format,
-            transparent: false
-        }, {
-            isBaseLayer: true,
-            transparent: false,
-            singleTile: false,
-            ratio: 1.3
-        })
+        return new OpenLayers.Layer.OSM()
     };
 
     init = function() {
@@ -82,13 +91,14 @@ $(document).ready(function() {
         }));
         map.addControl(new OpenLayers.Control.MousePosition());
 
-        tiled = create('TiledWMS', true);
+        //tiled = create('TiledWMS', true);
         untiled = create('UntiledWMS', false);
-        untiled.setVisibility(false);
+        untiled.setVisibility(tiled === undefined);
         map.addLayer(osm());
-        map.addLayers([tiled, untiled]);
-        
+        map.addLayers([/*tiled, */untiled]);
+
         center = new OpenLayers.LonLat(lon, lat);
+        center.transform(options.displayProjection, options.projection);
         map.setCenter(center, zoom);
     };
     init();

@@ -23,6 +23,8 @@ using GeoAPI.Algorithms;
 
 namespace SharpMap.Layers
 {
+    using GeoAPI.CoordinateSystems;
+
     /// <summary>
     /// Represents an ordered collection of layers of geospatial features
     /// which are composed into a map.
@@ -255,10 +257,10 @@ namespace SharpMap.Layers
 
         protected override void InsertItem(Int32 index, ILayer item)
         {
-            if (item.SpatialReference != _map.SpatialReference && 
-                _map.SpatialReference != null &&
-                item.SpatialReference != null &&
-                !item.SpatialReference.EqualParams(_map.SpatialReference)) //jd:added EqualParams check
+            ICoordinateSystem source = item.SpatialReference;
+            ICoordinateSystem target = this._map.SpatialReference;
+            if (source != target &&  target != null && source != null &&
+                !source.EqualParams(target)) //jd:added EqualParams check
             {
                 if (_map.CoordinateTransformFactory == null)
                 {
@@ -266,8 +268,9 @@ namespace SharpMap.Layers
                 }
 
                 item.CoordinateTransformation =
-                    _map.CoordinateTransformFactory.CreateFromCoordinateSystems(item.SpatialReference,
-                                                                                _map.SpatialReference);
+                    _map.CoordinateTransformFactory.CreateFromCoordinateSystems(source, target);
+                item.InverseCoordinateTransformation =
+                    _map.CoordinateTransformFactory.CreateFromCoordinateSystems(target, source);
             }
 
             base.InsertItem(index, item);

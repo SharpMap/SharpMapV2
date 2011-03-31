@@ -23,6 +23,8 @@ using SharpMap.Expressions;
 
 namespace SharpMap.Indexing.RTree
 {
+    using System.Diagnostics;
+
     /// <summary>
     /// Implements an R-Tree spatial index.
     /// </summary>

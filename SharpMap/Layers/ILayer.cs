@@ -43,6 +43,11 @@ namespace SharpMap.Layers
 		/// </summary>
 		ICoordinateTransformation CoordinateTransformation { get; set; }
 
+        /// <summary>
+        /// Applies an inverse coordinate transformation to the geometries in this layer.
+        /// </summary>
+        ICoordinateTransformation InverseCoordinateTransformation { get; set; }
+
 		/// <summary>
 		/// Gets the data source used to create this layer.
 		/// </summary>

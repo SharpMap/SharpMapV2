@@ -36,6 +36,12 @@ namespace SharpMap.Data
         ICoordinateTransformation CoordinateTransformation { get; set; }
 
         /// <summary>
+        /// Applies an inverse coordinate transformation to the geometries in 
+        /// this provider.
+        /// </summary>
+        ICoordinateTransformation InverseCoordinateTransformation { get; set; }
+
+        /// <summary>
         /// The dataum, projection and coordinate system which the data appears in
         /// when queried.
         /// </summary>

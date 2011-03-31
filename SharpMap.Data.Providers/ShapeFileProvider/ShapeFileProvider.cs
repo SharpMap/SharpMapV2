@@ -79,7 +79,7 @@ namespace SharpMap.Data.Providers.ShapeFile
     {
         Strict,
         Lenient
-    }    
+    }
 
     /// <summary>
     /// A data provider for the ESRI ShapeFile spatial data format.
@@ -160,6 +160,11 @@ namespace SharpMap.Data.Providers.ShapeFile
             }
 
             #endregion
+
+            public override string ToString()
+            {
+                return String.Format("IdBounds => ID: {0}", this.Id);
+            }
         }
 
         #endregion
@@ -188,7 +193,7 @@ namespace SharpMap.Data.Providers.ShapeFile
         private FileStream _shapeFileStream;
         private BinaryWriter _shapeFileWriter;
         private ISpatialIndex<IExtents, IdBounds> _spatialIndex;
-        private Int32? _srid;        
+        private Int32? _srid;
 
         #endregion
 
@@ -249,7 +254,7 @@ namespace SharpMap.Data.Providers.ShapeFile
                                  Boolean fileBasedIndex)
         {
             _filename = filename;
-        
+
             IGeometryFactory geoFactoryClone = base.GeometryFactory = geoFactory.Clone();
             OriginalSpatialReference = geoFactoryClone.SpatialReference;
             OriginalSrid = geoFactoryClone.Srid;
@@ -276,7 +281,7 @@ namespace SharpMap.Data.Providers.ShapeFile
             if (HasDbf)
             {
                 _dbaseFile = new DbaseFile(DbfFilename, geoFactory);
-            }            
+            }
         }
 
         #region Dispose pattern
@@ -718,7 +723,7 @@ namespace SharpMap.Data.Providers.ShapeFile
                 //enableReading();
 
 
-                _shapeFileStream = new FileStream(Filename, 
+                _shapeFileStream = new FileStream(Filename,
                                                   @params.FileMode,
                                                   @params.FileAccess,
                                                   @params.FileShare,
@@ -1160,7 +1165,8 @@ namespace SharpMap.Data.Providers.ShapeFile
                                                  ? queryIndex(query.SpatialExpression)
                                                  : queryData(query.SpatialExpression);
 
-                IDictionary<UInt32, Object> idsInBounds = null;
+
+               IDictionary<UInt32, Object> idsInBounds = null;
 
                 Boolean isDisjoint = queryOp == SpatialOperation.Disjoint;
 
@@ -1915,25 +1921,22 @@ namespace SharpMap.Data.Providers.ShapeFile
                                 SpatialExpression spatialExpression)
         {
             GeometryExpression geometryExpression = spatialExpression as GeometryExpression;
-
-            IGeometry candidateGeometry = geometryExpression == null
-                                              ? null
-                                              : idBounds.Feature == null
-                                                    ? GetGeometryByOid(idBounds.Id)
-                                                    : idBounds.Feature.Geometry;
-            IExtents candidateExtents = geometryExpression == null
-                                            ? idBounds.Bounds
-                                            : candidateGeometry.Extents;
-
             if (geometryExpression != null)
             {
+                IGeometry candidateGeometry = idBounds.Feature == null ? this.GetGeometryByOid(idBounds.Id) : idBounds.Feature.Geometry;
+                if (InverseCoordinateTransformation != null)
+                    candidateGeometry = InverseCoordinateTransformation.Transform(
+                        candidateGeometry, candidateGeometry.Factory);
                 return SpatialBinaryExpression.IsMatch(op, isQueryLeft, candidateGeometry, geometryExpression.Geometry);
             }
 
             ExtentsExpression extentsExpression = spatialExpression as ExtentsExpression;
-
             if (extentsExpression != null)
             {
+                IExtents candidateExtents = idBounds.Bounds;
+                if (InverseCoordinateTransformation != null)
+                    candidateExtents = InverseCoordinateTransformation.Transform(
+                        candidateExtents, candidateExtents.Factory);
                 return SpatialBinaryExpression.IsMatch(op, isQueryLeft, candidateExtents, extentsExpression.Extents);
             }
 
@@ -2526,7 +2529,7 @@ namespace SharpMap.Data.Providers.ShapeFile
                 StreamOffset offsets = new StreamOffset(bboxOffset, xOffset, yOffset, zOffset, mOffset, recordStart, endOfRecord);
 
 #if DEBUG
-//                Debug.WriteLine(string.Format("Point : {0} \nX : {1}\nY : {2}\nZ : {3}\nM : {4}\nEnd of Record : {5}\nIndex record start : {6}\nIndex Record End {7}", pointIndex, xOffset, yOffset, zOffset, mOffset, endOfRecord, recordStart, recordStart + _indexEntry.ByteLength));
+                //                Debug.WriteLine(string.Format("Point : {0} \nX : {1}\nY : {2}\nZ : {3}\nM : {4}\nEnd of Record : {5}\nIndex record start : {6}\nIndex Record End {7}", pointIndex, xOffset, yOffset, zOffset, mOffset, endOfRecord, recordStart, recordStart + _indexEntry.ByteLength));
 #endif
                 return offsets;
             }

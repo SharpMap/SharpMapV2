@@ -40,6 +40,15 @@ namespace SharpMap.Data.Providers
 
         /// <summary>
         /// Gets a <see cref="PropertyDescriptor"/> for 
+        /// <see cref="GeometryProvider"/>'s <see cref="InverseCoordinateTransformationProperty"/> property.
+        /// </summary>
+        public static PropertyDescriptor InverseCoordinateTransformationProperty
+        {
+            get { return ProviderStaticProperties.Find("InverseCoordinateTransformation", false); }
+        }        
+
+        /// <summary>
+        /// Gets a <see cref="PropertyDescriptor"/> for 
         /// <see cref="GeometryProvider"/>'s <see cref="IsOpen"/> property.
         /// </summary>
         public static PropertyDescriptor IsOpenProperty
@@ -69,6 +78,7 @@ namespace SharpMap.Data.Providers
         private Boolean _isDisposed;
         private Boolean _isOpen;
         private ICoordinateTransformation _coordinateTransform;
+        private ICoordinateTransformation _inverseCoordinateTransform;
         private ICoordinateSystem _spatialReference;
         private String _srid;
         private PropertyDescriptorCollection _instanceProperties;
@@ -252,6 +262,19 @@ namespace SharpMap.Data.Providers
             }
         }
 
+        public ICoordinateTransformation InverseCoordinateTransformation
+        {
+            get { return _inverseCoordinateTransform; }
+            set
+            {
+                if (_inverseCoordinateTransform != value)
+                {
+                    _inverseCoordinateTransform = value;
+                    OnPropertyChanged(InverseCoordinateTransformationProperty);
+                }
+            }
+        }
+
         public ICoordinateSystem SpatialReference
         {
             get
@@ -422,6 +445,11 @@ namespace SharpMap.Data.Providers
             {
                 CoordinateTransformation = value as ICoordinateTransformation;
             }
+
+            if (propertyName.Equals(InverseCoordinateTransformation.Name))
+            {
+                InverseCoordinateTransformation = value as ICoordinateTransformation;
+            }
         }
 
         protected virtual Object GetObjectProperty(String propertyName)
@@ -429,6 +457,10 @@ namespace SharpMap.Data.Providers
             if (propertyName.Equals(CoordinateTransformation.Name))
             {
                 return CoordinateTransformation;
+            }
+            if (propertyName.Equals(InverseCoordinateTransformation.Name))
+            {
+                return InverseCoordinateTransformation;
             }
 
             if (propertyName.Equals(ConnectionIdProperty.Name))

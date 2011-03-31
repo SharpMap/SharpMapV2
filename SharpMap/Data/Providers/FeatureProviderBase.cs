@@ -21,6 +21,7 @@ using System.Globalization;
 using GeoAPI.CoordinateSystems;
 using GeoAPI.Geometries;
 using SharpMap.Expressions;
+using GeoAPI.CoordinateSystems.Transformations;
 
 namespace SharpMap.Data.Providers
 {
@@ -112,9 +113,11 @@ namespace SharpMap.Data.Providers
 
             GeometryExpression geoExpression = spatial.SpatialExpression as GeometryExpression;
 
+            // ICoordinateTransformation coordinateTransformation = this.CoordinateTransformation.Inverse;
+            ICoordinateTransformation coordinateTransformation = this.InverseCoordinateTransformation;
             if (geoExpression != null)
             {
-                IGeometry transformed = CoordinateTransformation.InverseTransform(geoExpression.Geometry,
+                IGeometry transformed = coordinateTransformation.Transform(geoExpression.Geometry,
                                                                                   GeometryFactory);
                 geoExpression = new GeometryExpression(transformed);
                 spatial = spatial.IsSpatialExpressionLeft
@@ -123,8 +126,8 @@ namespace SharpMap.Data.Providers
             }
             else
             {
-                IExtents transformed = CoordinateTransformation.InverseTransform(spatial.SpatialExpression.Extents,
-                                                                                 GeometryFactory);
+                IExtents transformed = coordinateTransformation.Transform(spatial.SpatialExpression.Extents,
+                                                                                            GeometryFactory);
                 ExtentsExpression extentsExpression = new ExtentsExpression(transformed);
                 spatial = spatial.IsSpatialExpressionLeft
                               ? new SpatialBinaryExpression(extentsExpression, spatial.Op, spatial.Expression)

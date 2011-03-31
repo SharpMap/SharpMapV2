@@ -77,6 +77,15 @@ namespace SharpMap.Layers
 
         /// <summary>
         /// Gets a  <see cref="PropertyDescriptor"/> for 
+        /// <see cref="Layer"/>'s <see cref="InverseCoordinateTransformation"/> property.
+        /// </summary>
+        public static PropertyDescriptor InverseCoordinateTransformationProperty
+        {
+            get { return _layerTypeProperties.Find("InverseCoordinateTransformation", false); }
+        }
+
+        /// <summary>
+        /// Gets a  <see cref="PropertyDescriptor"/> for 
         /// <see cref="Layer"/>'s <see cref="Enabled"/> property.
         /// </summary>
         public static PropertyDescriptor EnabledProperty
@@ -197,6 +206,7 @@ namespace SharpMap.Layers
                 dataSource = parent.DataSource as IAsyncProvider ??
                              CreateAsyncProvider(parent.DataSource);
                 CoordinateTransformation = parent.CoordinateTransformation;
+                InverseCoordinateTransformation = parent.InverseCoordinateTransformation;
                 _loadedRegion = parent.LoadedRegion;
                 style = parent.Style;
             }
@@ -416,6 +426,37 @@ namespace SharpMap.Layers
 
                 DataSource.CoordinateTransformation = value;
                 OnCoordinateTransformationChanged();
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the inverse <see cref="ICoordinateTransformation"/> 
+        /// applied to this layer.
+        /// </summary>
+        public virtual ICoordinateTransformation InverseCoordinateTransformation
+        {
+            get { return DataSource.InverseCoordinateTransformation; }
+            set
+            {
+                checkParent();
+
+                ICoordinateTransformation currentTransform =
+                    DataSource.InverseCoordinateTransformation;
+
+                if (currentTransform == value)
+                {
+                    return;
+                }
+
+                if (currentTransform != null && currentTransform.Target != SpatialReference)
+                {
+                    throw new InvalidOperationException("InverseCoordinate transformation doesn't " +
+                                                        "have the same 'target' spatial reference " +
+                                                        "as this layer");
+                }
+
+                DataSource.InverseCoordinateTransformation = value;
+                OnInverseCoordinateTransformationChanged();
             }
         }
 
@@ -700,6 +741,11 @@ namespace SharpMap.Layers
             OnPropertyChanged(CoordinateTransformationProperty.Name);
         }
 
+        protected virtual void OnInverseCoordinateTransformationChanged()
+        {
+            OnPropertyChanged(InverseCoordinateTransformationProperty.Name);
+        }
+
         protected virtual void OnEnabledChanged()
         {
             OnPropertyChanged(EnabledProperty.Name);
@@ -845,6 +891,10 @@ namespace SharpMap.Layers
                 else if (CoordinateTransformationProperty.Name.Equals(propertyName))
                 {
                     CoordinateTransformation = value as ICoordinateTransformation;
+                }
+                else if (InverseCoordinateTransformationProperty.Name.Equals(propertyName))
+                {
+                    InverseCoordinateTransformation = value as ICoordinateTransformation;
                 }
                 else if (AsyncQueryProperty.Name.Equals(propertyName))
                 {

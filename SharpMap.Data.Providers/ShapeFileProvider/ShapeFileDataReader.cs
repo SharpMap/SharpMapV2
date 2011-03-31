@@ -59,7 +59,8 @@ namespace SharpMap.Data.Providers.ShapeFile
 
             // TODO: now that we are accessing the geometry each time, perhaps a feature
             // query here would save a disk access
-            _objectEnumerator = source.ExecuteOidQuery(query.SpatialPredicate).GetEnumerator();
+            IEnumerable<uint> enumerable = source.ExecuteOidQuery(query.SpatialPredicate);
+            _objectEnumerator = enumerable.GetEnumerator();
         }
 
         #region Dispose Pattern

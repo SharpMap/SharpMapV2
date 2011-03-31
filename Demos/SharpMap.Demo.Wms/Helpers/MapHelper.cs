@@ -35,8 +35,6 @@ namespace SharpMap.Demo.Wms.Helpers
             if (map == null)
                 throw new ArgumentNullException("map");
 
-            const bool indexed = false;
-
             var services = new GeometryServices();
             var geoFactory = services.DefaultGeometryFactory;
             var csFactory = services.CoordinateSystemFactory;
@@ -51,9 +49,8 @@ namespace SharpMap.Demo.Wms.Helpers
             {
                 var format = String.Format("~/App_Data/nyc/{0}.shp", layer);
                 var path = context.Server.MapPath(format);
-                var provider = new ShapeFileProvider(path, geoFactory, csFactory, indexed) { IsSpatiallyIndexed = indexed };
-                // var provider = new MsSqlServer2008Provider<int>(geoFactory, connstring, "dbo", layer, "uid", "geom");
-
+                var provider = new ShapeFileProvider(path, geoFactory, csFactory, true) { IsSpatiallyIndexed = true };
+                
                 if (!styles.ContainsKey(layer))
                 {
                     lock (styles)
@@ -70,8 +67,9 @@ namespace SharpMap.Demo.Wms.Helpers
                     }
                 }
 
-                var item = new GeometryLayer(layer, styles[layer], new AppStateMonitoringFeatureProvider(provider));
-                item.Features.IsSpatiallyIndexed = indexed;
+                var monitor = new AppStateMonitoringFeatureProvider(provider);
+                var item = new GeometryLayer(layer, styles[layer], monitor);
+                item.Features.IsSpatiallyIndexed = true;
                 map.AddLayer(item);
                 provider.Open(WriteAccess.ReadOnly);
             }

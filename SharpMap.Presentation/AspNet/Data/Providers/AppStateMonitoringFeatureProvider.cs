@@ -155,6 +155,12 @@ namespace SharpMap.Data.Providers
             set { InnerProvider.CoordinateTransformation = value; }
         }
 
+        public ICoordinateTransformation InverseCoordinateTransformation
+        {
+            get { return InnerProvider.InverseCoordinateTransformation; }
+            set { InnerProvider.InverseCoordinateTransformation = value; }
+        }
+
         public ICoordinateSystem SpatialReference
         {
             get { return InnerProvider.SpatialReference; }
