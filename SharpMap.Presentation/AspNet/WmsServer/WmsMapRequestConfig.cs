@@ -53,7 +53,8 @@ namespace SharpMap.Presentation.AspNet.WmsServer
             if (WmsMode == WmsMode.Capabilites)
                 return;
 
-            map.SpatialReference = SridMap.DefaultInstance.Process(Crs, (ICoordinateSystem)null);
+            ICoordinateSystem coordinateSystem = SridMap.DefaultInstance.Process(this.Crs, (ICoordinateSystem)null);
+            map.SpatialReference = coordinateSystem;
 
             foreach (ILayer l in map.Layers)
                 l.Enabled = false;

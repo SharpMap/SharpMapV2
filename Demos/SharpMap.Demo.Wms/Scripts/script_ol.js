@@ -8,6 +8,8 @@ $(document).ready(function() {
         this.src = '/Content/Images/sorry.jpg';
         this.style.backgroundColor = OpenLayers.Util.onImageLoadErrorColor;
     };
+    OpenLayers.Projection.addTransform("EPSG:4326", "EPSG:3857", OpenLayers.Layer.SphericalMercator.projectForward);
+    OpenLayers.Projection.addTransform("EPSG:3857", "EPSG:4326", OpenLayers.Layer.SphericalMercator.projectInverse);
 
     options = {
         wms: {
@@ -15,8 +17,7 @@ $(document).ready(function() {
             type: 'WMS',
             version: '1.3.0',
             format: 'image/png',
-            layers: ['poly_landmarks', 'tiger_roads', 'poi'].join(),
-            srs: '4326'
+            layers: ['poly_landmarks', 'tiger_roads', 'poi'].join()
         },
         controls: [],
         maxExtent: new OpenLayers.Bounds(-2.003750834E7, -2.003750834E7, 2.003750834E7, 2.003750834E7),
@@ -49,7 +50,7 @@ $(document).ready(function() {
             0.004665345964021981
         ],
         numZoomLevels: 24,
-        projection: new OpenLayers.Projection("EPSG:900913"),
+        projection: new OpenLayers.Projection("EPSG:3857"),
         displayProjection: new OpenLayers.Projection("EPSG:4326"),
         units: "meters",
         format: "image/png"
@@ -58,7 +59,6 @@ $(document).ready(function() {
     create = function(name, tiled) {
         return new OpenLayers.Layer.WMS(name, options.wms.url, {
             layers: options.wms.layers,
-            srs: options.wms.srs,
             service: options.wms.type,
             version: options.wms.version,
             format: options.wms.format,

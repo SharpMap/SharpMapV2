@@ -18,7 +18,7 @@ namespace SharpMap.Demo.Wms
         {
             var services = new GeometryServices();
             var factory = services.CoordinateSystemFactory;
-            var strategy = new SridProj4Strategy(0, factory);
+            var strategy = new SridProj4Strategy(0, factory);    
             SridMap.DefaultInstance = new SridMap(new[] { strategy });
     
             AreaRegistration.RegisterAllAreas();
