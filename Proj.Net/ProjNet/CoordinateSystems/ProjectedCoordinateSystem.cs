@@ -201,32 +201,28 @@ namespace ProjNet.CoordinateSystems
             ProjectedCoordinateSystem<TCoordinate> p = other as ProjectedCoordinateSystem<TCoordinate>;
 
             if (ReferenceEquals(p, null))
-            {
                 return false;
-            }
 
             if (p.Dimension != Dimension)
-            {
                 return false;
-            }
 
             for (Int32 i = 0; i < p.Dimension; i++)
             {
                 if (p.AxisInfo[i].Orientation != AxisInfo[i].Orientation)
-                {
                     return false;
-                }
-
                 if (!p.GetUnits(i).EqualParams(GetUnits(i)))
-                {
                     return false;
-                }
             }
 
-            return p.GeographicCoordinateSystem.EqualParams(GeographicCoordinateSystem) &&
-                   p.HorizontalDatum.EqualParams(HorizontalDatum) &&
-                   p.LinearUnit.EqualParams(LinearUnit) &&
-                   p.Projection.EqualParams(Projection);
+            if (!p.GeographicCoordinateSystem.EqualParams(GeographicCoordinateSystem))
+                return false;
+            if (!p.HorizontalDatum.EqualParams(HorizontalDatum))
+                return false;
+            if (!p.LinearUnit.EqualParams(LinearUnit))
+                return false;
+            if (!p.Projection.EqualParams(Projection)) 
+                return false;
+            return true;
         }
 
         #endregion

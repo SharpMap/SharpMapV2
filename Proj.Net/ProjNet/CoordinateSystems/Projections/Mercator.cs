@@ -350,12 +350,20 @@ namespace ProjNet.CoordinateSystems.Projections
 
         public override IEnumerable<ICoordinate> Transform(IEnumerable<ICoordinate> points)
         {
-            throw new System.NotImplementedException();
+            foreach (var point in points)
+                yield return Transform(point);
         }
 
         public override ICoordinateSequence Transform(ICoordinateSequence points)
         {
-            throw new System.NotImplementedException();
+            ICoordinate[] coordinates = new ICoordinate[points.Count];
+            for (int i = 0; i < points.Count; i++)
+            {
+                coordinates[i] = points[i];
+            }
+            IEnumerable<ICoordinate> converted = Transform(coordinates);
+            ICoordinateSequenceFactory factory = points.CoordinateSequenceFactory;
+            return factory.Create(converted);
         }
 
         protected override IMathTransform ComputeInverse(IMathTransform setAsInverse)

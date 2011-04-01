@@ -33,6 +33,8 @@ using Caster = GeoAPI.DataStructures.Caster;
 
 namespace SharpMap.Utilities.SridUtility
 {
+    using System.Diagnostics;
+
     public class SridMapStrategy : SridMapStrategyBase
     {
         protected readonly IDictionary<int, IKey> _hashMap = new Dictionary<int, IKey>();
@@ -294,20 +296,21 @@ namespace SharpMap.Utilities.SridUtility
 
     public class SridProj4Strategy : SridMapStrategy
     {
-        public SridProj4Strategy(int priority, ICoordinateSystemFactory csFactory)
-            : base(priority, csFactory, GetList(csFactory))
-        {
-        }
+        public SridProj4Strategy(int priority, ICoordinateSystemFactory csFactory) : 
+            base(priority, csFactory, GetList(csFactory)) { }
 
         private static IEnumerable<ICoordinateSystem> GetList(ICoordinateSystemFactory fact)
         {
             List<ICoordinateSystem> lst = new List<ICoordinateSystem>();
             foreach (Proj4Reader.Proj4SpatialRefSys sys in Proj4Reader.GetSRIDs())
             {
-                string wkt = sys.SrText;
-
-
-                ICoordinateSystem cs = fact.CreateFromWkt(wkt);
+                ICoordinateSystem cs = fact.CreateFromWkt(sys.SrText);
+                if (sys.Srid == 900913 || sys.Srid == 3857)
+                {
+                    const string wkt = "PROJCS[\"WGS84 / Google Mercator\", GEOGCS[\"WGS 84\", DATUM[\"World Geodetic System 1984\", SPHEROID[\"WGS 84\", 6378137.0, 298.257223563, AUTHORITY[\"EPSG\",\"7030\"]], AUTHORITY[\"EPSG\",\"6326\"]], PRIMEM[\"Greenwich\", 0.0, AUTHORITY[\"EPSG\",\"8901\"]], UNIT[\"degree\", 0.017453292519943295], AXIS[\"Longitude\", EAST], AXIS[\"Latitude\", NORTH], AUTHORITY[\"EPSG\",\"4326\"]], PROJECTION[\"Mercator_1SP\"], PARAMETER[\"semi_minor\", 6378137.0], PARAMETER[\"latitude_of_origin\", 0.0], PARAMETER[\"central_meridian\", 0.0], PARAMETER[\"scale_factor\", 1.0], PARAMETER[\"false_easting\", 0.0], PARAMETER[\"false_northing\", 0.0], UNIT[\"m\", 1.0], AXIS[\"x\", EAST], AXIS[\"y\", NORTH], AUTHORITY[\"EPSG\",\"900913\"]]";                    
+                    ICoordinateSystem custom = fact.CreateFromWkt(wkt);
+                    cs = custom;
+                }                                
                 lst.Add(cs);
             }
             return lst;
