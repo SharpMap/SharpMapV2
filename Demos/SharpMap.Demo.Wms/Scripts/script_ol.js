@@ -1,5 +1,5 @@
 $(document).ready(function() {
-    var options, create, osm, init;
+    var options, init;
 
     OpenLayers.DOTS_PER_INCH = 25.4 / 0.28;
     OpenLayers.IMAGE_RELOAD_ATTEMPTS = 5;
@@ -12,13 +12,8 @@ $(document).ready(function() {
     OpenLayers.Projection.addTransform("EPSG:3857", "EPSG:4326", OpenLayers.Layer.SphericalMercator.projectInverse);
 
     options = {
-        wms: {
-            url: '/Wms.ashx',
-            type: 'WMS',
-            version: '1.3.0',
-            format: 'image/png',
-            layers: ['poly_landmarks', 'tiger_roads', 'poi'].join()
-        },
+        wms: 'WMS',
+        wmslayers: ['poly_landmarks', 'tiger_roads', 'poi'].join(),
         controls: [],
         maxExtent: new OpenLayers.Bounds(-2.003750834E7, -2.003750834E7, 2.003750834E7, 2.003750834E7),
         resolutions: [
@@ -56,32 +51,11 @@ $(document).ready(function() {
         format: "image/png"
     };
 
-    create = function(name, tiled) {
-        return new OpenLayers.Layer.WMS(name, options.wms.url, {
-            layers: options.wms.layers,
-            service: options.wms.type,
-            version: options.wms.version,
-            format: options.wms.format,
-            transparent: true
-        }, {
-            isBaseLayer: false,
-            transparent: true,
-            buffer: 0,
-            singleTile: !tiled,
-            ratio: 1,
-            yx: []
-        });
-    };
-
-    osm = function() {
-        return new OpenLayers.Layer.OSM()
-    };
-
     init = function() {
         var lon = -73.9529;
         var lat = 40.7723;
         var zoom = 10;
-        var map, tiled, untiled, center;
+        var map, sharpmap, geoserver, center;
 
         map = new OpenLayers.Map('map', options);
         map.addControl(new OpenLayers.Control.LayerSwitcher());
@@ -91,11 +65,39 @@ $(document).ready(function() {
         }));
         map.addControl(new OpenLayers.Control.MousePosition());
 
-        //tiled = create('TiledWMS', true);
-        untiled = create('UntiledWMS', false);
-        untiled.setVisibility(tiled === undefined);
-        map.addLayer(osm());
-        map.addLayers([/*tiled, */untiled]);
+        sharpmap = new OpenLayers.Layer.WMS('SharpMap WMS',
+            '/wms.ashx', {
+                layers: options.wmslayers,
+                service: options.wms,
+                version: '1.3.0',
+                format: options.format,
+                transparent: true
+            }, {
+                isBaseLayer: false,
+                transparent: true,
+                visibility: true,
+                buffer: 0,
+                singleTile: true,
+                ratio: 1,
+                yx: []
+            });
+        geoserver = new OpenLayers.Layer.WMS('GeoServer WMS',
+            'http://demo.opengeo.org/geoserver/ows', {
+                layers: options.wmslayers,
+                service: options.wms,
+                version: '1.1.1',
+                format: options.format,
+                transparent: true
+            }, {
+                isBaseLayer: false,
+                transparent: true,
+                visibility: true,
+                buffer: 0,
+                singleTile: true,
+                ratio: 1
+            });
+        map.addLayer(new OpenLayers.Layer.OSM());
+        map.addLayers([geoserver, sharpmap]);
 
         center = new OpenLayers.LonLat(lon, lat);
         center.transform(options.displayProjection, options.projection);
