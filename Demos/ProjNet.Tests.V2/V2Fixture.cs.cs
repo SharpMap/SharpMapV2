@@ -4,7 +4,6 @@
     using GeoAPI.Coordinates;
     using GeoAPI.CoordinateSystems;
     using GeoAPI.CoordinateSystems.Transformations;
-    using NUnit.Framework;
     using SharpMap.Utilities;
 
     [TestFixture]
