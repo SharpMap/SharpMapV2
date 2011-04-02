@@ -80,7 +80,6 @@ namespace ProjNet.CoordinateSystems.Transformations
         public override ICoordinate Transform(ICoordinate coordinate)
         {
             return Transform((TCoordinate) coordinate);
-            //throw new System.NotImplementedException();
         }
 
         public override IEnumerable<ICoordinate> Transform(IEnumerable<ICoordinate> points)

@@ -93,7 +93,7 @@ namespace ProjNet.CoordinateSystems.Projections
 
             Radians lon = (Radians)(dX / (semiMajor * _k0) + _lon_center);
 
-            return CreateCoordinate((Degrees) lon, (Degrees) lat, point);
+            return CreateCoordinate((Degrees)lon, (Degrees)lat, point);
         }
     }
 
@@ -122,7 +122,7 @@ namespace ProjNet.CoordinateSystems.Projections
                             IComparable<TCoordinate>, IConvertible,
                             IComputable<Double, TCoordinate>
     {
-        private readonly String _name;   
+        private readonly String _name;
         protected readonly Double _falseEasting;
         protected readonly Double _falseNorthing;
         protected readonly Radians _lon_center; //Center longitude (projection center)
@@ -394,12 +394,11 @@ namespace ProjNet.CoordinateSystems.Projections
             Double semiMajor = SemiMajor;
 
             Double x = _falseEasting + semiMajor * _k0 * (lon - _lon_center);
-            Double y = _falseNorthing +
-                       semiMajor * _k0 *
+            Double y = _falseNorthing + semiMajor * _k0 *
                        Math.Log(Math.Tan(PI * 0.25 + lat * 0.5) *
                                 Math.Pow((1 - esinphi) / (1 + esinphi), E * 0.5));
 
-            return CreateCoordinate(x*UnitsPerMeter, y*UnitsPerMeter, lonlat);
+            return CreateCoordinate(x * UnitsPerMeter, y * UnitsPerMeter, lonlat);
         }
     }
 }

@@ -157,7 +157,8 @@ namespace ProjNet.CoordinateSystems.Transformations
         {
             foreach (ICoordinateTransformation<TCoordinate> ct in _transforms)
             {
-                coordinate = ct.MathTransform.Transform(coordinate);
+                ICoordinate converted = ct.MathTransform.Transform(coordinate);
+                coordinate = converted;
             }
             return coordinate;
         }
