@@ -100,5 +100,33 @@ namespace ProjNet.CoordinateSystems.Transformations
         {
             get { return _e2; }
         }
+
+        /// <summary>
+        /// R2D
+        /// </summary>
+        protected const double R2D = 180 / Math.PI;
+
+        /// <summary>
+        /// D2R
+        /// </summary>
+        protected const double D2R = Math.PI / 180;
+
+        /// <summary>
+        /// To convert degrees to radians, multiply degrees by pi/180. 
+        /// </summary>
+        protected static double Degrees2Radians(double deg)
+        {
+            return (D2R * deg);
+        }        
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="rad"></param>
+        /// <returns></returns>
+        protected static double Radians2Degrees(double rad)
+        {
+            return (R2D * rad);
+        }
     }
 }

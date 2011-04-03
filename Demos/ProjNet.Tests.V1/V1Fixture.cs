@@ -1,14 +1,13 @@
-﻿namespace ProjNet.Tests
+﻿using ProjNet.Converters.WellKnownText;
+using ProjNet.CoordinateSystems;
+using ProjNet.CoordinateSystems.Transformations;
+
+namespace ProjNet.Tests
 {
     using System;
     using System.Collections.Generic;
-    using GeoAPI.CoordinateSystems;
-    using GeoAPI.CoordinateSystems.Transformations;
     using NUnit.Framework;
-    using SharpMap.Converters.WellKnownText;
-    using SharpMap.CoordinateSystems;
-    using SharpMap.CoordinateSystems.Transformations;
-
+    
     [TestFixture]
     public class V1Fixture
     {
@@ -31,8 +30,8 @@
             double x = converted[0];
             double y = converted[1];
             Console.WriteLine("x: {0}, y: {1}", x, y);
-            Assert.That(x, Is.EqualTo(-8238596.6606968148d));            
-            Assert.That(y, Is.EqualTo(4969946.166007298d));
+            Assert.That(x, Is.EqualTo(-8238596.6606968148d));
+            Assert.That(y, Is.EqualTo(4969946.1600651201d));
         }
 
         private static ICoordinateSystem CrsFor(int srid)

@@ -40,9 +40,9 @@ namespace ProjNet.Tests.V2
             Console.WriteLine("x: {0}, y: {1}", x, y);
 
             const double ex = -8238596.6606968148d;
-            const double ey = 4969946.166007298d;
-            Assert.That(x, Is.EqualTo(ex), String.Format("XConv error: {0}", (ex - x)));
-            Assert.That(y, Is.EqualTo(ey), String.Format("YConv error: {0}", (ey - y)));
+            const double ey = 4969946.1600651201d;                              
+            Assert.That(x, Is.EqualTo(ex), String.Format("XConv error: {0}", (int)(ex - x)));
+            Assert.That(y, Is.EqualTo(ey), String.Format("YConv error: {0}", (int)(ey - y)));
         }
     }
 }
