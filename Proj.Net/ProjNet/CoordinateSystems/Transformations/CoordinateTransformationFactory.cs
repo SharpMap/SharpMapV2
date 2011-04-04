@@ -562,9 +562,12 @@ namespace ProjNet.CoordinateSystems.Transformations
         {
             List<ProjectionParameter> parameterList = new List<ProjectionParameter>(projection);
 
-            parameterList.Add(new ProjectionParameter("semi_major", ellipsoid.SemiMajorAxis));
-            parameterList.Add(new ProjectionParameter("semi_minor", ellipsoid.SemiMinorAxis));
-            parameterList.Add(new ProjectionParameter("unit", unit.MetersPerUnit));
+            if (parameterList.Find(x=>x.Name=="semi_major")==null)
+                parameterList.Add(new ProjectionParameter("semi_major", ellipsoid.SemiMajorAxis));
+            if (parameterList.Find(x => x.Name == "semi_minor") == null)
+                parameterList.Add(new ProjectionParameter("semi_minor", ellipsoid.SemiMinorAxis));
+            if (parameterList.Find(x => x.Name == "unit") == null)
+                parameterList.Add(new ProjectionParameter("unit", unit.MetersPerUnit));
 
             IMathTransform<TCoordinate> transform;
 
