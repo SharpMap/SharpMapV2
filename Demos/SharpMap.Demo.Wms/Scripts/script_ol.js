@@ -55,7 +55,7 @@ $(document).ready(function() {
         var lon = -73.9529;
         var lat = 40.7723;
         var zoom = 10;
-        var map, sharpmap, center;
+        var map, sharpmap, geoserver, center;
 
         map = new OpenLayers.Map('map', options);
         map.addControl(new OpenLayers.Control.LayerSwitcher());
@@ -81,7 +81,23 @@ $(document).ready(function() {
                 ratio: 1,
                 yx: []
             });
-        map.addLayers([new OpenLayers.Layer.OSM(), sharpmap]);
+        geoserver = new OpenLayers.Layer.WMS('Geoserver WMS',
+            'http://demo.opengeo.org/geoserver/ows', {
+                layers: options.wmslayers,
+                service: options.wms,
+                version: '1.1.1',
+                format: options.format,
+                transparent: true
+            }, {
+                isBaseLayer: false,
+                transparent: true,
+                visibility: false,
+                buffer: 0,
+                singleTile: true,
+                ratio: 1,
+                yx: []
+            });
+        map.addLayers([new OpenLayers.Layer.OSM(), sharpmap, geoserver]);
 
         center = new OpenLayers.LonLat(lon, lat);
         center.transform(options.displayProjection, options.projection);

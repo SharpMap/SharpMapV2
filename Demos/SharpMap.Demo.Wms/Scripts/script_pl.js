@@ -2,20 +2,8 @@
     var po = org.polymaps;
 
     var mercator = new GlobalMercator();
-    var layerUrl = function(name, data) {
-        var bounds = mercator.TileLatLonBounds(data.column, data.row, data.zoom)
-        var url = [
-            '/wms.ashx?HEIGHT=256&WIDTH=256&STYLES=&',
-            'CRS=EPSG%3A4326&FORMAT=image%2Fpng&SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&',
-            'EXCEPTIONS=application%2Fvnd.ogc.se_inimage&transparent=true&',
-            'LAYERS=', name, '&',
-            'BBOX=', bounds[1], ',', -bounds[2], ',', bounds[3], ',', -bounds[0]
-        ].join('')
-        log(url);
-        return url;
-    };
-
     var container = $("#map").get(0).appendChild(po.svg("svg"));
+    var layers = ['poly_landmarks', 'tiger_roads', 'poi'].join()    
     var map = po.map()
         .container(container)
         .center({ lat: 40.7723, lon: -73.9529 })
@@ -25,12 +13,29 @@
 
     map.add(po.image().url(
         po.url(["http://{S}tile.cloudmade.com", "/1a1b06b230af4efdbb989ea99e9841af", "/998/256/{Z}/{X}/{Y}.png"].join(''))
-        .hosts(["a.", "b.", "c.", ""])));
+        .hosts(["a.", "b.", "c.", ""])));    
     map.add(po.image().url(function(data) {
-        return layerUrl(['poly_landmarks', 'tiger_roads', 'poi'].join(), data);
+        var bounds = mercator.TileBounds(data.column, data.row, data.zoom)
+        var url = ['http://demo.opengeo.org/geoserver/ows?HEIGHT=256&WIDTH=256&STYLES=&',
+            'SRS=EPSG%3A900913&FORMAT=image%2Fpng&SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&',
+            'EXCEPTIONS=application%2Fvnd.ogc.se_inimage&transparent=true&',
+            'LAYERS=', layers, '&', 'BBOX=', bounds[0], ',', -bounds[3], ',', bounds[2], ',', -bounds[1]
+        ].join('')
+        log(url);
+        return url;
+    }));
+	map.add(po.image().url(function(data) {
+        var bounds = mercator.TileBounds(data.column, data.row, data.zoom)
+        var url = ['/wms.ashx?HEIGHT=256&WIDTH=256&STYLES=&',
+            'CRS=EPSG%3A900913&FORMAT=image%2Fpng&SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&',
+            'EXCEPTIONS=application%2Fvnd.ogc.se_inimage&transparent=true&',
+            'LAYERS=', layers, '&', 'BBOX=', bounds[0], ',', -bounds[3], ',', bounds[2], ',', -bounds[1]
+        ].join('')
+        log(url);
+        return url;
     }));
     map.add(po.grid());
-    map.add(po.compass()/*.pan("none")*/);
+    map.add(po.compass().pan('short'));
 });
 
 
