@@ -556,23 +556,23 @@ namespace MapViewer
                     IFeatureProvider prov = choose.Provider;
                     string name = choose.ProviderName;
                     GeometryLayer layer = new GeometryLayer(name, prov);
-                    AddLayer(name, layer);
+                    AddLayer(layer);
                 }
             }
         }
 
-        private void AddLayer(string name, GeometryLayer layer)
+        private void AddLayer(ILayer layer)
         {
-            if (String.IsNullOrEmpty(name))
-                throw new ArgumentNullException("name");
             if (layer == null)
                 throw new ArgumentNullException("layer");
 
             this.workQueue.AddWorkItem(
-                string.Format("Loading Datasource {0}", name),
+                string.Format("Loading Datasource {0}", layer.LayerName),
                 delegate
-                {                                
-                    layer.Features.IsSpatiallyIndexed = false;
+                {
+                    if (layer is IFeatureLayer)
+                        (layer as IFeatureLayer).Features.IsSpatiallyIndexed = false;
+
                     layer.DataSource.Open();
                     this.InvokeIfRequired(new Action(delegate
                     {
@@ -625,22 +625,11 @@ namespace MapViewer
 
         #endregion
 
-        private void sampleMapToolStripMenuItem_Click(object sender, EventArgs e)
+        private void SampleMapToolStripMenuItemClick(object sender, EventArgs e)
         {
-            GeometryServices services = new GeometryServices();
-            IGeometryFactory geoFactory = services.DefaultGeometryFactory;
-            ICoordinateTransformationFactory ctFactory = services.CoordinateTransformationFactory;
-
-            ConnectionStringSettings settings = ConfigurationManager.ConnectionStrings["LocalConnectionString"];
-            string connectionString = settings.ConnectionString;
-
-            string[] layers = new[] { "poly_landmarks", "tiger_roads", "poi", };
-            foreach (string layer in layers)
-            {
-                MsSqlServer2008Provider<int> provider = new MsSqlServer2008Provider<int>(geoFactory, connectionString,
-                    "dbo", layer, "UID", "geom") { CoordinateTransformationFactory = ctFactory };
-                this.AddLayer(layer, new GeometryLayer(layer, provider));
-            }
+            IEnumerable<ILayer> enumerable = MapHelper.CreateLayers();
+            foreach (IFeatureLayer layer in enumerable)
+                this.AddLayer(layer);
         }
     }
 }

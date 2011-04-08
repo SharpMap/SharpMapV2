@@ -595,7 +595,7 @@ namespace MapViewer
             this.sampleMapToolStripMenuItem.Name = "sampleMapToolStripMenuItem";
             this.sampleMapToolStripMenuItem.Size = new System.Drawing.Size(160, 22);
             this.sampleMapToolStripMenuItem.Text = "Sample Map";
-            this.sampleMapToolStripMenuItem.Click += new System.EventHandler(this.sampleMapToolStripMenuItem_Click);
+            this.sampleMapToolStripMenuItem.Click += new System.EventHandler(this.SampleMapToolStripMenuItemClick);
             // 
             // MapViewerForm
             // 

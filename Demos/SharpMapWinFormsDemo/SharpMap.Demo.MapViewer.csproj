@@ -257,6 +257,7 @@
     <Compile Include="MapActionHandler\IMapActionHandler.cs" />
     <Compile Include="MapActionHandler\MapActionHandlerBase.cs" />
     <Compile Include="MapActionHandler\MapActionHandlerEventArgs.cs" />
+    <Compile Include="MapHelper.cs" />
     <Compile Include="MapViewerForm.cs">
       <SubType>Form</SubType>
     </Compile>
