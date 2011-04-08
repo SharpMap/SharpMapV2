@@ -21,6 +21,8 @@ using SharpMap.Expressions;
 
 namespace SharpMap.Data
 {
+    using System.Collections.Generic;
+
     /// <summary>
     /// Defines the interface to a provider of raster data.
     /// </summary>
@@ -32,6 +34,6 @@ namespace SharpMap.Data
         /// </summary>
         /// <param name="query">Query select with.</param>
         /// <returns>A Stream to access the raster data of the result.</returns>
-        Stream ExecuteRasterQuery(RasterQueryExpression query);
+        IEnumerable<IRasterRecord> ExecuteRasterQuery(RasterQueryExpression query);
     }
 }

@@ -532,7 +532,8 @@ namespace SharpMap.Presentation.WinForms
 
         protected override void OnMouseWheel(MouseEventArgs e)
         {
-            throw new NotImplementedException();
+            // throw new NotImplementedException();
+            base.OnMouseWheel(e);
 
             //MapTool currentTool = SelectedTool;
 

@@ -39,6 +39,8 @@ namespace MapViewer
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.addLayerToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.clearLayersToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.stylesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.addStylesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.mainToolStrip = new System.Windows.Forms.ToolStrip();
             this.bAddLayer = new System.Windows.Forms.ToolStripButton();
             this.clearLayersButton1 = new System.Windows.Forms.ToolStripButton();
@@ -75,8 +77,6 @@ namespace MapViewer
             this.layerContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.StylesContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.addStyleMenuStripItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.stylesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.addStylesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.splitVertical = new System.Windows.Forms.SplitContainer();
             this.LeftTabControl = new System.Windows.Forms.TabControl();
             this.layersTab = new System.Windows.Forms.TabPage();
@@ -87,6 +87,7 @@ namespace MapViewer
             this.splitHorizontal = new System.Windows.Forms.SplitContainer();
             this.resultsTabControl = new System.Windows.Forms.TabControl();
             this.mapViewControl1 = new SharpMap.Presentation.WinForms.MapViewControl();
+            this.sampleMapToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.mainMenu.SuspendLayout();
             this.mainToolStrip.SuspendLayout();
             this.statusStrip1.SuspendLayout();
@@ -126,35 +127,50 @@ namespace MapViewer
             this.FileMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.exitToolStripMenuItem});
             this.FileMenuItem.Name = "FileMenuItem";
-            this.FileMenuItem.Size = new System.Drawing.Size(37, 20);
+            this.FileMenuItem.Size = new System.Drawing.Size(40, 20);
             this.FileMenuItem.Text = "File";
             // 
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(92, 22);
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(109, 22);
             this.exitToolStripMenuItem.Text = "Exit";
             // 
             // toolStripMenuItem1
             // 
             this.toolStripMenuItem1.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.addLayerToolStripMenuItem1,
-            this.clearLayersToolStripMenuItem});
+            this.clearLayersToolStripMenuItem,
+            this.sampleMapToolStripMenuItem});
             this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-            this.toolStripMenuItem1.Size = new System.Drawing.Size(52, 20);
+            this.toolStripMenuItem1.Size = new System.Drawing.Size(57, 20);
             this.toolStripMenuItem1.Text = "Layers";
             // 
             // addLayerToolStripMenuItem1
             // 
             this.addLayerToolStripMenuItem1.Name = "addLayerToolStripMenuItem1";
-            this.addLayerToolStripMenuItem1.Size = new System.Drawing.Size(137, 22);
+            this.addLayerToolStripMenuItem1.Size = new System.Drawing.Size(160, 22);
             this.addLayerToolStripMenuItem1.Text = "Add Layer";
             // 
             // clearLayersToolStripMenuItem
             // 
             this.clearLayersToolStripMenuItem.Name = "clearLayersToolStripMenuItem";
-            this.clearLayersToolStripMenuItem.Size = new System.Drawing.Size(137, 22);
+            this.clearLayersToolStripMenuItem.Size = new System.Drawing.Size(160, 22);
             this.clearLayersToolStripMenuItem.Text = "Clear Layers";
+            // 
+            // stylesToolStripMenuItem
+            // 
+            this.stylesToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.addStylesToolStripMenuItem});
+            this.stylesToolStripMenuItem.Name = "stylesToolStripMenuItem";
+            this.stylesToolStripMenuItem.Size = new System.Drawing.Size(54, 20);
+            this.stylesToolStripMenuItem.Text = "Styles";
+            // 
+            // addStylesToolStripMenuItem
+            // 
+            this.addStylesToolStripMenuItem.Name = "addStylesToolStripMenuItem";
+            this.addStylesToolStripMenuItem.Size = new System.Drawing.Size(149, 22);
+            this.addStylesToolStripMenuItem.Text = "Add Styles";
             // 
             // mainToolStrip
             // 
@@ -175,7 +191,7 @@ namespace MapViewer
             this.bAddLayer.Image = ((System.Drawing.Image)(resources.GetObject("bAddLayer.Image")));
             this.bAddLayer.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.bAddLayer.Name = "bAddLayer";
-            this.bAddLayer.Size = new System.Drawing.Size(64, 22);
+            this.bAddLayer.Size = new System.Drawing.Size(69, 22);
             this.bAddLayer.Text = "Add Layer";
             this.bAddLayer.ToolTipText = "Add Layer";
             // 
@@ -185,7 +201,7 @@ namespace MapViewer
             this.clearLayersButton1.Image = ((System.Drawing.Image)(resources.GetObject("clearLayersButton1.Image")));
             this.clearLayersButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.clearLayersButton1.Name = "clearLayersButton1";
-            this.clearLayersButton1.Size = new System.Drawing.Size(74, 22);
+            this.clearLayersButton1.Size = new System.Drawing.Size(83, 22);
             this.clearLayersButton1.Text = "Clear Layers";
             // 
             // refreshMapToolBarButton
@@ -194,7 +210,7 @@ namespace MapViewer
             this.refreshMapToolBarButton.Image = ((System.Drawing.Image)(resources.GetObject("refreshMapToolBarButton.Image")));
             this.refreshMapToolBarButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.refreshMapToolBarButton.Name = "refreshMapToolBarButton";
-            this.refreshMapToolBarButton.Size = new System.Drawing.Size(77, 22);
+            this.refreshMapToolBarButton.Size = new System.Drawing.Size(84, 22);
             this.refreshMapToolBarButton.Text = "Refresh Map";
             // 
             // zoomMapExtentsToolstripButton
@@ -203,7 +219,7 @@ namespace MapViewer
             this.zoomMapExtentsToolstripButton.Image = ((System.Drawing.Image)(resources.GetObject("zoomMapExtentsToolstripButton.Image")));
             this.zoomMapExtentsToolstripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.zoomMapExtentsToolstripButton.Name = "zoomMapExtentsToolstripButton";
-            this.zoomMapExtentsToolstripButton.Size = new System.Drawing.Size(100, 22);
+            this.zoomMapExtentsToolstripButton.Size = new System.Drawing.Size(107, 22);
             this.zoomMapExtentsToolstripButton.Text = "Zoom Full Extent";
             // 
             // statusStrip1
@@ -233,18 +249,18 @@ namespace MapViewer
             this.addLayerToolStripMenuItem,
             this.clearLayersToolStripMenuItem1});
             this.layersContextMenu.Name = "contextMenuStrip1";
-            this.layersContextMenu.Size = new System.Drawing.Size(138, 48);
+            this.layersContextMenu.Size = new System.Drawing.Size(161, 48);
             // 
             // addLayerToolStripMenuItem
             // 
             this.addLayerToolStripMenuItem.Name = "addLayerToolStripMenuItem";
-            this.addLayerToolStripMenuItem.Size = new System.Drawing.Size(137, 22);
+            this.addLayerToolStripMenuItem.Size = new System.Drawing.Size(160, 22);
             this.addLayerToolStripMenuItem.Text = "Add Layer";
             // 
             // clearLayersToolStripMenuItem1
             // 
             this.clearLayersToolStripMenuItem1.Name = "clearLayersToolStripMenuItem1";
-            this.clearLayersToolStripMenuItem1.Size = new System.Drawing.Size(137, 22);
+            this.clearLayersToolStripMenuItem1.Size = new System.Drawing.Size(160, 22);
             this.clearLayersToolStripMenuItem1.Text = "Clear Layers";
             // 
             // layerToolStripMenuItem
@@ -253,19 +269,19 @@ namespace MapViewer
             this.zoomLayerExtentToolStripMenuItem,
             this.editSymbologyToolStripMenuItem});
             this.layerToolStripMenuItem.Name = "layerToolStripMenuItem";
-            this.layerToolStripMenuItem.Size = new System.Drawing.Size(102, 22);
+            this.layerToolStripMenuItem.Size = new System.Drawing.Size(120, 22);
             this.layerToolStripMenuItem.Text = "Layer";
             // 
             // zoomLayerExtentToolStripMenuItem
             // 
             this.zoomLayerExtentToolStripMenuItem.Name = "zoomLayerExtentToolStripMenuItem";
-            this.zoomLayerExtentToolStripMenuItem.Size = new System.Drawing.Size(172, 22);
+            this.zoomLayerExtentToolStripMenuItem.Size = new System.Drawing.Size(195, 22);
             this.zoomLayerExtentToolStripMenuItem.Text = "Zoom Layer Extent";
             // 
             // editSymbologyToolStripMenuItem
             // 
             this.editSymbologyToolStripMenuItem.Name = "editSymbologyToolStripMenuItem";
-            this.editSymbologyToolStripMenuItem.Size = new System.Drawing.Size(172, 22);
+            this.editSymbologyToolStripMenuItem.Size = new System.Drawing.Size(195, 22);
             this.editSymbologyToolStripMenuItem.Text = "Edit Symbology";
             // 
             // mapViewControlContextMenu
@@ -275,7 +291,7 @@ namespace MapViewer
             this.refreshMapToolStripMenuItem,
             this.fullExtentToolStripMenuItem});
             this.mapViewControlContextMenu.Name = "mapViewControlContextMenu";
-            this.mapViewControlContextMenu.Size = new System.Drawing.Size(141, 70);
+            this.mapViewControlContextMenu.Size = new System.Drawing.Size(162, 70);
             // 
             // layersToolStripMenuItem
             // 
@@ -283,31 +299,31 @@ namespace MapViewer
             this.addLayerToolStripMenuItem2,
             this.clearLayersToolStripMenuItem2});
             this.layersToolStripMenuItem.Name = "layersToolStripMenuItem";
-            this.layersToolStripMenuItem.Size = new System.Drawing.Size(140, 22);
+            this.layersToolStripMenuItem.Size = new System.Drawing.Size(161, 22);
             this.layersToolStripMenuItem.Text = "Layers";
             // 
             // addLayerToolStripMenuItem2
             // 
             this.addLayerToolStripMenuItem2.Name = "addLayerToolStripMenuItem2";
-            this.addLayerToolStripMenuItem2.Size = new System.Drawing.Size(137, 22);
+            this.addLayerToolStripMenuItem2.Size = new System.Drawing.Size(160, 22);
             this.addLayerToolStripMenuItem2.Text = "Add Layer";
             // 
             // clearLayersToolStripMenuItem2
             // 
             this.clearLayersToolStripMenuItem2.Name = "clearLayersToolStripMenuItem2";
-            this.clearLayersToolStripMenuItem2.Size = new System.Drawing.Size(137, 22);
+            this.clearLayersToolStripMenuItem2.Size = new System.Drawing.Size(160, 22);
             this.clearLayersToolStripMenuItem2.Text = "Clear Layers";
             // 
             // refreshMapToolStripMenuItem
             // 
             this.refreshMapToolStripMenuItem.Name = "refreshMapToolStripMenuItem";
-            this.refreshMapToolStripMenuItem.Size = new System.Drawing.Size(140, 22);
+            this.refreshMapToolStripMenuItem.Size = new System.Drawing.Size(161, 22);
             this.refreshMapToolStripMenuItem.Text = "Refresh Map";
             // 
             // fullExtentToolStripMenuItem
             // 
             this.fullExtentToolStripMenuItem.Name = "fullExtentToolStripMenuItem";
-            this.fullExtentToolStripMenuItem.Size = new System.Drawing.Size(140, 22);
+            this.fullExtentToolStripMenuItem.Size = new System.Drawing.Size(161, 22);
             this.fullExtentToolStripMenuItem.Text = "Full Extent";
             // 
             // toolStripContainer1
@@ -344,7 +360,7 @@ namespace MapViewer
             this.zoomOutButton});
             this.standardToolsToolstrip.Location = new System.Drawing.Point(321, 1);
             this.standardToolsToolstrip.Name = "standardToolsToolstrip";
-            this.standardToolsToolstrip.Size = new System.Drawing.Size(633, 25);
+            this.standardToolsToolstrip.Size = new System.Drawing.Size(664, 25);
             this.standardToolsToolstrip.TabIndex = 4;
             this.standardToolsToolstrip.Text = "toolStrip1";
             // 
@@ -354,7 +370,7 @@ namespace MapViewer
             this.fixedZoomInButton.Image = ((System.Drawing.Image)(resources.GetObject("fixedZoomInButton.Image")));
             this.fixedZoomInButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.fixedZoomInButton.Name = "fixedZoomInButton";
-            this.fixedZoomInButton.Size = new System.Drawing.Size(86, 22);
+            this.fixedZoomInButton.Size = new System.Drawing.Size(93, 22);
             this.fixedZoomInButton.Text = "Fixed Zoom In";
             // 
             // fixedZoomOutButton
@@ -362,7 +378,7 @@ namespace MapViewer
             this.fixedZoomOutButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.fixedZoomOutButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.fixedZoomOutButton.Name = "fixedZoomOutButton";
-            this.fixedZoomOutButton.Size = new System.Drawing.Size(96, 22);
+            this.fixedZoomOutButton.Size = new System.Drawing.Size(102, 22);
             this.fixedZoomOutButton.Text = "Fixed Zoom Out";
             // 
             // toolStripSeparator1
@@ -380,7 +396,7 @@ namespace MapViewer
             this.queryRemoveButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.queryRemoveButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.queryRemoveButton.Name = "queryRemoveButton";
-            this.queryRemoveButton.Size = new System.Drawing.Size(89, 22);
+            this.queryRemoveButton.Size = new System.Drawing.Size(96, 22);
             this.queryRemoveButton.Text = "Remove Query";
             // 
             // queryAddButton
@@ -388,7 +404,7 @@ namespace MapViewer
             this.queryAddButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.queryAddButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.queryAddButton.Name = "queryAddButton";
-            this.queryAddButton.Size = new System.Drawing.Size(68, 22);
+            this.queryAddButton.Size = new System.Drawing.Size(72, 22);
             this.queryAddButton.Text = "Add Query";
             // 
             // panButton
@@ -397,7 +413,7 @@ namespace MapViewer
             this.panButton.Image = ((System.Drawing.Image)(resources.GetObject("panButton.Image")));
             this.panButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.panButton.Name = "panButton";
-            this.panButton.Size = new System.Drawing.Size(31, 22);
+            this.panButton.Size = new System.Drawing.Size(33, 22);
             this.panButton.Text = "Pan";
             this.panButton.ToolTipText = "Pan";
             // 
@@ -407,7 +423,7 @@ namespace MapViewer
             this.zoomInButton.Image = ((System.Drawing.Image)(resources.GetObject("zoomInButton.Image")));
             this.zoomInButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.zoomInButton.Name = "zoomInButton";
-            this.zoomInButton.Size = new System.Drawing.Size(56, 22);
+            this.zoomInButton.Size = new System.Drawing.Size(59, 22);
             this.zoomInButton.Text = "Zoom In";
             // 
             // zoomOutButton
@@ -416,7 +432,7 @@ namespace MapViewer
             this.zoomOutButton.Image = ((System.Drawing.Image)(resources.GetObject("zoomOutButton.Image")));
             this.zoomOutButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.zoomOutButton.Name = "zoomOutButton";
-            this.zoomOutButton.Size = new System.Drawing.Size(66, 22);
+            this.zoomOutButton.Size = new System.Drawing.Size(68, 22);
             this.zoomOutButton.Text = "Zoom Out";
             // 
             // customToolsToolstrip
@@ -440,34 +456,20 @@ namespace MapViewer
             this.layerContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.layerToolStripMenuItem});
             this.layerContextMenu.Name = "layerContextMenu";
-            this.layerContextMenu.Size = new System.Drawing.Size(103, 26);
+            this.layerContextMenu.Size = new System.Drawing.Size(121, 26);
             // 
             // StylesContextMenu
             // 
             this.StylesContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.addStyleMenuStripItem});
             this.StylesContextMenu.Name = "StylesContextMenu";
-            this.StylesContextMenu.Size = new System.Drawing.Size(130, 26);
+            this.StylesContextMenu.Size = new System.Drawing.Size(150, 26);
             // 
             // addStyleMenuStripItem
             // 
             this.addStyleMenuStripItem.Name = "addStyleMenuStripItem";
-            this.addStyleMenuStripItem.Size = new System.Drawing.Size(129, 22);
+            this.addStyleMenuStripItem.Size = new System.Drawing.Size(149, 22);
             this.addStyleMenuStripItem.Text = "Add Styles";
-            // 
-            // stylesToolStripMenuItem
-            // 
-            this.stylesToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.addStylesToolStripMenuItem});
-            this.stylesToolStripMenuItem.Name = "stylesToolStripMenuItem";
-            this.stylesToolStripMenuItem.Size = new System.Drawing.Size(49, 20);
-            this.stylesToolStripMenuItem.Text = "Styles";
-            // 
-            // addStylesToolStripMenuItem
-            // 
-            this.addStylesToolStripMenuItem.Name = "addStylesToolStripMenuItem";
-            this.addStylesToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.addStylesToolStripMenuItem.Text = "Add Styles";
             // 
             // splitVertical
             // 
@@ -548,6 +550,7 @@ namespace MapViewer
             this.stylesControl1.Location = new System.Drawing.Point(3, 3);
             this.stylesControl1.Name = "stylesControl1";
             this.stylesControl1.Size = new System.Drawing.Size(323, 508);
+            this.stylesControl1.Styles = null;
             this.stylesControl1.TabIndex = 0;
             // 
             // splitHorizontal
@@ -586,6 +589,13 @@ namespace MapViewer
             this.mapViewControl1.TabIndex = 0;
             this.mapViewControl1.Text = "mapViewControl1";
             this.mapViewControl1.Title = "mapViewControl1";
+            // 
+            // sampleMapToolStripMenuItem
+            // 
+            this.sampleMapToolStripMenuItem.Name = "sampleMapToolStripMenuItem";
+            this.sampleMapToolStripMenuItem.Size = new System.Drawing.Size(160, 22);
+            this.sampleMapToolStripMenuItem.Text = "Sample Map";
+            this.sampleMapToolStripMenuItem.Click += new System.EventHandler(this.sampleMapToolStripMenuItem_Click);
             // 
             // MapViewerForm
             // 
@@ -687,6 +697,7 @@ namespace MapViewer
         private System.Windows.Forms.ToolStripMenuItem addStyleMenuStripItem;
         private System.Windows.Forms.ToolStripMenuItem stylesToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem addStylesToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem sampleMapToolStripMenuItem;
 
     }
 }

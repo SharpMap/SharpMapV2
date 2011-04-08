@@ -23,6 +23,8 @@ using SharpMap.Expressions;
 
 namespace SharpMap.Data.Providers
 {
+    using System.Collections.Generic;
+
     public class AsyncRasterProviderAdapter : AsyncProviderAdapter, IRasterProvider
     {
         protected IRasterProvider InnerRasterProvider
@@ -63,7 +65,7 @@ namespace SharpMap.Data.Providers
 
         private void QueueableBeginQuery(Object asyncResult)
         {
-            AsyncResult<Stream> typedAsyncResult = asyncResult as AsyncResult<Stream>;
+            AsyncResult<IEnumerable<IRasterRecord>> typedAsyncResult = asyncResult as AsyncResult<IEnumerable<IRasterRecord>>;
             RasterQueryExpression query = typedAsyncResult.AsyncState as RasterQueryExpression;
 
             try
@@ -89,7 +91,7 @@ namespace SharpMap.Data.Providers
 
         #region wrapped IRasterProvider methods
 
-        public Stream ExecuteRasterQuery(RasterQueryExpression query)
+        public IEnumerable<IRasterRecord> ExecuteRasterQuery(RasterQueryExpression query)
         {
             return InnerRasterProvider.ExecuteRasterQuery(query);
         }

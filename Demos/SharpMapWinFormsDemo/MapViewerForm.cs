@@ -46,6 +46,12 @@ using Caster = System.Linq.Enumerable;
 
 namespace MapViewer
 {
+    using System.Configuration;
+    using System.Diagnostics;
+    using GeoAPI.CoordinateSystems;
+    using GeoAPI.CoordinateSystems.Transformations;
+    using SharpMap.Data.Providers;
+
     public partial class MapViewerForm : Form
     {
         private readonly CommandManager _commandManager = new CommandManager();
@@ -549,45 +555,50 @@ namespace MapViewer
                 {
                     IFeatureProvider prov = choose.Provider;
                     string name = choose.ProviderName;
-
-                    workQueue.AddWorkItem(
-                        string.Format("Loading Datasource {0}", name),
-                        delegate
-                            {
-                                GeometryLayer lyr =
-                                    new GeometryLayer(
-                                        name,
-                                        prov);
-                                lyr.Features.IsSpatiallyIndexed = false;
-                                prov.Open();
-
-
-                                InvokeIfRequired(new Action(delegate
-                                                                {
-                                                                    if (Map.Layers.Count == 0)
-                                                                    {
-                                                                        if (lyr.SpatialReference != null)
-                                                                            Map.SpatialReference = lyr.SpatialReference;
-                                                                    }
-
-                                                                    Map.Layers.Insert(0, lyr);
-
-                                                                    lyr.Style = RandomStyle.RandomGeometryStyle();
-                                                                    //lyr.Style = setGeometryStyle(lyr);
-
-                                                                    if (Map.Layers.Count == 1)
-                                                                    {
-                                                                        mapViewControl1.Map = Map;
-
-                                                                        layersView1.Map = Map;
-                                                                        MapView.ZoomToExtents();
-                                                                    }
-                                                                }));
-                            }, EnableDisableCommandsRequiringLayers
-                        ,
-                        delegate(Exception ex) { MessageBox.Show(string.Format("An error occured\n{0}\n{1}", ex.Message, ex.StackTrace)); });
+                    GeometryLayer layer = new GeometryLayer(name, prov);
+                    AddLayer(name, layer);
                 }
             }
+        }
+
+        private void AddLayer(string name, GeometryLayer layer)
+        {
+            if (String.IsNullOrEmpty(name))
+                throw new ArgumentNullException("name");
+            if (layer == null)
+                throw new ArgumentNullException("layer");
+
+            this.workQueue.AddWorkItem(
+                string.Format("Loading Datasource {0}", name),
+                delegate
+                {                                
+                    layer.Features.IsSpatiallyIndexed = false;
+                    layer.DataSource.Open();
+                    this.InvokeIfRequired(new Action(delegate
+                    {
+                        if (this.Map.Layers.Count == 0)
+                        {
+                            if (layer.SpatialReference != null)
+                                this.Map.SpatialReference = layer.SpatialReference;
+                        }
+
+                        this.Map.Layers.Insert(0, layer);
+
+                        layer.Style = RandomStyle.RandomGeometryStyle();
+                        
+                        if (this.Map.Layers.Count != 1)
+                            return;
+
+                        this.mapViewControl1.Map = this.Map;
+                        this.layersView1.Map = this.Map;
+                        this.MapView.ZoomToExtents();
+                    }));
+                }, this.EnableDisableCommandsRequiringLayers,
+                delegate(Exception ex)
+                {
+                    Trace.WriteLine(ex);
+                    MessageBox.Show(string.Format("An error occured\n{0}\n{1}", ex.Message, ex.StackTrace));
+                });
         }
 
         #region Nested type: CommandNames
@@ -613,5 +624,23 @@ namespace MapViewer
         }
 
         #endregion
+
+        private void sampleMapToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            GeometryServices services = new GeometryServices();
+            IGeometryFactory geoFactory = services.DefaultGeometryFactory;
+            ICoordinateTransformationFactory ctFactory = services.CoordinateTransformationFactory;
+
+            ConnectionStringSettings settings = ConfigurationManager.ConnectionStrings["LocalConnectionString"];
+            string connectionString = settings.ConnectionString;
+
+            string[] layers = new[] { "poly_landmarks", "tiger_roads", "poi", };
+            foreach (string layer in layers)
+            {
+                MsSqlServer2008Provider<int> provider = new MsSqlServer2008Provider<int>(geoFactory, connectionString,
+                    "dbo", layer, "UID", "geom") { CoordinateTransformationFactory = ctFactory };
+                this.AddLayer(layer, new GeometryLayer(layer, provider));
+            }
+        }
     }
 }
