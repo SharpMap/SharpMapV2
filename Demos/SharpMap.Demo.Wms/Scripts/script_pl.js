@@ -16,16 +16,6 @@
         .hosts(["a.", "b.", "c.", ""])));    
     map.add(po.image().url(function(data) {
         var bounds = mercator.TileBounds(data.column, data.row, data.zoom)
-        var url = ['http://demo.opengeo.org/geoserver/ows?HEIGHT=256&WIDTH=256&STYLES=&',
-            'SRS=EPSG%3A900913&FORMAT=image%2Fpng&SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&',
-            'EXCEPTIONS=application%2Fvnd.ogc.se_inimage&transparent=true&',
-            'LAYERS=', layers, '&', 'BBOX=', bounds[0], ',', -bounds[3], ',', bounds[2], ',', -bounds[1]
-        ].join('')
-        log(url);
-        return url;
-    }));
-	map.add(po.image().url(function(data) {
-        var bounds = mercator.TileBounds(data.column, data.row, data.zoom)
         var url = ['/wms.ashx?HEIGHT=256&WIDTH=256&STYLES=&',
             'CRS=EPSG%3A900913&FORMAT=image%2Fpng&SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&',
             'EXCEPTIONS=application%2Fvnd.ogc.se_inimage&transparent=true&',

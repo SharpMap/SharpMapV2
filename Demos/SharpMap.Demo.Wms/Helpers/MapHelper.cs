@@ -17,9 +17,12 @@ namespace SharpMap.Demo.Wms.Helpers
 {
     using System;
     using System.Collections.Generic;
+    using System.Configuration;
     using System.Web;
     using Data.Providers;
-    using Data.Providers.ShapeFile;
+    using GeoAPI.CoordinateSystems;
+    using GeoAPI.CoordinateSystems.Transformations;
+    using GeoAPI.Geometries;
     using Layers;
     using Styles;
     using Utilities;
@@ -35,24 +38,30 @@ namespace SharpMap.Demo.Wms.Helpers
             if (map == null)
                 throw new ArgumentNullException("map");
 
-            var services = new GeometryServices();
-            var geoFactory = services.DefaultGeometryFactory;
-            var csFactory = services.CoordinateSystemFactory;
+            GeometryServices services = new GeometryServices();
+            IGeometryFactory geoFactory = services.DefaultGeometryFactory;
+            ICoordinateSystemFactory csFactory = services.CoordinateSystemFactory;
+            ICoordinateTransformationFactory ctFactory = services.CoordinateTransformationFactory;
 
-            var layers = new[] { "poly_landmarks", "tiger_roads",  "poi", };
-            foreach (var layer in layers)
+            string[] layers = new[] { "poly_landmarks", "tiger_roads",  "poi", };
+            foreach (string layer in layers)
             {
-                var format = String.Format("~/App_Data/nyc/{0}.shp", layer);
-                var path = context.Server.MapPath(format);
-                var provider = new ShapeFileProvider(path, geoFactory, csFactory, true) { IsSpatiallyIndexed = true };
+                // string format = String.Format("~/App_Data/nyc/{0}.shp", layer);
+                // string path = context.Server.MapPath(format);
+                // var provider = new ShapeFileProvider(path, geoFactory, csFactory, true) { IsSpatiallyIndexed = true };
                 
+                ConnectionStringSettings settings = ConfigurationManager.ConnectionStrings["LocalConnectionString"];
+                string connectionString = settings.ConnectionString;
+                MsSqlServer2008Provider<int> provider = new MsSqlServer2008Provider<int>(geoFactory, connectionString, 
+                    "dbo", layer, "UID", "geom") { CoordinateTransformationFactory = ctFactory };
+
                 if (!styles.ContainsKey(layer))
                 {
                     lock (styles)
                     {
                         if (!styles.ContainsKey(layer))
                         {
-                            var style = RandomStyle.RandomGeometryStyle();
+                            GeoJsonGeometryStyle style = RandomStyle.RandomGeometryStyle();
                             style.IncludeAttributes = true;
                             style.IncludeBBox = true;
                             style.PreProcessGeometries = true;
@@ -62,11 +71,11 @@ namespace SharpMap.Demo.Wms.Helpers
                     }
                 }
 
-                var monitor = new AppStateMonitoringFeatureProvider(provider);
-                var item = new GeometryLayer(layer, styles[layer], monitor);
+                AppStateMonitoringFeatureProvider monitor = new AppStateMonitoringFeatureProvider(provider);
+                GeometryLayer item = new GeometryLayer(layer, styles[layer], monitor);
                 item.Features.IsSpatiallyIndexed = true;
                 map.AddLayer(item);
-                provider.Open(WriteAccess.ReadOnly);
+                provider.Open(/*WriteAccess.ReadOnly*/);
             }
         }
     }

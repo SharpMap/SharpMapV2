@@ -35,6 +35,9 @@ using Caster = GeoAPI.DataStructures.Caster;
 
 namespace SharpMap.Data.Providers.Db
 {
+    using System.Diagnostics;
+    using GeoAPI.CoordinateSystems;
+
     public abstract class ExpressionTreeToSqlCompilerBase<TOid>
     {
         private readonly Expression _expression;
@@ -701,21 +704,23 @@ namespace SharpMap.Data.Providers.Db
 
         protected IGeometry TransformGeometry(IGeometry geom)
         {
-            if (geom.SpatialReference == null && Provider.SpatialReference == null)
+            ICoordinateSystem source = geom.SpatialReference;
+            ICoordinateSystem reference = Provider.SpatialReference;
+            if (source == null && reference == null)
                 return geom;
 
-            if (!Provider.SpatialReference.EqualParams(geom.SpatialReference))
+            if (!reference.EqualParams(source))
             {
                 if (Provider.CoordinateTransformationFactory == null)
                     throw new MissingCoordinateTransformationFactoryException(
                         "Data requires transformation however no CoordinateTransformationFactory is set");
 
-                ICoordinateTransformation ct =
-                    Provider.CoordinateTransformationFactory.CreateFromCoordinateSystems(geom.SpatialReference,
-                                                                                         Provider.
-                                                                                             OriginalSpatialReference);
-
-                return ct.Transform(geom, Provider.GeometryFactory);
+                ICoordinateSystem target = Provider.OriginalSpatialReference;
+                if (!target.EqualParams(source))
+                {
+                    ICoordinateTransformation ct = Provider.CoordinateTransformationFactory.CreateFromCoordinateSystems(source, target);
+                    return ct.Transform(geom, Provider.GeometryFactory);
+                }
             }
             return geom;
         }
@@ -750,10 +755,6 @@ namespace SharpMap.Data.Providers.Db
 
     public class MissingCoordinateTransformationFactoryException : Exception
     {
-        public MissingCoordinateTransformationFactoryException(string s)
-            : base(s)
-        {
-            throw new NotImplementedException();
-        }
+        public MissingCoordinateTransformationFactoryException(string s) : base(s) { }
     }
 }
