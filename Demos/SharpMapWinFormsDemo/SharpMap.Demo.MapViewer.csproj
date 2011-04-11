@@ -236,6 +236,12 @@
     <Compile Include="DataSource\MsSqlSpatial.Designer.cs">
       <DependentUpon>MsSqlSpatial.cs</DependentUpon>
     </Compile>
+    <Compile Include="DataSource\PostGis.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="DataSource\PostGis.designer.cs">
+      <DependentUpon>PostGis.cs</DependentUpon>
+    </Compile>
     <Compile Include="DataSource\Shapefile.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -277,6 +283,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="DataSource\MsSqlSpatial.resx">
       <DependentUpon>MsSqlSpatial.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DataSource\PostGis.resx">
+      <DependentUpon>PostGis.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="DataSource\Shapefile.resx">
       <DependentUpon>Shapefile.cs</DependentUpon>
@@ -377,6 +386,10 @@
     <ProjectReference Include="..\..\SharpMap.Data.Providers\ShapeFileProvider\SharpMap.Data.Providers.ShapeFile.csproj">
       <Project>{4D5343CE-7E0E-46B5-9F80-A31BDA78D609}</Project>
       <Name>SharpMap.Data.Providers.ShapeFile</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\SharpMap.Data.Providers\SharpMap.Data.Providers.PostGis\SharpMap.Data.Providers.PostGis.csproj">
+      <Project>{7C533D86-BD73-4F55-AE8B-2D95D97C0436}</Project>
+      <Name>SharpMap.Data.Providers.PostGis</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\SharpMap.Presentation\WinForms\SharpMap.Presentation.WinForms.csproj">
       <Project>{E7E3A53F-6B4D-423B-A10E-F0580B87FB81}</Project>

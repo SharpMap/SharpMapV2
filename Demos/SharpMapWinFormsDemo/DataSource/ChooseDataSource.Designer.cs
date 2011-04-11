@@ -52,7 +52,8 @@
             this.cbDataSource.FormattingEnabled = true;
             this.cbDataSource.Items.AddRange(new object[] {
             "Shapefile",
-            "MsSqlServer2008"});
+            "MsSqlServer2008",
+            "PostGis"});
             this.cbDataSource.Location = new System.Drawing.Point(16, 30);
             this.cbDataSource.Name = "cbDataSource";
             this.cbDataSource.Size = new System.Drawing.Size(508, 21);

@@ -58,7 +58,11 @@ namespace MapViewer.DataSource
                     return;
                 case "mssqlserver2008":
                     LoadMsSqlServerBuilder();
-                    return;               
+                    return;
+
+                case "postgis":
+                    LoadPostGis();
+                    return;
             }
         }
 
@@ -73,6 +77,11 @@ namespace MapViewer.DataSource
 
             pContainer.Controls.Add((Control)builder);
             ((Control)builder).Dock = DockStyle.Fill;
+        }        
+
+        private void LoadShapefileBuilder()
+        {
+            LoadBuilder(new Shapefile());
         }
 
         private void LoadMsSqlServerBuilder()
@@ -80,9 +89,9 @@ namespace MapViewer.DataSource
             LoadBuilder(new SqlServer2008());
         }
 
-        private void LoadShapefileBuilder()
+        private void LoadPostGis()
         {
-            LoadBuilder(new Shapefile());
+            LoadBuilder(new PostGis());
         }
 
         private void bCancel_Click(object sender, EventArgs e)

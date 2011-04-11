@@ -561,7 +561,7 @@ namespace MapViewer
             }
         }
 
-        private void AddLayer(ILayer layer)
+        private void AddLayer(IFeatureLayer layer)
         {
             if (layer == null)
                 throw new ArgumentNullException("layer");
@@ -570,8 +570,7 @@ namespace MapViewer
                 string.Format("Loading Datasource {0}", layer.LayerName),
                 delegate
                 {
-                    if (layer is IFeatureLayer)
-                        (layer as IFeatureLayer).Features.IsSpatiallyIndexed = false;
+                    layer.Features.IsSpatiallyIndexed = false;
 
                     layer.DataSource.Open();
                     this.InvokeIfRequired(new Action(delegate
@@ -627,7 +626,14 @@ namespace MapViewer
 
         private void SampleMapToolStripMenuItemClick(object sender, EventArgs e)
         {
-            IEnumerable<ILayer> enumerable = MapHelper.CreateLayers();
+            IEnumerable<IFeatureLayer> enumerable = MapHelper.CreateSqlLayers();
+            foreach (IFeatureLayer layer in enumerable)
+                this.AddLayer(layer);
+        }
+
+        private void PostGisMapToolStripMenuItemClick(object sender, EventArgs e)
+        {
+            IEnumerable<IFeatureLayer> enumerable = MapHelper.CreatePgisLayers();
             foreach (IFeatureLayer layer in enumerable)
                 this.AddLayer(layer);
         }

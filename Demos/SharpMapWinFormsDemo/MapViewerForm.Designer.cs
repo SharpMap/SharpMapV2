@@ -39,6 +39,7 @@ namespace MapViewer
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.addLayerToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.clearLayersToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.sampleMapToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.stylesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.addStylesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.mainToolStrip = new System.Windows.Forms.ToolStrip();
@@ -87,7 +88,7 @@ namespace MapViewer
             this.splitHorizontal = new System.Windows.Forms.SplitContainer();
             this.resultsTabControl = new System.Windows.Forms.TabControl();
             this.mapViewControl1 = new SharpMap.Presentation.WinForms.MapViewControl();
-            this.sampleMapToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.postGISMapToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.mainMenu.SuspendLayout();
             this.mainToolStrip.SuspendLayout();
             this.statusStrip1.SuspendLayout();
@@ -141,7 +142,8 @@ namespace MapViewer
             this.toolStripMenuItem1.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.addLayerToolStripMenuItem1,
             this.clearLayersToolStripMenuItem,
-            this.sampleMapToolStripMenuItem});
+            this.sampleMapToolStripMenuItem,
+            this.postGISMapToolStripMenuItem});
             this.toolStripMenuItem1.Name = "toolStripMenuItem1";
             this.toolStripMenuItem1.Size = new System.Drawing.Size(57, 20);
             this.toolStripMenuItem1.Text = "Layers";
@@ -149,14 +151,21 @@ namespace MapViewer
             // addLayerToolStripMenuItem1
             // 
             this.addLayerToolStripMenuItem1.Name = "addLayerToolStripMenuItem1";
-            this.addLayerToolStripMenuItem1.Size = new System.Drawing.Size(160, 22);
+            this.addLayerToolStripMenuItem1.Size = new System.Drawing.Size(173, 22);
             this.addLayerToolStripMenuItem1.Text = "Add Layer";
             // 
             // clearLayersToolStripMenuItem
             // 
             this.clearLayersToolStripMenuItem.Name = "clearLayersToolStripMenuItem";
-            this.clearLayersToolStripMenuItem.Size = new System.Drawing.Size(160, 22);
+            this.clearLayersToolStripMenuItem.Size = new System.Drawing.Size(173, 22);
             this.clearLayersToolStripMenuItem.Text = "Clear Layers";
+            // 
+            // sampleMapToolStripMenuItem
+            // 
+            this.sampleMapToolStripMenuItem.Name = "sampleMapToolStripMenuItem";
+            this.sampleMapToolStripMenuItem.Size = new System.Drawing.Size(173, 22);
+            this.sampleMapToolStripMenuItem.Text = "SqlServer Map";
+            this.sampleMapToolStripMenuItem.Click += new System.EventHandler(this.SampleMapToolStripMenuItemClick);
             // 
             // stylesToolStripMenuItem
             // 
@@ -582,20 +591,18 @@ namespace MapViewer
             // 
             // mapViewControl1
             // 
-            this.mapViewControl1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.mapViewControl1.Location = new System.Drawing.Point(0, 0);
             this.mapViewControl1.Name = "mapViewControl1";
-            this.mapViewControl1.Size = new System.Drawing.Size(671, 426);
+            this.mapViewControl1.Size = new System.Drawing.Size(0, 0);
             this.mapViewControl1.TabIndex = 0;
-            this.mapViewControl1.Text = "mapViewControl1";
             this.mapViewControl1.Title = "mapViewControl1";
             // 
-            // sampleMapToolStripMenuItem
+            // postGISMapToolStripMenuItem
             // 
-            this.sampleMapToolStripMenuItem.Name = "sampleMapToolStripMenuItem";
-            this.sampleMapToolStripMenuItem.Size = new System.Drawing.Size(160, 22);
-            this.sampleMapToolStripMenuItem.Text = "Sample Map";
-            this.sampleMapToolStripMenuItem.Click += new System.EventHandler(this.SampleMapToolStripMenuItemClick);
+            this.postGISMapToolStripMenuItem.Name = "postGISMapToolStripMenuItem";
+            this.postGISMapToolStripMenuItem.Size = new System.Drawing.Size(173, 22);
+            this.postGISMapToolStripMenuItem.Text = "PostGIS Map";
+            this.postGISMapToolStripMenuItem.Click += new System.EventHandler(this.PostGisMapToolStripMenuItemClick);
             // 
             // MapViewerForm
             // 
@@ -698,6 +705,7 @@ namespace MapViewer
         private System.Windows.Forms.ToolStripMenuItem stylesToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem addStylesToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem sampleMapToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem postGISMapToolStripMenuItem;
 
     }
 }
