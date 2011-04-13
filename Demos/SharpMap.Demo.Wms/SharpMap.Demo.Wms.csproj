@@ -106,6 +106,10 @@
       <Project>{4D5343CE-7E0E-46B5-9F80-A31BDA78D609}</Project>
       <Name>SharpMap.Data.Providers.ShapeFile</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\SharpMap.Data.Providers\SharpMap.Data.Providers.PostGis\SharpMap.Data.Providers.PostGis.csproj">
+      <Project>{7C533D86-BD73-4F55-AE8B-2D95D97C0436}</Project>
+      <Name>SharpMap.Data.Providers.PostGis</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\SharpMap.Presentation\AspNet\SharpMap.Presentation.AspNet.csproj">
       <Project>{1677C565-FA87-419F-B925-02A5CAA97E8D}</Project>
       <Name>SharpMap.Presentation.AspNet</Name>

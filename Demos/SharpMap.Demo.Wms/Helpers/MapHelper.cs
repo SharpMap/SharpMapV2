@@ -50,10 +50,15 @@ namespace SharpMap.Demo.Wms.Helpers
                 // string path = context.Server.MapPath(format);
                 // var provider = new ShapeFileProvider(path, geoFactory, csFactory, true) { IsSpatiallyIndexed = true };
                 
-                ConnectionStringSettings settings = ConfigurationManager.ConnectionStrings["LocalConnectionString"];
+                //ConnectionStringSettings settings = ConfigurationManager.ConnectionStrings["LocalSqlConnectionString"];
+                //string connectionString = settings.ConnectionString;
+                //MsSqlServer2008Provider<int> provider = new MsSqlServer2008Provider<int>(geoFactory, connectionString, 
+                //    "dbo", layer, "UID", "geom") { CoordinateTransformationFactory = ctFactory };
+
+                ConnectionStringSettings settings = ConfigurationManager.ConnectionStrings["LocalPgisConnectionString"];
                 string connectionString = settings.ConnectionString;
-                MsSqlServer2008Provider<int> provider = new MsSqlServer2008Provider<int>(geoFactory, connectionString, 
-                    "dbo", layer, "UID", "geom") { CoordinateTransformationFactory = ctFactory };
+                PostGisProvider<int> provider = new PostGisProvider<int>(geoFactory, connectionString,
+                    "public", layer, "gid", "the_geom") { CoordinateTransformationFactory = ctFactory };
 
                 if (!styles.ContainsKey(layer))
                 {

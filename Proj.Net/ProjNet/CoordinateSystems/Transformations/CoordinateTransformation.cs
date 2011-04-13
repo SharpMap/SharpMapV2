@@ -153,25 +153,21 @@ namespace ProjNet.CoordinateSystems.Transformations
             }
         }
 
-        public IExtents<TCoordinate> Transform(IExtents<TCoordinate> extents, 
-                                               IGeometryFactory<TCoordinate> factory)
+        public IExtents<TCoordinate> Transform(IExtents<TCoordinate> extents, IGeometryFactory<TCoordinate> factory)
         {
             TCoordinate min = MathTransform.Transform(extents.Min);
             TCoordinate max = MathTransform.Transform(extents.Max);
             return factory.CreateExtents(min, max);
         }
 
-        public IGeometry<TCoordinate> Transform(IGeometry<TCoordinate> geometry, 
-                                                IGeometryFactory<TCoordinate> factory)
+        public IGeometry<TCoordinate> Transform(IGeometry<TCoordinate> geometry, IGeometryFactory<TCoordinate> factory)
         {
             ICoordinateSequence<TCoordinate> coordinates = MathTransform.Transform(geometry.Coordinates);
-
             IGeometry<TCoordinate> result = factory.CreateGeometry(coordinates, geometry.GeometryType);
             return result;
         }
 
-        public IPoint<TCoordinate> Transform(IPoint<TCoordinate> point, 
-                                             IGeometryFactory<TCoordinate> factory)
+        public IPoint<TCoordinate> Transform(IPoint<TCoordinate> point, IGeometryFactory<TCoordinate> factory)
         {
             TCoordinate coordinate = MathTransform.Transform(point.Coordinate);
             return factory.CreatePoint(coordinate);
@@ -230,10 +226,7 @@ namespace ProjNet.CoordinateSystems.Transformations
 
         IGeometry ICoordinateTransformation.Transform(IGeometry geometry, IGeometryFactory factory)
         {
-            ICoordinateSequence coordinates = MathTransform.Transform(geometry.Coordinates);
-
-            IGeometry result = factory.CreateGeometry(coordinates, geometry.GeometryType);
-            return result;
+            return Transform((IGeometry<TCoordinate>)geometry, (IGeometryFactory<TCoordinate>)factory);
         }
 
         IPoint ICoordinateTransformation.Transform(IPoint point, IGeometryFactory factory)

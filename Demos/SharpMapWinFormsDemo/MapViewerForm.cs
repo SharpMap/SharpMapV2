@@ -570,7 +570,7 @@ namespace MapViewer
                 string.Format("Loading Datasource {0}", layer.LayerName),
                 delegate
                 {
-                    layer.Features.IsSpatiallyIndexed = false;
+                    layer.Features.IsSpatiallyIndexed = true;
 
                     layer.DataSource.Open();
                     this.InvokeIfRequired(new Action(delegate
