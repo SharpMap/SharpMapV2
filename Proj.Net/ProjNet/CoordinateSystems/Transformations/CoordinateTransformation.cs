@@ -25,6 +25,7 @@ using NPack.Interfaces;
 
 namespace ProjNet.CoordinateSystems.Transformations
 {
+    using System.Collections.Generic;
 
     public class InverseCoordinateTransformation<TCoordinate> : CoordinateTransformation<TCoordinate>
         where TCoordinate : ICoordinate<TCoordinate>, IEquatable<TCoordinate>,
@@ -162,9 +163,56 @@ namespace ProjNet.CoordinateSystems.Transformations
 
         public IGeometry<TCoordinate> Transform(IGeometry<TCoordinate> geometry, IGeometryFactory<TCoordinate> factory)
         {
-            ICoordinateSequence<TCoordinate> coordinates = MathTransform.Transform(geometry.Coordinates);
-            IGeometry<TCoordinate> result = factory.CreateGeometry(coordinates, geometry.GeometryType);
-            return result;
+            switch (geometry.GeometryType)
+            {
+                case OgcGeometryType.Geometry:
+                case OgcGeometryType.Point:
+                case OgcGeometryType.Curve:
+                case OgcGeometryType.LineString:
+                case OgcGeometryType.Surface:
+                case OgcGeometryType.Polygon:
+                case OgcGeometryType.MultiPoint:
+                case OgcGeometryType.MultiSurface:
+                case OgcGeometryType.MultiPolygon:
+                {
+                    // standard way to do things
+                    ICoordinateSequence<TCoordinate> coordinates = MathTransform.Transform(geometry.Coordinates);
+                    IGeometry<TCoordinate> result = factory.CreateGeometry(coordinates, geometry.GeometryType);
+                    return result;
+                }
+
+                case OgcGeometryType.MultiCurve:
+                case OgcGeometryType.MultiLineString:
+                {
+                    // we need to convert each geometry 
+                    IList<ILineString<TCoordinate>> list = new List<ILineString<TCoordinate>>();
+                    IEnumerable<ILineString<TCoordinate>> enumerable = (IEnumerable<ILineString<TCoordinate>>)geometry;
+                    foreach (ILineString<TCoordinate> internalGeometry in enumerable)
+                    {
+                        ICoordinateSequence<TCoordinate> coordinates = MathTransform.Transform(internalGeometry.Coordinates);
+                        IGeometry<TCoordinate> result = factory.CreateGeometry(coordinates, internalGeometry.GeometryType);
+                        list.Add((ILineString<TCoordinate>)result);
+                    }
+                    return factory.CreateMultiLineString(list);
+                }
+
+                case OgcGeometryType.GeometryCollection:
+                {
+                    // we need to convert each geometry 
+                    IList<IGeometry<TCoordinate>> list = new List<IGeometry<TCoordinate>>();
+                    IEnumerable<IGeometry<TCoordinate>> enumerable = (IEnumerable<IGeometry<TCoordinate>>)geometry;
+                    foreach (IGeometry<TCoordinate> internalGeometry in enumerable)
+                    {
+                        ICoordinateSequence<TCoordinate> coordinates = MathTransform.Transform(internalGeometry.Coordinates);
+                        IGeometry<TCoordinate> result = factory.CreateGeometry(coordinates, internalGeometry.GeometryType);
+                        list.Add(result);
+                    }
+                    return factory.CreateGeometryCollection(list);
+                }
+
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
         }
 
         public IPoint<TCoordinate> Transform(IPoint<TCoordinate> point, IGeometryFactory<TCoordinate> factory)
@@ -226,9 +274,56 @@ namespace ProjNet.CoordinateSystems.Transformations
 
         IGeometry ICoordinateTransformation.Transform(IGeometry geometry, IGeometryFactory factory)
         {
-            ICoordinateSequence coordinates = MathTransform.Transform(geometry.Coordinates);
-            IGeometry result = factory.CreateGeometry(coordinates, geometry.GeometryType);
-            return result;
+            switch (geometry.GeometryType)
+            {
+                case OgcGeometryType.Geometry:
+                case OgcGeometryType.Point:
+                case OgcGeometryType.Curve:
+                case OgcGeometryType.LineString:
+                case OgcGeometryType.Surface:
+                case OgcGeometryType.Polygon:
+                case OgcGeometryType.MultiPoint:
+                case OgcGeometryType.MultiSurface:
+                case OgcGeometryType.MultiPolygon:
+                {
+                    // standard way to do things
+                    ICoordinateSequence coordinates = MathTransform.Transform(geometry.Coordinates);
+                    IGeometry result = factory.CreateGeometry(coordinates, geometry.GeometryType);
+                    return result;
+                }
+
+                case OgcGeometryType.MultiCurve:
+                case OgcGeometryType.MultiLineString:
+                    {
+                        // we need to convert each geometry 
+                        IList<ILineString> list = new List<ILineString>();
+                        IEnumerable<ILineString> enumerable = (IEnumerable<ILineString>)geometry;
+                        foreach (ILineString internalGeometry in enumerable)
+                        {
+                            ICoordinateSequence coordinates = MathTransform.Transform(internalGeometry.Coordinates);
+                            IGeometry result = factory.CreateGeometry(coordinates, internalGeometry.GeometryType);
+                            list.Add((ILineString)result);
+                        }
+                        return factory.CreateMultiLineString(list);
+                    }
+
+                case OgcGeometryType.GeometryCollection:
+                    {
+                        // we need to convert each geometry 
+                        IList<IGeometry> list = new List<IGeometry>();
+                        IEnumerable<IGeometry> enumerable = (IEnumerable<IGeometry>)geometry;
+                        foreach (IGeometry internalGeometry in enumerable)
+                        {
+                            ICoordinateSequence coordinates = MathTransform.Transform(internalGeometry.Coordinates);
+                            IGeometry result = factory.CreateGeometry(coordinates, internalGeometry.GeometryType);
+                            list.Add(result);
+                        }
+                        return factory.CreateGeometryCollection(list);
+                    }
+
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
         }
 
         IPoint ICoordinateTransformation.Transform(IPoint point, IGeometryFactory factory)
