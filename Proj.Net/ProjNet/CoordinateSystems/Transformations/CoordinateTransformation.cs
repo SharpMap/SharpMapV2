@@ -226,7 +226,9 @@ namespace ProjNet.CoordinateSystems.Transformations
 
         IGeometry ICoordinateTransformation.Transform(IGeometry geometry, IGeometryFactory factory)
         {
-            return Transform((IGeometry<TCoordinate>)geometry, (IGeometryFactory<TCoordinate>)factory);
+            ICoordinateSequence coordinates = MathTransform.Transform(geometry.Coordinates);
+            IGeometry result = factory.CreateGeometry(coordinates, geometry.GeometryType);
+            return result;
         }
 
         IPoint ICoordinateTransformation.Transform(IPoint point, IGeometryFactory factory)
