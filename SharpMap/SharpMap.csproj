@@ -28,7 +28,6 @@
     <WarningLevel>4</WarningLevel>
     <UseVSHostingProcess>true</UseVSHostingProcess>
     <DocumentationFile>bin\Debug_Net20\SharpMap.xml</DocumentationFile>
-    <TargetFrameworkVersion>2.0</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release_Net20|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -38,7 +37,6 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>bin\Release_Net20\SharpMap.xml</DocumentationFile>
-    <TargetFrameworkVersion>2.0</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug_Net35|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -96,6 +94,7 @@
     <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
     <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
     <ErrorReport>prompt</ErrorReport>
+    <TargetFrameworkVersion>3.5</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release_Net35|x64' ">
     <OutputPath>bin\x64\Release_Net35\</OutputPath>
@@ -107,6 +106,7 @@
     <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
     <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
     <ErrorReport>prompt</ErrorReport>
+    <TargetFrameworkVersion>3.5</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug_Net20|x86' ">
     <DebugSymbols>true</DebugSymbols>
@@ -140,6 +140,7 @@
     <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
     <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
     <ErrorReport>prompt</ErrorReport>
+    <TargetFrameworkVersion>3.5</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release_Net35|x86' ">
     <OutputPath>bin\x86\Release_Net35\</OutputPath>
@@ -151,6 +152,7 @@
     <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
     <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
     <ErrorReport>prompt</ErrorReport>
+    <TargetFrameworkVersion>3.5</TargetFrameworkVersion>
   </PropertyGroup>
   <Choose>
     <When Condition=" '$(Configuration)' == 'Release_Net35' Or '$(Configuration)' == 'Debug_Net35' ">

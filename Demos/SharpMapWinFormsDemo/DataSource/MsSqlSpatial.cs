@@ -37,10 +37,12 @@ namespace MapViewer.DataSource
         {
             get
             {
-                return string.Format("server={0};{1}", tbServer.Text,
-                                     rbSqlServer.Checked
-                                         ? string.Format("uid={0};pwd={1}", tbUName.Text, tbPassword.Text)
-                                         : "trusted_connection=true;");
+                SqlConnectionStringBuilder sb = new SqlConnectionStringBuilder();
+                sb.DataSource = this.tbServer.Text;
+                sb.IntegratedSecurity = this.rbTrusted.Checked;
+                sb.UserID = this.tbUName.Text;
+                sb.Password = this.tbPassword.Text;
+                return sb.ToString();
             }
         }
 
@@ -93,9 +95,9 @@ namespace MapViewer.DataSource
 
         private bool GetDataBases()
         {
-            string conn = ServerConnectionString;
-
-            conn += "initial catalog=master;";
+            SqlConnectionStringBuilder sb = new SqlConnectionStringBuilder(this.ServerConnectionString);
+            sb.InitialCatalog = "master";
+            string conn = sb.ToString();
 
             using (SqlConnection c = new SqlConnection(conn))
             {
@@ -144,9 +146,9 @@ namespace MapViewer.DataSource
                 return false;
 
 
-            string conn = ServerConnectionString;
-
-            conn += string.Format("initial catalog={0};", cbDataBases.SelectedItem);
+            SqlConnectionStringBuilder sb = new SqlConnectionStringBuilder(this.ServerConnectionString);
+            sb.InitialCatalog = this.cbDataBases.SelectedItem.ToString();
+            string conn = sb.ToString();
 
             using (SqlConnection c = new SqlConnection(conn))
             {

@@ -48,11 +48,11 @@ namespace SharpMap.Utilities.SridUtility
                 long code;
                 if (long.TryParse(cs.AuthorityCode, out code))
                 {
-                    key = new LongKey {Authority = cs.Authority, Code = code};
+                    key = new LongKey { Authority = cs.Authority, Code = code };
                 }
                 else
                 {
-                    key = new StringKey {Authority = cs.Authority, Code = cs.AuthorityCode};
+                    key = new StringKey { Authority = cs.Authority, Code = cs.AuthorityCode };
                 }
                 if (!_map.ContainsKey(key))
                     _map.Add(key, cs);
@@ -111,7 +111,7 @@ namespace SharpMap.Utilities.SridUtility
 
         public override bool Process(ICoordinateSystem input, out int? output)
         {
-            if(Equals(input, default(ICoordinateSystem)))
+            if (Equals(input, default(ICoordinateSystem)))
             {
                 output = null;
                 return true;
@@ -123,7 +123,7 @@ namespace SharpMap.Utilities.SridUtility
                 IKey key = _hashMap[hash];
                 if (key is IKey<long>)
                 {
-                    output = (int) ((IKey<long>) _hashMap[hash]).Code;
+                    output = (int)((IKey<long>)_hashMap[hash]).Code;
                     return true;
                 }
 
@@ -139,7 +139,7 @@ namespace SharpMap.Utilities.SridUtility
                     IKey key = kvp.Key;
                     if (key is IKey<long>)
                     {
-                        output = (int) ((IKey<long>) key).Code;
+                        output = (int)((IKey<long>)key).Code;
                         return true;
                     }
                 }
@@ -161,7 +161,7 @@ namespace SharpMap.Utilities.SridUtility
                 if (key is IKey<long>)
                 {
                     IKey<long> longKey = key as IKey<long>;
-                    if (longKey.Code == (long) input)
+                    if (longKey.Code == (long)input)
                     {
                         output = _map[longKey];
                         return true;
@@ -182,11 +182,11 @@ namespace SharpMap.Utilities.SridUtility
                 long code;
                 if (long.TryParse(prts[1], out code))
                 {
-                    key = new LongKey {Authority = prts[0], Code = code};
+                    key = new LongKey { Authority = prts[0], Code = code };
                 }
                 else
                 {
-                    key = new StringKey {Authority = prts[0], Code = prts[1]};
+                    key = new StringKey { Authority = prts[0], Code = prts[1] };
                 }
 
                 if (_map.ContainsKey(key))
@@ -241,10 +241,20 @@ namespace SharpMap.Utilities.SridUtility
             object IKey.Code
             {
                 get { return Code; }
-                set { Code = (long) value; }
+                set { Code = (long)value; }
             }
 
             #endregion
+
+            public override string ToString()
+            {
+                return string.Format("{0}:{1}", Authority, Code);
+            }
+
+            public override int GetHashCode()
+            {
+                return Authority.GetHashCode() ^ Code.GetHashCode();
+            }
         }
 
         #endregion
@@ -262,10 +272,20 @@ namespace SharpMap.Utilities.SridUtility
             object IKey.Code
             {
                 get { return Code; }
-                set { Code = (string) value; }
+                set { Code = (string)value; }
             }
 
             #endregion
+
+            public override string ToString()
+            {
+                return string.Format("{0}:{1}", Authority, Code);
+            }
+
+            public override int GetHashCode()
+            {
+                return Authority.GetHashCode() ^ Code.GetHashCode();
+            }
         }
 
         #endregion

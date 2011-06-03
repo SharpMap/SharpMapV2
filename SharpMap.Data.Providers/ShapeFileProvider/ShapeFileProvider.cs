@@ -51,6 +51,21 @@ using Caster = GeoAPI.DataStructures.Caster;
 
 namespace SharpMap.Data.Providers.ShapeFile
 {
+    public struct FilePermissions
+    {
+        public FileMode FileMode { get; set; }
+
+        public FileAccess FileAccess { get; set; }
+
+        public FileShare FileShare { get; set; }
+    }
+
+    public enum WriteAccess
+    {
+        ReadOnly,
+        ReadWrite,
+        Exclusive
+    }
     public enum ForceCoordinateOptions
     {
         ForceNone = 0,
@@ -64,7 +79,7 @@ namespace SharpMap.Data.Providers.ShapeFile
     {
         Strict,
         Lenient
-    }
+    }    
 
     /// <summary>
     /// A data provider for the ESRI ShapeFile spatial data format.
@@ -173,7 +188,7 @@ namespace SharpMap.Data.Providers.ShapeFile
         private FileStream _shapeFileStream;
         private BinaryWriter _shapeFileWriter;
         private ISpatialIndex<IExtents, IdBounds> _spatialIndex;
-        private Int32? _srid;
+        private Int32? _srid;        
 
         #endregion
 
@@ -228,12 +243,14 @@ namespace SharpMap.Data.Providers.ShapeFile
         /// The coordinate system factory to use to create spatial reference system objects.
         /// </param>
         /// <param name="fileBasedIndex">True to create a file-based spatial index.</param>
+        /// <param name="writeAccess">Specify the kind of access when managing files.</param>
         public ShapeFileProvider(String filename,
                                  IGeometryFactory geoFactory,
                                  ICoordinateSystemFactory coordSysFactory,
                                  Boolean fileBasedIndex)
         {
             _filename = filename;
+            
             IGeometryFactory geoFactoryClone = base.GeometryFactory = geoFactory.Clone();
             OriginalSpatialReference = geoFactoryClone.SpatialReference;
             OriginalSrid = geoFactoryClone.Srid;
@@ -260,7 +277,7 @@ namespace SharpMap.Data.Providers.ShapeFile
             if (HasDbf)
             {
                 _dbaseFile = new DbaseFile(DbfFilename, geoFactory);
-            }
+            }            
         }
 
         #region Dispose pattern
@@ -681,15 +698,12 @@ namespace SharpMap.Data.Providers.ShapeFile
         #endregion
 
         #region ShapeFile specific methods
-
-        /// <summary>
-        /// Opens the shapefile with optional exclusive access for
-        /// faster write performance during bulk updates.
+        
+		/// <summary>
+        /// Opens the data source.
         /// </summary>
-        /// <param name="exclusive">
-        /// True if exclusive access is desired, false otherwise.
-        /// </param>
-        public void Open(Boolean exclusive)
+        /// <param name="writeAccess">Specify the access rights to the files.</param>
+        public void Open(WriteAccess writeAccess)
         {
             _coordsysReadFromFile = false; // jd setting to false to stop error on second and subsequent open
 
@@ -698,18 +712,24 @@ namespace SharpMap.Data.Providers.ShapeFile
                 return;
             }
 
+            FilePermissions @params = GetPermissions(writeAccess);
+
             try
             {
                 //enableReading();
-                _shapeFileStream = new FileStream(Filename,
-                                                  FileMode.OpenOrCreate,
-                                                  FileAccess.ReadWrite,
-                                                  exclusive ? FileShare.None : FileShare.Read,
+
+
+                _shapeFileStream = new FileStream(Filename, 
+                                                  @params.FileMode,
+                                                  @params.FileAccess,
+                                                  @params.FileShare,
                                                   4096,
                                                   FileOptions.None);
 
                 _shapeFileReader = new BinaryReader(_shapeFileStream);
-                _shapeFileWriter = new BinaryWriter(_shapeFileStream);
+                if (writeAccess != WriteAccess.ReadOnly)
+                    _shapeFileWriter = new BinaryWriter(_shapeFileStream);
+                // TODO: NullBinaryWriter
 
                 base.Open();
 
@@ -722,7 +742,7 @@ namespace SharpMap.Data.Providers.ShapeFile
                 if (HasDbf)
                 {
                     _dbaseFile = new DbaseFile(DbfFilename, GeometryFactory);
-                    _dbaseFile.Open(exclusive);
+                    _dbaseFile.Open(writeAccess);
                 }
             }
             catch (Exception)
@@ -730,6 +750,35 @@ namespace SharpMap.Data.Providers.ShapeFile
                 base.Close();
                 throw;
             }
+        }
+
+        internal static FilePermissions GetPermissions(WriteAccess writeAccess)
+        {
+            FilePermissions @params = new FilePermissions();
+            switch (writeAccess)
+            {
+                case WriteAccess.ReadOnly:
+                    @params.FileMode = FileMode.Open;
+                    @params.FileAccess = FileAccess.Read;
+                    @params.FileShare = FileShare.Read;
+                    break;
+
+                case WriteAccess.ReadWrite:
+                    @params.FileMode = FileMode.OpenOrCreate;
+                    @params.FileAccess = FileAccess.ReadWrite;
+                    @params.FileShare = FileShare.ReadWrite;
+                    break;
+
+                case WriteAccess.Exclusive:
+                    @params.FileMode = FileMode.OpenOrCreate;
+                    @params.FileAccess = FileAccess.ReadWrite;
+                    @params.FileShare = FileShare.None;
+                    break;
+                
+                default:
+                    throw new ArgumentOutOfRangeException("writeAccess");
+            }
+            return @params;
         }
 
         /// <summary>
@@ -1568,11 +1617,12 @@ namespace SharpMap.Data.Providers.ShapeFile
 
 
         /// <summary>
-        /// Opens the data source
+        /// Opens the data source.
         /// </summary>
         public override void Open()
         {
-            Open(false);
+			// Diego Guidi: defaults to ReadOnly, to avoid any kind of lock.
+            this.Open(WriteAccess.ReadOnly);
         }
 
         #endregion

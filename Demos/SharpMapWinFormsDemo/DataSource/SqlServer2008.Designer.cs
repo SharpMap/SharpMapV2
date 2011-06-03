@@ -1,6 +1,6 @@
 ﻿namespace MapViewer.DataSource
 {
-    partial class SqlServer2008
+    internal partial class SqlServer2008
     {
         /// <summary> 
         /// Required designer variable.

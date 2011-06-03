@@ -1479,7 +1479,7 @@ namespace SharpMap.Presentation.Presenters
             Boolean viewMatrixChanged = false;
 
             // Change geographic center of the view by translating pan matrix
-            if (!oldCenter.Equals(newCenter))
+            if (oldCenter != null && !oldCenter.Equals(newCenter))
             {
                 ICoordinate mapCenter = Map.Center;
                 _translationTransform.OffsetX = (mapCenter[Ordinates.X] - newCenter[Ordinates.X]);

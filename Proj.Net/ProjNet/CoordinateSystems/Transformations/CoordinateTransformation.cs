@@ -17,6 +17,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System;
+using System.Collections.Generic;
 using GeoAPI.Coordinates;
 using GeoAPI.CoordinateSystems;
 using GeoAPI.CoordinateSystems.Transformations;
@@ -230,10 +231,12 @@ namespace ProjNet.CoordinateSystems.Transformations
 
         IGeometry ICoordinateTransformation.Transform(IGeometry geometry, IGeometryFactory factory)
         {
-            ICoordinateSequence coordinates = MathTransform.Transform(geometry.Coordinates);
+            if(geometry.GeometryType == OgcGeometryType.GeometryCollection)
+            {
+                return factory.CreateGeometryCollection(TransformImpl((IEnumerable<IGeometry>) geometry, factory));
+            }
 
-            IGeometry result = factory.CreateGeometry(coordinates, geometry.GeometryType);
-            return result;
+            return TransformImpl(geometry, factory);
         }
 
         IPoint ICoordinateTransformation.Transform(IPoint point, IGeometryFactory factory)
@@ -258,5 +261,21 @@ namespace ProjNet.CoordinateSystems.Transformations
         }
 
         #endregion
+
+        private IEnumerable<IGeometry> TransformImpl(IEnumerable<IGeometry> geometries, IGeometryFactory factory)
+        {
+            foreach (var geometry in geometries)
+            {
+                yield return TransformImpl(geometry, factory);
+            }
+        }
+
+        private IGeometry TransformImpl(IGeometry geometry, IGeometryFactory factory)
+        {
+            ICoordinateSequence coordinates = MathTransform.Transform(geometry.Coordinates);
+
+            IGeometry result = factory.CreateGeometry(coordinates, geometry.GeometryType);
+            return result;
+        }
     }
 }

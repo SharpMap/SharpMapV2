@@ -51,8 +51,9 @@ namespace MapViewer.DataSource
             tableName = prts[1];
             IGeometryFactory f = new GeometryServices().DefaultGeometryFactory;
 
-            string conn = ServerConnectionString;
-            conn += string.Format("initial catalog={0};", cbDataBases.SelectedItem);
+            SqlConnectionStringBuilder sb = new SqlConnectionStringBuilder(this.ServerConnectionString);
+            sb.InitialCatalog = cbDataBases.SelectedItem.ToString();
+            string conn = sb.ToString();
 
             IFeatureProvider prov;
             switch (oidType)
@@ -93,9 +94,9 @@ namespace MapViewer.DataSource
                 return false;
 
 
-            string conn = ServerConnectionString;
-
-            conn += string.Format("initial catalog={0};", cbDataBases.SelectedItem);
+            SqlConnectionStringBuilder sb = new SqlConnectionStringBuilder(this.ServerConnectionString);
+            sb.InitialCatalog = cbDataBases.SelectedItem.ToString();
+            string conn = sb.ToString();
 
             using (SqlConnection c = new SqlConnection(conn))
             {
