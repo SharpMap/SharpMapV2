@@ -528,7 +528,7 @@ namespace SharpMap.Data.Providers.ShapeFile
             {
                 String filePath = Path.Combine(directory.FullName, layerName + ".dbf");
                 DbaseFile file = DbaseFile.CreateDbaseFile(filePath, schemaTable, culture, encoding, geoFactory);
-                file.Close();
+                //file.Close(); //Already closed in CreateDbaseFile
             }
 
             if (geoFactory.SpatialReference != null)
@@ -537,6 +537,18 @@ namespace SharpMap.Data.Providers.ShapeFile
                 File.WriteAllText(filePath, geoFactory.SpatialReference.Wkt);
             }
 
+            /*
+            if (model != null && model.Rows.Count > 0)
+            {
+                using (var sfp = new ShapeFileProvider(shapeFile, geoFactory, coordinateSystemFactory))
+                {
+                    sfp.Open(WriteAccess.Exclusive);
+                    foreach (FeatureDataRow featureDataRow in model.Rows)
+                        sfp.Insert(featureDataRow);
+                }
+                
+            }
+             */
             return new ShapeFileProvider(shapeFile, geoFactory, coordinateSystemFactory);
         }
 
@@ -3445,6 +3457,7 @@ namespace SharpMap.Data.Providers.ShapeFile
         /// write the polygon to the shapefilewriter
         /// </summary>
         /// <param name="polygon">polygon to be written</param>
+        /// <param name="shpType"></param>
         private void writePolygon(IPolygon polygon, ShapeType shpType)
         {
             if (Array.IndexOf(PolygonTypes, shpType) == -1)
@@ -3632,17 +3645,31 @@ namespace SharpMap.Data.Providers.ShapeFile
                 writeCoordinate(c[Ordinates.X], c[Ordinates.Y]);
         }
 
-        private IEnumerable<ICoordinate> getOrderedPolygonCoordinates(IPolygon poly)
+        private static IEnumerable<ICoordinate> GetLinearRingCoordinates(ILinearRing ring, bool needCcw)
         {
-            foreach (ICoordinate coordinate in poly.ExteriorRing.Coordinates)
+            //Ensure coorect order for shells
+            bool isCcw = ring.IsCcw;
+            ICoordinateSequence coordinateSequence;
+            if ((needCcw && isCcw) || (!needCcw && !isCcw))
+                coordinateSequence = ring.Coordinates;
+            else 
+                coordinateSequence = ring.Coordinates.Reversed;
+            
+            foreach (ICoordinate c in coordinateSequence)
+                yield return c;
+        }
+
+        private static IEnumerable<ICoordinate> getOrderedPolygonCoordinates(IPolygon poly)
+        {
+            foreach (ICoordinate coordinate in GetLinearRingCoordinates((ILinearRing)poly.ExteriorRing, false))
                 yield return coordinate;
 
             foreach (ILinearRing hole in poly.InteriorRings)
-                foreach (ICoordinate coordinate in (hole.IsCcw ? hole.Coordinates : hole.Coordinates.Reversed))
+                foreach (ICoordinate coordinate in GetLinearRingCoordinates(hole, true))
                     yield return coordinate;
         }
 
-        private IEnumerable<ICoordinate> getOrderedMultiPolygonCoordinates(IMultiPolygon polygons)
+        private static IEnumerable<ICoordinate> getOrderedMultiPolygonCoordinates(IMultiPolygon polygons)
         {
             foreach (IPolygon p in (IEnumerable<IPolygon>)polygons)
                 foreach (ICoordinate c in getOrderedPolygonCoordinates(p))

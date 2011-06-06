@@ -205,10 +205,10 @@ namespace SharpMap.Indexing.RTree
         /// Creates a new index node with an empty extents.
         /// </summary>
         /// <returns>A new node for the R-Tree.</returns>
-        protected internal virtual RTreeNode<TItem> CreateNode()
+        protected internal virtual RTreeNode<TItem> CreateNode(int level)
         {
             //RTreeNode<TItem> node = new RTreeNode<TItem>(this, _bounder);
-            RTreeNode<TItem> node = new RTreeNode<TItem>(this, _geoFactory.CreateExtents());
+            RTreeNode<TItem> node = new RTreeNode<TItem>(this, level, _geoFactory.CreateExtents());
             return node;
         }
 
@@ -216,9 +216,9 @@ namespace SharpMap.Indexing.RTree
         /// Creates a new index branch node with the given extents.
         /// </summary>
         /// <returns>A new branch node for the R-Tree.</returns>
-        protected internal virtual RTreeNode<TItem> CreateNode(IExtents extents)
+        protected internal virtual RTreeNode<TItem> CreateNode(int level, IExtents extents)
         {
-            RTreeNode<TItem> node = CreateNode();
+            RTreeNode<TItem> node = CreateNode(level);
             node.Bounds = extents;
             return node;
         }
@@ -277,7 +277,7 @@ namespace SharpMap.Indexing.RTree
 
         private void initIndex()
         {
-            Root = CreateNode();
+            Root = CreateNode(0);
         }
 
         //private UInt32 getNewNodeId()

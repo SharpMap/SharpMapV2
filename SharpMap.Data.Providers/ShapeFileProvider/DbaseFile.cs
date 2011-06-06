@@ -216,7 +216,7 @@ namespace SharpMap.Data.Providers.ShapeFile
  
             file._header.Columns = new List<DbaseField>(DbaseSchema.GetFields(schema, file._header));
             file._headerIsParsed = true;
-            file.Open();
+            file.Open(WriteAccess.Exclusive);
             file.Save();
             file.Close();
 

@@ -158,7 +158,7 @@ namespace SharpMap.Indexing.RTree
                 if (Root.IsLeaf)    // handle the first splitting of the root node.
                 {
                     RTreeNode<TItem> oldRoot = Root as RTreeNode<TItem>;
-                    Root = CreateNode();
+                    Root = CreateNode(0);
                     Root.Add(oldRoot);
                 }
 
@@ -167,7 +167,7 @@ namespace SharpMap.Indexing.RTree
             else // Came from a root split
             {
                 ISpatialIndexNode<IExtents, TItem> oldRoot = Root;
-                Root = CreateNode();
+                Root = CreateNode(0);
                 Root.Add(oldRoot);
                 Root.Add(newSiblingFromSplit);
             }
