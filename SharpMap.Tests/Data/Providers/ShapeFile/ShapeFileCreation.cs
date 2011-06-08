@@ -43,6 +43,7 @@ namespace SharpMap.Tests.Data.Providers.ShapeFile
                 {
                     while (p.Read())
                     {
+                        Assert.True(((FeatureDataRow) fdt.Rows[number]).Geometry.Equals(p.Geometry));
                         number++;
                         Console.WriteLine(string.Format("{0}; {1}; {2}", p.GetOid(), p.Geometry.GeometryTypeName, p.Geometry));
                     }
@@ -73,6 +74,7 @@ namespace SharpMap.Tests.Data.Providers.ShapeFile
                 {
                     while (p.Read())
                     {
+                        Assert.True(((FeatureDataRow)fdt.Rows[number]).Geometry.Equals(p.Geometry));
                         number++;
                         Console.WriteLine(string.Format("{0}; {1}; {2}", p.GetOid(), p.Geometry.GeometryTypeName, p.Geometry));
                     }
@@ -103,7 +105,79 @@ namespace SharpMap.Tests.Data.Providers.ShapeFile
                 {
                     while (p.Read())
                     {
+                        Assert.True(((FeatureDataRow)fdt.Rows[number]).Geometry.Equals(p.Geometry));
                         number++;
+                        Console.WriteLine(string.Format("{0}; {1}; {2}", p.GetOid(), p.Geometry.GeometryTypeName, p.Geometry));
+                    }
+                }
+            }
+            Assert.True(number == 100);
+        }
+
+        [Fact]
+        public void CreateLinealShapeFileM()
+        {
+            var fdt = CreateLinealFeatureDataTableM(_geometryFactory);
+            using (var sfp = ShapeFileProvider.Create(".", "LinealM", ShapeType.PolyLineM, fdt, _geometryFactory, new GeometryServices().CoordinateSystemFactory))
+            {
+                sfp.Open(WriteAccess.ReadWrite);
+                foreach (FeatureDataRow row in fdt.Rows)
+                    sfp.Insert(row);
+            }
+
+
+            int number = 0;
+            var gs = new GeometryServices();
+            using (var sfp = new ShapeFileProvider("LinealM.shp", gs.DefaultGeometryFactory, gs.CoordinateSystemFactory))
+            {
+                sfp.IsSpatiallyIndexed = false;
+                sfp.Open(WriteAccess.ReadOnly);
+                using (var p = sfp.ExecuteFeatureQuery(FeatureQueryExpression.Intersects(sfp.GetExtents())))
+                {
+                    while (p.Read())
+                    {
+                        var geom = ((FeatureDataRow) fdt.Rows[number]).Geometry;
+                        Assert.True(geom.AsText().Equals(p.Geometry.AsText()),
+                                    string.Format("\n{0}\nis not equal to\n{1}", geom.AsText(), p.Geometry.AsText()));
+                        number++;
+                        Assert.True(p.Geometry.Coordinates[0].ContainsOrdinate(Ordinates.M), "Geometry's coordinates should have M values");
+                        Assert.False(p.Geometry.Coordinates[0].ContainsOrdinate(Ordinates.W), "Geometry's coordinates should not have W values");
+                        Console.WriteLine(string.Format("{0}; {1}; {2}", p.GetOid(), p.Geometry.GeometryTypeName, p.Geometry));
+                    }
+                }
+            }
+            Assert.True(number == 100);
+        }
+
+        [Fact]
+        public void CreateLinealShapeFileZ()
+        {
+            var fdt = CreateLinealFeatureDataTableZ(_geometryFactory);
+            using (var sfp = ShapeFileProvider.Create(".", "LinealZ", ShapeType.PolyLineZ, fdt, _geometryFactory, new GeometryServices().CoordinateSystemFactory))
+            {
+                sfp.Open(WriteAccess.ReadWrite);
+                foreach (FeatureDataRow row in fdt.Rows)
+                    sfp.Insert(row);
+            }
+
+
+            int number = 0;
+            var gs = new GeometryServices();
+            using (var sfp = new ShapeFileProvider("LinealZ.shp", gs.DefaultGeometryFactory, gs.CoordinateSystemFactory))
+            {
+                sfp.IsSpatiallyIndexed = false;
+                sfp.Open(WriteAccess.ReadOnly);
+                using (var p = sfp.ExecuteFeatureQuery(FeatureQueryExpression.Intersects(sfp.GetExtents())))
+                {
+                    while (p.Read())
+                    {
+                        var geom = ((FeatureDataRow)fdt.Rows[number]).Geometry;
+                        Assert.True(geom.AsText().Equals(p.Geometry.AsText()),
+                                    string.Format("\n{0}\nis not equal to\n{1}", geom.AsText(), p.Geometry.AsText()));
+                        number++;
+                        Assert.True(p.Geometry.Coordinates[0].ContainsOrdinate(Ordinates.Z), "Geometry's coordinates should have Z values");
+                        Assert.True(p.Geometry.Coordinates[0].ContainsOrdinate(Ordinates.M), "Geometry's coordinates should have M values");
+                        Assert.False(p.Geometry.Coordinates[0].ContainsOrdinate(Ordinates.W), "Geometry's coordinates should not have W values");
                         Console.WriteLine(string.Format("{0}; {1}; {2}", p.GetOid(), p.Geometry.GeometryTypeName, p.Geometry));
                     }
                 }
@@ -141,6 +215,43 @@ namespace SharpMap.Tests.Data.Providers.ShapeFile
             Assert.True(number == 100);
         }
 
+        private static FeatureDataTable CreateLinealFeatureDataTableZ(IGeometryFactory geometryFactory)
+        {
+            var fdt = new FeatureDataTable<uint>("OID", geometryFactory);
+            fdt.Columns.AddRange(new[] { new DataColumn("Length", typeof(double)), });
+            for (uint i = 1; i <= 100; i++)
+            {
+                var row = fdt.NewRow(i);
+                var geom = RandomLinealZ(geometryFactory);
+                row.Geometry = geom;
+                if (geom is ILineString)
+                    row["Length"] = ((ILineString)geom).Length;
+                else
+                    row["Length"] = ((IMultiLineString)geom).Length;
+                fdt.Rows.Add(row);
+            }
+            Assert.True(fdt.Rows.Count == 100);
+            return fdt;
+        }
+
+        private static FeatureDataTable CreateLinealFeatureDataTableM(IGeometryFactory geometryFactory)
+        {
+            var fdt = new FeatureDataTable<uint>("OID", geometryFactory);
+            fdt.Columns.AddRange(new[] { new DataColumn("Length", typeof(double)), });
+            for (uint i = 1; i <= 100; i++)
+            {
+                var row = fdt.NewRow(i);
+                var geom = RandomLinealM(geometryFactory);
+                row.Geometry = geom;
+                if (geom is ILineString)
+                    row["Length"] = ((ILineString)geom).Length;
+                else
+                    row["Length"] = ((IMultiLineString)geom).Length;
+                fdt.Rows.Add(row);
+            }
+            Assert.True(fdt.Rows.Count == 100);
+            return fdt;
+        }
 
         private static FeatureDataTable CreateLinealFeatureDataTable(IGeometryFactory geometryFactory)
         {
@@ -174,6 +285,35 @@ namespace SharpMap.Tests.Data.Providers.ShapeFile
                     return geometryFactory.CreateMultiLineString(ls);
             }
             return geometryFactory.CreateLineString(RandomCoordinates(geometryFactory, 2, 10));
+        }
+        private static ILineal RandomLinealM(IGeometryFactory geometryFactory)
+        {
+            switch (Random.Next(0, 2))
+            {
+                case 0:
+                    return geometryFactory.CreateLineString(RandomCoordinatesM(geometryFactory, 2, 10));
+                case 1:
+                    var ls = new ILineString[Random.Next(2, 5)];
+                    for (int i = 0; i < ls.Length; i++)
+                        ls[i] = geometryFactory.CreateLineString(RandomCoordinatesM(geometryFactory, 2, 15));
+                    return geometryFactory.CreateMultiLineString(ls);
+            }
+            return geometryFactory.CreateLineString(RandomCoordinatesM(geometryFactory, 2, 10));
+        }
+
+        private static ILineal RandomLinealZ(IGeometryFactory geometryFactory)
+        {
+            switch (Random.Next(0, 2))
+            {
+                case 0:
+                    return geometryFactory.CreateLineString(RandomCoordinatesZ(geometryFactory, 2, 10));
+                case 1:
+                    var ls = new ILineString[Random.Next(2, 5)];
+                    for (int i = 0; i < ls.Length; i++)
+                        ls[i] = geometryFactory.CreateLineString(RandomCoordinatesZ(geometryFactory, 2, 15));
+                    return geometryFactory.CreateMultiLineString(ls);
+            }
+            return geometryFactory.CreateLineString(RandomCoordinatesZ(geometryFactory, 2, 10));
         }
 
         private static FeatureDataTable CreatePointFeatureDataTable(IGeometryFactory geometryFactory)
@@ -281,6 +421,16 @@ namespace SharpMap.Tests.Data.Providers.ShapeFile
             return coordinateFactory.Create(Random.Next(-180, 180), Random.Next(-90, 90));
         }
 
+        private static ICoordinate RandomCoordinateM(ICoordinateFactory coordinateFactory)
+        {
+            return coordinateFactory.Create(Random.Next(-180, 180), Random.Next(-90, 90), Random.Next(0, 50));
+        }
+
+        private static ICoordinate RandomCoordinateZ(ICoordinateFactory coordinateFactory)
+        {
+            return coordinateFactory.Create3D(Random.Next(-180, 180), Random.Next(-90, 90), Random.Next(0, 50), Random.Next(0, 50));
+        }
+
         private static IMultiPoint RandomMultiPoint(IGeometryFactory geometryFactory)
         {
             return geometryFactory.CreateMultiPoint(RandomCoordinates(geometryFactory));
@@ -290,6 +440,17 @@ namespace SharpMap.Tests.Data.Providers.ShapeFile
         {
             return RandomCoordinates(geometryFactory, 2, 10);
         }
+
+        private static ICoordinateSequence RandomCoordinatesM(IGeometryFactory geometryFactory)
+        {
+            return RandomCoordinatesM(geometryFactory, 2, 10);
+        }
+
+        private static ICoordinateSequence RandomCoordinatesZ(IGeometryFactory geometryFactory)
+        {
+            return RandomCoordinatesZ(geometryFactory, 2, 10);
+        }
+
         private static ICoordinateSequence RandomCoordinates(IGeometryFactory geometryFactory, int min, int max)
         {
             var csf = geometryFactory.CoordinateSequenceFactory;
@@ -298,6 +459,28 @@ namespace SharpMap.Tests.Data.Providers.ShapeFile
             var coordinates = new ICoordinate[number];
             for (int i = 0; i < number; i++)
                 coordinates[i] = RandomCoordinate(cf);
+            return csf.Create(coordinates);
+        }
+
+        private static ICoordinateSequence RandomCoordinatesM(IGeometryFactory geometryFactory, int min, int max)
+        {
+            var csf = geometryFactory.CoordinateSequenceFactory;
+            var cf = geometryFactory.CoordinateFactory;
+            var number = Random.Next(min, max);
+            var coordinates = new ICoordinate[number];
+            for (int i = 0; i < number; i++)
+                coordinates[i] = RandomCoordinateM(cf);
+            return csf.Create(coordinates);
+        }
+
+        private static ICoordinateSequence RandomCoordinatesZ(IGeometryFactory geometryFactory, int min, int max)
+        {
+            var csf = geometryFactory.CoordinateSequenceFactory;
+            var cf = geometryFactory.CoordinateFactory;
+            var number = Random.Next(min, max);
+            var coordinates = new ICoordinate[number];
+            for (int i = 0; i < number; i++)
+                coordinates[i] = RandomCoordinateZ(cf);
             return csf.Create(coordinates);
         }
     }

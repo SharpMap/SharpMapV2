@@ -2301,7 +2301,7 @@ namespace SharpMap.Data.Providers.ShapeFile
 
 
 
-        private struct StreamOffset
+        private class StreamOffset
         {
             public readonly long? BBox;
             public readonly long X;
@@ -2323,7 +2323,7 @@ namespace SharpMap.Data.Providers.ShapeFile
             }
         }
 
-        private struct CoordinateValues
+        private class CoordinateValues
         {
             public Double this[Ordinates ordinate]
             {
@@ -2622,8 +2622,10 @@ namespace SharpMap.Data.Providers.ShapeFile
             CoordinateValues values = offsetUtility.GetValues(offset, _shapeFileReader);
             ICoordinate coordinate = null;
 
+            bool validZ = offset.Z.HasValue && values.Z != NullDoubleValue;
+            bool validM = offset.M.HasValue && values.M != NullDoubleValue;
 
-            if (!offset.Z.HasValue && !offset.M.HasValue)
+            if (!validZ && !validM)
             {
                 switch (ForceCoordinateOptions)
                 {
@@ -2635,22 +2637,22 @@ namespace SharpMap.Data.Providers.ShapeFile
                         }
                     case ForceCoordinateOptions.Force2DM:
                         {
-                            coordinate = _coordFactory.Create(values.X, values.Y, values.M);
+                            coordinate = _coordFactory.Create(values.X, values.Y, NullDoubleValue);
                             break;
                         }
                     case ForceCoordinateOptions.Force3D:
                         {
-                            coordinate = _coordFactory.Create3D(values.X, values.Y, values.Z);
+                            coordinate = _coordFactory.Create3D(values.X, values.Y, NullDoubleValue);
                             break;
                         }
                     case ForceCoordinateOptions.Force3DM:
                         {
-                            coordinate = _coordFactory.Create3D(values.X, values.Y, values.Z, values.M);
+                            coordinate = _coordFactory.Create3D(values.X, values.Y, NullDoubleValue, NullDoubleValue);
                             break;
                         }
                 }
             }
-            else if (!offset.Z.HasValue)
+            else if (!validZ)
             {
                 switch (ForceCoordinateOptions)
                 {
@@ -2667,12 +2669,12 @@ namespace SharpMap.Data.Providers.ShapeFile
                         }
                     case ForceCoordinateOptions.Force3D:
                         {
-                            coordinate = _coordFactory.Create3D(values.X, values.Y, values.Z);
+                            coordinate = _coordFactory.Create3D(values.X, values.Y, NullDoubleValue);
                             break;
                         }
                     case ForceCoordinateOptions.Force3DM:
                         {
-                            coordinate = _coordFactory.Create3D(values.X, values.Y, values.Z, values.M);
+                            coordinate = _coordFactory.Create3D(values.X, values.Y, NullDoubleValue, values.M);
                             break;
                         }
                 }
@@ -2683,9 +2685,15 @@ namespace SharpMap.Data.Providers.ShapeFile
                 switch (ForceCoordinateOptions)
                 {
                     case ForceCoordinateOptions.ForceNone:
+                        {
+                            coordinate = validM ? _coordFactory.Create3D(values.X, values.Y, values.Z, values.M)
+                                                : _coordFactory.Create3D(values.X, values.Y, values.Z);
+                            break;
+                        }
                     case ForceCoordinateOptions.Force3DM:
                         {
-                            coordinate = _coordFactory.Create3D(values.X, values.Y, values.Z, values.M);
+                            coordinate = validM ? _coordFactory.Create3D(values.X, values.Y, values.Z, values.M)
+                                                : _coordFactory.Create3D(values.X, values.Y, values.Z, NullDoubleValue);
                             break;
                         }
                     case ForceCoordinateOptions.Force3D:
