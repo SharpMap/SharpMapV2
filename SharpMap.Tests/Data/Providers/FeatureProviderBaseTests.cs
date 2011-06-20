@@ -8,7 +8,7 @@ using GisSharpBlog.NetTopologySuite.Geometries;
 using NPack;
 using NPack.Interfaces;
 using NPack.Matrix;
-using GisSharpBlog.NetTopologySuite.CoordinateSystems.Transformations;
+using ProjNet.CoordinateSystems.Transformations;
 using Rhino.Mocks;
 using SharpMap.Data.Providers;
 using Xunit;

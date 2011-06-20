@@ -23,8 +23,8 @@ using NetTopologySuite.Coordinates.Simple;
 using NPack;
 using NPack.Interfaces;
 using NPack.Matrix;
-using GisSharpBlog.NetTopologySuite.CoordinateSystems;
-using GisSharpBlog.NetTopologySuite.CoordinateSystems.Transformations;
+using ProjNet.CoordinateSystems;
+using ProjNet.CoordinateSystems.Transformations;
 using SharpMap.Utilities.SridUtility;
 
 namespace SharpMap.Utilities
