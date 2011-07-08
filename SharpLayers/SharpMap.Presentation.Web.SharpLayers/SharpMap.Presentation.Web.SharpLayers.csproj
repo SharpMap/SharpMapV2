@@ -939,6 +939,6 @@
   </Target>
   -->
   <Target Name="BeforeBuild">
-    <Exec Command="$(SolutionDir)BuildTools\python.exe build.py &amp;&amp; c:\python25\python.exe builduncompressed.py" WorkingDirectory="$(ProjectDir)OpenLayers\Build\" />
+    <Exec Command="$(SolutionDir)BuildTools\python.exe build.py &amp;&amp; $(SolutionDir)BuildTools\python.exe builduncompressed.py" WorkingDirectory="$(ProjectDir)OpenLayers\Build\" />
   </Target>
 </Project>
