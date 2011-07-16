@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using GeoAPI.CoordinateSystems.Transformations;
-using GeoAPI.DataStructures.Collections.Generic;
+//using GeoAPI.DataStructures.Collections.Generic;
 using GeoAPI.Geometries;
 
 namespace SharpMap.Data.Providers.ShapeFile

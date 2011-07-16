@@ -32,6 +32,7 @@ using SharpMap.Utilities.SridUtility;
 using Processor = System.Linq.Enumerable;
 using Enumerable = System.Linq.Enumerable;
 using Caster = GeoAPI.DataStructures.Caster;
+using System.ComponentModel;
 #else
 using Processor = GeoAPI.DataStructures.Processor;
 using Caster = GeoAPI.DataStructures.Caster;

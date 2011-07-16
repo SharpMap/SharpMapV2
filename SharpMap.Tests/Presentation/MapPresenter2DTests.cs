@@ -19,7 +19,7 @@ using SharpMap.Tools;
 using Xunit;
 
 #if BUFFERED
-using NetTopologySuite.Coordinates;
+using NetTopologySuite.CoordinateSystems;
 #else
 using BufferedCoordinate = NetTopologySuite.Coordinates.Simple.Coordinate;
 using BufferedCoordinateFactory = NetTopologySuite.Coordinates.Simple.CoordinateFactory;

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using GeoAPI.Geometries;
-using GisSharpBlog.NetTopologySuite.Geometries;
 
 using SharpMap.Data;
 using SharpMap.Data.Providers;
@@ -17,6 +16,7 @@ using BufferedCoordinate = NetTopologySuite.Coordinates.Simple.Coordinate;
 using BufferedCoordinateFactory = NetTopologySuite.Coordinates.Simple.CoordinateFactory;
 using BufferedCoordinateSequence = NetTopologySuite.Coordinates.Simple.CoordinateSequence;
 using BufferedCoordinateSequenceFactory = NetTopologySuite.Coordinates.Simple.CoordinateSequenceFactory;
+using NetTopologySuite.Geometries;
 #endif
 
 namespace SharpMap.Tests.Data

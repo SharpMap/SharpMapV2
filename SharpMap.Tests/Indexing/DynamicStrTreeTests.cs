@@ -6,8 +6,6 @@ using GeoAPI.Coordinates;
 using GeoAPI.DataStructures;
 using GeoAPI.Geometries;
 using GeoAPI.Indexing;
-using GisSharpBlog.NetTopologySuite.Geometries;
-using GisSharpBlog.NetTopologySuite.Index.Strtree;
 using SharpMap.Indexing.RTree;
 using Xunit;
 #if DOTNET35
@@ -23,6 +21,8 @@ using BufferedCoordinate = NetTopologySuite.Coordinates.Simple.Coordinate;
 using BufferedCoordinateFactory = NetTopologySuite.Coordinates.Simple.CoordinateFactory;
 using BufferedCoordinateSequence = NetTopologySuite.Coordinates.Simple.CoordinateSequence;
 using BufferedCoordinateSequenceFactory = NetTopologySuite.Coordinates.Simple.CoordinateSequenceFactory;
+using NetTopologySuite.Geometries;
+using NetTopologySuite.Index.Strtree;
 #endif
 
 namespace SharpMap.Tests.Indexing

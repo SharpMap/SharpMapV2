@@ -17,15 +17,15 @@ using GeoAPI.Coordinates;
 using GeoAPI.CoordinateSystems;
 using GeoAPI.CoordinateSystems.Transformations;
 using GeoAPI.Geometries;
-using GisSharpBlog.NetTopologySuite.Geometries;
 using NetTopologySuite.Coordinates;
-using NetTopologySuite.Coordinates.Simple;
 using NPack;
 using NPack.Interfaces;
 using NPack.Matrix;
-using GisSharpBlog.NetTopologySuite.CoordinateSystems;
-using GisSharpBlog.NetTopologySuite.CoordinateSystems.Transformations;
+using NetTopologySuite.CoordinateSystems;
+using NetTopologySuite.CoordinateSystems.Transformations;
 using SharpMap.Utilities.SridUtility;
+using NetTopologySuite.Geometries;
+using NetTopologySuite.Coordinates.Simple;
 
 namespace SharpMap.Utilities
 {

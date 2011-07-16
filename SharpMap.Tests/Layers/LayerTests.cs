@@ -1,8 +1,7 @@
 using System;
 using System.Collections.Generic;
 using GeoAPI.Geometries;
-using GisSharpBlog.NetTopologySuite.Geometries;
-using NetTopologySuite.Coordinates;
+using NetTopologySuite.CoordinateSystems;
 
 using SharpMap.Data;
 using SharpMap.Layers;

@@ -1,7 +1,7 @@
 ﻿using GeoAPI.Geometries;
-using GisSharpBlog.NetTopologySuite.Operation.Buffer;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NetTopologySuite.Coordinates;
+using NetTopologySuite.Operation.Buffer;
 using SharpMap.Utilities;
 using SharpMap.Utilities.SridUtility;
 

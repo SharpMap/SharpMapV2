@@ -1,8 +1,7 @@
 using System;
 using System.Collections;
 using GeoAPI.Geometries;
-using GisSharpBlog.NetTopologySuite.Geometries;
-using NetTopologySuite.Coordinates;
+using NetTopologySuite.CoordinateSystems;
 
 using Rhino.Mocks;
 using Rhino.Mocks.Interfaces;

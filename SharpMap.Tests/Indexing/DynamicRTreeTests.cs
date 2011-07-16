@@ -3,8 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using GeoAPI.Geometries;
 using GeoAPI.Indexing;
-using GisSharpBlog.NetTopologySuite.Geometries;
-using NetTopologySuite.Coordinates;
+using NetTopologySuite.CoordinateSystems;
 using NPack;
 
 using SharpMap.Indexing.RTree;

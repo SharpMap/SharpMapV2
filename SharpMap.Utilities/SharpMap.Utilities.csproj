@@ -8,7 +8,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>SharpMap.Utilities</RootNamespace>
     <AssemblyName>SharpMap.Utilities</AssemblyName>
-    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
@@ -29,6 +29,7 @@
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug_Net20|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -78,26 +79,61 @@
     <TargetFrameworkVersion>3.5</TargetFrameworkVersion>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug_Net40|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\Debug_Net40\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;DOTNET35;DOTNET40</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <CodeAnalysisLogFile>bin\Debug_Net35\SharpMap.Utilities.dll.CodeAnalysisLog.xml</CodeAnalysisLogFile>
+    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
+    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSetDirectories>;c:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets</CodeAnalysisRuleSetDirectories>
+    <CodeAnalysisIgnoreBuiltInRuleSets>false</CodeAnalysisIgnoreBuiltInRuleSets>
+    <CodeAnalysisRuleDirectories>;c:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release_Net40|AnyCPU'">
+    <OutputPath>bin\Release_Net40\</OutputPath>
+    <DefineConstants>TRACE;DOTNET35</DefineConstants>
+    <DocumentationFile>bin\Release_Net35\MapViewer.xml</DocumentationFile>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <CodeAnalysisLogFile>bin\Release_Net35\SharpMap.Utilities.dll.CodeAnalysisLog.xml</CodeAnalysisLogFile>
+    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
+    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSetDirectories>;c:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets</CodeAnalysisRuleSetDirectories>
+    <CodeAnalysisIgnoreBuiltInRuleSets>false</CodeAnalysisIgnoreBuiltInRuleSets>
+    <CodeAnalysisRuleDirectories>;c:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
+  </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="..\NTS\GeoAPI\src\GeoAPI\GeoAPI.Net.csproj">
+    <ProjectReference Include="..\NTS\GeoAPI\src\GeoAPI\GeoAPI.Net.vs2010.Net40.csproj">
       <Project>{FFB69466-79DE-466A-ADA7-5C47C5C5CA3A}</Project>
-      <Name>GeoAPI.Net</Name>
+      <Name>GeoAPI.Net.vs2010.Net40</Name>
     </ProjectReference>
-    <ProjectReference Include="..\NTS\NetTopologySuite\NetTopologySuite.csproj">
+    <ProjectReference Include="..\NTS\ManagedBufferedCoordinate\ManagedBufferedCoordinate.VS2010.Net40.csproj">
+      <Project>{8A1C8DC2-9E24-47E9-A51C-AA46E0B0260C}</Project>
+      <Name>ManagedBufferedCoordinate.VS2010.Net40</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\NTS\NetTopologySuite\NetTopologySuite.VS2010.Net40.csproj">
       <Project>{5770DAA9-84E5-4770-AF43-F6B815894368}</Project>
-      <Name>NetTopologySuite</Name>
+      <Name>NetTopologySuite.VS2010.Net40</Name>
     </ProjectReference>
-    <ProjectReference Include="..\NTS\NPack\NPack.Matrix\NPack.Matrix.csproj">
+    <ProjectReference Include="..\NTS\NPack\NPack.Matrix\NPack.Matrix.VS2010.Net40.csproj">
       <Project>{D03CD20F-5081-4974-82E4-291577169B46}</Project>
-      <Name>NPack.Matrix</Name>
+      <Name>NPack.Matrix.VS2010.Net40</Name>
     </ProjectReference>
-    <ProjectReference Include="..\NTS\NPack\NPack\NPack.csproj">
+    <ProjectReference Include="..\NTS\NPack\NPack\NPack.VS2010.Net40.csproj">
       <Project>{B139E1D5-091B-40D2-B7A2-7D7D82E13019}</Project>
-      <Name>NPack</Name>
+      <Name>NPack.VS2010.Net40</Name>
     </ProjectReference>
-    <ProjectReference Include="..\NTS\SimpleCoordinate\Coordinates.Simple.csproj">
+    <ProjectReference Include="..\NTS\SimpleCoordinate\Coordinates.Simple.VS2010.Net40.csproj">
       <Project>{FA286D16-E405-4FCB-95EA-BE1F9A4A83A4}</Project>
-      <Name>Coordinates.Simple</Name>
+      <Name>Coordinates.Simple.VS2010.Net40</Name>
     </ProjectReference>
     <ProjectReference Include="..\SharpMap\SharpMap.csproj">
       <Project>{C83777FC-AABB-47D9-911F-D76255D4D541}</Project>
