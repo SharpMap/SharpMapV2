@@ -175,9 +175,6 @@
       <Install>true</Install>
     </BootstrapperPackage>
   </ItemGroup>
-  <ItemGroup>
-    <None Include="app.config" />
-  </ItemGroup>
   <Target Name="AfterBuild">
     <Copy SourceFiles="@(mssqlspatial)" DestinationFolder="$(TargetDir)" />
     <Copy SourceFiles="@(shapefile)" DestinationFolder="$(TargetDir)" />
