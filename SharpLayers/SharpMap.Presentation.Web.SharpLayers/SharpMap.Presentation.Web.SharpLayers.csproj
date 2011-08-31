@@ -206,6 +206,8 @@
     <Compile Include="Layers\ILayerBuilderParams.cs" />
     <Compile Include="Layers\LayerBuilderParamsBase.cs" />
     <Compile Include="Layers\LayerComponent.cs" />
+    <Compile Include="Layers\Osm\OsmLayerBuilderParams.cs" />
+    <Compile Include="Layers\Osm\OsmLayerComponent.cs" />
     <Compile Include="Layers\Tms\TmsLayerBuilderParams.cs" />
     <Compile Include="Layers\Tms\TmsLayerComponent.cs" />
     <Compile Include="Layers\TransitionEffects.cs" />
@@ -214,6 +216,8 @@
     <Compile Include="Layers\Vector\VectorLayerComponent.cs" />
     <Compile Include="Layers\Wms\WmsLayerBuilderParams.cs" />
     <Compile Include="Layers\Wms\WmsLayerComponent.cs" />
+    <Compile Include="Layers\Yahoo\YahooLayerBuilderParams.cs" />
+    <Compile Include="Layers\Yahoo\YahooLayerComponent.cs" />
     <Compile Include="SharpLayersScriptObjectBuilder.cs" />
     <Compile Include="StringValue.cs" />
     <Compile Include="Layers\Wms\WmsParameters.cs" />
@@ -271,6 +275,8 @@
   <ItemGroup>
     <EmbeddedResource Include="Controls\Measure\MeasureTool.js" />
     <EmbeddedResource Include="Controls\Measure\MeasureToolButton.js" />
+    <EmbeddedResource Include="Layers\Osm\OsmLayerComponent.js" />
+    <EmbeddedResource Include="Layers\Yahoo\YahooLayerComponent.js" />
     <Content Include="OpenLayers\Build\build.py" />
     <Content Include="OpenLayers\Build\buildUncompressed.py" />
     <Content Include="OpenLayers\Build\ipy.exe" />

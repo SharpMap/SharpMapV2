@@ -35,6 +35,8 @@ SharpMap.Presentation.Web.SharpLayers.MapHostBehavior.prototype = {
     },
     set_initialExtent: function(value) {
         this._initialExtent = value;
+        if ((this._initialExtent))
+            this.zoomToInitialExtent();
     },
     _mapBuilderDelegate: function() {
         var options = this.get_builderParams();
@@ -54,9 +56,14 @@ SharpMap.Presentation.Web.SharpLayers.MapHostBehavior.prototype = {
         this.get_hostedItem().addControl(cntrl);
     },
     zoomToInitialExtent: function() {
-        SharpMap.Presentation.Web.SharpLayers.InitSync.addPostLoad(Function.createDelegate(this, function() { this._realZoomToInitialExtent(); }))
+        SharpMap.Presentation.Web.SharpLayers.InitSync.addPostLoad(Function.createDelegate(this, function() {
+            var f = Function.createDelegate(this, this._zoomToInitialExtent)
+            window.setTimeout(f, 20);
+        }));
+        /*hideous hack to allow other postload items to complete before this one actually does its work. 
+        necessary because of IE/ a complex page layout utilising a sucky splitter panel which inits at its own pace*/
     },
-    _realZoomToInitialExtent: function() {
+    _zoomToInitialExtent: function() {
         if (!(this.get_hostedItem()))
             return;
         var bounds = this.get_initialExtent();

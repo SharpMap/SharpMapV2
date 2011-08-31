@@ -35,7 +35,7 @@ namespace SharpMap.Presentation.Web.SharpLayers.Layers
         [ClientPropertyName("resolutions")]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible),
          PersistenceMode(PersistenceMode.InnerProperty)]
-        public CollectionBase<DoubleValue> Resolutions
+        public virtual CollectionBase<DoubleValue> Resolutions
         {
             get { return _resolutions; }
         }
