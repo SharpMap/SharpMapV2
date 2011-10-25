@@ -76,12 +76,18 @@ namespace SharpMap.Indexing.RTree
         {
             Boolean isLeaf = node.IsLeaf;
 
-            IEnumerable<IBoundable<IExtents>> boundables =
-               isLeaf
-               ? Caster.Upcast<IBoundable<IExtents>, TItem>(node.Items)
-               : Caster.Upcast<IBoundable<IExtents>, ISpatialIndexNode<IExtents, TItem>>(node.SubNodes);
-           
-            Int32 boundablesCount = isLeaf ? node.ItemCount : node.SubNodeCount;
+            IEnumerable<IBoundable<IExtents>> boundables;
+            Int32 boundablesCount;
+            if (isLeaf)
+            {
+                boundables = Caster.Upcast<IBoundable<IExtents>, TItem>(node.Items);
+                boundablesCount = node.ItemCount;
+            }
+            else
+            {
+                boundables = Caster.Upcast<IBoundable<IExtents>, ISpatialIndexNode<IExtents, TItem>>(node.SubNodes);
+                boundablesCount = node.SubNodeCount;
+            }
 
             List<IBoundable<IExtents>> entries = new List<IBoundable<IExtents>>(boundablesCount);
             entries.AddRange(boundables);
@@ -97,7 +103,7 @@ namespace SharpMap.Indexing.RTree
 
             if (entries.Count > 0)
             {
-                if (group1Count < heuristic.NodeItemMinimumCount)
+                if (group1Count < group2Count)
                 {
                     fillShortGroup(entries, group1, ref group1Count);
                 }
@@ -109,7 +115,7 @@ namespace SharpMap.Indexing.RTree
 
             node.Clear();
 
-            RTreeNode<TItem> sibling = (node.Index as RTree<TItem>).CreateNode();
+            RTreeNode<TItem> sibling = (node.Index as RTree<TItem>).CreateNode(node.Level);
 
             IEnumerable<IBoundable<IExtents>> g1Sized = Enumerable.Take(group1, group1Count);
             IEnumerable<IBoundable<IExtents>> g2Sized = Enumerable.Take(group2, group2Count);
@@ -248,7 +254,7 @@ namespace SharpMap.Indexing.RTree
                 return;
             }
 
-            TItem entry;
+            IBoundable<IExtents> entry;
             ComputationExtents group1Bounds = computeBounds(group1, group1Count);
             ComputationExtents group2Bounds = computeBounds(group2, group2Count);
 
@@ -305,13 +311,13 @@ namespace SharpMap.Indexing.RTree
         private GroupBoundsLeastEnlarged pickNext(IList<IBoundable<IExtents>> entries,
                                                   ComputationExtents group1Bounds,
                                                   ComputationExtents group2Bounds,
-                                                  out TItem entry)
+                                                  out IBoundable<IExtents> entry)
         {
             Double maxArealDifference = -1;
             GroupBoundsLeastEnlarged group = GroupBoundsLeastEnlarged.Tie;
-            TItem nextEntry = default(TItem);
+            IBoundable<IExtents> nextEntry = null;
 
-            foreach (TItem e in entries)
+            foreach (IBoundable<IExtents> e in entries)
             {
                 ComputationExtents bounds = new ComputationExtents(e.Bounds);
                 ComputationExtents group1Join = bounds.Union(group1Bounds);

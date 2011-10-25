@@ -51,6 +51,21 @@ using Caster = GeoAPI.DataStructures.Caster;
 
 namespace SharpMap.Data.Providers.ShapeFile
 {
+    public struct FilePermissions
+    {
+        public FileMode FileMode { get; set; }
+
+        public FileAccess FileAccess { get; set; }
+
+        public FileShare FileShare { get; set; }
+    }
+
+    public enum WriteAccess
+    {
+        ReadOnly,
+        ReadWrite,
+        Exclusive
+    }
     public enum ForceCoordinateOptions
     {
         ForceNone = 0,
@@ -64,7 +79,7 @@ namespace SharpMap.Data.Providers.ShapeFile
     {
         Strict,
         Lenient
-    }
+    }    
 
     /// <summary>
     /// A data provider for the ESRI ShapeFile spatial data format.
@@ -173,7 +188,7 @@ namespace SharpMap.Data.Providers.ShapeFile
         private FileStream _shapeFileStream;
         private BinaryWriter _shapeFileWriter;
         private ISpatialIndex<IExtents, IdBounds> _spatialIndex;
-        private Int32? _srid;
+        private Int32? _srid;        
 
         #endregion
 
@@ -228,12 +243,14 @@ namespace SharpMap.Data.Providers.ShapeFile
         /// The coordinate system factory to use to create spatial reference system objects.
         /// </param>
         /// <param name="fileBasedIndex">True to create a file-based spatial index.</param>
+        /// <param name="writeAccess">Specify the kind of access when managing files.</param>
         public ShapeFileProvider(String filename,
                                  IGeometryFactory geoFactory,
                                  ICoordinateSystemFactory coordSysFactory,
                                  Boolean fileBasedIndex)
         {
             _filename = filename;
+            
             IGeometryFactory geoFactoryClone = base.GeometryFactory = geoFactory.Clone();
             OriginalSpatialReference = geoFactoryClone.SpatialReference;
             OriginalSrid = geoFactoryClone.Srid;
@@ -260,7 +277,7 @@ namespace SharpMap.Data.Providers.ShapeFile
             if (HasDbf)
             {
                 _dbaseFile = new DbaseFile(DbfFilename, geoFactory);
-            }
+            }            
         }
 
         #region Dispose pattern
@@ -511,7 +528,7 @@ namespace SharpMap.Data.Providers.ShapeFile
             {
                 String filePath = Path.Combine(directory.FullName, layerName + ".dbf");
                 DbaseFile file = DbaseFile.CreateDbaseFile(filePath, schemaTable, culture, encoding, geoFactory);
-                file.Close();
+                //file.Close(); //Already closed in CreateDbaseFile
             }
 
             if (geoFactory.SpatialReference != null)
@@ -520,6 +537,18 @@ namespace SharpMap.Data.Providers.ShapeFile
                 File.WriteAllText(filePath, geoFactory.SpatialReference.Wkt);
             }
 
+            /*
+            if (model != null && model.Rows.Count > 0)
+            {
+                using (var sfp = new ShapeFileProvider(shapeFile, geoFactory, coordinateSystemFactory))
+                {
+                    sfp.Open(WriteAccess.Exclusive);
+                    foreach (FeatureDataRow featureDataRow in model.Rows)
+                        sfp.Insert(featureDataRow);
+                }
+                
+            }
+             */
             return new ShapeFileProvider(shapeFile, geoFactory, coordinateSystemFactory);
         }
 
@@ -681,15 +710,12 @@ namespace SharpMap.Data.Providers.ShapeFile
         #endregion
 
         #region ShapeFile specific methods
-
-        /// <summary>
-        /// Opens the shapefile with optional exclusive access for
-        /// faster write performance during bulk updates.
+        
+		/// <summary>
+        /// Opens the data source.
         /// </summary>
-        /// <param name="exclusive">
-        /// True if exclusive access is desired, false otherwise.
-        /// </param>
-        public void Open(Boolean exclusive)
+        /// <param name="writeAccess">Specify the access rights to the files.</param>
+        public void Open(WriteAccess writeAccess)
         {
             _coordsysReadFromFile = false; // jd setting to false to stop error on second and subsequent open
 
@@ -698,18 +724,24 @@ namespace SharpMap.Data.Providers.ShapeFile
                 return;
             }
 
+            FilePermissions @params = GetPermissions(writeAccess);
+
             try
             {
                 //enableReading();
-                _shapeFileStream = new FileStream(Filename,
-                                                  FileMode.OpenOrCreate,
-                                                  FileAccess.ReadWrite,
-                                                  exclusive ? FileShare.None : FileShare.Read,
+
+
+                _shapeFileStream = new FileStream(Filename, 
+                                                  @params.FileMode,
+                                                  @params.FileAccess,
+                                                  @params.FileShare,
                                                   4096,
                                                   FileOptions.None);
 
                 _shapeFileReader = new BinaryReader(_shapeFileStream);
-                _shapeFileWriter = new BinaryWriter(_shapeFileStream);
+                if (writeAccess != WriteAccess.ReadOnly)
+                    _shapeFileWriter = new BinaryWriter(_shapeFileStream);
+                // TODO: NullBinaryWriter
 
                 base.Open();
 
@@ -722,7 +754,7 @@ namespace SharpMap.Data.Providers.ShapeFile
                 if (HasDbf)
                 {
                     _dbaseFile = new DbaseFile(DbfFilename, GeometryFactory);
-                    _dbaseFile.Open(exclusive);
+                    _dbaseFile.Open(writeAccess);
                 }
             }
             catch (Exception)
@@ -730,6 +762,35 @@ namespace SharpMap.Data.Providers.ShapeFile
                 base.Close();
                 throw;
             }
+        }
+
+        internal static FilePermissions GetPermissions(WriteAccess writeAccess)
+        {
+            FilePermissions @params = new FilePermissions();
+            switch (writeAccess)
+            {
+                case WriteAccess.ReadOnly:
+                    @params.FileMode = FileMode.Open;
+                    @params.FileAccess = FileAccess.Read;
+                    @params.FileShare = FileShare.Read;
+                    break;
+
+                case WriteAccess.ReadWrite:
+                    @params.FileMode = FileMode.OpenOrCreate;
+                    @params.FileAccess = FileAccess.ReadWrite;
+                    @params.FileShare = FileShare.ReadWrite;
+                    break;
+
+                case WriteAccess.Exclusive:
+                    @params.FileMode = FileMode.OpenOrCreate;
+                    @params.FileAccess = FileAccess.ReadWrite;
+                    @params.FileShare = FileShare.None;
+                    break;
+                
+                default:
+                    throw new ArgumentOutOfRangeException("writeAccess");
+            }
+            return @params;
         }
 
         /// <summary>
@@ -1568,11 +1629,12 @@ namespace SharpMap.Data.Providers.ShapeFile
 
 
         /// <summary>
-        /// Opens the data source
+        /// Opens the data source.
         /// </summary>
         public override void Open()
         {
-            Open(false);
+			// Diego Guidi: defaults to ReadOnly, to avoid any kind of lock.
+            this.Open(WriteAccess.ReadOnly);
         }
 
         #endregion
@@ -2239,7 +2301,7 @@ namespace SharpMap.Data.Providers.ShapeFile
 
 
 
-        private struct StreamOffset
+        private class StreamOffset
         {
             public readonly long? BBox;
             public readonly long X;
@@ -2261,7 +2323,7 @@ namespace SharpMap.Data.Providers.ShapeFile
             }
         }
 
-        private struct CoordinateValues
+        private class CoordinateValues
         {
             public Double this[Ordinates ordinate]
             {
@@ -2301,8 +2363,9 @@ namespace SharpMap.Data.Providers.ShapeFile
         {
             public bool Seek(Stream stream, long seekPosition, StreamOffset offsets)
             {
-                if (offsets.Bor < 0 || offsets.Eor > stream.Length)
-                    return false;
+                //reduces perf considerably
+                //if (offsets.Bor < 0 || offsets.Eor > stream.Length)
+                //    return false;
 
                 if (seekPosition > _indexEntry.AbsoluteByteOffset + ShapeFileConstants.ShapeRecordHeaderByteLength + _indexEntry.ByteLength)
                     return false;
@@ -2559,8 +2622,10 @@ namespace SharpMap.Data.Providers.ShapeFile
             CoordinateValues values = offsetUtility.GetValues(offset, _shapeFileReader);
             ICoordinate coordinate = null;
 
+            bool validZ = offset.Z.HasValue && values.Z != NullDoubleValue;
+            bool validM = offset.M.HasValue && values.M != NullDoubleValue;
 
-            if (!offset.Z.HasValue && !offset.M.HasValue)
+            if (!validZ && !validM)
             {
                 switch (ForceCoordinateOptions)
                 {
@@ -2572,22 +2637,22 @@ namespace SharpMap.Data.Providers.ShapeFile
                         }
                     case ForceCoordinateOptions.Force2DM:
                         {
-                            coordinate = _coordFactory.Create(values.X, values.Y, values.M);
+                            coordinate = _coordFactory.Create(values.X, values.Y, NullDoubleValue);
                             break;
                         }
                     case ForceCoordinateOptions.Force3D:
                         {
-                            coordinate = _coordFactory.Create3D(values.X, values.Y, values.Z);
+                            coordinate = _coordFactory.Create3D(values.X, values.Y, NullDoubleValue);
                             break;
                         }
                     case ForceCoordinateOptions.Force3DM:
                         {
-                            coordinate = _coordFactory.Create3D(values.X, values.Y, values.Z, values.M);
+                            coordinate = _coordFactory.Create3D(values.X, values.Y, NullDoubleValue, NullDoubleValue);
                             break;
                         }
                 }
             }
-            else if (!offset.Z.HasValue)
+            else if (!validZ)
             {
                 switch (ForceCoordinateOptions)
                 {
@@ -2604,12 +2669,12 @@ namespace SharpMap.Data.Providers.ShapeFile
                         }
                     case ForceCoordinateOptions.Force3D:
                         {
-                            coordinate = _coordFactory.Create3D(values.X, values.Y, values.Z);
+                            coordinate = _coordFactory.Create3D(values.X, values.Y, NullDoubleValue);
                             break;
                         }
                     case ForceCoordinateOptions.Force3DM:
                         {
-                            coordinate = _coordFactory.Create3D(values.X, values.Y, values.Z, values.M);
+                            coordinate = _coordFactory.Create3D(values.X, values.Y, NullDoubleValue, values.M);
                             break;
                         }
                 }
@@ -2620,9 +2685,15 @@ namespace SharpMap.Data.Providers.ShapeFile
                 switch (ForceCoordinateOptions)
                 {
                     case ForceCoordinateOptions.ForceNone:
+                        {
+                            coordinate = validM ? _coordFactory.Create3D(values.X, values.Y, values.Z, values.M)
+                                                : _coordFactory.Create3D(values.X, values.Y, values.Z);
+                            break;
+                        }
                     case ForceCoordinateOptions.Force3DM:
                         {
-                            coordinate = _coordFactory.Create3D(values.X, values.Y, values.Z, values.M);
+                            coordinate = validM ? _coordFactory.Create3D(values.X, values.Y, values.Z, values.M)
+                                                : _coordFactory.Create3D(values.X, values.Y, values.Z, NullDoubleValue);
                             break;
                         }
                     case ForceCoordinateOptions.Force3D:
@@ -3394,6 +3465,7 @@ namespace SharpMap.Data.Providers.ShapeFile
         /// write the polygon to the shapefilewriter
         /// </summary>
         /// <param name="polygon">polygon to be written</param>
+        /// <param name="shpType"></param>
         private void writePolygon(IPolygon polygon, ShapeType shpType)
         {
             if (Array.IndexOf(PolygonTypes, shpType) == -1)
@@ -3581,17 +3653,31 @@ namespace SharpMap.Data.Providers.ShapeFile
                 writeCoordinate(c[Ordinates.X], c[Ordinates.Y]);
         }
 
-        private IEnumerable<ICoordinate> getOrderedPolygonCoordinates(IPolygon poly)
+        private static IEnumerable<ICoordinate> GetLinearRingCoordinates(ILinearRing ring, bool needCcw)
         {
-            foreach (ICoordinate coordinate in poly.ExteriorRing.Coordinates)
+            //Ensure coorect order for shells
+            bool isCcw = ring.IsCcw;
+            ICoordinateSequence coordinateSequence;
+            if ((needCcw && isCcw) || (!needCcw && !isCcw))
+                coordinateSequence = ring.Coordinates;
+            else 
+                coordinateSequence = ring.Coordinates.Reversed;
+            
+            foreach (ICoordinate c in coordinateSequence)
+                yield return c;
+        }
+
+        private static IEnumerable<ICoordinate> getOrderedPolygonCoordinates(IPolygon poly)
+        {
+            foreach (ICoordinate coordinate in GetLinearRingCoordinates((ILinearRing)poly.ExteriorRing, false))
                 yield return coordinate;
 
             foreach (ILinearRing hole in poly.InteriorRings)
-                foreach (ICoordinate coordinate in (hole.IsCcw ? hole.Coordinates : hole.Coordinates.Reversed))
+                foreach (ICoordinate coordinate in GetLinearRingCoordinates(hole, true))
                     yield return coordinate;
         }
 
-        private IEnumerable<ICoordinate> getOrderedMultiPolygonCoordinates(IMultiPolygon polygons)
+        private static IEnumerable<ICoordinate> getOrderedMultiPolygonCoordinates(IMultiPolygon polygons)
         {
             foreach (IPolygon p in (IEnumerable<IPolygon>)polygons)
                 foreach (ICoordinate c in getOrderedPolygonCoordinates(p))

@@ -27,7 +27,8 @@ SharpMap.Presentation.Web.SharpLayers.InitSync = {
         return SharpMap.Presentation.Web.SharpLayers.InitSync._appLoaded;
     },
     get_sharpLayersLoaded: function() {
-        return SharpMap.Presentation.Web.SharpLayers.InitSync._sharpLayersLoaded;
+        return SharpMap.Presentation.Web.SharpLayers.InitSync.get_pageLoaded()
+        && SharpMap.Presentation.Web.SharpLayers.InitSync._sharpLayersLoaded;
     },
 
     _pendingInit: [],
@@ -83,8 +84,8 @@ SharpMap.Presentation.Web.SharpLayers.InitSync = {
             delegate();
             SharpMap.Presentation.Web.SharpLayers.InitSync._postLoadDelegatesRun++;
         }
-        Sys.WebForms.PageRequestManager.getInstance().remove_pageLoaded(SharpMap.Presentation.Web.SharpLayers.InitSync.pageLoadDone);
-        Sys.Application.remove_load(SharpMap.Presentation.Web.SharpLayers.InitSync.appInitDone);
+        //Sys.WebForms.PageRequestManager.getInstance().remove_pageLoaded(SharpMap.Presentation.Web.SharpLayers.InitSync.pageLoadDone);
+        //Sys.Application.remove_load(SharpMap.Presentation.Web.SharpLayers.InitSync.appInitDone);
     },
 
     appInitDone: function() {
@@ -95,10 +96,17 @@ SharpMap.Presentation.Web.SharpLayers.InitSync = {
     pageLoadDone: function() {
         SharpMap.Presentation.Web.SharpLayers.InitSync._pageLoaded = true;
         SharpMap.Presentation.Web.SharpLayers.InitSync.doInit();
+    },
+    pageLoading: function() {
+        SharpMap.Presentation.Web.SharpLayers.InitSync._pageLoaded = false;
     }
+
+
 }
 
 Sys.WebForms.PageRequestManager.getInstance().add_pageLoaded(SharpMap.Presentation.Web.SharpLayers.InitSync.pageLoadDone);
+Sys.WebForms.PageRequestManager.getInstance().add_pageLoading(SharpMap.Presentation.Web.SharpLayers.InitSync.pageLoading)
+
 Sys.Application.add_load(SharpMap.Presentation.Web.SharpLayers.InitSync.appInitDone);
 
 SharpMap.Presentation.Web.SharpLayers.OpenLayersFactory._factories = {};

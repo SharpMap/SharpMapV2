@@ -6,7 +6,6 @@ using System.IO;
 using System.Reflection;
 using GeoAPI.Coordinates;
 using GeoAPI.Geometries;
-using NetTopologySuite.Coordinates;
 using Rhino.Mocks;
 using Rhino.Mocks.Interfaces;
 using SharpMap.Layers;
@@ -18,6 +17,15 @@ using SharpMap.Rendering.Rendering2D;
 using SharpMap.Styles;
 using SharpMap.Tools;
 using Xunit;
+
+#if BUFFERED
+using NetTopologySuite.CoordinateSystems;
+#else
+using BufferedCoordinate = NetTopologySuite.Coordinates.Simple.Coordinate;
+using BufferedCoordinateFactory = NetTopologySuite.Coordinates.Simple.CoordinateFactory;
+using BufferedCoordinateSequence = NetTopologySuite.Coordinates.Simple.CoordinateSequence;
+using BufferedCoordinateSequenceFactory = NetTopologySuite.Coordinates.Simple.CoordinateSequenceFactory;
+#endif
 
 namespace SharpMap.Tests.Presentation
 {

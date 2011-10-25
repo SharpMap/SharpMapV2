@@ -11,7 +11,8 @@ namespace SharpMap.Indexing.RTree
     {
         private List<RTreeNode<TItem>> _children;
 
-        protected internal RTreeNode(ISpatialIndex<IExtents, TItem> index, IExtents emptyBounds)
+        protected internal RTreeNode(ISpatialIndex<IExtents, TItem> index, int level, IExtents emptyBounds)
+            :base(level)
         {
             Index = index;
             Bounds = emptyBounds;
@@ -81,6 +82,12 @@ namespace SharpMap.Indexing.RTree
                     Bounds.ExpandToInclude(child.Bounds);
                 }
             }
+        }
+
+        protected override void OnClearing(out bool cancel)
+        {
+            _children = null;
+            base.OnClearing(out cancel);
         }
 
         public override IEnumerable<ISpatialIndexNode<IExtents, TItem>> SubNodes

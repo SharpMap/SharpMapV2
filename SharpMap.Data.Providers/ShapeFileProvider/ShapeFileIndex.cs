@@ -1,5 +1,7 @@
 // Copyright 2006 - 2008: Rory Plaire (codekaizen@gmail.com)
 //
+// Added the ability to load index less shapefiles, buy using the record header within the data file
+//
 // This file is part of SharpMap.
 // SharpMap is free software; you can redistribute it and/or modify
 // it under the terms of the GNU Lesser General Public License as published by
@@ -53,32 +55,74 @@ namespace SharpMap.Data.Providers.ShapeFile
                 throw new ShapeFileIsInvalidException("Shapefile index must end in '.shx'.");
             }
 
-            if (!file.Exists)
-            {
-                throw new ShapeFileIsInvalidException("Shapefile must have a .shx index file");
-            }
-
             _indexFile = file;
 
-            using (FileStream indexStream = _indexFile.Open(FileMode.Open, FileAccess.Read, FileShare.Read))
-            using (BinaryReader reader = new BinaryReader(indexStream))
+            if (File.Exists(_indexFile.FullName))
             {
-                _header = new ShapeFileHeader(reader, _shapeFile.GeometryFactory);
-
-                indexStream.Seek(ShapeFileConstants.HeaderSizeBytes, SeekOrigin.Begin);
-
-                Int32 featureCount = (Int32)((_indexFile.Length - ShapeFileConstants.HeaderSizeBytes)
-                    / ShapeFileConstants.IndexRecordByteLength);
-
-                for (Int32 id = 0; id < featureCount; id++)
+                using (FileStream indexStream = _indexFile.Open(FileMode.Open, FileAccess.Read, FileShare.Read))
+                using (BinaryReader reader = new BinaryReader(indexStream))
                 {
-                    Int32 offset = ByteEncoder.GetBigEndian(reader.ReadInt32());
-                    Int32 length = ByteEncoder.GetBigEndian(reader.ReadInt32());
+                    _header = new ShapeFileHeader(reader, _shapeFile.GeometryFactory);
 
-                    IndexEntry entry = new IndexEntry(length, offset);
-                    // Record numbers begin at 1. (Shapefile: p. 5)
-                    _shapeIndex.Add((UInt32)id + 1, entry);
+                    indexStream.Seek(ShapeFileConstants.HeaderSizeBytes, SeekOrigin.Begin);
+
+                    Int32 featureCount = (Int32)((_indexFile.Length - ShapeFileConstants.HeaderSizeBytes)
+                        / ShapeFileConstants.IndexRecordByteLength);
+
+                    for (Int32 id = 0; id < featureCount; id++)
+                    {
+                        Int32 offset = ByteEncoder.GetBigEndian(reader.ReadInt32());
+                        Int32 length = ByteEncoder.GetBigEndian(reader.ReadInt32());
+
+                        IndexEntry entry = new IndexEntry(length, offset);
+                        // Record numbers begin at 1. (Shapefile: p. 5)
+                        _shapeIndex.Add((UInt32)id + 1, entry);
+                    }
                 }
+            }
+            else
+            {
+                // We need to create the index data from the raw data file
+                FileStream dataStream = new FileStream(Path.ChangeExtension(_indexFile.FullName, ".shp"), FileMode.Open,
+                                          FileAccess.Read);
+                BinaryReader reader = new BinaryReader(dataStream);
+                {
+                    _header = new ShapeFileHeader(reader, _shapeFile.GeometryFactory);
+
+                    reader.BaseStream.Seek(ShapeFileConstants.HeaderSizeBytes, SeekOrigin.Begin);
+                    long offset = ShapeFileConstants.HeaderSizeBytes;
+                    long fileSize = _header.FileLengthInWords * 2;
+                    Int32 id = 0;
+
+                    while (offset < fileSize)
+                    {
+                        reader.BaseStream.Seek(offset, 0); //Skip content length
+                        uint oid_id =(uint) ByteEncoder.GetBigEndian(reader.ReadInt32());
+                        int data_length = 2 * ByteEncoder.GetBigEndian(reader.ReadInt32());
+
+                        if (_shapeIndex.ContainsKey(oid_id) == false)
+                        {
+                            IndexEntry entry = new IndexEntry(data_length / 2, (int)(offset / 2));
+                            // Record numbers begin at 1. (Shapefile: p. 5)
+                            _shapeIndex.Add((UInt32)oid_id, entry);
+
+                            offset += data_length; // Add Record data length
+                            offset += 8; //  Plus add the record header size
+                            ++id;
+                        }
+                        else
+                        {
+                            offset = fileSize;
+                        }
+                    }
+
+                    --id;
+                    // Correct the header size
+                    _header.FileLengthInWords = (id * 4) + ShapeFileConstants.HeaderSizeBytes;
+ 
+                }
+                reader.Close();
+                dataStream.Close();
             }
         }
 
@@ -115,8 +159,6 @@ namespace SharpMap.Data.Providers.ShapeFile
             {
                 return ShapeFileConstants.HeaderSizeBytes / 2;
             }
-
-
 
             IndexEntry lastEntry = _shapeIndex.Values[_shapeIndex.Count - 1];
             return lastEntry.Offset + lastEntry.Length + ShapeFileConstants.ShapeRecordHeaderByteLength / 2;

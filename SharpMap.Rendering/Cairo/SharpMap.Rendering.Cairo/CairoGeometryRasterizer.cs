@@ -4,7 +4,11 @@ using System.Collections.ObjectModel;
 using System.IO;
 using Cairo;
 using GeoAPI.Coordinates;
-using GeoAPI.DataStructures;
+#if DOTNET35
+using sl = GeoAPI.DataStructures;
+#else
+using sl = System.Linq;
+#endif
 using GeoAPI.Geometries;
 using SharpMap.Data;
 using SharpMap.Rendering.Rasterize;
@@ -274,9 +278,9 @@ namespace SharpMap.Rendering.Cairo
                     continue;
                 }
                 Context.NewSubPath();
-                IEnumerable<PointD> cairoPts = TransformCoordinates(line.Coordinates, transform);
-                Context.MoveTo(Enumerable.First(cairoPts));
-                foreach (PointD pointD in Enumerable.Skip(cairoPts, 1))
+                var cairoPts = new List<PointD>(TransformCoordinates(line.Coordinates, transform));
+                Context.MoveTo(sl.Enumerable.First(cairoPts));
+                foreach (PointD pointD in sl.Enumerable.Skip(cairoPts, 1))
                 {
                     Context.LineTo(pointD);
                 }
@@ -303,9 +307,9 @@ namespace SharpMap.Rendering.Cairo
                 }
 
                 Context.NewSubPath();
-                IEnumerable<PointD> cairoPts = TransformCoordinates(polygon.ExteriorRing.Coordinates, transform);
-                Context.MoveTo(Enumerable.First(cairoPts));
-                foreach (PointD pt in Enumerable.Skip(cairoPts, 1))
+                var cairoPts = new List<PointD>(TransformCoordinates(polygon.ExteriorRing.Coordinates, transform));
+                Context.MoveTo(sl.Enumerable.First(cairoPts));
+                foreach (PointD pt in sl.Enumerable.Skip(cairoPts, 1))
                 {
                     Context.MoveTo(pt);
                 }
@@ -315,9 +319,9 @@ namespace SharpMap.Rendering.Cairo
                 foreach (ILinearRing ring in polygon.InteriorRings)
                 {
                     Context.NewSubPath();
-                    IEnumerable<PointD> holePts = TransformCoordinates(ring.Coordinates, transform);
-                    Context.MoveTo(Enumerable.First(holePts));
-                    foreach (PointD pt in Enumerable.Skip(holePts, 1))
+                    var holePts = new List<PointD>(TransformCoordinates(ring.Coordinates, transform));
+                    Context.MoveTo(sl.Enumerable.First(holePts));
+                    foreach (PointD pt in sl.Enumerable.Skip(holePts, 1))
                         Context.LineTo(pt);
                     Context.ClosePath();
                 }

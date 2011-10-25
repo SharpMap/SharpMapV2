@@ -216,7 +216,7 @@ namespace SharpMap.Data.Providers.ShapeFile
  
             file._header.Columns = new List<DbaseField>(DbaseSchema.GetFields(schema, file._header));
             file._headerIsParsed = true;
-            file.Open();
+            file.Open(WriteAccess.Exclusive);
             file.Save();
             file.Close();
 
@@ -387,7 +387,7 @@ namespace SharpMap.Data.Providers.ShapeFile
             {
                 if (!_headerIsParsed && !_isOpen)
                 {
-                    using (Stream dbfStream = openDbfFileStream(true))
+                    using (Stream dbfStream = openDbfFileStream(WriteAccess.ReadOnly))
                     {
                         syncReadHeader(dbfStream);
                     }
@@ -407,7 +407,7 @@ namespace SharpMap.Data.Providers.ShapeFile
         /// </exception>
         internal void Open()
         {
-            Open(false);
+            Open(WriteAccess.ReadOnly);
         }
 
         /// <summary>
@@ -420,19 +420,21 @@ namespace SharpMap.Data.Providers.ShapeFile
         /// Thrown when the method is called 
         /// and Object has been disposed.
         /// </exception>
-        internal void Open(Boolean exclusive)
+        internal void Open(WriteAccess writeAccess)
         {
             checkState();
 
             // TODO: implement asynchronous access
-            _dbaseFileStream = openDbfFileStream(exclusive);
+            _dbaseFileStream = openDbfFileStream(writeAccess);
 
             _isOpen = true;
 
-            syncReadHeader(DataStream);
-
-            _writer = new DbaseWriter(this);
+            syncReadHeader(DataStream);            
+            
             _reader = new DbaseReader(this);
+            if (writeAccess != WriteAccess.ReadOnly)
+                _writer = new DbaseWriter(this);
+            // TODO: NullBinaryWriter
         }
 
         internal void UpdateRow(UInt32 rowIndex, DataRow row)
@@ -464,12 +466,13 @@ namespace SharpMap.Data.Providers.ShapeFile
             }
         }
 
-        private FileStream openDbfFileStream(Boolean exclusive)
+        private FileStream openDbfFileStream(WriteAccess writeAccess)
         {
+            FilePermissions @params = ShapeFileProvider.GetPermissions(writeAccess);
             return new FileStream(_filename,
-                                  FileMode.OpenOrCreate,
-                                  FileAccess.ReadWrite,
-                                  exclusive ? FileShare.None : FileShare.Read,
+                                  @params.FileMode,
+                                  @params.FileAccess,
+                                  @params.FileShare,
                                   4096,
                                   FileOptions.None);
         }

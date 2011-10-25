@@ -33,7 +33,8 @@ namespace SharpMap.Presentation.AspNet.Demo.Common
         /// </summary>
         public static void SetupMap(HttpContext context, Map m)
         {
-            setupMsSqlSpatial(m);
+            //setupMsSqlSpatial(m);
+            setupSql2008Spatial(m);
             //setupShapefile(context, m);
         }
 
@@ -44,8 +45,8 @@ namespace SharpMap.Presentation.AspNet.Demo.Common
             string[] layernames = new[]
                                       {
                                           "Countries",
-                                          "Rivers",
-                                          "Cities"
+                                          "Rivers"/*,
+                                          "Cities"*/
                                       };
 
             foreach (string s in layernames)
@@ -154,6 +155,88 @@ namespace SharpMap.Presentation.AspNet.Demo.Common
                 layer.Features.IsSpatiallyIndexed = false;
                 layer.AddProperty(AppStateMonitoringFeatureLayerProperties.AppStateMonitor, provider.Monitor);
                 ConfigureSymbolizer(layer, style);
+                m.AddLayer(layer);
+            }
+        }
+
+        private static void setupSql2008Spatial(Map m)
+        {
+            string[] layernames = new[]
+                                      {"Rivers",
+                                          "Countries"
+                                          /*,
+                                          "Cities"*/
+                                      };
+
+            string sridstr = SridMap.DefaultInstance.Process(4326, "");
+
+            foreach (string lyrname in layernames)
+            {
+                string tbl = lyrname;
+
+
+                AppStateMonitoringFeatureProvider provider = new AppStateMonitoringFeatureProvider(
+                    new MsSqlServer2008Provider<int>(
+                        new GeometryServices()[sridstr],
+                        ConfigurationManager.ConnectionStrings["db"].ConnectionString,
+                        "dbo",
+                        tbl,
+                        "oid",
+                        "geom")
+                    {
+                        DefaultProviderProperties
+                            = new ProviderPropertiesExpression(
+                            new ProviderPropertyExpression[]
+                                    {
+                                        new WithNoLockExpression(true)
+                                    })
+                    });
+
+
+                GeoJsonGeometryStyle style = new GeoJsonGeometryStyle();
+
+                switch (tbl)
+                {
+                    case "Rivers":
+                        {
+                            StyleBrush brush = new SolidStyleBrush(StyleColor.Blue);
+                            StylePen pen = new StylePen(brush, 1);
+                            style.Enabled = true;
+                            style.EnableOutline = true;
+                            style.Line = pen;
+                            style.Fill = brush;
+                            break;
+                        }
+
+                    case "Countries":
+                        {
+                            StyleBrush brush = new SolidStyleBrush(new StyleColor(0, 0, 0, 255));
+                            StylePen pen = new StylePen(brush, 2);
+                            style.Enabled = true;
+                            style.EnableOutline = true;
+                            style.Line = pen;
+                            style.Fill = new SolidStyleBrush(StyleColor.Green);
+
+                            break;
+                        }
+
+                    default:
+                        {
+                            style = RandomStyle.RandomGeometryStyle();
+                            style.MaxVisible = 100000;
+                            break;
+                        }
+                }
+
+
+                /* include GeoJson styles */
+                style.IncludeAttributes = false;
+                style.IncludeBBox = true;
+                style.PreProcessGeometries = false;
+                style.CoordinateNumberFormatString = "{0:F}";
+                GeometryLayer layer = new GeometryLayer(tbl, style, provider);
+                layer.Features.IsSpatiallyIndexed = false;
+                layer.AddProperty(AppStateMonitoringFeatureLayerProperties.AppStateMonitor, provider.Monitor);
                 m.AddLayer(layer);
             }
         }

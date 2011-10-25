@@ -50,7 +50,7 @@ namespace SharpMap.Demo.FormatConverter.ShapeFile
 
             _sourceProvider = new ShapeFileProvider(path, geometryServices.DefaultGeometryFactory,
                                               geometryServices.CoordinateSystemFactory) { IsSpatiallyIndexed = false };
-            _sourceProvider.Open(false);
+            _sourceProvider.Open();
             Console.WriteLine("\nINFO The shape type is: " + _sourceProvider.ShapeType + "\n");
 
             if (Array.IndexOf(new ShapeType[] { ShapeType.PointM, ShapeType.PointZ, ShapeType.MultiPointM, ShapeType.MultiPointZ, ShapeType.PolygonM, ShapeType.PolygonZ }, _sourceProvider.ShapeType) > -1)
@@ -138,7 +138,7 @@ namespace SharpMap.Demo.FormatConverter.ShapeFile
                                                            geometryFactory,
                                                            csFactory);
 
-            _targetProvider.Open(true);
+            _targetProvider.Open(WriteAccess.Exclusive);
             return _targetProvider;
         }
 

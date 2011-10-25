@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using GeoAPI.DataStructures;
 using GeoAPI.Geometries;
 using GeoAPI.Operations.Buffer;
-using GisSharpBlog.NetTopologySuite.Index.Strtree;
-using GisSharpBlog.NetTopologySuite.Operation.Buffer;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NetTopologySuite.Coordinates;
 using SharpMap.Utilities;
 using SharpMap.Utilities.SridUtility;
+using NetTopologySuite.Operation.Buffer;
+using NetTopologySuite.Index.Strtree;
+using NetTopologySuite.Operation.Buffer;
 
 namespace SharpMap.Data.Providers.PostGis.Tests
 {

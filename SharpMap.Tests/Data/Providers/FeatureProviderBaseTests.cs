@@ -4,15 +4,23 @@ using System.Text;
 using GeoAPI.Coordinates;
 using GeoAPI.CoordinateSystems.Transformations;
 using GeoAPI.Geometries;
-using GisSharpBlog.NetTopologySuite.Geometries;
-using NetTopologySuite.Coordinates;
 using NPack;
 using NPack.Interfaces;
 using NPack.Matrix;
-using ProjNet.CoordinateSystems.Transformations;
+using NetTopologySuite.CoordinateSystems.Transformations;
 using Rhino.Mocks;
 using SharpMap.Data.Providers;
 using Xunit;
+
+#if BUFFERED
+using NetTopologySuite.Coordinates;
+#else
+using BufferedCoordinate = NetTopologySuite.Coordinates.Simple.Coordinate;
+using BufferedCoordinateFactory = NetTopologySuite.Coordinates.Simple.CoordinateFactory;
+using BufferedCoordinateSequence = NetTopologySuite.Coordinates.Simple.CoordinateSequence;
+using BufferedCoordinateSequenceFactory = NetTopologySuite.Coordinates.Simple.CoordinateSequenceFactory;
+using NetTopologySuite.Geometries;
+#endif
 
 namespace SharpMap.Tests.Data.Providers
 {

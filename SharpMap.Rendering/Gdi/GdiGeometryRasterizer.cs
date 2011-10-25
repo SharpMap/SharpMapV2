@@ -3,7 +3,11 @@ using System.Collections.ObjectModel;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using GeoAPI.Coordinates;
-using GeoAPI.DataStructures;
+#if DOTNET35
+using sl = System.Linq;
+#else
+using sl = GeoAPI.DataStructures;
+#endif
 using GeoAPI.Geometries;
 using SharpMap.Data;
 using SharpMap.Rendering.Rasterize;
@@ -182,7 +186,7 @@ namespace SharpMap.Rendering.Gdi
                     continue;
                 }
                 gp.StartFigure();
-                gp.AddLines(Enumerable.ToArray(TransformCoordinates(line.Coordinates, transform)));
+                gp.AddLines(sl.Enumerable.ToArray(TransformCoordinates(line.Coordinates, transform)));
                 if (line is ILinearRing)
                     gp.CloseFigure();
             }
@@ -206,13 +210,13 @@ namespace SharpMap.Rendering.Gdi
                 }
 
                 gp.StartFigure();
-                gp.AddLines(Enumerable.ToArray(TransformCoordinates(polygon.ExteriorRing.Coordinates, transform)));
+                gp.AddLines(sl.Enumerable.ToArray(TransformCoordinates(polygon.ExteriorRing.Coordinates, transform)));
                 gp.CloseFigure();
 
                 foreach (ILinearRing ring in polygon.InteriorRings)
                 {
                     gp.StartFigure();
-                    gp.AddLines(Enumerable.ToArray(TransformCoordinates(ring.Coordinates, transform)));
+                    gp.AddLines(sl.Enumerable.ToArray(TransformCoordinates(ring.Coordinates, transform)));
                     gp.CloseFigure();
                 }
             }

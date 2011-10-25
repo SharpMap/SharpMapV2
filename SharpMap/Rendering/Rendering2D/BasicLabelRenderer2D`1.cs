@@ -81,8 +81,37 @@ namespace SharpMap.Rendering.Rendering2D
             //Rectangle2D layoutRectangle =
             //    new Rectangle2D(new Point2D(label.Location.X-label.CollisionBuffer.Width, label.Location.Y-label.CollisionBuffer.Height), size);
 
-            Rectangle2D layoutRectangle =
-                new Rectangle2D(label.Location, textSize);
+            LabelStyle style = label.Style;
+            Int32 x = 0, y = 0;
+            if (style.HorizontalAlignment != HorizontalAlignment.Right || style.VerticalAlignment != VerticalAlignment.Bottom)
+            {
+                switch (style.HorizontalAlignment)
+                {
+                    case HorizontalAlignment.Center:
+                        x -= (Int32)(textSize.Width / 2.0f);
+                        break;
+                    case HorizontalAlignment.Left:
+                        x -= (Int32)textSize.Width;
+                        break;
+                    default:
+                        break;
+                }
+
+                switch (style.VerticalAlignment)
+                {
+                    case VerticalAlignment.Middle:
+                        y += (Int32)(textSize.Height / 2.0f);
+                        break;
+                    case VerticalAlignment.Top:
+                        y += (Int32)textSize.Height;
+                        break;
+                    default:
+                        break;
+                }
+            }
+
+            Point2D location = RenderTransform.TransformVector(label.Location.X, label.Location.Y).Add(new Point2D(x,y));
+            Rectangle2D layoutRectangle = new Rectangle2D(location, textSize);
 
             if (label.Style.Halo != null)
             {
@@ -161,41 +190,54 @@ namespace SharpMap.Rendering.Rendering2D
 
             if (newLabel == null)
             {
+                String labelText = formatter.Invoke(feature);
+                if (feature.Geometry is ILineString)
+
+                {
+                    newLabel = new Label2D(labelText, new Point2D(), style);
+                    calculateLabelOnLineString(feature.Geometry as ILineString, ref newLabel);
+                }
+                else
+                {
+                    
                 ICoordinate p = feature.Geometry.Extents.Center;
                 Double x = p[Ordinates.X], y = p[Ordinates.Y];
 
-                String labelText = formatter.Invoke(feature);
 
-                if (style.HorizontalAlignment != HorizontalAlignment.Right || style.VerticalAlignment != VerticalAlignment.Bottom)
+                /* Moved to RenderLabel function
+            if (style.HorizontalAlignment != HorizontalAlignment.Right || style.VerticalAlignment != VerticalAlignment.Bottom)
+            {
+                Size2D size = TextRenderer.MeasureString(labelText, style.Font);
+                //Point2D pt = RenderTransform.TransformVector(Math.Ceiling(size.Width), Math.Ceiling(size.Height));
+                size = new Size2D(size.Width / (Double)RenderTransform[0,0], size.Height / (Double)RenderTransform[1,1]);
+                switch (style.HorizontalAlignment)
                 {
-                    Size2D size = TextRenderer.MeasureString(labelText, style.Font);
-
-                    switch (style.HorizontalAlignment)
-                    {
-                        case HorizontalAlignment.Center:
-                            x -= (Int32)(size.Width / 2.0f);
-                            break;
-                        case HorizontalAlignment.Left:
-                            x -= size.Width;
-                            break;
-                        default:
-                            break;
-                    }
-
-                    switch (style.VerticalAlignment)
-                    {
-                        case VerticalAlignment.Middle:
-                            y += (Int32)(size.Height / 2.0f);
-                            break;
-                        case VerticalAlignment.Top:
-                            y += size.Height;
-                            break;
-                        default:
-                            break;
-                    }
+                    case HorizontalAlignment.Center:
+                        x -= (Int32)(size.Width / 2.0f);
+                        break;
+                    case HorizontalAlignment.Left:
+                        x -= size.Width;
+                        break;
+                    default:
+                        break;
                 }
 
+                switch (style.VerticalAlignment)
+                {
+                    case VerticalAlignment.Middle:
+                        y += (Int32)(size.Height / 2.0f);
+                        break;
+                    case VerticalAlignment.Top:
+                        y += size.Height;
+                        break;
+                    default:
+                        break;
+                }
+            }
+                 */
+
                 newLabel = new Label2D(labelText, new Point2D(x, y), style);
+                }
 
                 if (layer != null)
                 {
@@ -454,6 +496,8 @@ namespace SharpMap.Rendering.Rendering2D
             Double tmpx, tmpy;
             Double angle = 0.0;
 
+            
+
             // first find the middle segment of the line
             Int32 midPoint = (line.Coordinates.Count - 1) / 2;
 
@@ -490,6 +534,9 @@ namespace SharpMap.Rendering.Rendering2D
 
             tmpx = line.Coordinates[midPoint, Ordinates.X] + (dx * 0.5);
             tmpy = line.Coordinates[midPoint, Ordinates.Y] + (dy * 0.5);
+
+            label.Location = new Point2D(tmpx, tmpy);
+            return;
 
 #warning figure out label positioning
             throw new NotImplementedException();

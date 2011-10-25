@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using GeoAPI.CoordinateSystems.Transformations;
-using GeoAPI.DataStructures.Collections.Generic;
+//using GeoAPI.DataStructures.Collections.Generic;
 using GeoAPI.Geometries;
 
 namespace SharpMap.Data.Providers.ShapeFile
@@ -79,7 +79,8 @@ namespace SharpMap.Data.Providers.ShapeFile
 
         public Object GetValue(int i)
         {
-            throw new System.NotImplementedException();
+            checkIndex(i);
+            return _rowColumns[i];
         }
 
         public int GetValues(Object[] values)
@@ -121,7 +122,7 @@ namespace SharpMap.Data.Providers.ShapeFile
             {
                 if (name.Equals(column.ColumnName))
                 {
-                    return column.Ordinal;
+                    return column.Ordinal + 1; //jd: oid column is at index 0
                 }
             }
 
