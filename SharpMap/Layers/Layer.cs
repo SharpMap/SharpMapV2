@@ -128,7 +128,6 @@ namespace SharpMap.Layers
         private IGeometryFactory _geoFactory;
         private IQueryCache _cache;
         private IAsyncResult _loadAsyncResult;
-        private readonly Object _loadCompletionSync = new Object();
         private Dictionary<PropertyDescriptor, Object> _propertyValues;
 
         #endregion
@@ -575,14 +574,15 @@ namespace SharpMap.Layers
             }
             else
             {
-                _loadAsyncResult = _dataSource.BeginExecuteQuery(query, completeLoadLayerData);
+                // Get a local IAsyncResult to block the calling thread on.
+                var loadAsyncResult = _dataSource.BeginExecuteQuery(query, ar => { });
 
-                lock (_loadCompletionSync)
-                {
+                // Wait for the async process to finish before calling end.
+                loadAsyncResult.AsyncWaitHandle.WaitOne();
 
-                    Object results = _dataSource.EndExecuteQuery(_loadAsyncResult);
-                    endLoadInternal(query, results);
-                }
+                // Process the results synchronously and return.
+                Object results = _dataSource.EndExecuteQuery(loadAsyncResult);
+                endLoadInternal(query, results);
             }
         }
 
@@ -926,22 +926,13 @@ namespace SharpMap.Layers
 
         private void completeLoadLayerData(IAsyncResult asyncResult)
         {
-            // The lock is already held, so the calling thread will handle
-            // the load synchronously
-            if (!Monitor.TryEnter(_loadCompletionSync))
+            if (!asyncResult.IsCompleted)
             {
-                return;
-            }
-
-            if (asyncResult.IsCompleted)
-            {
-                Monitor.Exit(_loadCompletionSync);
                 return;
             }
 
             Object results = _dataSource.EndExecuteQuery(asyncResult);
             endLoadInternal(asyncResult.AsyncState as Expression, results);
-            Monitor.Exit(_loadCompletionSync);
         }
 
         // DESIGN_NOTE: this should probably change to endLoadInternal(Expression expression, IEnumerable results)
