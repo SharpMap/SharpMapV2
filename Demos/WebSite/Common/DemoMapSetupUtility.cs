@@ -34,8 +34,8 @@ namespace SharpMap.Presentation.AspNet.Demo.Common
         public static void SetupMap(HttpContext context, Map m)
         {
             //setupMsSqlSpatial(m);
-            setupSql2008Spatial(m);
-            //setupShapefile(context, m);
+            //setupSql2008Spatial(m);
+            setupShapefile(context, m);
         }
 
         private static void setupShapefile(HttpContext context, Map m)
@@ -45,8 +45,8 @@ namespace SharpMap.Presentation.AspNet.Demo.Common
             string[] layernames = new[]
                                       {
                                           "Countries",
-                                          "Rivers"/*,
-                                          "Cities"*/
+                                          "Rivers",
+                                          "Cities"
                                       };
 
             foreach (string s in layernames)
@@ -202,7 +202,6 @@ namespace SharpMap.Presentation.AspNet.Demo.Common
                             StyleBrush brush = new SolidStyleBrush(StyleColor.Blue);
                             StylePen pen = new StylePen(brush, 1);
                             style.Enabled = true;
-                            style.EnableOutline = true;
                             style.Line = pen;
                             style.Fill = brush;
                             break;
@@ -213,7 +212,6 @@ namespace SharpMap.Presentation.AspNet.Demo.Common
                             StyleBrush brush = new SolidStyleBrush(new StyleColor(0, 0, 0, 255));
                             StylePen pen = new StylePen(brush, 2);
                             style.Enabled = true;
-                            style.EnableOutline = true;
                             style.Line = pen;
                             style.Fill = new SolidStyleBrush(StyleColor.Green);
 
