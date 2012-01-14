@@ -1,7 +1,0 @@
-Tell what buttons to use.
-Option to configure buttons.
-Sound.
-Die when hit. (maybe collisions, get bounced).
-Put HUD at bottom (or top).
-Multiple levels.
-Run the editor on F6.

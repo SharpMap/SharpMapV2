@@ -17,6 +17,7 @@ using GeoAPI.Coordinates;
 using GeoAPI.CoordinateSystems;
 using GeoAPI.CoordinateSystems.Transformations;
 using GeoAPI.Geometries;
+using NetTopologySuite.Geometries;
 using NetTopologySuite.Coordinates;
 using NetTopologySuite.Coordinates.Simple;
 using NPack;
