@@ -1,15 +1,20 @@
-using System.ComponentModel;
+using System;
 using SharpMap.Data;
 using SharpMap.Presentation;
 using SharpMap.Styles;
+using SharpMap.Utilities;
 
 namespace SharpMap.Rendering.Symbolize
 {
-    public abstract class SymbolizerRule : ISymbolizerRule
+    ///<summary>
+    /// abstract base class for all classes implementing <see cref="ISymbolizerRule"/>
+    ///</summary>
+    [Serializable]
+    public abstract class SymbolizerRule : NotificationObject, ISymbolizerRule
     {
-        private bool _enabled;
+        private bool _enabled = true;
         private double _maxVisible = double.PositiveInfinity;
-        private double _minVisible = 0.0;
+        private double _minVisible;
 
         #region ISymbolizerRule Members
 
@@ -54,14 +59,7 @@ namespace SharpMap.Rendering.Symbolize
 
         public abstract bool EvaluateStyle(IFeatureDataRecord record, RenderPhase phase, out IStyle style);
 
-        public event PropertyChangedEventHandler PropertyChanged;
-
         #endregion
 
-        protected void OnPropertyChanged(string name)
-        {
-            if (PropertyChanged != null)
-                PropertyChanged(this, new PropertyChangedEventArgs(name));
-        }
     }
 }

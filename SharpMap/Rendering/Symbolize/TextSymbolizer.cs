@@ -46,5 +46,23 @@ namespace SharpMap.Rendering.Symbolize
         {
             throw new NotSupportedException();
         }
+
+        [NonSerialized]
+        private TextSymbolizingDelegate _textFunction;
+
+        ///<summary>
+        ///</summary>
+        public TextSymbolizingDelegate LabelTextFunction
+        {
+            get
+            {
+                return this._textFunction;
+            }
+            private set
+            {
+                this._textFunction = value;
+                this.OnPropertyChanged("TextFuncton");
+            }
+        }
     }
 }

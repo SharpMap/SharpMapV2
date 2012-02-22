@@ -6,6 +6,9 @@ using SharpMap.Styles;
 
 namespace SharpMap.Rendering.Symbolize
 {
+    /// <summary>
+    /// Abstract base class for symbolizer rules that deal with <see cref="GeometryStyle"/>
+    /// </summary>
     public abstract class GeometrySymbolizerRule : SymbolizerRule, IGeometrySymbolizerRule
     {
 
@@ -22,7 +25,7 @@ namespace SharpMap.Rendering.Symbolize
         public override bool EvaluateStyle(IFeatureDataRecord record, RenderPhase phase, out IStyle style)
         {
             GeometryStyle s;
-            bool ret = EvaluateStyle(record, phase, out s);
+            var ret = EvaluateStyle(record, phase, out s);
             style = s;
             return ret;
         }

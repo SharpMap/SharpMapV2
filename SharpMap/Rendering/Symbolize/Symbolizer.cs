@@ -1,8 +1,13 @@
-﻿using System.ComponentModel;
+﻿using System;
+using SharpMap.Utilities;
 
 namespace SharpMap.Rendering.Symbolize
 {
-    public abstract class Symbolizer : ISymbolizer
+    /// <summary>
+    /// Base class for all symbolizer classes
+    /// </summary>
+    [Serializable]
+    public abstract class Symbolizer : NotificationObject, ISymbolizer
     {
         private bool _enabled = true;
 
@@ -21,14 +26,7 @@ namespace SharpMap.Rendering.Symbolize
             }
         }
 
-        public event PropertyChangedEventHandler PropertyChanged;
-
         #endregion
 
-        protected void OnPropertyChanged(string propName)
-        {
-            if (PropertyChanged != null)
-                PropertyChanged(this, new PropertyChangedEventArgs(propName));
-        }
     }
 }

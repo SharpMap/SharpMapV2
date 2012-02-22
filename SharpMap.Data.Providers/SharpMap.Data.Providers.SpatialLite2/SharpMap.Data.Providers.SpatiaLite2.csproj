@@ -32,7 +32,9 @@
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
-    <TargetFrameworkProfile />
+    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\..\..\JDSymbolizer\</SolutionDir>
+    <RestorePackages>true</RestorePackages>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug_Net20|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -206,7 +208,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug_Net40|x86'">
     <DebugSymbols>true</DebugSymbols>
     <OutputPath>bin\x86\Debug_Net40\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;DOTNET35</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;DOTNET35;DOTNET40</DefineConstants>
     <DebugType>full</DebugType>
     <PlatformTarget>x86</PlatformTarget>
     <CodeAnalysisLogFile>bin\x86\Debug_Net35\SharpMap.Data.Providers.SpatiaLite2.dll.CodeAnalysisLog.xml</CodeAnalysisLogFile>
@@ -276,11 +278,13 @@
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
-    <Reference Include="System.XML" />
-    <Reference Include="System.Data.SQLite, Version=1.0.59.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=x86">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\ExternalReferences\Debug_Common\System.Data.SQLite.DLL</HintPath>
+    <Reference Include="System.Data.SQLite">
+      <HintPath>..\..\packages\System.Data.SQLite.x86.1.0.79.0\lib\net40\System.Data.SQLite.dll</HintPath>
     </Reference>
+    <Reference Include="System.Data.SQLite.Linq">
+      <HintPath>..\..\packages\System.Data.SQLite.x86.1.0.79.0\lib\net40\System.Data.SQLite.Linq.dll</HintPath>
+    </Reference>
+    <Reference Include="System.XML" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="SpatiaLite2Provider.cs" />
@@ -358,6 +362,9 @@
   <ItemGroup>
     <Folder Include="Resources\" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
@@ -367,6 +374,7 @@
     <Copy ContinueOnError="false" DestinationFolder="$(TargetDir)" SourceFiles="SQLite\libgeos-3-0-0.dll;SQLite\libgeos_c-1.dll;SQLite\libiconv2.dll;SQLite\libproj-0.dll;SQLite\libspatialite-2.dll;SQLite\libsqlite3-1.dll;SQLite\PROJ4.tsv" />
   </Target>
   <PropertyGroup>
-    <PostBuildEvent>xcopy /Y "$(ProjectDir)SQLite\lib*.dll" $(TargetDir)</PostBuildEvent>
+    <PostBuildEvent>xcopy /Y "$(ProjectDir)SQLite\lib*.dll" "$(TargetDir)"</PostBuildEvent>
   </PropertyGroup>
+  <Import Project="$(SolutionDir)\.nuget\nuget.targets" />
 </Project>

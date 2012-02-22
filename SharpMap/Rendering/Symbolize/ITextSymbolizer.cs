@@ -9,6 +9,9 @@ namespace SharpMap.Rendering.Symbolize
     public interface ITextSymbolizer : ISymbolizer
     {
         ICollection<ITextSymbolizerRule> Rules { get; }
+
         void Symbolize(IEnumerable<IFeatureDataRecord> records, RenderPhase renderPhase, Matrix2D transform, ITextRasterizer rasterizer, TextSymbolizingDelegate textSymbolizingDelegate);
+
+        TextSymbolizingDelegate LabelTextFunction { get; }
     }
 }

@@ -5,6 +5,8 @@ using NPack.Interfaces;
 
 namespace SharpMap.Rendering
 {
+    ///<summary>
+    ///</summary>
     public class LinearFactory : ILinearFactory<DoubleComponent, Vector, Matrix>
     {
         #region IMatrixFactory<DoubleComponent,Matrix> Members

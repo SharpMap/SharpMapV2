@@ -7,11 +7,17 @@ using SharpMap.Rendering.Rendering2D;
 
 namespace SharpMap.Rendering.Symbolize
 {
+    /// <summary>
+    /// Geometry symbolizer class
+    /// </summary>
     public class GeometrySymbolizer : Symbolizer, IGeometrySymbolizer
     {
         private readonly BindingList<IGeometrySymbolizerRule> _rules = new BindingList<IGeometrySymbolizerRule>();
 
 
+        ///<summary>
+        /// Creates an instance of this class
+        ///</summary>
         public GeometrySymbolizer()
         {
             _rules.ListChanged += delegate { OnPropertyChanged("Rules"); };
