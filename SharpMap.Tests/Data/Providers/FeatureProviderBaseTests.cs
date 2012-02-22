@@ -29,15 +29,15 @@ namespace SharpMap.Tests.Data.Providers
         [Fact]
         public void CoordinateTransformationTransformsQueryHavingDifferentSpatialReferenceAsTransformationTarget()
         {
-            MockRepository repository = new MockRepository();
-            FeatureProviderBase provider = repository.CreateMock<FeatureProviderBase>();
-            BufferedCoordinateFactory coordFactory = new BufferedCoordinateFactory();
-            BufferedCoordinateSequenceFactory coordSeqFactory = new BufferedCoordinateSequenceFactory(coordFactory);
-            IGeometryFactory<BufferedCoordinate> geoFactory = new GeometryFactory<BufferedCoordinate>(coordSeqFactory);
-            IMatrixFactory<DoubleComponent> matrixFactory = new LinearFactory<DoubleComponent>();
+            var repository = new MockRepository();
+            var provider = repository.StrictMock<FeatureProviderBase>();
+            var coordFactory = new BufferedCoordinateFactory();
+            var coordSeqFactory = new BufferedCoordinateSequenceFactory(coordFactory);
+            var geoFactory = new GeometryFactory<BufferedCoordinate>(coordSeqFactory);
+            var matrixFactory = new LinearFactory<DoubleComponent>();
             ICoordinateTransformationFactory transformFactory =
                 new CoordinateTransformationFactory<BufferedCoordinate>(coordFactory, geoFactory, matrixFactory);
-            SetupResult.For(provider.CoordinateTransformation).Return(transformFactory);
+            //SetupResult.For(provider.CoordinateTransformation).Return(transformFactory);
         }
 
         [Fact]
