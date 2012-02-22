@@ -16,18 +16,18 @@
     <IncludeCollections>TRUE</IncludeCollections>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
-  <DebugSymbols>true</DebugSymbols>
-  <DebugType>full</DebugType>
-  <Optimize>false</Optimize>
-  <DefineConstants>DEBUG;TRACE$(DotNet)</DefineConstants>
-</PropertyGroup>
-<PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
-  <DebugSymbols>false</DebugSymbols>
-  <DebugType>pdbonly</DebugType>
-  <Optimize>true</Optimize>
-  <DefineConstants>TRACE$(DotNet)</DefineConstants>
-</PropertyGroup>
-<PropertyGroup Condition=" '$(Platform)' == 'x64' "><PlatformTarget>x64</PlatformTarget></PropertyGroup>
-<PropertyGroup Condition=" '$(Platform)' == 'x86' "><PlatformTarget>x86</PlatformTarget></PropertyGroup>
-<PropertyGroup Condition=" '$(Platform)' == 'AnyCPU' "><PlatformTarget>AnyCPU</PlatformTarget></PropertyGroup>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <DefineConstants>DEBUG;TRACE$(DotNet)</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+    <DebugSymbols>false</DebugSymbols>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <DefineConstants>TRACE$(DotNet)</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Platform)' == 'x64' "><PlatformTarget>x64</PlatformTarget></PropertyGroup>
+  <PropertyGroup Condition=" '$(Platform)' == 'x86' "><PlatformTarget>x86</PlatformTarget></PropertyGroup>
+  <PropertyGroup Condition=" '$(Platform)' == 'AnyCPU' "><PlatformTarget>AnyCPU</PlatformTarget></PropertyGroup>
 </Project>
