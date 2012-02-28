@@ -6,7 +6,7 @@
 // it under the terms of the GNU Lesser General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // SharpMap is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -14,26 +14,22 @@
 
 // You should have received a copy of the GNU Lesser General Public License
 // along with SharpMap; if not, write to the Free Software
-// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
+// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+using System;
 
 namespace SharpMap.Styles
 {
     /// <summary>
     /// Defines a style used for rendering features.
     /// </summary>
+    [Serializable]
     public abstract class FeatureStyle : Style
     {
-        private StyleRenderingMode _smoothingMode;
-
-
         /// <summary>
-        /// Gets or sets whether smoothing (anti-aliasing or ClearType) is applied to lines 
+        /// Gets or sets whether smoothing (anti-aliasing or ClearType) is applied to lines
         /// and curves and the edges of filled areas.
         /// </summary>
-        public StyleRenderingMode RenderingMode
-        {
-            get { return _smoothingMode; }
-            set { _smoothingMode = value; }
-        }
+        public StyleRenderingMode RenderingMode { get; set; }
     }
 }
