@@ -5,7 +5,7 @@
 // it under the terms of the GNU Lesser General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // SharpMap is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -13,7 +13,7 @@
 
 // You should have received a copy of the GNU Lesser General Public License
 // along with SharpMap; if not, write to the Free Software
-// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
+// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 using System;
 using GeoAPI.CoordinateSystems;
@@ -29,6 +29,10 @@ namespace SharpMap.Expressions
     {
         private readonly IGeometry _geometry;
 
+        /// <summary>
+        /// Creates a geometry expression
+        /// </summary>
+        /// <param name="geometry">The geometry</param>
         public GeometryExpression(IGeometry geometry)
         {
             _geometry = geometry;
@@ -36,7 +40,7 @@ namespace SharpMap.Expressions
 
         public override string ToString()
         {
-            return Geometry.ToString();
+            return "GeometryExpression: " + Geometry;
         }
 
         public override IExtents Extents
@@ -49,6 +53,9 @@ namespace SharpMap.Expressions
             get { return _geometry == null ? null : _geometry.SpatialReference; }
         }
 
+        /// <summary>
+        /// Gets the geometry
+        /// </summary>
         public IGeometry Geometry
         {
             get { return _geometry; }
@@ -81,7 +88,7 @@ namespace SharpMap.Expressions
 
         public override Boolean Equals(SpatialExpression other)
         {
-            GeometryExpression geometryExpression = other as GeometryExpression;
+            var geometryExpression = other as GeometryExpression;
 
             return geometryExpression != null && Equals(_geometry, geometryExpression._geometry);
         }

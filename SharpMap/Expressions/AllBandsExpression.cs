@@ -1,5 +1,8 @@
 namespace SharpMap.Expressions
 {
+    /// <summary>
+    ///
+    /// </summary>
     public class AllBandsExpression : ProjectionExpression
     {
         public override bool Contains(Expression other)

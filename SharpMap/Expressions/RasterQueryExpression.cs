@@ -5,6 +5,9 @@ using SharpMap.Layers;
 
 namespace SharpMap.Expressions
 {
+    /// <summary>
+    /// Expression
+    /// </summary>
     public class RasterQueryExpression : QueryExpression, IEquatable<RasterQueryExpression>
     {
         public static RasterQueryExpression Intersects(IExtents extents)
@@ -105,7 +108,7 @@ namespace SharpMap.Expressions
                 return base.GetHashCode() ^ 131;
             }
         }
-    
+
         private void checkOp(SpatialOperation op)
         {
             switch (op)

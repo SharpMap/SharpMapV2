@@ -5,7 +5,7 @@
 // it under the terms of the GNU Lesser General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // SharpMap is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -13,7 +13,7 @@
 
 // You should have received a copy of the GNU Lesser General Public License
 // along with SharpMap; if not, write to the Free Software
-// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
+// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 using System;
 
@@ -22,7 +22,12 @@ namespace SharpMap.Expressions
     /// <summary>
     /// Represents an expression used to select or project data.
     /// </summary>
+#if DOTNET35
+
+    public abstract class Expression : System.Linq.Expressions.Expression, IEquatable<Expression>
+#else
     public abstract class Expression : IEquatable<Expression>
+#endif
     {
         /// <summary>
         /// Determines if <see cref="Expression"/> <paramref name="a"/> contains
@@ -58,9 +63,9 @@ namespace SharpMap.Expressions
         /// <summary>
         /// Determines if the given <see cref="Expression"/> contains
         /// this expression. "Contains" means that
-        /// the expression will provide at least the same result set when applied to a given 
-        /// input set, and perhaps more. Containment in general is not transitive, 
-        /// so <c>this.Contains(other)</c> is not the same as <c>other.Contains(this)</c>, 
+        /// the expression will provide at least the same result set when applied to a given
+        /// input set, and perhaps more. Containment in general is not transitive,
+        /// so <c>this.Contains(other)</c> is not the same as <c>other.Contains(this)</c>,
         /// unless the expressions are equivalant.
         /// </summary>
         public abstract Boolean Contains(Expression other);
@@ -74,6 +79,7 @@ namespace SharpMap.Expressions
         #region IEquatable<Expression> Members
 
         public abstract Boolean Equals(Expression other);
+
         #endregion
     }
 }

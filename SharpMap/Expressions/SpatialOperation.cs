@@ -5,7 +5,7 @@
 // it under the terms of the GNU Lesser General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // SharpMap is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -13,7 +13,7 @@
 
 // You should have received a copy of the GNU Lesser General Public License
 // along with SharpMap; if not, write to the Free Software
-// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
+// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 namespace SharpMap.Expressions
 {
@@ -21,8 +21,9 @@ namespace SharpMap.Expressions
     /// Indicates the type of spatial query to execute.
     /// </summary>
     /// <remarks>
-    /// See section 6.1.15 Relational operators in Open Geospatial Consortium's Simple Features Access 
+    /// See section 6.1.15 Relational operators in Open Geospatial Consortium's Simple Features Access
     /// (reference number: OGC 06-103r3) for more careful definitions of these terms.
+    /// <remarks>Maybe SpatialPredicate is a better name.</remarks>
     /// </remarks>
     public enum SpatialOperation
     {
@@ -35,6 +36,11 @@ namespace SharpMap.Expressions
         /// A query for geometries which are spatially contained in the query geometry.
         /// </summary>
         Contains,
+
+        /// <summary>
+        /// A query for geometries which are spatially properly contained in the query geometry.
+        /// </summary>
+        ContainsProperly,
 
         /// <summary>
         /// A query for geometries which spatially cross the query geometry.
