@@ -42,6 +42,7 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using NPack;
 
 namespace SharpMap.Styles
 {
@@ -65,7 +66,7 @@ namespace SharpMap.Styles
         private Byte _a;
 
         [FieldOffset(0)]
-        private UInt32 _bgra;
+        private readonly UInt32 _bgra;
 
         #endregion
 
@@ -100,10 +101,10 @@ namespace SharpMap.Styles
         public StyleColor(Int32 b, Int32 g, Int32 r, Int32 a)
         {
             _bgra = 0;
-            _b = clampToByte(b);
-            _g = clampToByte(g);
-            _r = clampToByte(r);
-            _a = clampToByte(a);
+            _b = ClampToByte(b);
+            _g = ClampToByte(g);
+            _r = ClampToByte(r);
+            _a = ClampToByte(a);
         }
 
         #endregion
@@ -112,6 +113,18 @@ namespace SharpMap.Styles
         {
             return "[StyleColor] " + (LookupColorName(this) 
                 ?? String.Format("B = {0}; G = {1}; R = {2}; A = {3}", B, G, R, A));
+        }
+
+        private static readonly MersenneTwister RND = new MersenneTwister();
+        
+        /// <summary>
+        /// Returns a random color chosen from the <see cref="PredefinedColors"/>.
+        /// </summary>
+        /// <returns>A color randomly chosen from the predefined colors</returns>
+        public static StyleColor Random()
+        {
+            var max = PredefinedColors.Count;
+            return _predefinedColorsArray[RND.Next(max)];
         }
 
         /// <summary>
@@ -164,8 +177,8 @@ namespace SharpMap.Styles
         /// <returns>A <see cref="StyleColor"/> structure containing the equivalent RGBA values</returns> 
         public static StyleColor FromHsb(Double hue, Double saturation, Double brightness)
         {
-            StyleColor c = new StyleColor();
-            c.setByHsb(hue, saturation, brightness);
+            var c = new StyleColor();
+            c.SetByHsb(hue, saturation, brightness);
             return c;
         }
 
@@ -296,8 +309,8 @@ namespace SharpMap.Styles
                     smallestFactor = blueFactor;
                 }
 
-                Double majorFactorDifference = largestFactor - smallestFactor;
-                Double hue = 0.0;
+                var majorFactorDifference = largestFactor - smallestFactor;
+                var hue = 0.0;
 
                 if (redFactor == largestFactor)
                 {
@@ -428,28 +441,26 @@ namespace SharpMap.Styles
 
             // Compute interpolated value based on the linear distance
             // between 0 and 1
-            if (blendFactor == 1)
+            if (blendFactor == 1d)
             {
                 return color2;
             }
-            else if (blendFactor == 0)
+            if (blendFactor == 0d)
             {
                 return color1;
             }
-            else
-            {
-                Double r = Math.Abs(color1.R - color2.R) * blendFactor + color1.R;
-                Double g = Math.Abs(color1.G - color2.G) * blendFactor + color1.G;
-                Double b = Math.Abs(color1.B - color2.B) * blendFactor + color1.B;
-                Double a = Math.Abs(color1.A - color2.A) * blendFactor + color1.A;
 
-                if (r > 255) r = 255;
-                if (g > 255) g = 255;
-                if (b > 255) b = 255;
-                if (a > 255) a = 255;
+            var r = Math.Abs(color1.R - color2.R) * blendFactor + color1.R;
+            var g = Math.Abs(color1.G - color2.G) * blendFactor + color1.G;
+            var b = Math.Abs(color1.B - color2.B) * blendFactor + color1.B;
+            var a = Math.Abs(color1.A - color2.A) * blendFactor + color1.A;
 
-                return new StyleColor((Int32)b, (Int32)g, (Int32)r, (Int32)a);
-            }
+            if (r > 255) r = 255;
+            if (g > 255) g = 255;
+            if (b > 255) b = 255;
+            if (a > 255) a = 255;
+
+            return new StyleColor((Int32)b, (Int32)g, (Int32)r, (Int32)a);
         }
 
         #region Equality Computation
@@ -475,10 +486,7 @@ namespace SharpMap.Styles
             {
                 return true;
             }
-            else
-            {
-                return false;
-            }
+            return false;
         }
 
         /// <summary>
@@ -2286,6 +2294,7 @@ namespace SharpMap.Styles
 
         private static readonly Object _predefinedColorsSync = new Object();
         private static readonly Dictionary<String, StyleColor> _predefinedColors = new Dictionary<String, StyleColor>();
+        private static StyleColor[] _predefinedColorsArray;
 
         /// <summary>
         /// Gets a <see cref="System.Collections.Generic.Dictionary{String, StyleColor}"/> 
@@ -2314,6 +2323,8 @@ namespace SharpMap.Styles
                             }
                         }
                     }
+                    _predefinedColorsArray = new StyleColor[_predefinedColors.Count];
+                    _predefinedColors.Values.CopyTo(_predefinedColorsArray, 0);
                 }
 
                 return new Dictionary<String, StyleColor>(_predefinedColors);
@@ -2324,12 +2335,12 @@ namespace SharpMap.Styles
 
         #region Private helper methods
 
-        private static Byte clampToByte(Int32 value)
+        private static Byte ClampToByte(Int32 value)
         {
             return value > 255 ? (Byte)255 : value < 0 ? (Byte)0 : (Byte)value;
         }
 
-        private void setByHsb(Double h, Double s, Double v)
+        private void SetByHsb(Double h, Double s, Double v)
         {
             _r = 0;
             _g = 0;
@@ -2349,15 +2360,14 @@ namespace SharpMap.Styles
             }
             else
             {
-                Double temp1, temp2;
                 h = h % 360;
-                temp2 = ((v <= 0.5) ? v * (1.0 + s) : v + s - (v * s));
-                temp1 = 2.0 * v - temp2;
+                var temp2 = ((v <= 0.5) ? v * (1.0 + s) : v + s - (v * s));
+                var temp1 = 2.0 * v - temp2;
 
-                Double[] t3 = new Double[] { h + 1.0 / 3.0, h, h - 1.0 / 3.0 };
-                Double[] clr = new Double[] { 0, 0, 0 };
+                var t3 = new[] { h + 1.0 / 3.0, h, h - 1.0 / 3.0 };
+                var clr = new[] { 0d, 0d, 0d };
 
-                for (Int32 i = 0; i < 3; i++)
+                for (var i = 0; i < 3; i++)
                 {
                     if (t3[i] < 0)
                     {
@@ -2392,9 +2402,9 @@ namespace SharpMap.Styles
                 b = clr[2];
             }
 
-            _b = (Byte)(255 * b);
-            _g = (Byte)(255 * g);
-            _r = (Byte)(255 * r);
+            _b = ClampToByte((int)(255 * b));
+            _g = ClampToByte((int)(255 * g));
+            _r = ClampToByte((int)(255 * r));
         }
 
         #endregion
