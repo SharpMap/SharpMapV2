@@ -107,6 +107,22 @@ namespace SharpMap.Styles
             _a = ClampToByte(a);
         }
 
+        /// <summary>
+        /// Creates a new <see cref="StyleColor"/> from <see cref="baseColor"/> and an additional <paramref name="alpha"/> value.
+        /// </summary>
+        /// <param name="baseColor">The base color</param>
+        /// <param name="alpha">The alpha value to blend.</param>
+        /// <remarks>
+        /// If the <paramref name="baseColor"/> already has an <see cref="StyleColor.A"/> value,
+        /// that is blended with the provided <paramref name="alpha"/> value.
+        /// </remarks>
+        public StyleColor(StyleColor baseColor, int alpha)
+        {
+            _bgra = baseColor.Bgra;
+            _a = (Byte)(baseColor.A * alpha / 255d);
+        }
+
+
         #endregion
 
         public override String ToString()

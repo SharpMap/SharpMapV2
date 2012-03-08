@@ -36,7 +36,7 @@ namespace SharpMap.Styles
         /// Creates a new instance of a StyleBrush with the given <paramref name="color"/>.
         /// </summary>
         /// <param name="color">Base color of the brush.</param>
-        public StyleBrush(StyleColor color)
+        protected StyleBrush(StyleColor color)
         {
             _color = color;
         }

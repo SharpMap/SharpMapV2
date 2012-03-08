@@ -22,8 +22,16 @@ namespace SharpMap.Styles
     /// <summary>
     /// Represents a brush which fills a region with a single, solid color.
     /// </summary>
+    [Serializable]
     public class SolidStyleBrush : StyleBrush
     {
+        /// <summary>
+        /// Creates an instance of a <see cref="SolidStyleBrush"/> with the <see cref="StyleColor.Transparent"/> color.
+        /// </summary>
+        public SolidStyleBrush()
+        {
+        }
+
         /// <summary>
         /// Creates an instance of a <see cref="SolidStyleBrush"/> with the given color.
         /// </summary>
