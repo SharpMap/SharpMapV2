@@ -19,6 +19,7 @@ using System;
 
 namespace SharpMap.Expressions
 {
+    [Serializable]
     public abstract class LiteralExpression : Expression
     {
         public Object Value

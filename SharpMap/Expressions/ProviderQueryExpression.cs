@@ -4,6 +4,7 @@ using System.Text;
 
 namespace SharpMap.Expressions
 {
+    [Serializable]
     public class ProviderQueryExpression : QueryExpression
     {
         private ProviderPropertiesExpression _providerPropertiesExpression;

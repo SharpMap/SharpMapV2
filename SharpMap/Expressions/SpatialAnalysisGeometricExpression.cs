@@ -23,6 +23,7 @@ namespace SharpMap.Expressions
     /// An Expression which takes twho GeometryExpressions and computes a third GeometryExpression
     /// defined for : Difference, Intersection, SymDifference and Union
     /// </summary>
+    [Serializable]
     public class SpatialAnalysisGeometricExpression : SpatialAnalysisExpression<GeometryExpression, GeometryExpression>
     {
         public SpatialAnalysisGeometricExpression(GeometryExpression expressionLeft, SpatialAnalysisOperation operation, GeometryExpression expressionRight)

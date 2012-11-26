@@ -3,6 +3,7 @@ using NPack.Interfaces;
 
 namespace SharpMap.Expressions
 {
+    [Serializable]
     public class NumericExpression<TNumber> : Expression
         where TNumber : IComputable<TNumber, Double>
     {

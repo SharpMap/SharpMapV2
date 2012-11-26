@@ -18,6 +18,7 @@ namespace SharpMap.Expressions
     /// <summary>
     /// An SpatialAnalysisExpression which calculates the distance between two GeometryExpressions
     /// </summary>
+    [Serializable]
     public class SpatialAnalysisDistanceExpression
         : SpatialAnalysisExpression<LiteralExpression<double>, GeometryExpression>
     {

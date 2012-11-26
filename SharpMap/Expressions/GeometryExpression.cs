@@ -16,6 +16,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 using System;
+using System.Runtime.Serialization;
 using GeoAPI.CoordinateSystems;
 using GeoAPI.Geometries;
 
@@ -25,13 +26,26 @@ namespace SharpMap.Expressions
     /// An expression which represents an <see cref="IGeometry"/> in a
     /// compound expression or an expression tree.
     /// </summary>
-    public class GeometryExpression : SpatialExpression
+    [Serializable]
+    public class GeometryExpression : SpatialExpression, ISerializable
     {
         private readonly IGeometry _geometry;
 
         public GeometryExpression(IGeometry geometry)
         {
             _geometry = geometry;
+        }
+
+        protected GeometryExpression(SerializationInfo info, StreamingContext context)
+        {
+            if (!info.GetBoolean("isnull"))
+            {
+                var gs = context.Context as Utilities.IGeometryServices;
+                if (gs == null)
+                    throw new ArgumentException("The context does not provide access to a 'IGeometryServices' class", "context");
+                var reader = gs[info.GetString("srid")];
+                _geometry = reader.WkbReader.Read((byte[]) info.GetValue("wkb", typeof (byte[])));
+            }
         }
 
         public override string ToString()
@@ -72,6 +86,13 @@ namespace SharpMap.Expressions
                             ? _geometry.GetHashCode()
                             : 0x1fd3b) ^ 29;
             }
+        }
+
+        public void GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            info.AddValue("isnull", IsNull);
+            info.AddValue("srid", _geometry.Srid);
+            info.AddValue("wkb", _geometry.AsBinary());
         }
 
         public override Expression Clone()

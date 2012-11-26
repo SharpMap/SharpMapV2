@@ -19,8 +19,20 @@ using System;
 
 namespace SharpMap.Expressions
 {
+    /// <summary>
+    /// Expression for object identifiers
+    /// </summary>
+    [Serializable]
     public class OidExpression : Expression, IEquatable<OidExpression>
     {
+        /// <summary>
+        /// Determines if the given <see cref="Expression"/> contains
+        /// this expression. "Contains" means that
+        /// the expression will provide at least the same result set when applied to a given 
+        /// input set, and perhaps more. Containment in general is not transitive, 
+        /// so <c>this.Contains(other)</c> is not the same as <c>other.Contains(this)</c>, 
+        /// unless the expressions are equivalant.
+        /// </summary>
         public override Boolean Contains(Expression other)
         {
             return Equals(other);

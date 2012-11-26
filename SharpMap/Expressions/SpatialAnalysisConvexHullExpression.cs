@@ -13,11 +13,14 @@
  * 
  */
 
+using System;
+
 namespace SharpMap.Expressions
 {
     /// <summary>
     /// A SpatialAnalysisExpression which returns a GeometryExpression corresponding to the ConvexHull of the input GeometryExpression
     /// </summary>
+    [Serializable]
     public class SpatialAnalysisConvexHullExpression
         : SpatialAnalysisExpression<GeometryExpression, NullExpression>
     {

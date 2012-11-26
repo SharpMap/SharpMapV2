@@ -14,17 +14,21 @@
  */
 using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace SharpMap.Expressions
 {
+    [Serializable]
     public class ProviderPropertiesExpression : Expression
     {
-        private CollectionExpression<ProviderPropertyExpression> _providerProps;
+        private readonly CollectionExpression<ProviderPropertyExpression> _providerProps;
 
-        public ProviderPropertiesExpression(CollectionExpression<ProviderPropertyExpression> _providerProps)
+        public ProviderPropertiesExpression()
+            :this(new CollectionExpression<ProviderPropertyExpression>(null))
+        {}
+
+        public ProviderPropertiesExpression(CollectionExpression<ProviderPropertyExpression> providerProps)
         {
-            this._providerProps = _providerProps;
+            _providerProps = providerProps;
         }
 
         public ProviderPropertiesExpression(IEnumerable<ProviderPropertyExpression> properties)

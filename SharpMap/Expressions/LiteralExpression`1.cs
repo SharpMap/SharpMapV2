@@ -20,6 +20,7 @@ using System.Collections.Generic;
 
 namespace SharpMap.Expressions
 {
+    [Serializable]
     public class LiteralExpression<TValue> : LiteralExpression
     {
         private readonly TValue _value;
@@ -34,9 +35,9 @@ namespace SharpMap.Expressions
             _comparer = comparer;
         }
 
-        public TValue Value
+        public new TValue Value
         {
-            get { return (TValue)base.Value; }
+            get { return _value; }
         }
 
         public IEqualityComparer<TValue> Comparer

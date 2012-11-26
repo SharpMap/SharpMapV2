@@ -15,6 +15,8 @@
 // along with SharpMap; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
+using System;
+
 namespace SharpMap.Expressions
 {
     /// <summary>
@@ -24,6 +26,7 @@ namespace SharpMap.Expressions
     /// See section 6.1.15 Relational operators in Open Geospatial Consortium's Simple Features Access 
     /// (reference number: OGC 06-103r3) for more careful definitions of these terms.
     /// </remarks>
+    [Serializable]
     public enum SpatialOperation
     {
         /// <summary>

@@ -16,8 +16,11 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
 
 
+using System;
+
 namespace SharpMap.Expressions
 {
+    [Serializable]
     public class BinaryExpression : BinaryExpressionBase<BinaryOperator>
     {
         public BinaryExpression(Expression left, BinaryOperator op, Expression right) 

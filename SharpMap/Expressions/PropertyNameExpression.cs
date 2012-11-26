@@ -19,15 +19,26 @@ using System;
 
 namespace SharpMap.Expressions
 {
-    public sealed class PropertyNameExpression : Expression
+    /// <summary>
+    /// 
+    /// </summary>
+    [Serializable]
+    public sealed class PropertyNameExpression : Expression, IEquatable<PropertyNameExpression>
     {
         private readonly String _propertyName;
 
+        /// <summary>
+        /// Creates an instance of this class
+        /// </summary>
+        /// <param name="propertyName"></param>
         public PropertyNameExpression(String propertyName)
         {
             _propertyName = propertyName;
         }
 
+        /// <summary>
+        /// The property name to
+        /// </summary>
         public String PropertyName
         {
             get { return _propertyName; }
@@ -45,13 +56,26 @@ namespace SharpMap.Expressions
 
         public override Boolean Equals(Expression other)
         {
-            if (other == null)
+            if (other == null || !(other is PropertyNameExpression))
             {
                 return false;
             }
 
-            PropertyNameExpression propertyNameExpression = other as PropertyNameExpression;
-            return String.Compare(_propertyName, propertyNameExpression._propertyName, true) == 0; 
+            var propertyNameExpression = other as PropertyNameExpression;
+            return String.Compare(_propertyName, propertyNameExpression._propertyName, StringComparison.Ordinal) == 0; 
+        }
+
+        Boolean IEquatable<PropertyNameExpression>.Equals(PropertyNameExpression other)
+        {
+            if (other == null)
+                return false;
+
+            return String.Compare(_propertyName, other._propertyName, StringComparison.Ordinal) == 0;
+        }
+
+        public override string ToString()
+        {
+            return _propertyName;
         }
 
     }

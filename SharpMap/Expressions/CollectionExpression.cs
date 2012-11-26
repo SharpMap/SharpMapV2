@@ -23,6 +23,7 @@ using Processor = System.Linq.Enumerable;
 using Enumerable = System.Linq.Enumerable;
 using Caster = GeoAPI.DataStructures.Caster;
 #else
+using System.Runtime.Serialization;
 using Processor = GeoAPI.DataStructures.Processor;
 using Caster = GeoAPI.DataStructures.Caster;
 using Enumerable = GeoAPI.DataStructures.Enumerable;
@@ -30,18 +31,43 @@ using Enumerable = GeoAPI.DataStructures.Enumerable;
 
 namespace SharpMap.Expressions
 {
-    public class CollectionExpression : Expression, IEnumerable
+    [Serializable]
+    public class CollectionExpression : Expression, IEnumerable, ISerializable
     {
-        private readonly IEnumerable _collection;
+        private IEnumerable _collection;
+
+        protected CollectionExpression()
+        {}
 
         public CollectionExpression(IEnumerable collection)
         {
             _collection = collection;
         }
 
+        protected CollectionExpression(SerializationInfo info, StreamingContext context)
+        {
+            var count = info.GetInt32("count");
+            var items = new ArrayList(count);
+            if (count == 0) return;
+
+            for (var i = 0; i < count; i++)
+            {
+                var type = (Type)info.GetValue("type", typeof(Type));
+                items.Add(info.GetValue(string.Format("i{0}", i), type));
+            }
+            
+            _collection = items;
+        }
+
         public IEnumerable Collection
         {
             get { return _collection; }
+            protected set
+            {
+                if (_collection != null)
+                    throw new InvalidOperationException("Must not assign a new collection!");
+                _collection = value;
+            }
         }
 
         public override Boolean Contains(Expression other)
@@ -76,8 +102,25 @@ namespace SharpMap.Expressions
 
         #endregion
 
+        #region Implementation of ISerializable
 
+        public virtual void GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            var count = 0;
+            foreach (var item in _collection)
+                count++;
 
+            info.AddValue("count", count);
+            if (count == 0) return;
 
+            count = 0;
+            foreach (var item in _collection)
+            {
+                info.AddValue("type", item.GetType());
+                info.AddValue(string.Format("i{0}", count++), item);
+            }
+        }
+
+        #endregion
     }
 }

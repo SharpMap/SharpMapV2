@@ -18,16 +18,47 @@
 
 namespace SharpMap.Expressions
 {
+    /// <summary>
+    /// A collection of binary oberators
+    /// </summary>
     public enum BinaryOperator
     {
+        /// <summary>
+        /// Binary and operator  (&amp;&amp;)
+        /// </summary>
         And,
+        /// <summary>
+        /// Binary or operator (||)
+        /// </summary>
         Or,
+        /// <summary>
+        /// Binary like operator
+        /// </summary>
         Like,
+        /// <summary>
+        /// Binary equality operator (==)
+        /// </summary>
         Equals,
+        /// <summary>
+        /// Binary inequality operator (!=)
+        /// </summary>
         NotEquals,
+
+        /// <summary>
+        /// Binary greater than operator (&gt;)
+        /// </summary>
         GreaterThan,
+        /// <summary>
+        /// Binary greater than or equal to operator (&gt;=)
+        /// </summary>
         GreaterThanOrEqualTo,
+        /// <summary>
+        /// Binary less than or equal to operator (&lt;)
+        /// </summary>
         LessThan,
+        /// <summary>
+        /// Binary less than or equal to operator (&lt;=)
+        /// </summary>
         LessThanOrEqualTo,
     }
 }

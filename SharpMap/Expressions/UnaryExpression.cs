@@ -2,6 +2,7 @@
 
 namespace SharpMap.Expressions
 {
+    [Serializable]
     public class UnaryExpression : Expression
     {
         private readonly UnaryOperator _op;

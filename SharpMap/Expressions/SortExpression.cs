@@ -7,6 +7,7 @@ using System.Data;
 namespace SharpMap.Expressions
 {
 
+    [Serializable]
     public class SortExpressionCollectionExpression : CollectionExpression<SortExpression>
     {
         public SortExpressionCollectionExpression(IEnumerable<SortExpression> sortExpressions)

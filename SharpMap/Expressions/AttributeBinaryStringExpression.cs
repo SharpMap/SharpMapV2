@@ -16,6 +16,7 @@ using System;
 
 namespace SharpMap.Expressions
 {
+    [Serializable]
     public class AttributeBinaryStringExpression : BinaryExpressionBase<BinaryStringOperator>
     {
         protected AttributeBinaryStringExpression(PropertyNameExpression left, BinaryStringOperator op,

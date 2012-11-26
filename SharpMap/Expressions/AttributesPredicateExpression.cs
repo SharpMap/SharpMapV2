@@ -19,6 +19,7 @@ using System;
 
 namespace SharpMap.Expressions
 {
+    [Serializable]
     public class AttributesPredicateExpression : BinaryExpression
     {
         #region Overrides of Expression

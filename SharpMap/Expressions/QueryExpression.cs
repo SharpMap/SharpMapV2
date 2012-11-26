@@ -2,6 +2,7 @@
 
 namespace SharpMap.Expressions
 {
+    [Serializable]
     public class QueryExpression : Expression
     {
         private readonly ProjectionExpression _projection;

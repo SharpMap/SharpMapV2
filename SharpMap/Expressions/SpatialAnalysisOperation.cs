@@ -19,6 +19,7 @@ using System.Text;
 
 namespace SharpMap.Expressions
 {
+    [Serializable]
     public enum SpatialAnalysisOperation
     {
         None,

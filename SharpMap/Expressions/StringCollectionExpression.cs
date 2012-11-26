@@ -25,6 +25,7 @@ using Enumerable = GeoAPI.DataStructures.Enumerable;
 
 namespace SharpMap.Expressions
 {
+    [Serializable]
     public class StringCollectionExpression : CollectionExpression<String>
     {
         private readonly StringComparison _comparison;

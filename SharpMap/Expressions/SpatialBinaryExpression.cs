@@ -20,6 +20,7 @@ using GeoAPI.Geometries;
 
 namespace SharpMap.Expressions
 {
+    [Serializable]
     public class SpatialBinaryExpression : BinaryExpressionBase<SpatialOperation>,
                                            IEquatable<SpatialBinaryExpression>
     {

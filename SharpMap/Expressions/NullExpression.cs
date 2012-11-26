@@ -2,6 +2,7 @@
 
 namespace SharpMap.Expressions
 {
+    [Serializable]
     public class NullExpression : Expression
     {
         public override bool Contains(Expression other)

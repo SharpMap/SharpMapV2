@@ -20,6 +20,7 @@ using SharpMap.Layers;
 
 namespace SharpMap.Expressions
 {
+    [Serializable]
     public class LayerExpression : Expression, IEquatable<LayerExpression>
     {
         private readonly ILayer _layer;

@@ -13,11 +13,14 @@
  * 
  */
 
+using System;
+
 namespace SharpMap.Expressions
 {
     /// <summary>
     /// A SpatialAnalysisExpression which returns a GeometryExpression corresponding to buffering the input GeometryExpression by a distance
     /// </summary>
+    [Serializable]
     public class SpatialAnalysisBufferExpression
         : SpatialAnalysisExpression<GeometryExpression, LiteralExpression<double>>
     {

@@ -17,6 +17,7 @@ using System;
 
 namespace SharpMap.Expressions
 {
+    [Serializable]
     public abstract class SpatialAnalysisExpression : Expression, IEquatable<SpatialAnalysisExpression>
     {
         private readonly SpatialAnalysisOperation _operation;

@@ -25,6 +25,7 @@ namespace SharpMap.Expressions
     /// An expression which represents an <see cref="IExtents"/> in a
     /// compound expression or an expression tree.
     /// </summary>
+    [Serializable]
     public class ExtentsExpression : SpatialExpression
     {
         private readonly IExtents _extents;

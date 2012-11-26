@@ -24,8 +24,11 @@ using SharpMap.Layers;
 
 namespace SharpMap.Expressions
 {
+    [Serializable]
     public class FeatureQueryExpression : QueryExpression, IEquatable<FeatureQueryExpression>
     {
+        public FeatureQueryExecutionOptions Options { get; set; }
+        
         public static FeatureQueryExpression Intersects(IExtents extents)
         {
             return new FeatureQueryExpression(extents, SpatialOperation.Intersects);
@@ -60,29 +63,32 @@ namespace SharpMap.Expressions
         public FeatureQueryExpression(IExtents extents, SpatialOperation op)
             : base(new AllAttributesExpression(), new SpatialBinaryExpression(new ExtentsExpression(extents),
                                                                               op,
-                                                                              new ThisExpression())) { }
+                                                                              new ThisExpression()))
+        {
+            Options = FeatureQueryExecutionOptions.FullFeature;
+        }
 
         public FeatureQueryExpression(IGeometry geometry, SpatialOperation op)
             : base(new AllAttributesExpression(), new SpatialBinaryExpression(new GeometryExpression(geometry),
                                                                               op,
-                                                                              new ThisExpression())) { }
+                                                                              new ThisExpression())) { Options = FeatureQueryExecutionOptions.FullFeature; }
 
         public FeatureQueryExpression(IGeometry geometry, SpatialOperation op, ILayer layer)
             : base(new AllAttributesExpression(), new SpatialBinaryExpression(new GeometryExpression(geometry),
                                                                               op,
-                                                                              new LayerExpression(layer))) { }
+                                                                              new LayerExpression(layer))) { Options = FeatureQueryExecutionOptions.FullFeature; }
 
         public FeatureQueryExpression(IGeometry geometry, SpatialOperation op, IFeatureProvider provider)
             : base(new AllAttributesExpression(), new SpatialBinaryExpression(new GeometryExpression(geometry),
                                                                               op,
-                                                                              new ProviderExpression(provider))) { }
+                                                                              new ProviderExpression(provider))) { Options = FeatureQueryExecutionOptions.FullFeature; }
         public FeatureQueryExpression(IExtents extents,
                                       SpatialOperation op,
                                       IEnumerable<IFeatureDataRecord> features)
             : base(new AllAttributesExpression(),
                    new SpatialBinaryExpression(new ExtentsExpression(extents),
                                                op,
-                                               new FeaturesCollectionExpression(features))) { }
+                                               new FeaturesCollectionExpression(features))) { Options = FeatureQueryExecutionOptions.FullFeature; }
 
         public FeatureQueryExpression(IGeometry geometry,
                                       SpatialOperation op,
@@ -90,81 +96,81 @@ namespace SharpMap.Expressions
             : base(new AllAttributesExpression(),
                    new SpatialBinaryExpression(new GeometryExpression(geometry),
                                                op,
-                                               new FeaturesCollectionExpression(features))) { }
+                                               new FeaturesCollectionExpression(features))) { Options = FeatureQueryExecutionOptions.FullFeature; }
 
         public FeatureQueryExpression(AttributeBinaryExpression attributeFilter)
-            : base(new AllAttributesExpression(), attributeFilter) { }
+            : base(new AllAttributesExpression(), attributeFilter) { Options = FeatureQueryExecutionOptions.FullFeature; }
 
         public FeatureQueryExpression(AttributesPredicateExpression attributeFilter)
-            : base(new AllAttributesExpression(), attributeFilter) { }
+            : base(new AllAttributesExpression(), attributeFilter) { Options = FeatureQueryExecutionOptions.FullFeature; }
 
         public FeatureQueryExpression(SpatialBinaryExpression spatialFilter)
-            : base(new AllAttributesExpression(), spatialFilter) { }
+            : base(new AllAttributesExpression(), spatialFilter) { Options = FeatureQueryExecutionOptions.FullFeature; }
 
         public FeatureQueryExpression(AttributeBinaryExpression attributeFilter,
                                       SpatialBinaryExpression spatialFilter)
             : base(new AllAttributesExpression(), new BinaryExpression(attributeFilter,
                                                                        BinaryOperator.And,
-                                                                       spatialFilter)) { }
+                                                                       spatialFilter)) { Options = FeatureQueryExecutionOptions.FullFeature; }
 
         public FeatureQueryExpression(AttributesPredicateExpression attributeFilter,
                                       SpatialBinaryExpression spatialFilter)
             : base(new AllAttributesExpression(), new BinaryExpression(attributeFilter,
                                                                        BinaryOperator.And,
-                                                                       spatialFilter)) { }
+                                                                       spatialFilter)) { Options = FeatureQueryExecutionOptions.FullFeature; }
 
         public FeatureQueryExpression(AttributesProjectionExpression attributes,
                                       AttributeBinaryExpression attributeFilter,
                                       SpatialBinaryExpression spatialFilter)
             : base(attributes, new BinaryExpression(attributeFilter,
                                                     BinaryOperator.And,
-                                                    spatialFilter)) { }
+                                                    spatialFilter)) { Options = FeatureQueryExecutionOptions.FullFeature; }
 
         public FeatureQueryExpression(AttributesProjectionExpression attributes,
                                       AttributesPredicateExpression attributeFilter,
                                       SpatialBinaryExpression spatialFilter)
             : base(attributes, new BinaryExpression(attributeFilter,
                                                     BinaryOperator.And,
-                                                    spatialFilter)) { }
+                                                    spatialFilter)) { Options = FeatureQueryExecutionOptions.FullFeature; }
 
         public FeatureQueryExpression(AttributeBinaryExpression attributeFilter,
                                       SpatialBinaryExpression spatialFilter,
                                       OidCollectionExpression oidFilter)
-            : this(new AllAttributesExpression(), attributeFilter, spatialFilter, oidFilter, null) { }
+            : this(new AllAttributesExpression(), attributeFilter, spatialFilter, oidFilter, null) { Options = FeatureQueryExecutionOptions.FullFeature; }
 
         public FeatureQueryExpression(AttributesPredicateExpression attributeFilter,
                                       SpatialBinaryExpression spatialFilter,
                                       OidCollectionExpression oidFilter)
-            : this(new AllAttributesExpression(), attributeFilter, spatialFilter, oidFilter, null) { }
+            : this(new AllAttributesExpression(), attributeFilter, spatialFilter, oidFilter, null) { Options = FeatureQueryExecutionOptions.FullFeature; }
 
 
 
         public FeatureQueryExpression(IExtents extents, SpatialOperation op, SortExpressionCollectionExpression sort)
             : base(new AllAttributesExpression(), new SpatialBinaryExpression(new ExtentsExpression(extents),
                                                                               op,
-                                                                              new ThisExpression()), sort) { }
+                                                                              new ThisExpression()), sort) { Options = FeatureQueryExecutionOptions.FullFeature; }
 
         public FeatureQueryExpression(IGeometry geometry, SpatialOperation op, SortExpressionCollectionExpression sort)
             : base(new AllAttributesExpression(), new SpatialBinaryExpression(new GeometryExpression(geometry),
                                                                               op,
-                                                                              new ThisExpression()), sort) { }
+                                                                              new ThisExpression()), sort) { Options = FeatureQueryExecutionOptions.FullFeature; }
 
         public FeatureQueryExpression(IGeometry geometry, SpatialOperation op, ILayer layer, SortExpressionCollectionExpression sort)
             : base(new AllAttributesExpression(), new SpatialBinaryExpression(new GeometryExpression(geometry),
                                                                               op,
-                                                                              new LayerExpression(layer)), sort) { }
+                                                                              new LayerExpression(layer)), sort) { Options = FeatureQueryExecutionOptions.FullFeature; }
 
         public FeatureQueryExpression(IGeometry geometry, SpatialOperation op, IFeatureProvider provider, SortExpressionCollectionExpression sort)
             : base(new AllAttributesExpression(), new SpatialBinaryExpression(new GeometryExpression(geometry),
                                                                               op,
-                                                                              new ProviderExpression(provider)), sort) { }
+                                                                              new ProviderExpression(provider)), sort) { Options = FeatureQueryExecutionOptions.FullFeature; }
         public FeatureQueryExpression(IExtents extents,
                                       SpatialOperation op,
                                       IEnumerable<IFeatureDataRecord> features, SortExpressionCollectionExpression sort)
             : base(new AllAttributesExpression(),
                    new SpatialBinaryExpression(new ExtentsExpression(extents),
                                                op,
-                                               new FeaturesCollectionExpression(features)), sort) { }
+                                               new FeaturesCollectionExpression(features)), sort) { Options = FeatureQueryExecutionOptions.FullFeature; }
 
         public FeatureQueryExpression(IGeometry geometry,
                                       SpatialOperation op,
@@ -172,42 +178,42 @@ namespace SharpMap.Expressions
             : base(new AllAttributesExpression(),
                    new SpatialBinaryExpression(new GeometryExpression(geometry),
                                                op,
-                                               new FeaturesCollectionExpression(features)), sort) { }
+                                               new FeaturesCollectionExpression(features)), sort) { Options = FeatureQueryExecutionOptions.FullFeature; }
 
         public FeatureQueryExpression(AttributeBinaryExpression attributeFilter, SortExpressionCollectionExpression sort)
-            : base(new AllAttributesExpression(), attributeFilter, sort) { }
+            : base(new AllAttributesExpression(), attributeFilter, sort) { Options = FeatureQueryExecutionOptions.FullFeature; }
 
         public FeatureQueryExpression(AttributesPredicateExpression attributeFilter, SortExpressionCollectionExpression sort)
-            : base(new AllAttributesExpression(), attributeFilter, sort) { }
+            : base(new AllAttributesExpression(), attributeFilter, sort) { Options = FeatureQueryExecutionOptions.FullFeature; }
 
         public FeatureQueryExpression(SpatialBinaryExpression spatialFilter, SortExpressionCollectionExpression sort)
-            : base(new AllAttributesExpression(), spatialFilter, sort) { }
+            : base(new AllAttributesExpression(), spatialFilter, sort) { Options = FeatureQueryExecutionOptions.FullFeature; }
 
         public FeatureQueryExpression(AttributeBinaryExpression attributeFilter,
                                       SpatialBinaryExpression spatialFilter, SortExpressionCollectionExpression sort)
             : base(new AllAttributesExpression(), new BinaryExpression(attributeFilter,
                                                                        BinaryOperator.And,
-                                                                       spatialFilter), sort) { }
+                                                                       spatialFilter), sort) { Options = FeatureQueryExecutionOptions.FullFeature; }
 
         public FeatureQueryExpression(AttributesPredicateExpression attributeFilter,
                                       SpatialBinaryExpression spatialFilter, SortExpressionCollectionExpression sort)
             : base(new AllAttributesExpression(), new BinaryExpression(attributeFilter,
                                                                        BinaryOperator.And,
-                                                                       spatialFilter), sort) { }
+                                                                       spatialFilter), sort) { Options = FeatureQueryExecutionOptions.FullFeature; }
 
         public FeatureQueryExpression(AttributesProjectionExpression attributes,
                                       AttributeBinaryExpression attributeFilter,
                                       SpatialBinaryExpression spatialFilter, SortExpressionCollectionExpression sort)
             : base(attributes, new BinaryExpression(attributeFilter,
                                                     BinaryOperator.And,
-                                                    spatialFilter), sort) { }
+                                                    spatialFilter), sort) { Options = FeatureQueryExecutionOptions.FullFeature; }
 
         public FeatureQueryExpression(AttributesProjectionExpression attributes,
                                       AttributesPredicateExpression attributeFilter,
                                       SpatialBinaryExpression spatialFilter, SortExpressionCollectionExpression sort)
             : base(attributes, new BinaryExpression(attributeFilter,
                                                     BinaryOperator.And,
-                                                    spatialFilter), sort) { }
+                                                    spatialFilter), sort) { Options = FeatureQueryExecutionOptions.FullFeature; }
 
         public FeatureQueryExpression(AttributeBinaryExpression attributeFilter,
                                       SpatialBinaryExpression spatialFilter,
@@ -243,7 +249,7 @@ namespace SharpMap.Expressions
                                                            BinaryOperator.And,
                                                            new BinaryExpression(oidFilter,
                                                                                 BinaryOperator.And,
-                                                                                spatialFilter)), sort) { }
+                                                                                spatialFilter)), sort) { Options = FeatureQueryExecutionOptions.FullFeature; }
 
         public FeatureQueryExpression(FeatureQueryExpression expressionToCopy,
                                       SpatialBinaryExpression replacementSpatialExpression)
@@ -254,7 +260,7 @@ namespace SharpMap.Expressions
 
         public FeatureQueryExpression(ProjectionExpression projection,
                                                   PredicateExpression predicate, SortExpressionCollectionExpression sort)
-            : base(projection, predicate, sort) { }
+            : base(projection, predicate, sort) { Options = FeatureQueryExecutionOptions.FullFeature; }
 
 
         public SpatialBinaryExpression SpatialPredicate

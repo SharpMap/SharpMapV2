@@ -17,13 +17,37 @@
 
 namespace SharpMap.Expressions
 {
+    /// <summary>
+    /// Collection operators
+    /// </summary>
     public enum CollectionOperator
     {
+        /// <summary>
+        /// Any
+        /// </summary>
         Any,
+        /// <summary>
+        /// All
+        /// </summary>
         All,
+        /// <summary>
+        /// In
+        /// </summary>
         In,
+
+        /// <summary>
+        /// Contains <see cref="In"/>
+        /// </summary>
         Contains = In,
+
+        /// <summary>
+        /// NotIn
+        /// </summary>
         NotIn,
+
+        /// <summary>
+        /// Does not contain
+        /// </summary>
         DoesNotContain = NotIn
     }
 }

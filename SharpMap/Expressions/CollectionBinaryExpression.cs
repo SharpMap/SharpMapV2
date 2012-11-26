@@ -24,11 +24,6 @@ namespace SharpMap.Expressions
         public CollectionBinaryExpression(Expression left, CollectionOperator op, CollectionExpression right)
             : base(left, op, right) { }
 
-        public new Expression Left
-        {
-            get { return base.Left; }
-        }
-
         public new CollectionExpression Right
         {
             get { return base.Right as CollectionExpression; }
@@ -40,7 +35,7 @@ namespace SharpMap.Expressions
         {
             if (right == null) throw new ArgumentNullException("right");
 
-            CollectionExpression ce = right as CollectionExpression;
+            var ce = right as CollectionExpression;
 
             if (ce == null)
             {

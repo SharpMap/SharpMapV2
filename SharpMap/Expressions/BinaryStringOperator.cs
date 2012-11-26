@@ -14,12 +14,30 @@
  */
 namespace SharpMap.Expressions
 {
+    /// <summary>
+    /// Binary operators for binary comparisons of <see cref="string"/>s
+    /// </summary>
     public enum BinaryStringOperator
     {
+        /// <summary>
+        /// Binary starts with operator
+        /// </summary>
         StartsWith,
+        /// <summary>
+        /// Binary contains operator
+        /// </summary>
         Contains,
+        /// <summary>
+        /// Binary contains operator
+        /// </summary>
         EndsWith,
+        /// <summary>
+        /// Binary equals operator
+        /// </summary>
         Equals,
+        /// <summary>
+        /// Binary inequality operator
+        /// </summary>
         NotEquals
     }
 }

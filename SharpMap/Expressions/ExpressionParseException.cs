@@ -4,6 +4,9 @@ using GeoAPI;
 
 namespace SharpMap.Expressions
 {
+    /// <summary>
+    /// Exception thrown when <see cref="Expression"/> parsing failed
+    /// </summary>
     [Serializable]
     public class ExpressionParseException : ParseException
     {

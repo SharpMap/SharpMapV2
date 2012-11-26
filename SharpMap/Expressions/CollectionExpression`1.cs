@@ -4,14 +4,22 @@ using System.Collections.Generic;
 #if DOTNET35
 using Enumerable = System.Linq.Enumerable;
 #else
+using System.Collections.ObjectModel;
+using System.Runtime.Serialization;
 using Enumerable = GeoAPI.DataStructures.Enumerable;
 #endif
 
 namespace SharpMap.Expressions
 {
+    /// <summary>
+    /// A collection of <typeparamref name="TValue"/> expressions
+    /// </summary>
+    /// <typeparam name="TValue">The type of expressions to collect</typeparam>
+    [Serializable]
     public class CollectionExpression<TValue> : CollectionExpression, IEnumerable<TValue>
+        where TValue : Expression
     {
-        private readonly IEqualityComparer<TValue> _comparer;
+        private readonly IEqualityComparer<TValue> _comparer = EqualityComparer<TValue>.Default;
 
         public CollectionExpression(IEnumerable<TValue> collection) 
             : this(collection, EqualityComparer<TValue>.Default) { }
@@ -20,6 +28,18 @@ namespace SharpMap.Expressions
             : base(collection)
         {
             _comparer = comparer;
+        }
+
+        protected CollectionExpression(SerializationInfo info, StreamingContext context)
+            //:base(info, context)
+        {
+            var count = info.GetInt32("count");
+            var items = new List<TValue>(count);
+
+            for (var i = 0; i < count; i++)
+                items.Add((TValue)info.GetValue(string.Format("i{0}", i), typeof(TValue)));
+
+            base.Collection = items;
         }
 
         public new IEnumerable<TValue> Collection
@@ -80,5 +100,21 @@ namespace SharpMap.Expressions
         }
 
         #endregion
+
+        public override void GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            var count = 0;
+            foreach (var item in Collection)
+                count++;
+
+            info.AddValue("count", count);
+            if (count == 0) return;
+
+            count = 0;
+            foreach (var item in Collection)
+            {
+                info.AddValue(string.Format("i{0}", count++), item);
+            }
+        }
     }
 }

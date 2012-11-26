@@ -20,6 +20,7 @@ using SharpMap.Data;
 
 namespace SharpMap.Expressions
 {
+    [Serializable]
     public class ProviderExpression : Expression
     {
         private readonly IProvider _provider;

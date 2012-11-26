@@ -5,6 +5,7 @@ using SharpMap.Layers;
 
 namespace SharpMap.Expressions
 {
+    [Serializable]
     public class RasterQueryExpression : QueryExpression, IEquatable<RasterQueryExpression>
     {
         public static RasterQueryExpression Intersects(IExtents extents)

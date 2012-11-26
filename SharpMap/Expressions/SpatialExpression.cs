@@ -21,6 +21,7 @@ using GeoAPI.Geometries;
 
 namespace SharpMap.Expressions
 {
+    [Serializable]
     public abstract class SpatialExpression : Expression, IEquatable<SpatialExpression>
     {
         public abstract Boolean Equals(SpatialExpression other);

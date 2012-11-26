@@ -13,9 +13,11 @@
  * 
  */
 using System;
+using System.Runtime.Serialization;
 
 namespace SharpMap.Expressions
 {
+    [Serializable]
     public abstract class ProviderPropertyExpression : Expression
     {
         private readonly PropertyNameExpression _propertyNameExpression;
@@ -40,15 +42,16 @@ namespace SharpMap.Expressions
         }
     }
 
+    [Serializable]
     public abstract class ProviderPropertyExpression<TValue> : ProviderPropertyExpression
     {
-        public ProviderPropertyExpression(PropertyNameExpression propertyNameExpression,
+        protected ProviderPropertyExpression(PropertyNameExpression propertyNameExpression,
                                           LiteralExpression<TValue> value)
             : base(propertyNameExpression, value)
         {
         }
 
-        public ProviderPropertyExpression(string propertyName,
+        protected ProviderPropertyExpression(string propertyName,
                                           TValue value)
             : this(new PropertyNameExpression(propertyName), new LiteralExpression<TValue>(value))
         {

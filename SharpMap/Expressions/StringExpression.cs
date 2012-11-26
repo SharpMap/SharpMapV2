@@ -21,6 +21,7 @@ using GeoAPI.DataStructures;
 
 namespace SharpMap.Expressions
 {
+    [Serializable]
     public class StringExpression : LiteralExpression<String>
     {
         private readonly StringComparison _comparison;

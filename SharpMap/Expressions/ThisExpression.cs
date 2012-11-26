@@ -19,6 +19,7 @@ using System;
 
 namespace SharpMap.Expressions
 {
+    [Serializable]
     public class ThisExpression : Expression, IEquatable<ThisExpression>
     {
         public override Boolean Contains(Expression other)

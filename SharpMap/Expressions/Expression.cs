@@ -22,6 +22,7 @@ namespace SharpMap.Expressions
     /// <summary>
     /// Represents an expression used to select or project data.
     /// </summary>
+    [Serializable]
     public abstract class Expression : IEquatable<Expression>
     {
         /// <summary>
@@ -73,7 +74,9 @@ namespace SharpMap.Expressions
 
         #region IEquatable<Expression> Members
 
+        /// <inheritdoc/>
         public abstract Boolean Equals(Expression other);
+        
         #endregion
     }
 }
