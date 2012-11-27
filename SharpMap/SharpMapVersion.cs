@@ -26,14 +26,14 @@ namespace SharpMap
 	/// </summary>
 	public static class SharpMapVersion
 	{
-        public static readonly Version _version = Assembly.GetExecutingAssembly().GetName().Version;
+        private static readonly Version Version = Assembly.GetExecutingAssembly().GetName().Version;
 
 		/// <summary>
 		/// Returns the current build version of SharpMap.
 		/// </summary>
 		public static Version CurrentVersion
 		{
-            get { return _version; }
+            get { return Version; }
 		}
 	}
 }
