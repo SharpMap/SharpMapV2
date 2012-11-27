@@ -2,7 +2,7 @@
 using NUnit.Framework;
 using SharpMap.Symbology.Serialization;
 
-namespace SharpMap.Symbology.Serialization.Test
+namespace SharpMap.Symbology.Test.Serialization
 {
     [TestFixture]
     public class FeatureTypeStyleSerializerTests
@@ -10,14 +10,14 @@ namespace SharpMap.Symbology.Serialization.Test
         [Test]
         public void ConstructSerializer()
         {
-            FeatureTypeStyleSerializer styleSerializer = new FeatureTypeStyleSerializer();
+            Assert.DoesNotThrow(() => { var styleSerializer = new FeatureTypeStyleSerializer(); });
         }
     
         [Test]
         public void DeserializeDegeneratePointSymbolizer()
         {
             FeatureTypeStyleType featureStyleType =
-                FeatureTypeStyleSerializer.Deserialize(rootTag(@"<Rule><PointSymbolizer/></Rule>"));
+                FeatureTypeStyleSerializer.Deserialize(RootTag(@"<Rule><PointSymbolizer/></Rule>"));
             
             Assert.IsNotNull(featureStyleType);
             Assert.IsNotNull(featureStyleType.Items);
@@ -51,7 +51,7 @@ namespace SharpMap.Symbology.Serialization.Test
             StringAssert.Contains("<PointSymbolizer", xml);
         }
     
-        private String rootTag(String contents)
+        private static String RootTag(String contents)
         {
             return String.Format(@"<FeatureTypeStyle version=""1.1.0"" " +
                                     @"xmlns=""http://www.opengis.net/se"" " +
