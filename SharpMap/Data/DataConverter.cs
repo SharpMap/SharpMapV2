@@ -15,7 +15,9 @@
 using System;
 using System.Data;
 using GeoAPI.Geometries;
-
+#if !DOTNET35
+using GeoAPI.SystemCoreReplacement;
+#endif
 namespace SharpMap.Data
 {
     public class DataConverter<TSource, TTarget>
