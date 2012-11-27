@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using SharpMap.Symbology.Serialization;
 using SharpMap.Symbology.StyleAdditions;
 
@@ -10,8 +8,8 @@ namespace SharpMap.Symbology
     {
         public static LabelStyle LabelStyle(String xml)
         {
-            FeatureTypeStyleType rawStyle = FeatureTypeStyleSerializer.Deserialize(xml);
-            LabelStyle labelStyle = new LabelStyle();
+            var rawStyle = FeatureTypeStyleSerializer.Deserialize(xml);
+            var labelStyle = new LabelStyle();
 
             if (!String.IsNullOrEmpty(rawStyle.Name))
             {

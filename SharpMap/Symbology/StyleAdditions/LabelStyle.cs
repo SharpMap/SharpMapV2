@@ -6,38 +6,32 @@ using SharpMap.Styles;
 
 namespace SharpMap.Symbology.StyleAdditions
 {
-    public class LabelStyle : SharpMap.Styles.LabelStyle, IFeatureStyleNames
+    public class LabelStyle : Styles.LabelStyle, IFeatureStyleNames
     {
-        private String _name;
-        private Description _description;
         private ICollection<String> _semanticTypeIdentifier = new Collection<String>();
-        private String _featureTypeName;
 
-        public String Name
-        {
-            get { return _name;  }
-            set { _name = value; }
-        }
+        /// <summary>
+        /// Gets or sets a value indicating the symbology encoding name
+        /// </summary>
+        public string Name { get; set; }
 
-        public Description Description
-        {
-            get { return _description; }
-            set { _description = value; }
-        }
+        /// <summary>
+        /// Gets or sets a <see cref="IStyleNames.Description"/> of the style
+        /// </summary>
+        public Description Description { get; set; }
 
+        /// <summary>
+        /// Gets or sets a list of semantic type identifiers
+        /// </summary>
         public ICollection<String> SemanticTypeIdentifier
         {
             get { return _semanticTypeIdentifier; }
             set { _semanticTypeIdentifier = value; }
         }
 
-        public String FeatureTypeName
-        {
-            get { return _featureTypeName; }
-            set { _featureTypeName = value; }
-        }
+        public string FeatureTypeName { get; set; }
 
-        public LabelStyle() : base()
+        public LabelStyle()
         {}
 
         public LabelStyle(StyleFont font, StyleBrush foreground) : base(font, foreground)
