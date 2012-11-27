@@ -17,7 +17,7 @@ namespace SharpMap.Expressions
     /// <typeparam name="TValue">The type of expressions to collect</typeparam>
     [Serializable]
     public class CollectionExpression<TValue> : CollectionExpression, IEnumerable<TValue>
-        where TValue : Expression
+        //where TValue : Expression
     {
         private readonly IEqualityComparer<TValue> _comparer = EqualityComparer<TValue>.Default;
 
