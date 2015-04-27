@@ -1,0 +1,1 @@
+A temporary location of the version 2 of [SharpMap](http://www.codeplex.com/SharpMap).
